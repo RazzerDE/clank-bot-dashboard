@@ -13,8 +13,10 @@ yarn-error.log
 
 # IDEs and editors
 .idea/
+.idea/*
 /.vscode/
 /.idea/
+/.idea/*
 .project
 .classpath
 .c9/
