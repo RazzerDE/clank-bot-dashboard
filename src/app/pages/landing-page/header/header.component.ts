@@ -1,6 +1,7 @@
 import {Component, HostListener, Renderer2} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
+import {NavigationItem} from "./types/NavigationItem";
 
 @Component({
   selector: 'landing-header',
@@ -14,6 +15,12 @@ import {RouterLink} from "@angular/router";
 })
 export class HeaderComponent {
   protected mobileMenuExpanded: boolean = false;
+  protected nav_items: NavigationItem[] = [
+    {redirect_url: '/#discord-bot', title: 'Start'},
+    {redirect_url: '/#discord-bot-features', title: 'Features'},
+    {redirect_url: '/#discord-bot-wishlist', title: 'Wunschliste'},
+    {redirect_url: '/#discord-bot-team', title: 'Bot-Team'},
+  ];
 
   constructor(private renderer: Renderer2) {}
 

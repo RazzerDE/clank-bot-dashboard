@@ -15,10 +15,11 @@
           <!-- Navigation -->
           <div class="header-menu">
             <ul>
-              <li><a href="#discord-bot">Start</a></li>
-              <li><a href="#discord-bot-features">Features</a></li>
-              <li><a href="#discord-bot-wishlist">Wunschliste</a></li>
-              <li><a href="#discord-bot-team">Bot-Team</a></li>
+              @for (item of nav_items; track item) {
+                <li>
+                  <a href="{{item.redirect_url}}">{{item.title}}</a>
+                </li>
+              }
             </ul>
           </div>
         </div>
@@ -79,11 +80,11 @@
 
     <!-- Mobile Menu Content -->
     <ul class="nav-menu p-0">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="project.html">Projects</a></li>
-      <li><a href="staking.html">Staking</a></li>
-      <li><a href="#">Pages</a></li>
-      <li><a href="#">Buy Token</a></li>
+      @for (item of nav_items; track item) {
+        <li>
+          <a href="{{item.redirect_url}}">{{item.title}}</a>
+        </li>
+      }
 
       <!-- Button -->
       <li>
