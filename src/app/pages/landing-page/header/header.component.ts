@@ -2,13 +2,18 @@ import {Component, HostListener, Renderer2} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {NavigationItem} from "./types/NavigationItem";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
+import { faCode } from '@fortawesome/free-solid-svg-icons';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'landing-header',
   standalone: true,
   imports: [
     NgOptimizedImage,
-    RouterLink
+    RouterLink,
+    FontAwesomeModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -21,6 +26,9 @@ export class HeaderComponent {
     {redirect_url: '/#discord-bot-wishlist', title: 'Wunschliste'},
     {redirect_url: '/#discord-bot-team', title: 'Bot-Team'},
   ];
+
+  protected faDiscord: IconDefinition = faDiscord;
+  protected faCode: IconDefinition = faCode;
 
   constructor(private renderer: Renderer2) {}
 

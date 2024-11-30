@@ -42,16 +42,16 @@
             <li class="!inline-flex">
               <a class="font-style-button black-shape" href="#">
                 <span class="btn-text">Discord-Server </span>
-                <i class="icon-arrow_down"></i>
+                <fa-icon [icon]="faDiscord" class="inline-block ml-1" />
                 <span class="hover-shape1"></span>
                 <span class="hover-shape2"></span>
                 <span class="hover-shape3"></span>
               </a>
             </li>
             <li>
-              <button type="button" class="w-full font-style-button white-btn hover-shape">
-                <img src="assets/img/original/connect.png" class="inline-block" alt="Icon">
-                <span class="btn-text">Dashboard </span>
+              <button type="button" class="w-full font-style-button white-btn hover-shape !px-2">
+                <fa-icon [icon]="faCode" class="inline-block mr-2" />
+                <span class="btn-text">Dashboard</span>
                 <span class="hover-shape1"></span>
                 <span class="hover-shape2"></span>
                 <span class="hover-shape3"></span>
@@ -89,12 +89,12 @@
       <!-- Button -->
       <li>
         <button type="button" class="font-style-button black-shape-big mobile-btn-purple">
-        <img src="assets/img/original/connect_white.png" alt="Icon" class="inline-block">
-        <span class="btn-text">Connect </span>
-        <span class="hover-shape1"></span>
-        <span class="hover-shape2"></span>
-        <span class="hover-shape3"></span>
-      </button>
+          <fa-icon [icon]="faCode" class="inline-block" />
+          <span class="btn-text">Zum Dashboard </span>
+          <span class="hover-shape1"></span>
+          <span class="hover-shape2"></span>
+          <span class="hover-shape3"></span>
+        </button>
       </li>
     </ul>
   </nav>
