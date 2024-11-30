@@ -1,0 +1,89 @@
+@import './structure/header.scss';
+@import './structure/utility.scss';
+
+/* Some useful global variables */
+:root {
+  --primary-colour: #14e417;
+  --primary-colour-light: #10b612;
+  --hover-colour: #A3FF12;
+}
+
+/* Styles for text selection */
+::selection {
+  @apply text-white;
+  background: var(--primary-colour-light) !important;
+}
+
+::-moz-selection {
+  @apply text-white;
+  background: var(--primary-colour-light) !important;
+}
+
+
+/*                                          GLOBAL-STYLES                                              */
+
+
+html, body {
+  @apply bg-black text-white/70 font-Inter font-medium text-base align-baseline overflow-x-hidden;
+}
+
+img {
+  @apply max-w-full h-auto;
+}
+
+
+/*                                    TYPOGRAPHY                                              */
+
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-RussoOne text-white mx-0 mt-0 mb-[26px] leading-snug font-normal;
+}
+
+h1 {
+  @apply text-[50px] uppercase;
+}
+
+h2 {
+  @apply text-4xl uppercase;
+}
+
+h3 {
+  @apply text-3xl uppercase;
+}
+
+h4 {
+  @apply text-[22px] uppercase;
+}
+
+h5 {
+  @apply text-[16px] uppercase;
+}
+
+h6 {
+  @apply text-[14px];
+}
+
+p {
+  @apply mx-0 mt-0 mb-[26px] leading-[1.8];
+}
+
+a {
+  @apply text-white transition-all duration-300 ease-in no-underline outline-0;
+}
+
+/* Hover effect on Links */
+a:active, a:hover {
+  color: var(--hover-colour) !important;
+}
+
+ul {
+  @apply list-outside list-none m-0 p-0;
+}
+
+input:focus, select:focus, textarea:focus, button:focus {
+  @apply outline-0 no-underline shadow-none;
+}
+
+button {
+  @apply border-none;
+}

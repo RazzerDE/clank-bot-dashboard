@@ -1,0 +1,20 @@
+@media only screen and (max-width: 991px) {
+  // Hide menu items if screen is too small
+  .header-menu {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  // Hide menu expander if screen is big enough
+  header .header-buttons ul .nav-expander {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  // Make buttons smaller if screen is too small
+  .font-style-button, .white-btn {
+    @apply py-2 px-2;
+  }
+}

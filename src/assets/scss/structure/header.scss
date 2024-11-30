@@ -1,0 +1,98 @@
+/* Show menu items in a row */
+header .header-menu ul li {
+  @apply inline-block overflow-visible
+}
+
+/* Space between menu items */
+header .header-menu ul li + li {
+  @apply ml-10
+}
+
+/* Font size and color of menu items */
+header .header-menu ul li a {
+  @apply block text-white font-RussoOne font-normal py-3;
+}
+
+/* Mobile Expander Item (Hamburger with a little Animation) */
+header .header-buttons ul .nav-expander .bar span {
+  @apply h-[2px] block bg-white/70 transition-all duration-500 ease-in cursor-pointer list-none;
+}
+
+/* First Line of the Hamburger */
+header .header-buttons ul .nav-expander .bar span.dot1 {
+  @apply w-5 mb-[6px];
+}
+
+/* Second Line of the Hamburger */
+header .header-buttons ul .nav-expander .bar span.dot2 {
+  @apply w-[30px] mb-[6px];
+}
+
+/* Third Line of the Hamburger */
+header .header-buttons ul .nav-expander .bar span.dot3 {
+  @apply w-[25px];
+}
+
+/* Hover effect on the Hamburger (Expand lines) */
+header .header-buttons ul .nav-expander .bar:hover span.dot1,
+header .header-buttons ul .nav-expander .bar:hover span.dot3 {
+  @apply w-[30px];
+}
+
+/* Ensures the buttons in the header are displayed in a row using flexbox */
+header .header-buttons > ul {
+  @apply flex;
+}
+
+/* Canvas for the Mobile Menu */
+header .right_menu_togle {
+  @apply bg-white fixed overflow-y-auto z-50 w-full pt-[66px] pr-[60px] pb-[50px] pl-[50px] -right-[500px]
+         max-w-[400px] transition-all duration-300 ease-in;
+}
+
+/* Close button positioning for the Mobile Menu */
+header .right_menu_togle .close-btn {
+  @apply overflow-visible absolute top-[10px] block z-50 right-[57px] cursor-pointer transition-all duration-300 ease-in;
+}
+
+/* Hover effect on the Close button */
+header .right_menu_togle .close-btn:hover .nav-close .line span {
+  @apply opacity-50;
+}
+
+/* Set width and height of the Close button */
+header .right_menu_togle .close-btn .nav-close .line {
+  @apply w-10 h-10 leading-10;
+}
+
+/* Cross close button (First Line) */
+header .right_menu_togle .close-btn .nav-close .line span {
+  @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 h-7 w-[3px] bg-black border-none
+         transition-all duration-300 ease-in;
+}
+
+/* Cross close button (Second Line) */
+header .right_menu_togle .close-btn .nav-close .line span.line2 {
+  @apply -translate-x-1/2 -translate-y-1/2 -rotate-45;
+}
+
+/* Position of Mobile Menu Item Icons */
+header .mobile-navbar-menu .nav-menu li {
+  @apply relative;
+}
+
+/* Text formatting for Mobile Menu Items */
+header .mobile-navbar-menu .nav-menu li a {
+  @apply block border-b-[1px] border-solid border-black/5 text-black py-2.5 leading-[30px] w-full
+         font-RussoOne;
+}
+
+/* Hover effect on Mobile Menu Items */
+header .mobile-navbar-menu .nav-menu li a:hover {
+  color: var(--primary-colour-light) !important;
+}
+
+/* Show Canvas for Mobile Menu */
+.nav-expanded nav {
+  @apply right-0;
+}

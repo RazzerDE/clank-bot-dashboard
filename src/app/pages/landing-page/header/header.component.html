@@ -1,1 +1,100 @@
-<p>header works!</p>
+<header class="bg-transparent absolute w-full z-[12] py-6 px-0">
+  <div class="relative z-[1]">
+    <div class="container mx-auto">
+      <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center">
+
+          <!-- Logo -->
+          <div class="mr-14">
+            <a routerLink="/">
+              <img ngSrc="assets/img/logo/clank-discord-bot-logo.png" width="70" height="70"
+                   alt="Clank ~ Discord-Bot (Logo)">
+            </a>
+          </div>
+
+          <!-- Navigation -->
+          <div class="header-menu">
+            <ul>
+              <li><a href="#discord-bot">Start</a></li>
+              <li><a href="#discord-bot-features">Features</a></li>
+              <li><a href="#discord-bot-wishlist">Wunschliste</a></li>
+              <li><a href="#discord-bot-team">Bot-Team</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="header-buttons">
+          <ul class="items-center mb-0" id="header-buttons">
+            <li class="mr-5">
+
+              <!-- Mobile Expand Button -->
+              <a (click)="toggleMobileMenu()" class="nav-expander bar" href="#">
+                <div class="bar">
+                  <span class="dot1"></span>
+                  <span class="dot2"></span>
+                  <span class="dot3"></span>
+                </div>
+              </a>
+            </li>
+
+            <li class="!inline-flex">
+              <a class="font-style-button black-shape" href="#">
+                <span class="btn-text">Discord-Server </span>
+                <i class="icon-arrow_down"></i>
+                <span class="hover-shape1"></span>
+                <span class="hover-shape2"></span>
+                <span class="hover-shape3"></span>
+              </a>
+            </li>
+            <li>
+              <button type="button" class="w-full font-style-button white-btn hover-shape">
+                <img src="assets/img/original/connect.png" class="inline-block" alt="Icon">
+                <span class="btn-text">Dashboard </span>
+                <span class="hover-shape1"></span>
+                <span class="hover-shape2"></span>
+                <span class="hover-shape3"></span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas for Mobile Menu -->
+  <nav class="right_menu_togle mobile-navbar-menu h-full top-0">
+    <div class="close-btn !flex justify-between w-9/12 !cursor-default">
+      <a routerLink="/">
+        <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" width="50" height="50"
+             alt="Clank ~ Discord-Bot (Logo)">
+      </a>
+      <a class="nav-close relative cursor-pointer" (click)="toggleMobileMenu()">
+        <div class="line">
+          <span class="line1"></span>
+          <span class="line2"></span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Content -->
+    <ul class="nav-menu p-0">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="project.html">Projects</a></li>
+      <li><a href="staking.html">Staking</a></li>
+      <li><a href="#">Pages</a></li>
+      <li><a href="#">Buy Token</a></li>
+
+      <!-- Button -->
+      <li>
+        <button type="button" class="font-style-button black-shape-big mobile-btn-purple">
+        <img src="assets/img/original/connect_white.png" alt="Icon" class="inline-block">
+        <span class="btn-text">Connect </span>
+        <span class="hover-shape1"></span>
+        <span class="hover-shape2"></span>
+        <span class="hover-shape3"></span>
+      </button>
+      </li>
+    </ul>
+  </nav>
+</header>
