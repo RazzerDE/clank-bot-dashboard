@@ -1,1 +1,67 @@
-<p>footer works!</p>
+<footer class="footer-section bg-black relative">
+
+  <!-- Call to Action Responsive -->
+  <div class="container w-full md:w-3/4 lg:w-2/3 xl:w-1/2 absolute left-1/2 transform -translate-x-1/2 -translate-y-20 z-50">
+    <div class="footer-cta-area text-center active-shape hover-shape-inner">
+      <h2 class="title mb-15">
+        🚀 ~ LADE UNSEREN DISCORD-BOT EIN!
+      </h2>
+      <p class="dsc mb-10">
+        Wir hoffen, dass wir dich überzeugen konnten unserem süßen Discord-Bot - Clank - eine Chance zu geben, um die Erfahrung auf deinem Discord-Server erheblich zu verbessern.
+      </p>
+      <a class="green-btn !inline-block" #invite_btn routerLink="/invite">
+        <span>Discord-Bot einladen</span>
+        <div class="hover-shape1"></div>
+        <div class="hover-shape2"></div>
+        <div class="hover-shape3"></div>
+      </a>
+      <span class="border-shadow shadow-1"></span>
+      <span class="border-shadow shadow-2"></span>
+      <span class="border-shadow shadow-3"></span>
+      <span class="border-shadow shadow-4"></span>
+      <span class="hover-shape-bg hover_shape1"></span>
+      <span class="hover-shape-bg hover_shape2"></span>
+      <span class="hover-shape-bg hover_shape3"></span>
+    </div>
+  </div>
+
+  <!-- Footer Content -->
+  <div class="footer-area">
+    <div class="container">
+      <div class="footer-logo text-center mb-8 flex justify-center">
+        <a routerLink="/">
+          <img ngSrc="assets/img/logo/clank-discord-bot-logo.png" height="70" width="70"
+               alt="Clank ~ Discord-Bot (Footer-Logo)" />
+        </a>
+      </div>
+      <div class="footer-mainmenu text-center mb-4">
+        <ul>
+          @for (item of nav_items; track item) {
+            <li>
+              <a href="{{ item.redirect_url }}">{{ item.title }}</a>
+            </li>
+          }
+
+          <li>
+            <a href="https://bl4cklist.de/imprint">Impressum & Datenschutz</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Copyright Note -->
+      <div class="copyright-area text-center mb-0">
+        <p class="dsc">
+          Copyright © Alle Rechte vorbehalten von
+          <a target="_blank" href="https://bl4cklist.de">Bl4cklist.de</a>
+        </p>
+      </div>
+
+      <!-- Scroll Up Button -->
+      <div class="text-center pt-3 pb-9">
+        <a href="#">
+          <fa-icon [icon]="faChevronUp"></fa-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

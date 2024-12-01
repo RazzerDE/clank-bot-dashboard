@@ -59,14 +59,15 @@
   @apply text-white border-[2px] border-solid border-[#393941] overflow-hidden px-3 pb-[9px] pt-[11px];
 }
 
-/* Correct position of Button icons */
-.font-style-button i {
-  @apply relative -top-[2px] text-[8px] leading-[0] text-white/70 pl-4;
-}
-
 /* White button design background */
 .white-bg-btn {
   @apply bg-white text-black border-[2px] border-solid border-white px-5 py-[10px];
+}
+
+/* Green button design */
+.green-btn {
+  @apply py-3 px-12 bg-[#A3FF12] text-[#090a1a] flex items-center justify-center uppercase relative
+  overflow-hidden transition-all duration-300 font-RussoOne font-normal text-base;
 }
 
 /* Correct position of White Button icons */
@@ -102,4 +103,101 @@
 /* Correct position of specific button text */
 .mobile-btn-purple .btn-text {
   @apply text-white pl-[10px];
+}
+
+/* Size of Scroll to Top Button */
+.fa-chevron-up {
+  @apply h-7;
+}
+
+/* Add Hover Lines to Button */
+.green-btn .hover-shape1, .green-btn .hover-shape2, .green-btn .hover-shape3 {
+  @apply absolute z-0 -top-1 -left-[20%] w-1 h-[124%] bg-black/10 duration-[800ms] rotate-[22deg];
+}
+
+/* Width for Third Line */
+.green-btn .hover-shape3 {
+  @apply w-3;
+}
+
+/* Fix Hover text is white for Green Button */
+.green-btn:hover {
+  color: #090a1a !important;
+}
+
+/* Move Line 1 for Hover Effect */
+.green-btn:hover .hover-shape1 {
+  @apply left-[44%];
+}
+
+/* Move Line 2 for Hover Effect */
+.green-btn:hover .hover-shape2 {
+  @apply left-1/2;
+}
+
+/* Move Line 3 for Hover Effect */
+.green-btn:hover .hover-shape3 {
+  @apply left-[56%];
+}
+
+
+/*                                        CONTAINER-DESIGN                                        */
+
+/* Show beautiful Lines inside Container */
+.hover-shape-inner .hover-shape-bg {
+  @apply w-9 h-full skew-x-[-26deg] inline-block absolute duration-300 top-0 -z-10 my-0 mx-1;
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(150, 136, 217, 0.06) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* Set position for Line 1 */
+.hover-shape-inner .hover_shape1 {
+  @apply left-[40%];
+}
+
+/* Set position for Line 2 */
+.hover-shape-inner .hover_shape2 {
+  @apply left-[46.5%];
+}
+
+/* Set position for Line 3 */
+.hover-shape-inner .hover_shape3 {
+  @apply left-[53%] w-14;
+}
+
+/* Container Corner Colour Positioning */
+.active-shape .border-shadow, .hover-shape-border .border-shadow {
+  @apply content-none block absolute z-10;
+}
+
+/* Left Upper Corner Colour (Container) */
+.active-shape .shadow-1, .hover-shape-border .shadow-1 {
+  @apply top-0 left-0 w-1 h-52;
+  background: linear-gradient(to bottom, #eb2f06 -100%, rgba(21, 22, 37, 0) 64%);
+}
+
+/* Top Corner Colour (Container) */
+.active-shape .shadow-2, .hover-shape-border .shadow-2 {
+  @apply top-0 left-1 w-52 h-1;
+  background: linear-gradient(to right, #eb2f06 -100%, rgba(21, 22, 37, 0) 64%);
+}
+
+/* Right Bottom Corner Colour (Container) */
+.active-shape .shadow-3, .hover-shape-border .shadow-3 {
+  @apply bottom-0 right-0 w-1 h-52;
+  background: linear-gradient(to top, #A3FF12 -100%, rgba(21, 22, 37, 0) 64%);
+}
+
+/* Bottom Corner Colour (Container) */
+.active-shape .shadow-4, .hover-shape-border .shadow-4 {
+  @apply bottom-0 right-1 w-52 h-1;
+  background: linear-gradient(to left, #A3FF12 -100%, rgba(21, 22, 37, 0) 64%);
+}
+
+/* Add animation to border shadow if something changes */
+.hover-shape-border .border-shadow {
+  @apply opacity-0 invisible duration-[400ms];
+}
+
+.hover-shape-border:hover .border-shadow {
+  @apply opacity-100 visible;
 }
