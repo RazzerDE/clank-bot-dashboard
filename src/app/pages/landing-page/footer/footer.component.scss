@@ -1,0 +1,21 @@
+/* Background Shapes in the Center */
+.footer-section .footer-cta-area {
+  @apply relative z-10 px-0 py-6;
+  background: radial-gradient(circle, #4a4176 -24%, #1E1F35 40%);
+}
+
+/* Background-Design for Footer */
+.footer-section .footer-area {
+  @apply pt-52 -mt-36 relative bg-cover bg-no-repeat bg-bottom;
+  background-image: url("/assets/img/bg/footer-content.jpg");
+}
+
+/* Row-Design for Footer Pages */
+.footer-mainmenu ul li {
+  @apply inline-block py-0 px-2;
+}
+
+/* Colour and Transition for Footer Pages */
+.footer-mainmenu ul li a {
+  @apply text-white/70 duration-[400ms];
+}
