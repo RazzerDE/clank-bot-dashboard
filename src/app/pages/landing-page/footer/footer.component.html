@@ -1,4 +1,6 @@
 <footer class="footer-section bg-black relative">
+  <!-- Firefly animation -->
+  <canvas id="footer-canvas" class="absolute z-1 top-0 left-0 h-full w-full"></canvas>
 
   <!-- Call to Action Responsive -->
   <div class="container w-full md:w-3/4 lg:w-2/3 xl:w-1/2 absolute left-1/2 transform -translate-x-1/2 -translate-y-20 z-2">
@@ -27,11 +29,11 @@
 
   <!-- Footer Content -->
   <div class="footer-area">
-    <div class="container">
-      <div class="footer-logo text-center mb-8 flex justify-center">
+    <div class="container z-2 relative">
+      <div class="footer-logo text-center mb-8 mt-4 flex justify-center">
         <a routerLink="/">
           <img ngSrc="assets/img/logo/clank-discord-bot-logo.png" height="70" width="70"
-               alt="Clank ~ Discord-Bot (Footer-Logo)" />
+               alt="Clank ~ Discord-Bot (Footer-Logo)" class=""/>
         </a>
       </div>
       <div class="footer-mainmenu text-center mb-4">
@@ -50,7 +52,7 @@
 
       <!-- Copyright Note -->
       <div class="copyright-area text-center mb-0">
-        <p class="dsc">
+        <p>
           Copyright © Alle Rechte vorbehalten von
           <a target="_blank" href="https://bl4cklist.de">Bl4cklist.de</a>
         </p>

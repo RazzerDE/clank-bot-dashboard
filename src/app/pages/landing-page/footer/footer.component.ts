@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
+import { faChevronUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { nav_items } from '../header/types/LNavigationItem';
 import {NgOptimizedImage} from "@angular/common";
-import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
-import {faChevronUp} from '@fortawesome/free-solid-svg-icons';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {nav_items} from "../header/types/LNavigationItem";
 import {RouterLink} from "@angular/router";
+import {AnimationService} from "../../../services/animation/animation.service";
 
 @Component({
   selector: 'landing-footer',
@@ -23,8 +23,9 @@ export class FooterComponent implements AfterViewInit {
   protected faChevronUp: IconDefinition = faChevronUp;
   protected readonly nav_items = nav_items;
 
+  constructor(private animations: AnimationService) {}
+
   ngAfterViewInit() {
-    // Check if the invite button is in view; if so, animate it
     const observer: IntersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         this.invite_btn.nativeElement.classList.toggle('animate__animated', entry.isIntersecting);
@@ -33,5 +34,11 @@ export class FooterComponent implements AfterViewInit {
     });
 
     observer.observe(this.invite_btn.nativeElement);
+
+    // start firefly animation for footer
+    this.animations.setCanvasID('footer-canvas');
+    this.animations.initCanvas();
+    this.animations.startAnimation();
   }
+
 }
