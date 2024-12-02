@@ -19,3 +19,8 @@
 .footer-mainmenu ul li a {
   @apply text-white/70 duration-[400ms];
 }
+
+/* Reduce Container for Firefly Animation */
+.h-footer-bg {
+  height: calc(100% - 143px);
+}

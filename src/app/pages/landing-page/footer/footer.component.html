@@ -1,9 +1,7 @@
 <footer class="footer-section bg-black relative">
-  <!-- Firefly animation -->
-  <canvas id="footer-canvas" class="absolute z-1 top-0 left-0 h-full w-full"></canvas>
 
   <!-- Call to Action Responsive -->
-  <div class="container w-full md:w-3/4 lg:w-2/3 xl:w-1/2 absolute left-1/2 transform -translate-x-1/2 -translate-y-20 z-2">
+  <div class="container w-full md:w-3/4 lg:w-2/3 xl:w-1/2 absolute left-1/2 transform -translate-x-1/2 -translate-y-20 mt-20 z-2">
     <div class="footer-cta-area text-center active-shape hover-shape-inner">
       <h2 class="title mb-15">
         🚀 ~ LADE UNSEREN DISCORD-BOT EIN!
@@ -29,7 +27,9 @@
 
   <!-- Footer Content -->
   <div class="footer-area">
-    <div class="container z-2 relative">
+    <!-- Firefly animation -->
+    <canvas id="footer-canvas" class="absolute z-1 top-auto bottom-0 left-0 h-full w-full h-footer-bg"></canvas>
+    <div class="container z-2 relative sm:mt-40 lg:mt-24">
       <div class="footer-logo text-center mb-8 mt-4 flex justify-center">
         <a routerLink="/">
           <img ngSrc="assets/img/logo/clank-discord-bot-logo.png" height="70" width="70"
