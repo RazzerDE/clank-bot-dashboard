@@ -28,12 +28,14 @@ export class FooterComponent implements AfterViewInit {
   ngAfterViewInit() {
     const observer: IntersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.intersectionRatio < 0.9) {  // fix flickering issue on page load
+        // fix flickering issue on page load
+        if (entry.intersectionRatio < 0.9) {
           this.invite_btn.nativeElement.classList.add('animate__animated', 'animate__fadeInUp');
           observer.unobserve(entry.target);
           return;
         }
 
+        // animate the invite button when it is in view
         this.invite_btn.nativeElement.classList.toggle('animate__animated', entry.isIntersecting);
         this.invite_btn.nativeElement.classList.toggle('animate__fadeInUp', entry.isIntersecting);
       });
@@ -47,6 +49,12 @@ export class FooterComponent implements AfterViewInit {
     this.animations.startAnimation();
   }
 
+  /**
+   * Adjusts the margin-top of the footer content to be responsive to the height of the Call to Action (CTA) div.
+   * This method is triggered on various fullscreen change events and window resize events.
+   *
+   * @param _event - The event object (not used in the function).
+   */
   @HostListener('document:fullscreenchange', ['$event'])
   @HostListener('document:webkitfullscreenchange', ['$event'])
   @HostListener('document:mozfullscreenchange', ['$event'])
