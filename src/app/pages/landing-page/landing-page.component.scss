@@ -1,0 +1,27 @@
+/* Welcome Section (Intro) */
+.intro-banner {
+  @apply relative z-[1] overflow-hidden pt-44 px-0 pb-56 bg-center w-full;
+  background: url("../../../assets/img/bg/banner-bg.jpg");
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Limit the Width of the Content */
+.intro-banner .banner-content {
+  @apply max-w-[700px] mx-auto my-0;
+}
+
+/* Fix positioning of the Banner-Icon */
+.banner-content .banner-icon {
+  @apply mx-0 mt-0 mb-6;
+}
+
+/* Positioning of the Banner-Title */
+.banner-content .banner-title {
+  @apply mx-0 mt-0 mb-5;
+}
+
+/* Formatting of the Banner-Description */
+.banner-content .description {
+  @apply text-white/50 mx-0 mt-0 mb-10 text-lg font-semibold;
+}

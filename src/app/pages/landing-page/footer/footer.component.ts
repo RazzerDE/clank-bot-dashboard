@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, AfterViewInit, ViewChild, ElementRef, HostListener} from '@angular/core';
 import { faChevronUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { nav_items } from '../header/types/LNavigationItem';
 import {NgOptimizedImage} from "@angular/common";
@@ -45,6 +45,21 @@ export class FooterComponent implements AfterViewInit {
     this.animations.setCanvasID('footer-canvas');
     this.animations.initCanvas();
     this.animations.startAnimation();
+  }
+
+  @HostListener('document:fullscreenchange', ['$event'])
+  @HostListener('document:webkitfullscreenchange', ['$event'])
+  @HostListener('document:mozfullscreenchange', ['$event'])
+  @HostListener('document:MSFullscreenChange', ['$event'])
+  @HostListener('window:resize', ['$event'])
+  adjustFooterMargin(_event: Event): void {
+    const ctaDiv = document.getElementById('cta-div');
+    const contentDiv = document.getElementById('content-div');
+    if (!ctaDiv || !contentDiv) return;
+
+    // adjust margin-top to be responsive to the height of the CTA div
+    const ctaHeight = ctaDiv.offsetHeight;
+    contentDiv.style.marginTop = `${ctaHeight - 175}px`;
   }
 
 }

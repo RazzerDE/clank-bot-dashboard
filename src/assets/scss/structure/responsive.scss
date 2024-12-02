@@ -1,20 +1,52 @@
 @media only screen and (max-width: 991px) {
   // Hide menu items if screen is too small
   .header-menu {
-    display: none;
+    @apply hidden;
   }
 }
 
 @media only screen and (min-width: 992px) {
   // Hide menu expander if screen is big enough
   header .header-buttons ul .nav-expander {
-    display: none;
+    @apply hidden;
   }
 }
 
 @media only screen and (max-width: 768px) {
   // Make buttons smaller if screen is too small
   .font-style-button, .white-btn {
-    @apply py-2 px-2;
+    @apply py-2 px-2 text-xs;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  // Make title smaller if screen is too small
+  .intro-banner .banner-content .banner-title {
+    @apply text-3xl;
+  }
+}
+
+@media only screen and (max-width: 575px) {
+  // Make text on intro section smaller if screen is too small
+  .intro-banner .banner-content .banner-title {
+    @apply text-2xl mb-3;
+  }
+
+  .intro-banner .banner-content .description {
+    @apply text-base mx-0 mt-0 mb-8;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  // adjust text size if screen is too small
+  body {
+    @apply text-base;
+  }
+
+  .intro-banner {
+    @apply pt-32;
+  }
+  .intro-banner .banner-content .banner-title {
+    @apply text-2xl;
   }
 }

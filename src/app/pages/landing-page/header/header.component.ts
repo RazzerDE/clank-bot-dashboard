@@ -78,6 +78,10 @@ export class HeaderComponent {
    *
    * @param _event - The resize event object (not used).
    */
+  @HostListener('document:fullscreenchange', ['$event'])
+  @HostListener('document:webkitfullscreenchange', ['$event'])
+  @HostListener('document:mozfullscreenchange', ['$event'])
+  @HostListener('document:MSFullscreenChange', ['$event'])
   @HostListener('window:resize', ['$event'])
   onResize(_event: Event): void {
     if (window.innerWidth > 991) { // Adjust the threshold as needed

@@ -6,7 +6,7 @@
 .hover-shape1, .white-shape-big .hover-shape2, .white-shape-big .hover-shape3, .black-shape-big .hover-shape1,
 .black-shape-big .hover-shape2, .black-shape-big .hover-shape3, .black-shape .hover-shape1, .black-shape .hover-shape2,
 .black-shape .hover-shape3, .hover-shape .hover-shape1, .hover-shape .hover-shape2, .hover-shape .hover-shape3 {
-  @apply absolute w-[5px] bg-black/10 h-[124%] top-[-5px] left-[-42%] rotate-[22deg] duration-[800ms];
+  @apply absolute w-[5px] bg-black/10 h-[124%] top-[-5px] left-[-42%] rotate-[22deg] duration-[800ms] z-0;
 }
 
 /* Move Line 1 for Hover Effect */
@@ -138,6 +138,37 @@
 /* Move Line 3 for Hover Effect */
 .green-btn:hover .hover-shape3 {
   @apply left-[56%];
+}
+
+/* Custom button in intro sections */
+.banner-btn {
+  @apply inline-block font-RussoOne text-base uppercase relative transition-all duration-[400ms] ease-in;
+  @apply bg-[#A3FF12] text-[#090A1A] py-[19px] px-[50px];
+}
+
+/* Hide hover shape if not hovered */
+.white-shape-small, .white-shape-big, .black-shape-big, .black-shape, .hover-shape {
+  @apply relative overflow-hidden;
+}
+
+/* Set colour of hover shapes */
+.banner-btn .hover-shape1, .banner-btn .hover-shape2, .banner-btn .hover-shape3 {
+  @apply bg-black/10;
+}
+
+/* Don't change hover text colour */
+.banner-btn:hover {
+  color: #090A1A !important;
+}
+
+/* Move Line 1 for Hover Effect */
+.banner-btn:hover .hover-shape1 {
+  @apply left-[44%];
+}
+
+/* Move Line 3 for Hover Effect */
+.banner-btn:hover .hover-shape3 {
+  @apply left-[54%];
 }
 
 

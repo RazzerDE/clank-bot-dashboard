@@ -1,9 +1,18 @@
 import { Component } from '@angular/core';
+import {HeaderComponent} from "./header/header.component";
+import {FooterComponent} from "./footer/footer.component";
+import {NgOptimizedImage} from "@angular/common";
+import {RouterLink} from "@angular/router";
 
 @Component({
-  selector: 'app-landing-page',
+  selector: 'landing-page',
   standalone: true,
-  imports: [],
+  imports: [
+    HeaderComponent,
+    FooterComponent,
+    NgOptimizedImage,
+    RouterLink
+  ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })

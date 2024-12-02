@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import {HeaderComponent} from "./pages/landing-page/header/header.component";
-import {FooterComponent} from "./pages/landing-page/footer/footer.component";
+import {LandingPageComponent} from "./pages/landing-page/landing-page.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, FooterComponent],
+  imports: [LandingPageComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
