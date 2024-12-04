@@ -28,16 +28,13 @@ export class FooterComponent implements AfterViewInit {
   ngAfterViewInit() {
     const observer: IntersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        // fix flickering issue on page load
-        if (entry.intersectionRatio < 0.9) {
-          this.invite_btn.nativeElement.classList.add('animate__animated', 'animate__fadeInUp');
-          observer.unobserve(entry.target);
-          return;
+        if(!this.invite_btn.nativeElement.classList.contains('animate__animated')) {
+          // animate the invite button when it is in view
+          if (entry.isIntersecting) {
+            this.invite_btn.nativeElement.classList.add('animate__animated', entry.isIntersecting);
+            this.invite_btn.nativeElement.classList.add('animate__fadeInUp', entry.isIntersecting);
+          }
         }
-
-        // animate the invite button when it is in view
-        this.invite_btn.nativeElement.classList.toggle('animate__animated', entry.isIntersecting);
-        this.invite_btn.nativeElement.classList.toggle('animate__fadeInUp', entry.isIntersecting);
       });
     });
 

@@ -1,9 +1,16 @@
 /* Welcome Section (Intro) */
 .intro-banner {
-  @apply relative z-[1] overflow-hidden pt-44 px-0 pb-56 bg-center w-full;
-  background: url("../../../assets/img/bg/banner-bg.jpg");
+  @apply relative z-[1] overflow-hidden pt-44 px-0 pb-56 w-full;
+  background: url("../../../assets/img/bg/clank-discord-bot-bg.jpg");
   background-repeat: no-repeat !important;
   background-size: cover !important;
+  background-position: bottom !important;
+
+  // Dark Overlay for BG
+  &::before {
+    content: "";
+    @apply absolute inset-0 bg-black opacity-80 z-0;
+  }
 }
 
 /* Limit the Width of the Content */
