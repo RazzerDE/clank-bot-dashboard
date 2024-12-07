@@ -1,3 +1,5 @@
+@import "../../../../../assets/fonts/fonts.scss";
+
 /* Main container for features section */
 .key_features {
   @apply pt-28 pb-32 backdrop-blur-sm relative;
@@ -19,90 +21,52 @@
   @apply w-full pt-6;
 }
 
+/* Key feature title formating */
 .key_feature h3 {
-  font-family: Russo One;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 22px;
-  line-height: 27px;
-  margin-bottom: 21px;
-  color: #FFFFFF;
-  text-transform: capitalize;
+  @apply font-RussoOne font-normal text-2xl leading-7 mb-5 text-white capitalize;
 }
 
+/* Key feature text formating */
 .key_feature p {
-  max-width: 100%;
-  width: 100%;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 28px;
-  color: rgba(255, 255, 255, 0.7);
+  @apply max-w-full w-full font-Inter font-medium text-base leading-7 text-white/70;
 }
 
+/* Striking headline for feature section */
 .sec-heading .sub-title {
-  color: #A3FF12;
-  font-size: 16px;
-  font-weight: 400;
-  text-transform: uppercase;
-  font-family: "Russo One", sans-serif;
+  @apply text-[#A3FF12] font-RussoOne uppercase font-normal text-base;
 }
 
+/* Move frame image to the right */
 .sec-heading .heading-left-image {
-  margin-left: 10px;
+  @apply ml-3;
 }
 
+/* Move frame image to the left */
 .sec-heading .heading-right-image {
-  margin-right: 10px;
+  @apply mr-3;
 }
 
+// Improve position of content to be more centered
 .big_feature_content {
-  margin-top: 32px;
+  @apply mt-8;
 }
 
+// Fix rare formating issues with text
 .big_feature_content p {
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 28px;
-  color: rgba(255, 255, 255, 0.7);
+  @apply font-Inter font-medium text-base leading-7 text-white/70;
 }
 
+// display list items beneath each other
 .big_feature_list {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: flex-start;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
+  @apply flex items-start justify-start;
 }
 
+/* Format list items */
 .big_feature_list ul li {
-  position: relative;
-  margin-bottom: 9px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 28px;
-  color: #FFFFFF;
-
-  align-items: center;
+  @apply relative mb-2 flex justify-start font-Inter font-medium text-base leading-7 text-white items-center;
 }
 
+/* Little space between icon and text */
 .big_feature_list ul li span {
-  margin-right: 15px;
+  @apply mr-4;
 }
