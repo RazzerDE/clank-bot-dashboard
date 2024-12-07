@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import {NgOptimizedImage} from "@angular/common";
+import {NgClass, NgOptimizedImage} from "@angular/common";
+import {feature_items} from "./types/feature-item";
 
 @Component({
   selector: 'landing-section-features',
   standalone: true,
   imports: [
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgClass
   ],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'
@@ -28,4 +30,5 @@ export class LandingSectionFeaturesComponent {
 
   }
 
+  protected readonly feature_items = feature_items;
 }
