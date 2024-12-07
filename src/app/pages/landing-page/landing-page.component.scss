@@ -31,4 +31,5 @@
 /* Formatting of the Banner-Description */
 .banner-content .description {
   @apply text-white/50 mx-0 mt-0 mb-10 text-lg font-semibold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }

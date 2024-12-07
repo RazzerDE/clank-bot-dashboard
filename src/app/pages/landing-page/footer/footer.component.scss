@@ -6,7 +6,7 @@
 
 /* Background-Design for Footer */
 .footer-section .footer-area {
-  @apply pt-52 -mt-36 relative bg-cover bg-no-repeat bg-top;
+  @apply pt-52 relative bg-cover bg-no-repeat bg-top;
   background-image: url("/assets/img/bg/clank-discord-bot-footer-bg.jpg");
 
   // Dark Overlay for BG
@@ -24,6 +24,7 @@
 /* Colour and Transition for Footer Pages */
 .footer-mainmenu ul li a {
   @apply text-white/70 duration-[400ms];
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Reduce Container for Firefly Animation */

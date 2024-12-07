@@ -50,3 +50,15 @@
     @apply text-2xl;
   }
 }
+
+@media (min-width: 640px) and (max-width: 1200px) {
+  // Make the text and image bigger - the screen is big enough
+  .col-md-6 {
+    @apply w-3/4;
+  }
+
+  /* Make it col direction to avoid big empty spaces */
+  #discord-bot-features .container:nth-of-type(2) .row {
+    @apply flex-col items-center gap-10;
+  }
+}

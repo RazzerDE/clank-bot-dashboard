@@ -1,0 +1,108 @@
+/* Main container for features section */
+.key_features {
+  @apply pt-28 pb-32 backdrop-blur-sm relative;
+  background: rgba(30, 31, 53, 0.8);
+}
+
+/* Place frame img on top left of section */
+.key_features span.frame-top {
+  @apply absolute top-0 left-0;
+}
+
+/* Place frame img on bottom right of section */
+.key_features span.frame-bottom {
+  @apply absolute bottom-0 right-0;
+}
+
+/* Img and text position for feature entries */
+.key_feature {
+  @apply w-full pt-6;
+}
+
+.key_feature h3 {
+  font-family: Russo One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 27px;
+  margin-bottom: 21px;
+  color: #FFFFFF;
+  text-transform: capitalize;
+}
+
+.key_feature p {
+  max-width: 100%;
+  width: 100%;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sec-heading .sub-title {
+  color: #A3FF12;
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-family: "Russo One", sans-serif;
+}
+
+.sec-heading .heading-left-image {
+  margin-left: 10px;
+}
+
+.sec-heading .heading-right-image {
+  margin-right: 10px;
+}
+
+.big_feature_content {
+  margin-top: 32px;
+}
+
+.big_feature_content p {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.big_feature_list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+
+.big_feature_list ul li {
+  position: relative;
+  margin-bottom: 9px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: #FFFFFF;
+
+  align-items: center;
+}
+
+.big_feature_list ul li span {
+  margin-right: 15px;
+}

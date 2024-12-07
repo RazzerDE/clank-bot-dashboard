@@ -47,24 +47,25 @@ export class FooterComponent implements AfterViewInit {
   }
 
   /**
-   * Adjusts the margin-top of the footer content to be responsive to the height of the Call to Action (CTA) div.
-   * This method is triggered on various fullscreen change events and window resize events.
+   * Adjusts the margin-top of the content div to be responsive to the height of the CTA (footer) div.
+   * This function is triggered on various fullscreen change events and window resize events.
+   * It ensures that the layout remains consistent and responsive.
    *
-   * @param _event - The event object (not used in the function).
+   * @param _event - The event object (not used in the function but required for the HostListener).
    */
   @HostListener('document:fullscreenchange', ['$event'])
   @HostListener('document:webkitfullscreenchange', ['$event'])
   @HostListener('document:mozfullscreenchange', ['$event'])
   @HostListener('document:MSFullscreenChange', ['$event'])
   @HostListener('window:resize', ['$event'])
-  adjustFooterMargin(_event: Event): void {
-    const ctaDiv = document.getElementById('cta-div');
-    const contentDiv = document.getElementById('content-div');
-    if (!ctaDiv || !contentDiv) return;
-
-    // adjust margin-top to be responsive to the height of the CTA div
-    const ctaHeight = ctaDiv.offsetHeight;
-    contentDiv.style.marginTop = `${ctaHeight - 175}px`;
+  @HostListener('window:load', ['$event'])
+  adjustResponsiveBody(_event: Event): void {
+    const ctaDiv: HTMLElement | null = document.getElementById('cta-div') as HTMLDivElement;
+    const animationDiv: HTMLElement | null = document.getElementById('content-div') as HTMLDivElement;
+    if (ctaDiv && animationDiv) {
+      // adjust margin-top to be responsive to the height of the CTA (footer) div
+      animationDiv.style.marginTop = `${ctaDiv.offsetHeight - 250}px`;
+    }
   }
 
 }
