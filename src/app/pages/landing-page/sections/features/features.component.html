@@ -69,7 +69,7 @@
         @if ($index % 2 === 0) {
           <div class="col-md-6">
             <video class="img-fluid cursor-pointer rounded-3xl -rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800"
-                   id="{{big_feature.video_id}}" height="1080" width="1920" autoplay loop playsinline muted
+                   id="{{big_feature.video_id}}" height="1080" width="1920" autoplay loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)"
                    (fullscreenchange)="toggleFullscreen(big_feature.video_id)">
               <source src=" {{ big_feature.video_url }} " type="video/mp4">
@@ -125,7 +125,7 @@
         @if ($index % 2 !== 0) {
           <div class="col-md-6">
             <video class="img-fluid cursor-pointer rounded-3xl rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800"
-                   id="{{big_feature.video_id}}" height="1080" width="1920" autoplay loop playsinline muted
+                   id="{{big_feature.video_id}}" height="1080" width="1920" autoplay loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)"
                    (fullscreenchange)="toggleFullscreen(big_feature.video_id)">
               <source src=" {{ big_feature.video_url }} " type="video/mp4">
