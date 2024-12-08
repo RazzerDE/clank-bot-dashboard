@@ -27,9 +27,8 @@ export class FooterComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     // start firefly animation for footer
-    this.animations.setCanvasID('footer-canvas');
-    this.animations.initCanvas();
-    this.animations.startAnimation();
+    this.animations.setCanvasID('footer-canvas', 'firefly');
+    this.animations.startAnimation('footer-canvas');
   }
 
   /**

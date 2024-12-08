@@ -1,6 +1,6 @@
 /**
  * Represents a firefly in the animation.
- * Each firefly has a position, size, angle, and velocity.
+ * Each firefly has a position, size, angle, velocity, and a method to move and show itself.
  */
 export class Firefly {
   x: number; // X-coordinate of the firefly
@@ -25,6 +25,12 @@ export class Firefly {
     this.x += this.v * Math.cos(this.ang);
     this.y += this.v * Math.sin(this.ang);
     this.ang += Math.random() * 20 * Math.PI / 180 - 10 * Math.PI / 180;
+
+    // Wrap around the edges of the canvas
+    if (this.x < 0) this.x = this.w;
+    if (this.x > this.w) this.x = 0;
+    if (this.y < 0) this.y = this.h;
+    if (this.y > this.h) this.y = 0;
   }
 
   /**

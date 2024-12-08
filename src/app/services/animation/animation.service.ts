@@ -1,39 +1,30 @@
 import {HostListener, Injectable, OnDestroy} from '@angular/core';
 import {Firefly} from "./types/FireFly";
+import {Star} from "./types/Star";
+import {CanvasAnimation} from "./types/CanvasAnimation";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnimationService implements OnDestroy {
-  private c!: CanvasRenderingContext2D | null;   // Canvas rendering context
-  private w!: number;  // Canvas width
-  private h!: number;  // Canvas height
-  private f: Firefly[] = [];  // Array of fireflies
-  private animationFrameId: number | null = null;  // ID of the animation frame
-  private lastTime = 0;  // Last time the animation frame was drawn
+  private canvases: { [id: string]: CanvasAnimation } = {};
   private fpsInterval = 1000 / 60; // 60 FPS
-
-  private element_id: string = 'canvas';
 
   constructor() {
     // load animations like fadeInUp, fadeInDown, etc.
-    document.addEventListener('DOMContentLoaded', () => this.loadAnimations());
+    document.addEventListener('DOMContentLoaded', (): void => this.loadAnimations());
   }
 
   /**
-   * Initializes and observes elements with the class prefix `a_` to add or remove animation classes
-   * based on their visibility in the viewport.
-   *
-   * This function uses the IntersectionObserver API to monitor the visibility of elements with the
-   * class `a_*`. When an element becomes visible, it adds the animation classes
-   * `animate__animated` and `animate__*`. When the element is no longer visible, it removes
-   * these classes.
+   * Initializes and observes elements with specific animation classes.
+   * When these elements intersect with the viewport, the corresponding
+   * animation class is added to trigger the animation.
    */
   loadAnimations(): void {
-    const animationTypes = ['fadeInUp', 'fadeInLeft', 'fadeInRight', 'fadeInLeftBig', 'fadeInRightBig'];
-    const observer: IntersectionObserver = new IntersectionObserver((entries) => {
+    const animationTypes: string[] = ['fadeInUp', 'fadeInLeft', 'fadeInRight', 'fadeInLeftBig', 'fadeInRightBig'];
+    const observer: IntersectionObserver = new IntersectionObserver((entries: IntersectionObserverEntry[]): void => {
       entries.forEach(entry => {
-        const animationClass = entry.target.className.match(/a_(\w+)/)?.[1];
+        const animationClass: string | undefined = entry.target.className.match(/a_(\w+)/)?.[1];
         if (entry.isIntersecting && animationClass) {
           entry.target.classList.add('animate__animated', `animate__${animationClass}`);
         } else if (animationClass) {
@@ -44,92 +35,124 @@ export class AnimationService implements OnDestroy {
     });
 
     animationTypes.forEach(type => {
+      // add observer to all elements with animation classes
       const elements: NodeListOf<HTMLElement> = document.querySelectorAll(`.a_${type}`);
       elements.forEach(element => observer.observe(element));
     });
   }
 
+  /**
+   * Lifecycle hook that is called when the service is destroyed.
+   * Cancels any ongoing animation frames for all canvases to prevent memory leaks.
+   */
   ngOnDestroy(): void {
-    // Cancel the animation frame when the component is destroyed (prevent memory leaks)
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
+    Object.values(this.canvases).forEach(canvas => {
+      if (canvas.animationFrameId) {
+        cancelAnimationFrame(canvas.animationFrameId);
+      }
+    });
+  }
+
+  /**
+   * Sets up a canvas element with the given ID and initializes its properties.
+   * If the canvas with the specified ID does not already exist in the `canvases` object,
+   * it creates a new entry for it and sets its context, dimensions, and initial properties.
+   *
+   * @param id - The ID of the canvas element to set up.
+   * @param type - The type of animation to be used on the canvas ('firefly' or 'star').
+   */
+  public setCanvasID(id: string, type: 'firefly' | 'star'): void {
+    if (!this.canvases[id]) {
+      const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
+      const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
+      if (context) {
+        this.canvases[id] = {
+          context,
+          width: canvas.width = window.innerWidth,
+          height: canvas.height = window.innerHeight,
+          elements: [],
+          animationFrameId: null,
+          lastTime: 0,
+          animationType: type
+        };
+        context.fillStyle = 'rgba(30,30,30,1)';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      }
     }
   }
 
   /**
-   * Sets the element ID for the canvas.
-   * @param id - The ID of the canvas element.
+   * Draws the animation on the specified canvas.
+   * This function is called recursively using `requestAnimationFrame` to create a smooth animation.
+   *
+   * @param id - The ID of the canvas element to draw on.
+   * @param currentTime - The current time in milliseconds, provided by `requestAnimationFrame`.
    */
-  public setCanvasID(id: string): void {
-    this.element_id = id;
-  }
+  public draw(id: string, currentTime: number): void {
+    const canvas: CanvasAnimation = this.canvases[id];
+    if (!canvas) { return; }
 
-  /**
-   * Initializes the canvas element and sets its dimensions and background color.
-   */
-  public initCanvas(): void {
-    const canvas: HTMLCanvasElement = document.getElementById(this.element_id) as HTMLCanvasElement;
-    this.c = canvas.getContext('2d');
-    if (!this.c) { return; }
-
-    this.w = canvas.width = window.innerWidth;
-    this.h = canvas.height = window.innerHeight;
-    this.c.fillStyle = 'rgba(30,30,30,1)';
-    this.c.fillRect(0, 0, this.w, this.h);
-  }
-
-  /**
-   * Draws the animation frame, controlling the speed and rendering fireflies.
-   * @param currentTime - The current time in milliseconds.
-   */
-  public draw(currentTime: number): void {
-    if (!this.c) { return; }
-
-    // Control animation speed
-    if (currentTime - this.lastTime < this.fpsInterval) {
-      this.animationFrameId = requestAnimationFrame(this.draw.bind(this));
+    if (currentTime - canvas.lastTime < this.fpsInterval) {
+      canvas.animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
       return;
     }
-    this.lastTime = currentTime;
+    canvas.lastTime = currentTime;
 
-    if (this.f.length < 100) {
+    if (canvas.elements.length < 100) {
       for (let j: number = 0; j < 10; j++) {
-        this.f.push(new Firefly(this.w, this.h, this.c));
+        if (canvas.animationType === 'firefly') {
+          canvas.elements.push(new Firefly(canvas.width, canvas.height, canvas.context));
+        } else if (canvas.animationType === 'star') {
+          canvas.elements.push(new Star(canvas.width, canvas.height, canvas.context));
+        }
       }
     }
 
-    // Clear canvas
-    this.c.clearRect(0, 0, this.w, this.h);
+    canvas.context.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Animation
-    for (let i: number = this.f.length - 1; i >= 0; i--) {
-      this.f[i].move();
-      this.f[i].show();
+    for (let i: number = canvas.elements.length - 1; i >= 0; i--) {
+      canvas.elements[i].move();
+      canvas.elements[i].show();
 
-      // Remove fireflies that are out of bounds
-      if (this.f[i].x < 0 || this.f[i].x > this.w || this.f[i].y < 0 || this.f[i].y > this.h) {
-        this.f.splice(i, 1);
+      if (canvas.elements[i] instanceof Star && (canvas.elements[i] as Star).lifespan <= 0) {
+        canvas.elements.splice(i, 1);
+      } else if (canvas.elements[i].x < 0 || canvas.elements[i].x > canvas.width || canvas.elements[i].y < 0 || canvas.elements[i].y > canvas.height) {
+        canvas.elements.splice(i, 1);
       }
     }
 
-    // Continue the animation loop
-    this.animationFrameId = requestAnimationFrame(this.draw.bind(this));
+    canvas.animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
   }
 
   /**
-   * Starts the animation by requesting the first animation frame.
+   * Starts the animation for the specified canvas.
+   * This function uses `requestAnimationFrame` to begin the drawing loop
+   * for the canvas with the given ID.
+   *
+   * @param id - The ID of the canvas element to start the animation on.
    */
-  public startAnimation(): void {
-    this.animationFrameId = requestAnimationFrame(this.draw.bind(this));
+  public startAnimation(id: string): void {
+    if (this.canvases[id]) {
+      this.canvases[id].animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
+    }
   }
 
   /**
-   * Handles the window resize event to update the canvas dimensions.
+   * Handles the window resize and fullscreen change events.
+   * Adjusts the dimensions of all canvas elements to match the new window size.
+   * This ensures that the canvas animations are properly scaled and displayed.
    */
+  @HostListener('window:fullscreenchange')
   @HostListener('window:resize')
+  @HostListener('document:visibilitychange')
   onResize(): void {
-    const canvas: HTMLCanvasElement = document.getElementById(this.element_id) as HTMLCanvasElement;
-    this.w = canvas.width = window.innerWidth;
-    this.h = canvas.height = window.innerHeight;
+    Object.keys(this.canvases).forEach(id => {
+      const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
+      const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
+      if (context) {
+        this.canvases[id].width = canvas.width = window.innerWidth;
+        this.canvases[id].height = canvas.height = window.innerHeight;
+      }
+    });
   }
 }
