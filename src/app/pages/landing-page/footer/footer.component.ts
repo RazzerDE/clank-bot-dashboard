@@ -26,19 +26,6 @@ export class FooterComponent implements AfterViewInit {
   constructor(private animations: AnimationService) {}
 
   ngAfterViewInit() {
-    const observer: IntersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        // animate the invite button when it is in view
-        if (entry.isIntersecting) {
-          this.invite_btn.nativeElement.classList.add('animate__animated', 'animate__fadeInUp');
-        } else {
-          this.invite_btn.nativeElement.classList.remove('animate__animated', 'animate__fadeInUp');
-        }
-      });
-    });
-
-    observer.observe(this.invite_btn.nativeElement);
-
     // start firefly animation for footer
     this.animations.setCanvasID('footer-canvas');
     this.animations.initCanvas();

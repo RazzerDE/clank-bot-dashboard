@@ -3,15 +3,15 @@
   <div class="container">
     <div class="items-center mb-24">
       <div class="sec-heading">
-        <div class="mb-3">
+        <div class="mb-3 a_fadeInUp">
           <span class="sub-title">BOT-FEATURES</span>
-          <img class="heading-left-image inline-block" ngSrc="/assets/img/frames/steps.png" height="11" width="74"
-               alt="Clank ~ Discord-Bot (Step-Icon)"/>
+          <img class="heading-left-image inline-block" ngSrc="/assets/img/frames/steps.png"
+               height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)"/>
         </div>
-        <h2 class="title">❓~ Was macht unseren Discord-Bot besonders?</h2>
+        <h2 class="title a_fadeInUp">❓~ Was macht unseren Discord-Bot besonders?</h2>
       </div>
 
-      <div class="row">
+      <div class="row a_fadeInLeft">
         <div class="col-md-3 col-sm-6">
           <img ngSrc="/assets/img/icons/features/feature-language-discord-bot.png" height="50" width="50"
                alt="Clank ~ Discord-Bot (Language Support Icon)" class="img-fluid" />
@@ -67,7 +67,7 @@
       <div class="row" [ngClass]="$index % 2 === 0 ? 'mb-20' : 'mb-40'">
         <!-- Show Video on the left side -->
         @if ($index % 2 === 0) {
-          <div class="col-md-6">
+          <div class="col-md-6 a_fadeInLeftBig">
             <video class="img-fluid cursor-pointer rounded-3xl -rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800"
                    [id]=big_feature.video_id height="1080" width="1920" autoplay loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)"
@@ -78,7 +78,7 @@
           </div>
         }
 
-        <div class="col-md-6">
+        <div class="col-md-6" [ngClass]="$index % 2 === 0 ? 'a_fadeInRightBig' : 'a_fadeInLeftBig'">
           <div class="items-center mb-30">
             <div class="sec-heading">
               <div class="mb-15">
@@ -123,7 +123,7 @@
 
         <!-- Show Video on the right side -->
         @if ($index % 2 !== 0) {
-          <div class="col-md-6">
+          <div class="col-md-6 a_fadeInRightBig">
             <video class="img-fluid cursor-pointer rounded-3xl rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800"
                    [id]=big_feature.video_id height="1080" width="1920" autoplay loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)"
@@ -138,11 +138,11 @@
 
   </div>
 
-  <span class="frame-top">
+  <span class="frame-top a_fadeInLeft">
     <img ngSrc="/assets/img/frames/container-frame-top.png" alt="Clank ~ Discord-Bot (Feature-Frame Top)"
          width="614" height="40" class="img-fluid" />
   </span>
-  <span class="frame-bottom">
+  <span class="frame-bottom a_fadeInRight">
     <img ngSrc="/assets/img/frames/container-frame-bottom.png" alt="Clank ~ Discord-Bot (Bottom-Frame Top)"
          height="40" width="604" class="img-fluid" />
   </span>

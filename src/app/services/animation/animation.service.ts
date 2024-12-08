@@ -15,6 +15,40 @@ export class AnimationService implements OnDestroy {
 
   private element_id: string = 'canvas';
 
+  constructor() {
+    // load animations like fadeInUp, fadeInDown, etc.
+    document.addEventListener('DOMContentLoaded', () => this.loadAnimations());
+  }
+
+  /**
+   * Initializes and observes elements with the class prefix `a_` to add or remove animation classes
+   * based on their visibility in the viewport.
+   *
+   * This function uses the IntersectionObserver API to monitor the visibility of elements with the
+   * class `a_*`. When an element becomes visible, it adds the animation classes
+   * `animate__animated` and `animate__*`. When the element is no longer visible, it removes
+   * these classes.
+   */
+  loadAnimations(): void {
+    const animationTypes = ['fadeInUp', 'fadeInLeft', 'fadeInRight', 'fadeInLeftBig', 'fadeInRightBig'];
+    const observer: IntersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const animationClass = entry.target.className.match(/a_(\w+)/)?.[1];
+        if (entry.isIntersecting && animationClass) {
+          entry.target.classList.add('animate__animated', `animate__${animationClass}`);
+        } else if (animationClass) {
+          // I don't really know if we want to make the animations recallable - maybe its bad for the user experience.
+          // entry.target.classList.remove('animate__animated', `animate__${animationClass}`);
+        }
+      });
+    });
+
+    animationTypes.forEach(type => {
+      const elements: NodeListOf<HTMLElement> = document.querySelectorAll(`.a_${type}`);
+      elements.forEach(element => observer.observe(element));
+    });
+  }
+
   ngOnDestroy(): void {
     // Cancel the animation frame when the component is destroyed (prevent memory leaks)
     if (this.animationFrameId) {
