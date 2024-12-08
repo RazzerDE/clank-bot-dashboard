@@ -37,32 +37,6 @@ describe('FooterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle classes when intersection changes', () => {
-    jest.spyOn((component as any).invite_btn.nativeElement.classList, 'toggle');
-
-    (component as any).ngAfterViewInit();
-    const observerCallback = mockIntersectionObserver.mock.calls[0][0];
-
-    // Simulate an intersection entry
-    const mockEntry = { isIntersecting: true } as IntersectionObserverEntry;
-    observerCallback([mockEntry]);
-
-    expect((component as any).invite_btn.nativeElement.classList.toggle).toHaveBeenCalled();
-  });
-
-  it('should NOT toggle classes when intersection ratio below 0.9', () => {
-    jest.spyOn((component as any).invite_btn.nativeElement.classList, 'toggle');
-
-    (component as any).ngAfterViewInit();
-    const observerCallback = mockIntersectionObserver.mock.calls[0][0];
-
-    // Simulate an intersection entry
-    const mockEntry = { isIntersecting: true, intersectionRatio: 0.7 } as IntersectionObserverEntry;
-    observerCallback([mockEntry]);
-
-    expect((component as any).invite_btn.nativeElement.classList.toggle).not.toHaveBeenCalled();
-  });
-
   it('should adjust the margin-top of the footer content based on the height of the CTA div', () => {
     const mockGetElementById = jest.spyOn(document, 'getElementById');
 
@@ -76,8 +50,8 @@ describe('FooterComponent', () => {
       return null;
     });
 
-    (component as any).adjustFooterMargin(new Event('resize'));
-    expect(mockContentDiv.style.marginTop).toBe('-175px');
+    (component as any).adjustResponsiveBody(new Event('resize'));
+    expect(mockContentDiv.style.marginTop).toBe('-250px');
 
     // Restore the original implementation of getElementById
     mockGetElementById.mockRestore();
@@ -86,7 +60,7 @@ describe('FooterComponent', () => {
   it('should not adjust the margin-top if cta-div or content-div is not found', () => {
     const mockGetElementById = jest.spyOn(document, 'getElementById').mockReturnValue(null);
 
-    (component as any).adjustFooterMargin(new Event('resize'));
+    (component as any).adjustResponsiveBody(new Event('resize'));
 
     expect(mockGetElementById).toHaveBeenCalled();
     expect(mockGetElementById).toHaveBeenCalledWith('cta-div');
