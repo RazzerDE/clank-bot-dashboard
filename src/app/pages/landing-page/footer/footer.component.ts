@@ -19,7 +19,7 @@ import {AnimationService} from "../../../services/animation/animation.service";
 })
 export class FooterComponent implements AfterViewInit {
   @ViewChild('invite_btn')
-  protected invite_btn!: ElementRef;
+  protected invite_btn!: ElementRef<HTMLAnchorElement>;
   protected faChevronUp: IconDefinition = faChevronUp;
   protected readonly nav_items = nav_items;
 
@@ -28,12 +28,11 @@ export class FooterComponent implements AfterViewInit {
   ngAfterViewInit() {
     const observer: IntersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if(!this.invite_btn.nativeElement.classList.contains('animate__animated')) {
-          // animate the invite button when it is in view
-          if (entry.isIntersecting) {
-            this.invite_btn.nativeElement.classList.add('animate__animated', entry.isIntersecting);
-            this.invite_btn.nativeElement.classList.add('animate__fadeInUp', entry.isIntersecting);
-          }
+        // animate the invite button when it is in view
+        if (entry.isIntersecting) {
+          this.invite_btn.nativeElement.classList.add('animate__animated', 'animate__fadeInUp');
+        } else {
+          this.invite_btn.nativeElement.classList.remove('animate__animated', 'animate__fadeInUp');
         }
       });
     });
