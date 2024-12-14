@@ -93,7 +93,9 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
 
   private slidingInterval: any;  // datatype can't be imported
 
-  constructor(private animations: AnimationService) {}
+  constructor(private animations: AnimationService) {
+    this.duplicatedItems = [...this.slider_items, ...this.slider_items];
+  }
 
   /**
    * Lifecycle hook that is called after the component's view has been fully initialized.
@@ -102,7 +104,6 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
    * - Initiates the star animation for the intro section.
    */
   ngAfterViewInit(): void {
-    this.duplicatedItems = [...this.slider_items, ...this.slider_items];
     this.startSliding();
 
     // start star animation for intro
