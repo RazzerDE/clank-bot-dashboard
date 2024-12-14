@@ -102,3 +102,8 @@ input:focus, select:focus, textarea:focus, button:focus {
 button {
   @apply border-none;
 }
+
+// markdown for sub-title in section
+.sec-heading .sub-title {
+  @apply text-[#A3FF12] text-base font-RussoOne font-normal uppercase;
+}

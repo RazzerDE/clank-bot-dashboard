@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
-import {faHeartPulse, faRobot} from "@fortawesome/free-solid-svg-icons";
+import {faHeartPulse, faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'landing-section-tutorial',
@@ -17,6 +17,6 @@ import {faHeartPulse, faRobot} from "@fortawesome/free-solid-svg-icons";
 })
 export class TutorialComponent {
 
-  protected readonly faRobot = faRobot;
-  protected readonly faHeartPulse = faHeartPulse;
+  protected readonly faRobot: IconDefinition = faRobot;
+  protected readonly faHeartPulse: IconDefinition = faHeartPulse;
 }

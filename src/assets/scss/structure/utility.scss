@@ -64,6 +64,12 @@
   @apply bg-white text-black border-[2px] border-solid border-white px-5 py-[10px];
 }
 
+/* View more button design */
+.view-more {
+  @apply border-2 border-solid border-[#2E2F3C] text-white uppercase font-RussoOne overflow-hidden block
+         duration-[400ms] px-6 pt-3 pb-2;
+}
+
 /* Green button design */
 .green-btn {
   @apply py-3 px-12 bg-[#A3FF12] text-[#090a1a] flex items-center justify-center uppercase relative
