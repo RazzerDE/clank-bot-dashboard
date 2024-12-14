@@ -40,7 +40,7 @@
             </li>
 
             <li class="!inline-flex">
-              <a class="font-style-button black-shape" href="#">
+              <a class="font-style-button black-shape" href="https://discord.gg/bl4cklist">
                 <span class="btn-text">Discord-Server </span>
                 <fa-icon [icon]="faDiscord" class="inline-block ml-1" />
                 <span class="hover-shape1"></span>
@@ -49,13 +49,15 @@
               </a>
             </li>
             <li>
-              <button type="button" class="w-full font-style-button white-btn hover-shape !px-2">
-                <fa-icon [icon]="faCode" class="inline-block mr-2" />
-                <span class="btn-text">Dashboard</span>
-                <span class="hover-shape1"></span>
-                <span class="hover-shape2"></span>
-                <span class="hover-shape3"></span>
-              </button>
+              <a routerLink="/dashboard">
+                <button type="button" class="w-full font-style-button white-btn hover-shape !px-2">
+                  <fa-icon [icon]="faCode" class="inline-block mr-2" />
+                  <span class="btn-text">Dashboard</span>
+                  <span class="hover-shape1"></span>
+                  <span class="hover-shape2"></span>
+                  <span class="hover-shape3"></span>
+                </button>
+              </a>
             </li>
           </ul>
         </div>

@@ -7,6 +7,7 @@ import {nav_items} from "./header/types/LNavigationItem";
 import {LandingSectionFeaturesComponent} from "./sections/features/features.component";
 import {AnimationService} from "../../services/animation/animation.service";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
+import {TutorialComponent} from "./sections/tutorial/tutorial.component";
 
 @Component({
   selector: 'landing-page',
@@ -17,7 +18,8 @@ import {SliderItems} from "../../services/types/landing-page/SliderItems";
     NgOptimizedImage,
     RouterLink,
     LandingSectionFeaturesComponent,
-    NgClass
+    NgClass,
+    TutorialComponent
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'

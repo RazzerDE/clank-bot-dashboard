@@ -1,0 +1,187 @@
+.tutorial_section {
+  background: #090A1A;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding-bottom: 140px;
+}
+
+.tutorial_section .moon_img_bg {
+  position: absolute;
+  top: 20px;
+}
+
+.tutorial_section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.tutorial_section .locker_img {
+  position: absolute;
+  bottom: -220px;
+  left: 0px;
+  z-index: 0;
+}
+
+.tutorial_section_left_content p {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 40px;
+  max-width: 450px;
+  width: 100%;
+  padding-right: 12px;
+}
+
+.tutorial_section_left_btn {
+  max-width: 170px;
+  height: 50px;
+}
+
+.tutorial_section_left_btn a {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+.tutorial_section_card {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  min-height: 186px;
+  padding: 35px 50px;
+  background: rgba(30, 31, 53, 0.7);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  margin-bottom: 20px;
+}
+
+.tutorial_section_card_number {
+  min-width: 80px;
+  margin-right: 35px;
+}
+
+.tutorial_section_card_text {
+  max-width: 334px;
+  width: 100%;
+}
+
+.tutorial_section_card_text h4 {
+  font-family: Russo One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 27px;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+}
+
+.tutorial_section_card_text p {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  margin-bottom: 0px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.view-more {
+  border: 2px solid #2E2F3C;
+  color: #FFFFFF;
+  padding: 12px 25px 8px;
+  text-transform: uppercase;
+  font-family: "Russo One", sans-serif;
+  overflow: hidden;
+  display: block;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.view-more i {
+  font-size: 15px;
+  padding-left: 15px;
+}
+
+.view-more:hover {
+  color: #FFFFFF;
+}
+
+.stat_content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 25%;
+}
+
+.stat_content h2 {
+  font-family: Russo One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 45px;
+  margin-bottom: 0px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.stat_content h3 {
+  font-family: Russo One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 45px;
+  text-transform: uppercase;
+  color: #6D4AFE;
+  margin-bottom: 0px;
+}
+
+.sec-heading .sub-title {
+  color: #A3FF12;
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-family: "Russo One", sans-serif;
+}
+
+.sec-heading .heading-left-image {
+  margin-left: 10px;
+}
+
+.sec-heading .heading-right-image {
+  margin-right: 10px;
+}
