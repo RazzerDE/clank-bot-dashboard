@@ -33,3 +33,172 @@
   @apply text-white/50 mx-0 mt-0 mb-10 text-lg font-semibold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+/* Positioning of the entire Slider with Format */
+.slider {
+  @apply flex items-center gap-[30px] w-max;
+}
+
+/* Some mouse effects for the Slider */
+.slider-item {
+  @apply cursor-pointer transition-transform duration-200 ease-in;
+}
+
+/* Little hover effect for each Slider-Item */
+.slider-item:hover {
+  @apply transform scale-105;
+  filter: none !important;
+}
+
+/* Size of the Slider-Item */
+.partner-icon {
+  @apply w-[50px] h-[50px] object-contain;
+}
+
+.guild_banner {
+  background: rgba(30, 31, 53, 0.8);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  min-height: 158px;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  z-index: 2;
+}
+
+.guild_banner .red-border-gradient {
+  position: absolute;
+  top: -248px;
+  left: 248px;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(248, 37, 82, 0.5)), to(rgba(21, 22, 37, 0)));
+  background: linear-gradient(180deg, rgba(248, 37, 82, 0.5) 0%, rgba(21, 22, 37, 0) 100%);
+  width: 5px;
+  height: 500px;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.guild_banner .green-border-gradient {
+  position: absolute;
+  bottom: -248px;
+  right: 248px;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(163, 255, 18, 0.5)), to(rgba(21, 22, 37, 0)));
+  background: linear-gradient(180deg, rgba(163, 255, 18, 0.5) 0%, rgba(21, 22, 37, 0) 100%);
+  width: 5px;
+  height: 500px;
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.guild_slider_section img {
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.guild_slider_section img:hover {
+  opacity: 0.7;
+}
+
+.partner-item .partner-image {
+  padding-right: 70px;
+}
+
+.guild_slider_section .slider-inner {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.guild_info_section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.guild_info_section h3 {
+  font-family: Russo One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 36px;
+  text-transform: uppercase;
+  margin-bottom: 0px;
+  color: #FFFFFF;
+}
+
+.guild_info_section h3 span {
+  margin-left: 10px;
+}
+
+.guild_info_section h3 span img {
+  margin-top: -2px;
+}
+
+.slide_shadow .slide_shadow_content:after,
+.slide_shadow .slide_shadow_content:before {
+  background: linear-gradient(269.8deg, rgba(26, 27, 48, 0) 0.18%, #1A1B30 99.84%);
+}
+
+.guild_slider_section .slider-inner::after, .guild_slider_section .slider-inner::before {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  z-index: 1;
+}
+
+.guild_slider_section .slider-inner::before {
+  left: 0;
+}
+
+.guild_slider_section .slider-inner::after {
+  right: 0;
+  transform: rotateZ(180deg);
+}
+
+.guild_slider_section .slider-inner .partner-image {
+  flex-shrink: 0;
+  -webkit-animation: loop_animate 20s linear 0s infinite normal none running;
+  animation: loop_animate 20s linear 0s infinite normal none running;
+}
+
+.guild_slider_section .slider-inner .partner-image a {
+  margin: 0px 35px;
+}

@@ -6,5 +6,6 @@ interface LNavigationItem {
 export const nav_items: LNavigationItem[] = [
   {redirect_url: '/#discord-bot', title: 'Start'},
   {redirect_url: '/#discord-bot-features', title: 'Features'},
-  {redirect_url: '/#discord-bot-wishlist', title: 'Wunschliste'}
+  {redirect_url: '/#discord-bot-statistics', title: 'Statistiken'},
+  {redirect_url: '/#discord-bot-wishlist', title: 'Wunschliste'},
 ]
