@@ -7,5 +7,5 @@ export const nav_items: LNavigationItem[] = [
   {redirect_url: '/#discord-bot', title: 'Start'},
   {redirect_url: '/#discord-bot-features', title: 'Features'},
   {redirect_url: '/#discord-bot-wishlist', title: 'Wunschliste'},
-  {redirect_url: 'https://discord.gg/bl4cklist', title: 'Support-Server'},
+  {redirect_url: 'https://discord.gg/bl4cklist', title: 'Support'},
 ]

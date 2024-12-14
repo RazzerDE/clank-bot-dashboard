@@ -21,7 +21,8 @@ export class AnimationService implements OnDestroy {
    * animation class is added to trigger the animation.
    */
   loadAnimations(): void {
-    const animationTypes: string[] = ['fadeInUp', 'fadeInLeft', 'fadeInRight', 'fadeInLeftBig', 'fadeInRightBig'];
+    const animationTypes: string[] = ['fadeInUp', 'fadeInLeft', 'fadeInRight', 'fadeInLeftBig', 'fadeInRightBig',
+                                      'lightSpeedInLeft', 'lightSpeedInRight'];
     const observer: IntersectionObserver = new IntersectionObserver((entries: IntersectionObserverEntry[]): void => {
       entries.forEach(entry => {
         const animationClass: string | undefined = entry.target.className.match(/a_(\w+)/)?.[1];
