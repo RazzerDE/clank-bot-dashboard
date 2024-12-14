@@ -57,6 +57,11 @@
     @apply w-3/4;
   }
 
+  // Make buttons smaller if screen is too small
+  .font-style-button, .white-btn {
+    @apply py-3 px-3 text-sm;
+  }
+
   /* Make it col direction to avoid big empty spaces */
   #discord-bot-features .container:nth-of-type(2) .row {
     @apply flex-col items-center gap-10;
