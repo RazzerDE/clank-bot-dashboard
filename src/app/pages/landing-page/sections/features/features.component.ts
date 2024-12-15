@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {feature_items} from "./types/feature-item";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'landing-section-features',
   standalone: true,
   imports: [
     NgOptimizedImage,
-    NgClass
+    NgClass,
+    TranslatePipe
   ],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss'

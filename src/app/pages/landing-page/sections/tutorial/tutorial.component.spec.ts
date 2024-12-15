@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TutorialComponent } from './tutorial.component';
 import {ActivatedRoute} from "@angular/router";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('TutorialComponent', () => {
   let component: TutorialComponent;
@@ -9,7 +10,7 @@ describe('TutorialComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TutorialComponent],
+      imports: [TutorialComponent, TranslateModule.forRoot()],
       providers: [ { provide: ActivatedRoute, useValue: {} }]
     })
     .compileComponents();

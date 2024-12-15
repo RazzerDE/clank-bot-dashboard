@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {LandingSectionFeaturesComponent} from "./features.component";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('FeaturesComponent', () => {
   let component: LandingSectionFeaturesComponent;
@@ -7,7 +8,7 @@ describe('FeaturesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LandingSectionFeaturesComponent]
+      imports: [LandingSectionFeaturesComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
 

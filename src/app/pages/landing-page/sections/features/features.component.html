@@ -4,11 +4,11 @@
     <div class="items-center mb-24">
       <div class="sec-heading">
         <div class="mb-3 a_fadeInUp">
-          <span class="sub-title">BOT-FEATURES</span>
+          <span class="sub-title">{{ 'SECTION_FEATURES_SUBTITLE' | translate }}</span>
           <img class="heading-left-image inline-block" ngSrc="/assets/img/frames/steps.png"
                height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)"/>
         </div>
-        <h2 class="title a_fadeInUp">❓~ Was macht unseren Discord-Bot besonders?</h2>
+        <h2 class="title a_fadeInUp">{{ 'SECTION_FEATURES_TITLE' | translate }}</h2>
       </div>
 
       <div class="row a_fadeInLeft">
@@ -17,9 +17,8 @@
                alt="Clank ~ Discord-Bot (Language Support Icon)" class="img-fluid" />
 
           <div class="key_feature">
-            <h3 class="mb-2">Sprachwechsler</h3>
-            <p>› Unser Bot bietet aktuell <strong>Deutsch & Englisch</strong> als mögliche
-              Sprachen für alle Funktionen des Bots an.</p>
+            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_1_TITLE' | translate }}</h3>
+            <p [innerHTML]="'SECTION_FEATURES_ITEM_1_DESC' | translate"></p>
           </div>
         </div>
 
@@ -28,9 +27,8 @@
                alt="Clank ~ Discord-Bot (Love to Detail Icon)" class="img-fluid" />
 
           <div class="key_feature">
-            <h3 class="mb-2">Liebe zum Detail</h3>
-            <p>› Der Bot wurde von Server-Admins für Server-Admins erstellt, was eine
-              <strong>hohe Qualität</strong> & Liebe zum Detail sichert.</p>
+            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_2_TITLE' | translate }}</h3>
+            <p [innerHTML]="'SECTION_FEATURES_ITEM_2_DESC' | translate"></p>
           </div>
         </div>
 
@@ -39,9 +37,8 @@
                alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" />
 
           <div class="key_feature">
-            <h3 class="mb-2">Community Wunschliste</h3>
-            <p>› Wir arbeiten stets an neuen großen Features, basierend auf den <strong>Wünschen
-              von euch</strong> - scrollt runter für mehr Infos!</p>
+            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_3_TITLE' | translate }}</h3>
+            <p [innerHTML]="'SECTION_FEATURES_ITEM_3_DESC' | translate"></p>
           </div>
         </div>
 
@@ -50,9 +47,8 @@
                alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" />
 
           <div class="key_feature">
-            <h3 class="mb-2">Blitzschneller Support</h3>
-            <p>› Wir helfen dir bei der Einrichtung des Bots, beheben <strong>blitzschnell
-              Bugs</strong> & kümmern uns gerne um euer Anliegen.</p>
+            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_4_TITLE' | translate }}</h3>
+            <p [innerHTML]="'SECTION_FEATURES_ITEM_4_DESC' | translate"></p>
           </div>
         </div>
 
@@ -82,14 +78,14 @@
           <div class="items-center mb-30">
             <div class="sec-heading">
               <div class="mb-15">
-                <span class="sub-title"> {{ big_feature.category }} </span>
+                <span class="sub-title"> {{ big_feature.category | translate }} </span>
                 <img class="heading-left-image inline-block" ngSrc="assets/img/frames/steps.png"
                      height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)" />
               </div>
-              <h2 class="title mb-0 text-[2rem]"> {{ big_feature.title }}  </h2>
+              <h2 class="title mb-0 text-[2rem]"> {{ big_feature.title | translate }}  </h2>
             </div>
             <div class="big_feature_content">
-              <p [innerHTML]="big_feature.description"></p>
+              <p [innerHTML]="big_feature.description | translate"></p>
               <div class="big_feature_list">
                 <ul class="w-1/2">
                   @for (item of big_feature.left_menu_items; track item) {
@@ -99,7 +95,7 @@
                              class="img-fluid" height="16" width="16" />
                       </span>
 
-                      {{ item.feature_name }}
+                      {{ item.feature_name | translate }}
                     </li>
                   }
                 </ul>
@@ -112,7 +108,7 @@
                              class="img-fluid" height="16" width="16" />
                       </span>
 
-                      {{ item.feature_name }}
+                      {{ item.feature_name | translate }}
                     </li>
                   }
                 </ul>

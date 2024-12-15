@@ -20,37 +20,35 @@ export const feature_items: FeatureItem[] = [
     video_url: 'assets/video/discord-bot-ticket-tool.mp4',
     video_id: 'discord-bot-ticket-tool',
 
-    category: 'EIGENES SUPPORT-SYSTEM',
-    title: '📬 ~ PROFESSIONELL & KINDERLEICHT',
-    description: '› Mit unserem integrierten <strong>Support-Modul</strong> (Ticket Modmail-Tool) können User den Bot ' +
-      'via Privatnachricht anschreiben, wodurch automatisch ein Ticket auf deinem Discord-Server in einem Forumkanal ' +
-      'erstellt wird - dies garantiert eine benutzerfreundliche Erfahrung mit einer übersichtlichen Verwaltung.',
+    category: 'SECTION_SHOWCASE_ITEM_1_SUBTITLE',
+    title: 'SECTION_SHOWCASE_ITEM_1_TITLE',
+    description: 'SECTION_SHOWCASE_ITEM_1_DESC',
     left_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/star.png',
-        feature_name: 'Support-Bewertung für Teamler'
+        feature_name: 'SECTION_SHOWCASE_ITEM_1_LIST_1'
       },
       {
         icon_url: 'assets/img/icons/checklist/robot.png',
-        feature_name: 'Tickets automatisch beantworten'
+        feature_name: 'SECTION_SHOWCASE_ITEM_1_LIST_2'
       },
       {
         icon_url: 'assets/img/icons/checklist/sound.png',
-        feature_name: 'Sprachkanal-Support unterstützt'
+        feature_name: 'SECTION_SHOWCASE_ITEM_1_LIST_3'
       }
     ],
     right_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/books.png',
-        feature_name: 'Erstelle Panel & Support-Themen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_1_LIST_4'
       },
       {
         icon_url: 'assets/img/icons/checklist/clock.png',
-        feature_name: 'Feste Support-Zeiten für das Team'
+        feature_name: 'SECTION_SHOWCASE_ITEM_1_LIST_5'
       },
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'Integriertes Verwaltungs-Menü'
+        feature_name: 'SECTION_SHOWCASE_ITEM_1_LIST_6'
       }
     ]
   },
@@ -58,37 +56,35 @@ export const feature_items: FeatureItem[] = [
     video_url: 'assets/video/discord-bot-ticket-tool.mp4',
     video_id: 'discord-bot-giveaways',
 
-    category: 'EIGENE GEWINNSPIELE STARTEN',
-    title: '🎁 ~ BLITZSCHNELL & WUNDERSCHÖN',
-    description: '› Mithilfe des personalisierten <strong>Gewinnspiel-Moduls</strong> kannst du eigene Gewinnspiele, ' +
-      'erstellen, bearbeiten und verwalten. Lege eigene Teilnahme-Bedingungen fest, verändere das Design der ' +
-      'Gewinnspiel-Nachricht und tracke die Aktivität deiner Server-Mitglieder.',
+    category: 'SECTION_SHOWCASE_ITEM_2_SUBTITLE',
+    title: 'SECTION_SHOWCASE_ITEM_2_TITLE',
+    description: 'SECTION_SHOWCASE_ITEM_2_DESC',
     left_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/light-bulb.png',
-        feature_name: 'Eigene Teilnahme-Bedingungen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_2_LIST_1'
       },
       {
         icon_url: 'assets/img/icons/checklist/paint-brush.png',
-        feature_name: 'Eigenes Embed-Design festlegen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_2_LIST_2'
       },
       {
         icon_url: 'assets/img/icons/checklist/bar-chart.png',
-        feature_name: 'Statistiken-Tracker (Invites & mehr)'
+        feature_name: 'SECTION_SHOWCASE_ITEM_2_LIST_3'
       }
     ],
     right_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/trophy.png',
-        feature_name: 'Interessante Bestenlisten'
+        feature_name: 'SECTION_SHOWCASE_ITEM_2_LIST_4'
       },
       {
         icon_url: 'assets/img/icons/checklist/clock.png',
-        feature_name: 'Gewinnspiele später planen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_2_LIST_5'
       },
       {
         icon_url: 'assets/img/icons/checklist/heart.png',
-        feature_name: 'Sponsor für Gewinnspiele festlegen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_2_LIST_6'
       }
     ]
   },
@@ -96,37 +92,35 @@ export const feature_items: FeatureItem[] = [
     video_url: 'assets/video/discord-bot-backup-system.mp4',
     video_id: 'discord-bot-backup-system',
 
-    category: 'EIGENES BACKUP-SYSTEM',
-    title: '🚨 ~ SCHÜTZE DEINEN SERVER',
-    description: '› Unser automatisches & zuverlässiges Backup-System erstellt 2x pro Tag einen Screenshot deines Servers ' +
-      'und <strong>speichert alle Kanäle & Rollen</strong> - sollte dein Server angegriffen werden, verliert der ' +
-      'entsprechende User alle Rechte und die Änderungen werden zurückgesetzt.',
+    category: 'SECTION_SHOWCASE_ITEM_3_SUBTITLE',
+    title: 'SECTION_SHOWCASE_ITEM_3_TITLE',
+    description: 'SECTION_SHOWCASE_ITEM_3_DESC',
     left_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/server.png',
-        feature_name: 'Regelmäßige Server-Backups'
+        feature_name: 'SECTION_SHOWCASE_ITEM_3_LIST_1'
       },
       {
         icon_url: 'assets/img/icons/checklist/rollback.png',
-        feature_name: 'Kanäle & Rollen wiederherstellen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_3_LIST_2'
       },
       {
         icon_url: 'assets/img/icons/checklist/police.png',
-        feature_name: 'Automatischer Schutz, der eingreift'
+        feature_name: 'SECTION_SHOWCASE_ITEM_3_LIST_3'
       }
     ],
     right_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/stop.png',
-        feature_name: 'Effektive Auto-Moderations-Regeln'
+        feature_name: 'SECTION_SHOWCASE_ITEM_3_LIST_4'
       },
       {
         icon_url: 'assets/img/icons/checklist/bot.png',
-        feature_name: 'Bestrafe automatisch Fake-Accounts'
+        feature_name: 'SECTION_SHOWCASE_ITEM_3_LIST_5'
       },
       {
         icon_url: 'assets/img/icons/checklist/error.png',
-        feature_name: 'Viele nützliche Anti-Raid Tools'
+        feature_name: 'SECTION_SHOWCASE_ITEM_3_LIST_6'
       }
     ]
   },
@@ -134,37 +128,35 @@ export const feature_items: FeatureItem[] = [
     video_url: 'assets/video/discord-bot-log-system.mp4',
     video_id: 'discord-bot-log-system',
 
-    category: 'EIGENES LOGGING-SYSTEM',
-    title: '📂 ~ ZUVERLÄSSIG & AUTOMATISCH',
-    description: '› Speichere wichtige Server-Änderungen, durchgeführte Bestrafungen, Server-Beitritte und noch viel ' +
-      'mehr in einem übersichtlichen eigenem Forumkanal, wodurch du immer blitzschnell <strong>die wichtigsten ' +
-      'Ereignisse</strong> auf deinem Discord-Server abrufen kannst - das Log-System umfasst:',
+    category: 'SECTION_SHOWCASE_ITEM_4_SUBTITLE',
+    title: 'SECTION_SHOWCASE_ITEM_4_TITLE',
+    description: 'SECTION_SHOWCASE_ITEM_4_DESC',
     left_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'User Entsperrungs-Anträge'
+        feature_name: 'SECTION_SHOWCASE_ITEM_4_LIST_1'
       },
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'Kritische Server-Änderungen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_4_LIST_2'
       },
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'Server-Betritte & Leaves'
+        feature_name: 'SECTION_SHOWCASE_ITEM_4_LIST_3'
       }
     ],
     right_menu_items: [
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'Wichtige Moderationsaktionen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_4_LIST_4'
       },
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'Kanal-& Rollenänderungen'
+        feature_name: 'SECTION_SHOWCASE_ITEM_4_LIST_5'
       },
       {
         icon_url: 'assets/img/icons/checklist/checkmark.png',
-        feature_name: 'Nachricht & Emoji-Updates'
+        feature_name: 'SECTION_SHOWCASE_ITEM_4_LIST_6'
       }
     ]
   }

@@ -4,6 +4,7 @@ import {RouterLink} from "@angular/router";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
 import { nav_items } from '../../header/types/LNavigationItem';
 import {AnimationService} from "../../../../services/animation/animation.service";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'landing-section-intro',
@@ -11,7 +12,8 @@ import {AnimationService} from "../../../../services/animation/animation.service
   imports: [
     NgOptimizedImage,
     RouterLink,
-    NgClass
+    NgClass,
+    TranslatePipe
   ],
   templateUrl: './intro.component.html',
   styleUrl: './intro.component.scss'

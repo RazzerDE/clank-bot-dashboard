@@ -5,6 +5,7 @@ import {NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
 import {AnimationService} from "../../../services/animation/animation.service";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'landing-footer',
@@ -12,7 +13,8 @@ import {AnimationService} from "../../../services/animation/animation.service";
   imports: [
     NgOptimizedImage,
     FaIconComponent,
-    RouterLink
+    RouterLink,
+    TranslatePipe
   ],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'

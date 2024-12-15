@@ -5,22 +5,19 @@
         <div class="tutorial_section_left a_lightSpeedInLeft">
           <div class="sec-heading">
             <div class="sub-inner mb-15">
-              <span class="sub-title">WIE RICHTE ICH DEN DISCORD-BOT EIN?</span>
+              <span class="sub-title">{{ 'SECTION_TUTORIAL_SUBTITLE' | translate }}</span>
               <img class="inline-block ml-4" ngSrc="assets/img/frames/steps.png"
                    height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)"/>
             </div>
-            <h2 class="title mt-1">🤖 ~ CLANK VERWENDEN</h2>
+            <h2 class="title mt-1">{{ 'SECTION_TUTORIAL_TITLE' | translate }}</h2>
           </div>
           <div class="tutorial_section_left_content">
-            <p>› Unseren eigenen süßen Discord-Bot "Clank" einzurichten kann auf den ersten Blick etwas kompliziert wirken,
-              aber das Ganze ist blitzschnell erledigt & dank vielen <strong>benutzerfreundlichen Menüs</strong> auch unglaublich einfach - Yay!
-              <br /><br />
-              › Alternativ kannst du auch einfach das <strong>neue Dashboard</strong> verwenden, um den Discord-Bot vollständig einzurichten.</p>
-
+            <p [innerHTML]="'SECTION_TUTORIAL_DESC' | translate"></p>
+            <p [innerHTML]="'SECTION_TUTORIAL_DESC2' | translate"></p>
             <div class="flex justify-start gap-x-7">
               <a routerLink="/invite">
                 <button type="button" class="font-style-button white-btn hover-shape !ml-0 !px-4">
-                  <span class="btn-text">Bot einladen</span>
+                  <span class="btn-text">{{ 'SECTION_TUTORIAL_BUTTON_INVITE' | translate }}</span>
                   <fa-icon class="ml-2" [icon]="faRobot"></fa-icon>
                   <span class="hover-shape1"></span>
                   <span class="hover-shape2"></span>
@@ -31,7 +28,7 @@
               <div class="tutorial_section_left_btn">
                 <a class="view-more black-shape px-3" href="https://discord.gg/bl4cklist">
                   <fa-icon class="mr-2" [icon]="faHeartPulse"></fa-icon>
-                  <span class="btn-text">Ich brauche Hilfe </span>
+                  <span class="btn-text">{{ 'SECTION_TUTORIAL_BUTTON_SUPPORT' | translate }}</span>
                   <span class="hover-shape1"></span>
                   <span class="hover-shape2"></span>
                   <span class="hover-shape3"></span>
@@ -42,19 +39,19 @@
             <div class="pt-10 grid grid-cols-2 gap-0 w-full mb-4 lg:w-[90%] lg:mb-0">
               <!-- TODO: Change with real data -->
               <div class="stat_content !w-full">
-                <h2>🎁 GEWINNSPIELE BEENDET</h2>
+                <h2>{{ 'SECTION_TUTORIAL_STATS_GIVEAWAYS' | translate }}</h2>
                 <h3 class="counter-number"><span class="counter">16.132</span>+</h3>
               </div>
               <div class="stat_content !w-full">
-                <h2>🚓 TICKETS BEARBEITET</h2>
+                <h2>{{ 'SECTION_TUTORIAL_STATS_SUPPORT' | translate }}</h2>
                 <h3 class="counter-number"><span class="counter">21.232</span>+</h3>
               </div>
               <div class="stat_content !w-full">
-                <h2>🌍 GLOBAL-CHAT USER</h2>
+                <h2>{{ 'SECTION_TUTORIAL_STATS_GCHAT' | translate }}</h2>
                 <h3 class="counter-number"><span class="counter">16.124</span>+</h3>
               </div>
               <div class="stat_content !w-full">
-                <h2>🚨 USER BESTRAFT</h2>
+                <h2>{{ 'SECTION_TUTORIAL_STATS_PUNISH' | translate }}</h2>
                 <h3 class="counter-number"><span class="counter">64.023</span>+</h3>
               </div>
             </div>
@@ -70,9 +67,8 @@
                    class="img-fluid" height="100" width="100" />
             </div>
             <div class="tutorial_section_card_text">
-              <h4>Discord-Bot einladen</h4>
-              <p>› Lade unseren <a routerLink="/invite"><strong>Discord-Bot</strong></a> auf deinem Discord-Server ein
-                und gib ihm alle Rechte, nach denen er dich bei der Einladung fragt.</p>
+              <h4>{{ 'SECTION_TUTORIAL_CARD_1_TITLE' | translate }}</h4>
+              <p [innerHTML]="'SECTION_TUTORIAL_CARD_1_DESC' | translate"></p>
             </div>
           </div>
           <div class="tutorial_section_card a_lightSpeedInRight animate__delay-1s">
@@ -81,9 +77,8 @@
                    class="img-fluid" height="100" width="100" />
             </div>
             <div class="tutorial_section_card_text">
-              <h4>Bot-Sprache festlegen</h4>
-              <p>› Lege die Sprache von allen Texten & Nachrichten des Discord-Bots fest, in dem du den Befehl
-                <code>/bot-sprache</code> (oder <code>/bot-language</code>) verwendest.</p>
+              <h4>{{ 'SECTION_TUTORIAL_CARD_2_TITLE' | translate }}</h4>
+              <p [innerHTML]="'SECTION_TUTORIAL_CARD_2_DESC' | translate"></p>
             </div>
           </div>
           <div class="tutorial_section_card a_lightSpeedInRight animate__delay-2s">
@@ -92,10 +87,8 @@
                    class="img-fluid" height="100" width="100" />
             </div>
             <div class="tutorial_section_card_text">
-              <h4>Bot-Systeme einrichten</h4>
-              <p>› Mit dem Slashbefehl <code>/setup</code> kannst du alle benötigten Einstellungen sehen, die du für
-                spezielle Module vornehmen musst (oder du verwendest das
-                <a routerLink="/dashboard"><strong>neue Dashboard</strong></a>).</p>
+              <h4>{{ 'SECTION_TUTORIAL_CARD_3_TITLE' | translate }}</h4>
+              <p [innerHTML]="'SECTION_TUTORIAL_CARD_3_DESC' | translate"></p>
             </div>
           </div>
         </div>

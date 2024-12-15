@@ -3,15 +3,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import {ActivatedRoute} from "@angular/router";
 import {Renderer2} from "@angular/core";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let renderer2: Renderer2;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent],
+      imports: [HeaderComponent, TranslateModule.forRoot()],
       providers: [
         { provide: ActivatedRoute, useValue: {} },
         { provide: Renderer2, useValue: { addClass: jest.fn(), removeClass: jest.fn() } }]
@@ -19,7 +19,6 @@ describe('HeaderComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);
-    renderer2 = TestBed.inject(Renderer2);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

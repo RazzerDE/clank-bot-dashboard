@@ -4,13 +4,13 @@
   <div id="cta-div" class="container w-full md:w-3/4 lg:w-2/3 xl:w-1/2 absolute left-1/2 transform -translate-x-1/2 -translate-y-20 z-2">
     <div class="footer-cta-area text-center active-shape hover-shape-inner">
       <h2 class="title mb-15">
-        🚀 ~ ENTDECKE NOCH VIEL MEHR!
+        {{ 'FOOTER_LANDING_CARD_TITLE' | translate }}
       </h2>
       <p class="mb-10 mx-4">
-        Wir hoffen, dass wir dich überzeugen konnten unserem süßen Discord-Bot - Clank - eine Chance zu geben, um die Erfahrung auf deinem Discord-Server erheblich zu verbessern.
+        {{ 'FOOTER_LANDING_CARD_DESC' | translate }}
       </p>
       <a class="green-btn !inline-block a_fadeInUp" #invite_btn routerLink="/invite">
-        <span>Discord-Bot einladen</span>
+        <span>{{ 'FOOTER_LANDING_CARD_BUTTON' | translate }}</span>
         <div class="hover-shape1"></div>
         <div class="hover-shape2"></div>
         <div class="hover-shape3"></div>
@@ -45,7 +45,7 @@
           }
 
           <li>
-            <a href="https://bl4cklist.de/imprint">Impressum & Datenschutz</a>
+            <a href="https://bl4cklist.de/imprint">{{ 'FOOTER_LANDING_ITEM_IMPRINT' | translate }}</a>
           </li>
         </ul>
       </div>
@@ -53,7 +53,7 @@
       <!-- Copyright Note -->
       <div class="copyright-area text-center mb-0">
         <p>
-          Copyright © Alle Rechte vorbehalten von
+          Copyright © {{ 'FOOTER_LANDING_COPYRIGHT' | translate }}
           <a target="_blank" href="https://bl4cklist.de">Bl4cklist.de</a>
         </p>
       </div>

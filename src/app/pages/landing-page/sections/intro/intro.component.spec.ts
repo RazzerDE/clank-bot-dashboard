@@ -4,6 +4,7 @@ import { IntroComponent } from './intro.component';
 import {ElementRef} from "@angular/core";
 import {AnimationService} from "../../../../services/animation/animation.service";
 import {ActivatedRoute} from "@angular/router";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('IntroComponent', () => {
   let component: IntroComponent;
@@ -12,7 +13,7 @@ describe('IntroComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IntroComponent],
+      imports: [IntroComponent, TranslateModule.forRoot()],
       providers: [ { provide: ActivatedRoute, useValue: {} }]
     })
     .compileComponents();

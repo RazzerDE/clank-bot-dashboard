@@ -6,6 +6,8 @@ import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {nav_items} from "./types/LNavigationItem";
+import {LanguageSwitcherService} from "../../../services/language-switcher.service";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'landing-header',
@@ -13,7 +15,8 @@ import {nav_items} from "./types/LNavigationItem";
   imports: [
     NgOptimizedImage,
     RouterLink,
-    FontAwesomeModule
+    FontAwesomeModule,
+    TranslatePipe
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -25,7 +28,7 @@ export class HeaderComponent {
   protected faCode: IconDefinition = faCode;
   protected readonly nav_items = nav_items;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, protected translateService: LanguageSwitcherService) {}
 
   /**
    * Toggles the mobile menu's expanded state.

@@ -39,6 +39,19 @@
               </a>
             </li>
 
+            <!-- Lang Switch -->
+            <li class="mx-3 lang-switch-btn animate__animated animate__infinite" #langSwitcher
+                (mouseover)="langSwitcher.classList.add('animate__pulse')"
+                (mouseleave)="langSwitcher.classList.remove('animate__pulse')">
+              @if (translateService.getLanguage() === 'en') {
+                <img ngSrc="assets/img/icons/lang/united-states.png" alt="Clank ~ Discord-Bot (America Icon)"
+                     width="35" height="35" (click)="translateService.setLanguage('de')" />
+              } @else {
+                <img ngSrc="assets/img/icons/lang/germany.png" alt="Clank ~ Discord-Bot (Germany Icon)"
+                     width="35" height="35" (click)="translateService.setLanguage('en')" />
+              }
+            </li>
+
             <li class="!inline-flex">
               <a class="font-style-button black-shape" href="https://discord.gg/bl4cklist">
                 <span class="btn-text">Discord-Server </span>
@@ -92,7 +105,7 @@
       <li>
         <button type="button" class="font-style-button black-shape-big mobile-btn-purple">
           <fa-icon [icon]="faCode" class="inline-block" />
-          <span class="btn-text">Zum Dashboard </span>
+          <span class="btn-text">{{ 'HEADER_LANDING_ITEM_DASHBOARD_MOBILE' | translate }} </span>
           <span class="hover-shape1"></span>
           <span class="hover-shape2"></span>
           <span class="hover-shape3"></span>

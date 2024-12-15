@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FooterComponent } from './footer.component';
 import { ActivatedRoute } from "@angular/router";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('FooterComponent', () => {
   let component: FooterComponent;
@@ -20,7 +21,7 @@ describe('FooterComponent', () => {
     window.IntersectionObserver = mockIntersectionObserver as any;
 
     await TestBed.configureTestingModule({
-      imports: [FooterComponent],
+      imports: [FooterComponent, TranslateModule.forRoot()],
       providers: [
         { provide: ActivatedRoute, useValue: {} },
       ]
