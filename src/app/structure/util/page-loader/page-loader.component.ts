@@ -14,6 +14,10 @@ export class PageLoaderComponent implements OnInit {
   protected isLoading: boolean = true;
 
   ngOnInit(): void {
-    window.addEventListener('load', (): void => { this.isLoading = false; });
+    window.addEventListener('load', (): void => {
+      if (document.readyState === 'complete') {
+        this.isLoading = false;
+      }
+    });
   }
 }

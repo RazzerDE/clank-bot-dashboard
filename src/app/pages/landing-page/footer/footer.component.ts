@@ -51,7 +51,7 @@ export class FooterComponent implements AfterViewInit {
     const animationDiv: HTMLElement | null = document.getElementById('content-div') as HTMLDivElement;
     if (ctaDiv && animationDiv) {
       // adjust margin-top to be responsive to the height of the CTA (footer) div
-      animationDiv.style.marginTop = `${ctaDiv.offsetHeight - 250}px`;
+      animationDiv.style.marginTop = `${ctaDiv.clientHeight / 8}px`;
     }
   }
 
