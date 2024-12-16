@@ -1,0 +1,74 @@
+@media only screen and (max-width: 991px) {
+  // Hide menu items if screen is too small
+  .header-menu {
+    @apply hidden;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  // Hide menu expander if screen is big enough
+  header .header-buttons ul .nav-expander {
+    @apply hidden;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  // Make buttons smaller if screen is too small
+  .font-style-button, .white-btn {
+    @apply py-2 px-2 text-xs;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  // Make title smaller if screen is too small
+  .intro-banner .banner-content .banner-title {
+    @apply text-3xl;
+  }
+}
+
+@media only screen and (max-width: 575px) {
+  // Make text on intro section smaller if screen is too small
+  .intro-banner .banner-content .banner-title {
+    @apply text-2xl mb-3;
+  }
+
+  .intro-banner .banner-content .description {
+    @apply text-base mx-0 mt-0 mb-8;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  // adjust text size if screen is too small
+  body {
+    @apply text-base;
+  }
+
+  .intro-banner {
+    @apply pt-32;
+  }
+  .intro-banner .banner-content .banner-title {
+    @apply text-2xl;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1200px) {
+  // Make the text and image bigger - the screen is big enough
+  .col-md-6 {
+    @apply w-3/4;
+  }
+
+  // Make buttons smaller if screen is too small
+  .font-style-button, .white-btn {
+    @apply py-3 px-3 text-sm;
+  }
+
+  // reduce text space if screen is too small
+  .header-menu ul li + li {
+    margin-left: 1.5rem !important;
+  }
+
+  /* Make it col direction to avoid big empty spaces */
+  #discord-bot-features .container:nth-of-type(2) .row {
+    @apply flex-col items-center gap-10;
+  }
+}

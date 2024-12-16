@@ -1,0 +1,68 @@
+<div id="discord-bot" class="intro-banner banner-bg">
+  <!-- Star animation -->
+  <canvas id="intro-canvas" class="absolute z-1 top-auto bottom-0 left-0 h-full w-full h-footer-bg"></canvas>
+  <div class="container relative z-[1]">
+    <div class="banner-content text-center">
+      <img class="banner-icon mx-auto relative right-2 a_fadeInUp"
+           ngSrc="assets/img/icons/discord.png" alt="Clank ~ Discord-Bot (Discord-Logo)" height="75" width="75" />
+      <h1 class="banner-title a_fadeInUp">
+        {{ 'SECTION_INTRO_TITLE' | translate }}
+      </h1>
+      <div class="description a_fadeInUp">
+        {{ 'SECTION_INTRO_DESC' | translate }}
+      </div>
+      <a class="banner-btn black-shape-big a_fadeInUp" href="/invite">
+        <span class="btn-text">{{ 'SECTION_INTRO_BUTTON' | translate }}</span>
+        <span class="hover-shape1"></span>
+        <span class="hover-shape2"></span>
+        <span class="hover-shape3"></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Small inline Banner -->
+  <div class="guild_banner a_fadeInUp">
+    <div class="container">
+      <div class="row flex-nowrap">
+        <div class="col-md-6 !w-1/2 lg:w-3/4" [ngClass]="slideContainer.checkVisibility() ? '!w-1/2' : '!w-full'">
+          <div class="guild_info_section">
+            <h3>{{ 'SECTION_INTRO_BANNER_TITLE' | translate }}
+              <img ngSrc="assets/img/frames/steps.png" alt="Clank ~ Discord-Bot (Step-Icon)"
+                   class="img-fluid inline-block -mt-[2px] ml-2" height="11" width="74"/>
+            </h3>
+            <!-- TODO: Change with real data -->
+            <p class="m-0">{{ 'SECTION_INTRO_BANNER_DESC' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Little Slider with "Used by" Guilds -->
+        <div class="col-md-6 !w-1/2 lg:w-3/4">
+          <div class="px-0 py-14">
+            <div class="guild_slider_section slide_shadow">
+              <div class="slider-inner slide_shadow_content">
+
+                <div class="hidden lg:block" #slideContainer
+                     (mouseenter)="this.isPaused = true" (mouseleave)="this.isPaused = false">
+                  <div class="slider" #slider [style.transform]="'translateX(' + currentTranslate + 'px)'"
+                       [style.transition]="isResetting ? 'none' : 'transform ' + transitionSpeed + 'ms linear'">
+
+                    @for (item of duplicatedItems; track item) {
+                      <div class="slider-item" (click)="window.open(item.guild_invite, '_blank')">
+                        <img ngSrc="{{ item.image_url }}" [alt]="item.guild_name" width="50" height="50"
+                             class="partner-icon rounded-full" (mouseenter)="activeSlide($event)" (mouseleave)="activeSlide($event)" />
+                      </div>
+                    }
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="red-border-gradient"></span>
+    <span class="green-border-gradient"></span>
+  </div>
+</div>

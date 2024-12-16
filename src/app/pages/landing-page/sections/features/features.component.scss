@@ -1,0 +1,72 @@
+@import "../../../../../assets/fonts/fonts.scss";
+
+/* Main container for features section */
+.key_features {
+  @apply pt-28 pb-4 backdrop-blur-sm relative;
+  background: rgba(30, 31, 53, 0.8);
+}
+
+/* Place frame img on top left of section */
+.key_features span.frame-top {
+  @apply absolute top-0 left-0;
+}
+
+/* Place frame img on bottom right of section */
+.key_features span.frame-bottom {
+  @apply absolute bottom-0 right-0;
+}
+
+/* Img and text position for feature entries */
+.key_feature {
+  @apply w-full pt-6;
+}
+
+/* Key feature title formating */
+.key_feature h3 {
+  @apply font-RussoOne font-normal text-2xl leading-7 mb-5 text-white capitalize;
+}
+
+/* Key feature text formating */
+.key_feature p {
+  @apply max-w-full w-full font-Inter font-medium text-base leading-7 text-white/70;
+}
+
+/* Striking headline for feature section */
+.sec-heading .sub-title {
+  @apply text-[#A3FF12] font-RussoOne uppercase font-normal text-base;
+}
+
+/* Move frame image to the right */
+.sec-heading .heading-left-image {
+  @apply ml-3;
+}
+
+/* Move frame image to the left */
+.sec-heading .heading-right-image {
+  @apply mr-3;
+}
+
+// Improve position of content to be more centered
+.big_feature_content {
+  @apply mt-8;
+}
+
+// Fix rare formating issues with text
+.big_feature_content p {
+  @apply font-Inter font-medium text-base leading-7 text-white/70;
+}
+
+// display list items beneath each other
+.big_feature_list {
+  @apply flex items-start justify-start;
+}
+
+/* Format list items */
+.big_feature_list ul li {
+  @apply relative mb-2 flex justify-start font-Inter font-medium text-base leading-7 text-white items-center;
+}
+
+/* Little space between icon and text */
+.big_feature_list ul li span {
+  @apply mr-4;
+}

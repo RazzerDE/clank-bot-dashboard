@@ -1,0 +1,67 @@
+@import "../../../../../assets/fonts/fonts.scss";
+
+// Design of the tutorial section
+.tutorial_section {
+  @apply relative flex items-center justify-center pb-36 bg-[#090A1A];
+}
+
+// Show moon image in the center top of the tutorial section
+.tutorial_section .moon_img_bg {
+  @apply absolute top-5;
+}
+
+// Moon image should be in the background
+.tutorial_section .container {
+  @apply relative z-[2];
+}
+
+// Paragraph formatting
+.tutorial_section_left_content p {
+  @apply font-Inter font-normal text-base leading-[26px] text-white/70 mb-10 max-w-md w-full pr-3;
+}
+
+// fix little style issues for button
+.tutorial_section_left_btn {
+  @apply h-12 w-fit;
+}
+
+// fix little style issues for button text
+.tutorial_section_left_btn a {
+  @apply flex items-center justify-center p-0 h-full w-full;
+}
+
+// semi-transparent background for tutorial step cards
+.tutorial_section_card {
+  @apply flex items-center justify-start min-h-48 py-9 px-12 backdrop-blur-[10px] mb-5;
+  background: rgba(30, 31, 53, 0.7);
+}
+
+// Positioning of the tutorial card content
+.tutorial_section_card_number {
+  @apply min-w-20 mr-9;
+}
+
+// Text formatting for tutorial card
+.tutorial_section_card_text {
+  @apply max-w-[334px] w-full;
+}
+
+// Heading formatting for tutorial card
+.tutorial_section_card_text h4 {
+  @apply font-RussoOne font-normal text-[22px] leading-7 text-white mb-3;
+}
+
+// take less space for paragraphs
+.tutorial_section_card_text p {
+  @apply font-Inter font-normal text-base leading-[26px] mb-0 text-white/70;
+}
+
+// markdown for statistic titles
+.stat_content h2 {
+  @apply font-RussoOne font-normal text-base leading-[45px] mb-0 text-white/70;
+}
+
+// markdown for statistic values
+.stat_content h3 {
+  @apply font-RussoOne font-normal text-[22px] leading-[45px] uppercase mb-0 text-[#96f600];
+}

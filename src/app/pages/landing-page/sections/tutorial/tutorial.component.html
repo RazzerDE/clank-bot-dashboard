@@ -1,0 +1,103 @@
+<div class="tutorial_section pt-16 pb-56" id="discord-bot-tutorial">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="tutorial_section_left a_lightSpeedInLeft">
+          <div class="sec-heading">
+            <div class="sub-inner mb-15">
+              <span class="sub-title">{{ 'SECTION_TUTORIAL_SUBTITLE' | translate }}</span>
+              <img class="inline-block ml-4" ngSrc="assets/img/frames/steps.png"
+                   height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)"/>
+            </div>
+            <h2 class="title mt-1">{{ 'SECTION_TUTORIAL_TITLE' | translate }}</h2>
+          </div>
+          <div class="tutorial_section_left_content">
+            <p [innerHTML]="'SECTION_TUTORIAL_DESC' | translate"></p>
+            <p [innerHTML]="'SECTION_TUTORIAL_DESC2' | translate"></p>
+            <div class="flex justify-start gap-x-7">
+              <a href="/invite">
+                <button type="button" class="font-style-button white-btn hover-shape !ml-0 !px-4">
+                  <span class="btn-text">{{ 'SECTION_TUTORIAL_BUTTON_INVITE' | translate }}</span>
+                  <fa-icon class="ml-2" [icon]="faRobot"></fa-icon>
+                  <span class="hover-shape1"></span>
+                  <span class="hover-shape2"></span>
+                  <span class="hover-shape3"></span>
+                </button>
+              </a>
+
+              <div class="tutorial_section_left_btn">
+                <a class="view-more black-shape px-3" href="https://discord.gg/bl4cklist">
+                  <fa-icon class="mr-2" [icon]="faHeartPulse"></fa-icon>
+                  <span class="btn-text">{{ 'SECTION_TUTORIAL_BUTTON_SUPPORT' | translate }}</span>
+                  <span class="hover-shape1"></span>
+                  <span class="hover-shape2"></span>
+                  <span class="hover-shape3"></span>
+                </a>
+              </div>
+            </div>
+
+            <div class="pt-10 grid grid-cols-2 gap-0 w-full mb-4 lg:w-[90%] lg:mb-0">
+              <!-- TODO: Change with real data -->
+              <div class="stat_content !w-full">
+                <h2>{{ 'SECTION_TUTORIAL_STATS_GIVEAWAYS' | translate }}</h2>
+                <h3 class="counter-number"><span class="counter">16.132</span>+</h3>
+              </div>
+              <div class="stat_content !w-full">
+                <h2>{{ 'SECTION_TUTORIAL_STATS_SUPPORT' | translate }}</h2>
+                <h3 class="counter-number"><span class="counter">21.232</span>+</h3>
+              </div>
+              <div class="stat_content !w-full">
+                <h2>{{ 'SECTION_TUTORIAL_STATS_GCHAT' | translate }}</h2>
+                <h3 class="counter-number"><span class="counter">16.124</span>+</h3>
+              </div>
+              <div class="stat_content !w-full">
+                <h2>{{ 'SECTION_TUTORIAL_STATS_PUNISH' | translate }}</h2>
+                <h3 class="counter-number"><span class="counter">64.023</span>+</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="tutorial_section_right_content">
+          <div class="tutorial_section_card a_lightSpeedInRight">
+            <div class="tutorial_section_card_number">
+              <img ngSrc="assets/img/icons/steps/one.png" alt="Clank ~ Discord-Bot (Step One)"
+                   class="img-fluid" height="100" width="100" />
+            </div>
+            <div class="tutorial_section_card_text">
+              <h4>{{ 'SECTION_TUTORIAL_CARD_1_TITLE' | translate }}</h4>
+              <p [innerHTML]="'SECTION_TUTORIAL_CARD_1_DESC' | translate"></p>
+            </div>
+          </div>
+          <div class="tutorial_section_card a_lightSpeedInRight animate__delay-1s">
+            <div class="tutorial_section_card_number">
+              <img ngSrc="assets/img/icons/steps/two.png" alt="Clank ~ Discord-Bot (Step Two)"
+                   class="img-fluid" height="100" width="100" />
+            </div>
+            <div class="tutorial_section_card_text">
+              <h4>{{ 'SECTION_TUTORIAL_CARD_2_TITLE' | translate }}</h4>
+              <p [innerHTML]="'SECTION_TUTORIAL_CARD_2_DESC' | translate"></p>
+            </div>
+          </div>
+          <div class="tutorial_section_card a_lightSpeedInRight animate__delay-2s">
+            <div class="tutorial_section_card_number">
+              <img ngSrc="assets/img/icons/steps/three.png" alt="Clank ~ Discord-Bot (Step Three)"
+                   class="img-fluid" height="100" width="100" />
+            </div>
+            <div class="tutorial_section_card_text">
+              <h4>{{ 'SECTION_TUTORIAL_CARD_3_TITLE' | translate }}</h4>
+              <p [innerHTML]="'SECTION_TUTORIAL_CARD_3_DESC' | translate"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="moon_img_bg mt-16">
+    <img ngSrc="assets/img/bg/moon.svg" alt="Clank ~ Discord-Bot (Moon Background)" class="img-fluid"
+         height="250" width="250" />
+  </div>
+</div>

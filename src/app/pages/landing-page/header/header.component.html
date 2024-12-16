@@ -1,1 +1,116 @@
-<p>header works!</p>
+<header class="bg-transparent absolute w-full z-[12] py-6 px-0">
+  <div class="relative z-[1]">
+    <div class="container mx-auto">
+      <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center">
+
+          <!-- Logo -->
+          <div class="mr-14">
+            <a routerLink="/">
+              <img ngSrc="assets/img/logo/clank-discord-bot-logo.png" width="70" height="70"
+                   alt="Clank ~ Discord-Bot (Logo)" />
+            </a>
+          </div>
+
+          <!-- Navigation -->
+          <div class="header-menu">
+            <ul>
+              @for (item of nav_items; track item) {
+                <li>
+                  <a href="{{item.redirect_url}}">{{item.title}}</a>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="header-buttons">
+          <ul class="items-center mb-0" id="header-buttons">
+            <li class="mr-5">
+
+              <!-- Mobile Expand Button -->
+              <a (click)="toggleMobileMenu()" class="nav-expander bar" href="#">
+                <div class="bar">
+                  <span class="dot1"></span>
+                  <span class="dot2"></span>
+                  <span class="dot3"></span>
+                </div>
+              </a>
+            </li>
+
+            <!-- Lang Switch -->
+            <li class="mx-3 lang-switch-btn animate__animated animate__infinite" #langSwitcher
+                (mouseover)="langSwitcher.classList.add('animate__pulse')"
+                (mouseleave)="langSwitcher.classList.remove('animate__pulse')">
+              @if (translateService.getLanguage() === 'en') {
+                <img ngSrc="assets/img/icons/lang/united-states.png" alt="Clank ~ Discord-Bot (America Icon)"
+                     width="35" height="35" (click)="translateService.setLanguage('de')" />
+              } @else {
+                <img ngSrc="assets/img/icons/lang/germany.png" alt="Clank ~ Discord-Bot (Germany Icon)"
+                     width="35" height="35" (click)="translateService.setLanguage('en')" />
+              }
+            </li>
+
+            <li class="!inline-flex">
+              <a class="font-style-button black-shape" href="https://discord.gg/bl4cklist">
+                <span class="btn-text">Discord-Server </span>
+                <fa-icon [icon]="faDiscord" class="inline-block ml-1" />
+                <span class="hover-shape1"></span>
+                <span class="hover-shape2"></span>
+                <span class="hover-shape3"></span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/dashboard">
+                <button type="button" class="w-full font-style-button white-btn hover-shape !px-2">
+                  <fa-icon [icon]="faCode" class="inline-block mr-2" />
+                  <span class="btn-text">Dashboard</span>
+                  <span class="hover-shape1"></span>
+                  <span class="hover-shape2"></span>
+                  <span class="hover-shape3"></span>
+                </button>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas for Mobile Menu -->
+  <nav class="right_menu_togle mobile-navbar-menu h-full top-0">
+    <div class="close-btn !flex justify-between w-9/12 !cursor-default">
+      <a routerLink="/">
+        <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" width="50" height="50"
+             alt="Clank ~ Discord-Bot (Logo)">
+      </a>
+      <a class="nav-close relative cursor-pointer" (click)="toggleMobileMenu()">
+        <div class="line">
+          <span class="line1"></span>
+          <span class="line2"></span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Content -->
+    <ul class="nav-menu p-0">
+      @for (item of nav_items; track item) {
+        <li>
+          <a href="{{item.redirect_url}}">{{item.title}}</a>
+        </li>
+      }
+
+      <!-- Button -->
+      <li>
+        <button type="button" class="font-style-button black-shape-big mobile-btn-purple">
+          <fa-icon [icon]="faCode" class="inline-block" />
+          <span class="btn-text">{{ 'HEADER_LANDING_ITEM_DASHBOARD_MOBILE' | translate }} </span>
+          <span class="hover-shape1"></span>
+          <span class="hover-shape2"></span>
+          <span class="hover-shape3"></span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+</header>

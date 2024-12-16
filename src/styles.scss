@@ -1,4 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+@charset "utf-8";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Importing style libraries. */
+@import 'bootstrap/scss/bootstrap';
+@import 'assets/fonts/fonts.scss';
+@import 'assets/scss/base.scss';
+@import 'assets/scss/structure/responsive.scss';

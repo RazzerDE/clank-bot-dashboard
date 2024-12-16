@@ -1,0 +1,113 @@
+@import "../../../../../assets/fonts/fonts.scss";
+
+/* Welcome Section (Intro) */
+.intro-banner {
+  @apply relative z-[1] overflow-hidden pt-44 px-0 pb-56 w-full;
+  background: url("../../../../../assets/img/bg/clank-discord-bot-bg.jpg");
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+
+  // Dark Overlay for BG
+  &::before {
+    content: "";
+    @apply absolute inset-0 bg-black opacity-80 z-0;
+  }
+}
+
+/* Limit the Width of the Content */
+.intro-banner .banner-content {
+  @apply max-w-[700px] mx-auto my-0;
+}
+
+/* Fix positioning of the Banner-Icon */
+.banner-content .banner-icon {
+  @apply mx-0 mt-0 mb-6;
+}
+
+/* Positioning of the Banner-Title */
+.banner-content .banner-title {
+  @apply mx-0 mt-0 mb-5;
+}
+
+/* Formatting of the Banner-Description */
+.banner-content .description {
+  @apply text-white/50 mx-0 mt-0 mb-10 text-lg font-semibold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Positioning of the entire Slider with Format */
+.slider {
+  @apply flex items-center gap-[30px] w-max;
+}
+
+/* Some mouse effects for the Slider */
+.slider-item {
+  @apply cursor-pointer transition-transform duration-200 ease-in;
+}
+
+/* Little hover effect for each Slider-Item */
+.slider-item:hover {
+  @apply transform scale-105;
+  filter: none !important;
+}
+
+/* Size of the Slider-Item */
+.partner-icon {
+  @apply w-[50px] h-[50px] object-contain;
+}
+
+/* Design of entire Banner for Intro */
+.guild_banner {
+  @apply backdrop-blur-sm h-24 absolute flex items-start justify-center flex-col bottom-0 w-full z-[2];
+  background: rgba(30, 31, 53, 0.8);
+}
+
+/* Red border on the upper left side */
+.guild_banner .red-border-gradient {
+  @apply absolute -top-[248px] left-[248px] w-1 h-[500px] -rotate-90;
+  background: linear-gradient(180deg, rgba(248, 37, 82, 0.5) 0%, rgba(21, 22, 37, 0) 100%);
+}
+
+/* Green border on the lower right side */
+.guild_banner .green-border-gradient {
+  @apply absolute -bottom-[248px] right-[248px] w-1 h-[500px] rotate-90;
+  background: linear-gradient(180deg, rgba(163, 255, 18, 0.5) 0%, rgba(21, 22, 37, 0) 100%);
+}
+
+/* make the slider width smaller to let them slide out of the screen */
+.guild_slider_section .slider-inner {
+  @apply relative flex items-center justify-between flex-shrink-0 overflow-hidden;
+}
+
+/* Positioning of the Guild info details */
+.guild_info_section {
+  @apply flex items-start justify-center flex-col h-full;
+}
+
+/* Header Format for guild info details */
+.guild_info_section h3 {
+  @apply font-RussoOne text-white text-base leading-9 font-normal uppercase mb-0;
+}
+
+/* Beautiful gradient for the Slider-Shadow */
+.slide_shadow .slide_shadow_content:after, .slide_shadow .slide_shadow_content:before {
+  background: linear-gradient(269.8deg, rgba(26, 27, 48, 0) 0.18%, #1A1B30 99.84%);
+}
+
+/* "Register" the Slider Shadow and position it */
+.guild_slider_section .slider-inner::after, .guild_slider_section .slider-inner::before {
+  @apply block w-12 h-full absolute top-0 z-[1];
+  content: "";
+}
+
+/* Position the Slider Shadow */
+.guild_slider_section .slider-inner::before {
+  @apply left-0;
+}
+
+/* Position the Slider Shadow */
+.guild_slider_section .slider-inner::after {
+  @apply right-0;
+  transform: rotateZ(180deg);
+}

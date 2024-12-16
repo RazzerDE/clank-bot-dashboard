@@ -1,0 +1,33 @@
+/* Background Shapes in the Center */
+.footer-section .footer-cta-area {
+  @apply relative z-10 px-0 py-6;
+  background: radial-gradient(circle, #4a4176 -24%, #1E1F35 40%);
+}
+
+/* Background-Design for Footer */
+.footer-section .footer-area {
+  @apply pt-52 relative bg-cover bg-no-repeat bg-top;
+  background-image: url("/assets/img/bg/clank-discord-bot-footer-bg.jpg");
+
+  // Dark Overlay for BG
+  &::before {
+    content: "";
+    @apply absolute inset-0 bg-black opacity-80 z-0;
+  }
+}
+
+/* Row-Design for Footer Pages */
+.footer-mainmenu ul li {
+  @apply inline-block py-0 px-2;
+}
+
+/* Colour and Transition for Footer Pages */
+.footer-mainmenu ul li a {
+  @apply text-white/70 duration-[400ms];
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Reduce Container for Firefly Animation */
+.h-footer-bg {
+  height: calc(100% - 143px);
+}

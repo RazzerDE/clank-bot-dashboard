@@ -1,0 +1,10 @@
+/* Canvas for the Mobile Menu */
+header .right_menu_togle {
+  @apply bg-white fixed overflow-y-auto z-50 w-full pt-[66px] pr-[60px] pb-[50px] pl-[50px] -right-[500px]
+         max-w-[400px] transition-all duration-300 ease-in;
+}
+
+/* Show Canvas for Mobile Menu */
+.nav-expanded nav {
+  @apply right-0;
+}
