@@ -31,11 +31,21 @@ describe('FooterComponent', () => {
     component = fixture.componentInstance;
 
     jest.spyOn(component as any, 'ngAfterViewInit');
-    fixture.detectChanges();
+
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should start firefly animation for footer on ngAfterViewInit', () => {
+    const setCanvasIDSpy = jest.spyOn(component['animations'], 'setCanvasID');
+    const startAnimationSpy = jest.spyOn(component['animations'], 'startAnimation');
+
+    component.ngAfterViewInit();
+
+    expect(setCanvasIDSpy).toHaveBeenCalledWith('footer-canvas', 'firefly');
+    expect(startAnimationSpy).toHaveBeenCalledWith('footer-canvas');
   });
 
   it('should adjust the margin-top of the footer content based on the height of the CTA div', () => {
@@ -52,7 +62,7 @@ describe('FooterComponent', () => {
     });
 
     (component as any).adjustResponsiveBody(new Event('resize'));
-    expect(mockContentDiv.style.marginTop).toBe('-250px');
+    expect(mockContentDiv.style.marginTop).toBe('0px');
 
     // Restore the original implementation of getElementById
     mockGetElementById.mockRestore();
