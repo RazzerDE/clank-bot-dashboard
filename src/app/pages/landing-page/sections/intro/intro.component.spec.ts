@@ -5,15 +5,22 @@ import {ElementRef} from "@angular/core";
 import {AnimationService} from "../../../../services/animation/animation.service";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {GeneralStats} from "../../../../services/types/Statistics";
+import {of} from "rxjs";
+import {ApiService} from "../../../../services/api.service";
+import {DataHolderService} from "../../../../services/data-holder.service";
 
 describe('IntroComponent', () => {
   let component: IntroComponent;
   let fixture: ComponentFixture<IntroComponent>;
   let animationService: AnimationService;
+  let apiService: ApiService;
+  let dataService: DataHolderService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IntroComponent, TranslateModule.forRoot()],
+      imports: [IntroComponent, TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [ { provide: ActivatedRoute, useValue: {} }]
     })
     .compileComponents();
@@ -21,6 +28,8 @@ describe('IntroComponent', () => {
     fixture = TestBed.createComponent(IntroComponent);
     component = fixture.componentInstance;
     animationService = TestBed.inject(AnimationService);
+    apiService = TestBed.inject(ApiService);
+    dataService = TestBed.inject(DataHolderService);
   });
 
   it('should create', () => {
@@ -37,6 +46,30 @@ describe('IntroComponent', () => {
     expect(startSlidingSpy).toHaveBeenCalled();
     expect(setCanvasIDSpy).toHaveBeenCalledWith('intro-canvas', 'star');
     expect(startAnimationSpy).toHaveBeenCalledWith('intro-canvas');
+  });
+
+  it('should fetch and update bot statistics', () => {
+    const mockStats: GeneralStats = {
+      user_count: 1000,
+      guild_count: 100,
+      giveaway_count: 50,
+      ticket_count: 20,
+      punish_count: 10,
+      global_verified_count: 5
+    };
+
+    jest.spyOn(apiService, 'getGeneralStats').mockReturnValue(of(mockStats));
+
+    component.getBotStats();
+
+    expect(dataService.bot_stats).toEqual({
+      user_count: '1.000',
+      guild_count: '100',
+      giveaway_count: '50',
+      ticket_count: '20',
+      punish_count: '10',
+      global_verified_count: '5'
+    });
   });
 
   it('should start sliding when startSliding is called', () => {
