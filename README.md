@@ -1,27 +1,76 @@
-# ClankDashboard
+<h1 align="center">
+     🛠️ Clank-Dashboard ~ Creative dashboard for discord-bots
+</h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
+<p align="center">
+  <i align="center">This dashboard allows you to configure & customize my own Discord bot "Clank" without needing to use Discord directly. <br />It doesn't include the backend functionalities.</i>
+  <br /><br />
 
-## Development server
+  <img src="https://i.imgur.com/pWnBahr.gif" align="center">
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+</p>
 
-## Code scaffolding
+<h4 align="center">
+  <a href="https://angular.dev">
+    <img src="https://img.shields.io/badge/Angular-17.3.11-27ae60?style=for-the-badge" alt="angular version" style="height: 25px;">
+  </a>
+  <a href="https://tailwindcss.com">
+    <img src="https://img.shields.io/badge/Tailwind-3.4.17-27ae60?style=for-the-badge" alt="tailwind version" style="height: 25px;">
+  </a>
+   <a href="https://discord.gg/bl4cklist">
+    <img src="https://img.shields.io/discord/616655040614236160?style=for-the-badge&logo=discord&label=Discord&color=%237289da" alt="discord server" style="height: 25px;">
+  </a>
+  <a href="https://animate.style">
+    <img src="https://img.shields.io/badge/Animate.css-4.1.1-27ae60?style=for-the-badge" alt="animate.css version" style="height: 25px;">
+  </a>
+  <a href="https://jestjs.io/">
+    <img src="https://img.shields.io/badge/JEST-29.7.0-27ae60?style=for-the-badge" alt="jest version" style="height: 25px;">
+  </a>
+  <br>
+</h4>
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 🗯️ Introduction
+› This project provides the frontend for the dashboard of my own public Discord bot "Clank" and is also actively used to configure modules and general settings of it. I hope that maybe some people can learn something from it when they look at the project.
 
-## Build
+💝 › The project was developed by Yannic Drews and is actively maintained - user requests are welcome and are actively discussed together with a small Discord server team. :)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 🪛 What can i learn?
+› `Clank Dashboard` offers some fundamental features that help you better understand or apply basic concepts in certain areas.
+<br />
 
-## Running unit tests
+📢 › This project uses a handful third-party libraries: `Tailwind`, `Bootstrap`, `JEST` and `Bootstrap`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+It supports following <strong>features</strong>:
+<ul> 
+  <li>🖼️ <strong>Creative & beautiful design</strong>: We have put a lot of thought into the design of the website and wanted it to be something unique - we have put a lot of love and attention to detail into it.</li>
+  <br /> 
+  <li>💚 <strong>100% Unit-Test Coverage</strong>: Software testing is an important point when programming professionally for clients - we have tested all our TypeScript code, and you may be able to learn something from it.</li> 
+  <br /> 
+  <li>🚩 <strong>Language Switcher</strong>: Our website automatically detects the language of your browser and displays English/German accordingly, alternatively the user can switch via button click.</li> 
+  <br /> 
+  <li>📱 <strong>Responsive for all Devices</strong>: We have put a special focus on ensuring that the website is beautifully and user-friendly displayed on as many devices as possible.</li> 
+  <br /> 
+  <li>👥 <strong>Discord-Login</strong>: To log in to the dashboard, the respective user must authenticate with Discord.</li>
+  <br /> 
+  <li>🎈 <strong>Catchy Animations</strong>: As soon as an object comes into the user's field of view, a beautiful animation is played if applicable.</li> 
+  <br /> 
+  <li>🔺 <strong>Work with API-Data</strong>: Here you can see how API data from a REST server could be processed.</li>
+  <br /> 
+  <li>⏳ <strong>Page-Loader</strong>: While the website is being built and all data is loading, a nice animated icon is displayed, which was built entirely with CSS.</li> 
+</ul>
 
-## Running end-to-end tests
+⚙️ › To run the <strong>test coverage</strong> and see the results, just open a terminal in the project root folder and run the command `jest`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## 🔨 Installation
+› Before you can start exploring our small website for learning purposes, there are a few preparations you need to make.
 
-## Further help
+💡 › You will need a <strong>own Backend RESTful-Service</strong> in order to test the API functionality.<br />
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Follow these steps to ensure everything runs smoothly:
+1. Clone the project and navigate with a terminal to the project root folder.
+2. Run `npm install` to install all dependencies.
+4. Run `ng build` to build the project.
+5. Upload the content of the `dist/` folder to your webserver.
+6. visit the page of your webserver - HAVE FUN!
+
+🪛 › <strong>I don't have a webserver:</strong> Thats not a problem! Just use `ng serve` instead of `ng build` and open the page `localhost:4200` in your web browser.
