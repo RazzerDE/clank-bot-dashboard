@@ -30,9 +30,8 @@
               <img ngSrc="assets/img/frames/steps.png" alt="Clank ~ Discord-Bot (Step-Icon)"
                    class="img-fluid inline-block -mt-[2px] ml-2" height="11" width="74"/>
             </h3>
-            <!-- TODO: Change with real data -->
             <p class="m-0">{{ 'SECTION_INTRO_BANNER_DESC' | translate:
-              {guild_count: bot_stats.guild_count, user_count: bot_stats.user_count} }}</p>
+              {guild_count: dataService.bot_stats.guild_count, user_count: dataService.bot_stats.user_count} }}</p>
           </div>
         </div>
 

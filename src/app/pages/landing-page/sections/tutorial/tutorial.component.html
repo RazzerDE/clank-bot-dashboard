@@ -37,22 +37,21 @@
             </div>
 
             <div class="pt-10 grid grid-cols-2 gap-0 w-full mb-4 lg:w-[90%] lg:mb-0">
-              <!-- TODO: Change with real data -->
               <div class="stat_content !w-full">
                 <h2>{{ 'SECTION_TUTORIAL_STATS_GIVEAWAYS' | translate }}</h2>
-                <h3 class="counter-number"><span class="counter">16.132</span>+</h3>
+                <h3 class="counter-number"><span class="counter">{{ dataService.bot_stats.giveaway_count}}</span>+</h3>
               </div>
               <div class="stat_content !w-full">
                 <h2>{{ 'SECTION_TUTORIAL_STATS_SUPPORT' | translate }}</h2>
-                <h3 class="counter-number"><span class="counter">21.232</span>+</h3>
+                <h3 class="counter-number"><span class="counter">{{ dataService.bot_stats.ticket_count}}</span>+</h3>
               </div>
               <div class="stat_content !w-full">
                 <h2>{{ 'SECTION_TUTORIAL_STATS_GCHAT' | translate }}</h2>
-                <h3 class="counter-number"><span class="counter">16.124</span>+</h3>
+                <h3 class="counter-number"><span class="counter">{{ dataService.bot_stats.global_verified_count}}</span>+</h3>
               </div>
               <div class="stat_content !w-full">
                 <h2>{{ 'SECTION_TUTORIAL_STATS_PUNISH' | translate }}</h2>
-                <h3 class="counter-number"><span class="counter">64.023</span>+</h3>
+                <h3 class="counter-number"><span class="counter">{{ dataService.bot_stats.punish_count}}</span>+</h3>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import {AnimationService} from "../../../../services/animation/animation.service
 import {TranslatePipe} from "@ngx-translate/core";
 import {ApiService} from "../../../../services/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
+import {DataHolderService} from "../../../../services/data-holder.service";
 
 @Component({
   selector: 'landing-section-intro',
@@ -20,8 +21,6 @@ import {GeneralStats} from "../../../../services/types/Statistics";
 export class IntroComponent implements AfterViewInit, OnDestroy {
   @ViewChild('slider') protected slider!: ElementRef<HTMLDivElement>;
   protected readonly window: Window = window;
-  protected bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
-                                        punish_count: 110, global_verified_count: '16.000' };
   protected slider_items: SliderItems[] = [
     {
       image_url: 'https://cdn.discordapp.com/icons/671065574821986348/313528b52bc81e964c3bd6c1bb406b9b.png?size=64',
@@ -88,7 +87,8 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
 
   private slidingInterval: any;  // datatype can't be imported
 
-  constructor(private animations: AnimationService, private apiService: ApiService) {
+  constructor(private animations: AnimationService, private apiService: ApiService,
+              protected dataService: DataHolderService) {
     this.duplicatedItems = [...this.slider_items, ...this.slider_items];
 
     this.getBotStats();
@@ -124,8 +124,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
   getBotStats(): void {
     // general bot statistics
     this.apiService.getGeneralStats().subscribe((stats: GeneralStats): void => {
-      console.log(stats);
-      this.bot_stats = {
+      this.dataService.bot_stats = {
         user_count: Number(stats.user_count).toLocaleString('de-DE'),
         guild_count: Number(stats.guild_count).toLocaleString('de-DE'),
         giveaway_count: Number(stats.giveaway_count).toLocaleString('de-DE'),

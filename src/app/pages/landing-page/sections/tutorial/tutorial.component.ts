@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgOptimizedImage} from "@angular/common";
-import {RouterLink} from "@angular/router";
 import {faHeartPulse, faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {TranslatePipe} from "@ngx-translate/core";
+import {DataHolderService} from "../../../../services/data-holder.service";
 
 @Component({
   selector: 'landing-section-tutorial',
@@ -11,7 +11,6 @@ import {TranslatePipe} from "@ngx-translate/core";
   imports: [
     FaIconComponent,
     NgOptimizedImage,
-    RouterLink,
     TranslatePipe
   ],
   templateUrl: './tutorial.component.html',
@@ -21,4 +20,6 @@ export class TutorialComponent {
 
   protected readonly faRobot: IconDefinition = faRobot;
   protected readonly faHeartPulse: IconDefinition = faHeartPulse;
+
+  constructor(protected dataService: DataHolderService) {}
 }
