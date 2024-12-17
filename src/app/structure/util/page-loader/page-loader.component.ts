@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {NgClass} from "@angular/common";
+import {DataHolderService} from "../../../services/data-holder.service";
 
 @Component({
   selector: 'app-page-loader',
@@ -10,14 +11,8 @@ import {NgClass} from "@angular/common";
   templateUrl: './page-loader.component.html',
   styleUrl: './page-loader.component.scss',
 })
-export class PageLoaderComponent implements OnInit {
-  protected isLoading: boolean = true;
+export class PageLoaderComponent {
 
-  ngOnInit(): void {
-    window.addEventListener('load', (): void => {
-      if (document.readyState === 'complete') {
-        this.isLoading = false;
-      }
-    });
-  }
+  constructor(protected dataService: DataHolderService) { }
+
 }

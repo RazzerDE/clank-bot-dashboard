@@ -6,6 +6,7 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {ApiService} from "../../../../services/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {DataHolderService} from "../../../../services/data-holder.service";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'landing-section-intro',
@@ -21,63 +22,7 @@ import {DataHolderService} from "../../../../services/data-holder.service";
 export class IntroComponent implements AfterViewInit, OnDestroy {
   @ViewChild('slider') protected slider!: ElementRef<HTMLDivElement>;
   protected readonly window: Window = window;
-  protected slider_items: SliderItems[] = [
-    {
-      image_url: 'https://cdn.discordapp.com/icons/671065574821986348/313528b52bc81e964c3bd6c1bb406b9b.png?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/616655040614236160/a_b324dc6561660fd147e1cb7e04086b65.gif?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/1021914804920795227/3165a5395e4b5d7624cc86cfb99edba8.png?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/1157256410346823770/de2a75faa71b05a2685fc6c916d81d12.webp?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/609407060194623558/8ab37bda41a8c1ea4a48d10056b34605.webp?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/931260304208330762/b5b2937692f640eca367b6001a90c3f0.webp?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/336642139381301249/3aa641b21acded468308a37eef43d7b3.webp?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/616655040614236160/a_b324dc6561660fd147e1cb7e04086b65.gif?size=64',
-      guild_name: 'Bl4cklist',
-      guild_invite: 'https://discord.gg/bl4cklist'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/787672220503244800/53fb0a8ba438e4a2420e0a8b7ea2c179.png?size=64',
-      guild_name: 'Test',
-      guild_invite: 'https://discord.gg/test'
-    },
-    {
-      image_url: 'https://cdn.discordapp.com/icons/787672220503244800/53fb0a8ba438e4a2420e0a8b7ea2c179.png?size=64',
-      guild_name: 'Test',
-      guild_invite: 'https://discord.gg/test'
-    }
-  ];
+  protected slider_items: SliderItems[] = [];
   protected duplicatedItems: SliderItems[] = [];  // show duplicated items in slider for infinite loop
 
   protected currentTranslate: number = 0;
@@ -89,8 +34,6 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
 
   constructor(private animations: AnimationService, private apiService: ApiService,
               protected dataService: DataHolderService) {
-    this.duplicatedItems = [...this.slider_items, ...this.slider_items];
-
     this.getBotStats();
   }
 
@@ -101,8 +44,6 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    * - Initiates the star animation for the intro section.
    */
   ngAfterViewInit(): void {
-    this.startSliding();
-
     // start star animation for intro
     this.animations.setCanvasID('intro-canvas', 'star');
     this.animations.startAnimation('intro-canvas');
@@ -122,16 +63,26 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    * Fetches general bot statistics and also some famous guilds from the API and updates the placeholder data correctly.
    */
   getBotStats(): void {
-    // general bot statistics
-    this.apiService.getGeneralStats().subscribe((stats: GeneralStats): void => {
+    // Fetch both general stats and guild usage
+    forkJoin({guildUsage: this.apiService.getGuildUsage(), generalStats: this.apiService.getGeneralStats()
+    }).subscribe(({ guildUsage, generalStats }: {guildUsage: SliderItems[], generalStats: GeneralStats}): void => {
+      // Handle guild usage
+      this.slider_items = guildUsage;
+      this.duplicatedItems = [...this.slider_items, ...this.slider_items];
+      this.startSliding();
+
+      // Handle general stats
       this.dataService.bot_stats = {
-        user_count: Number(stats.user_count).toLocaleString('de-DE'),
-        guild_count: Number(stats.guild_count).toLocaleString('de-DE'),
-        giveaway_count: Number(stats.giveaway_count).toLocaleString('de-DE'),
-        ticket_count: Number(stats.ticket_count).toLocaleString('de-DE'),
-        punish_count: Number(stats.punish_count).toLocaleString('de-DE'),
-        global_verified_count: Number(stats.global_verified_count).toLocaleString('de-DE')
+        user_count: Number(generalStats.user_count).toLocaleString('de-DE'),
+        guild_count: Number(generalStats.guild_count).toLocaleString('de-DE'),
+        giveaway_count: Number(generalStats.giveaway_count).toLocaleString('de-DE'),
+        ticket_count: Number(generalStats.ticket_count).toLocaleString('de-DE'),
+        punish_count: Number(generalStats.punish_count).toLocaleString('de-DE'),
+        global_verified_count: Number(generalStats.global_verified_count).toLocaleString('de-DE')
       };
+
+      // Disable page Loader
+      this.dataService.isLoading = false;
     });
   }
 

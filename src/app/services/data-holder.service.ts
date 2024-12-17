@@ -5,6 +5,7 @@ import {GeneralStats} from "./types/Statistics";
   providedIn: 'root'
 })
 export class DataHolderService {
+  isLoading: boolean = true;
 
   bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
                               punish_count: 110, global_verified_count: '16.000' };
