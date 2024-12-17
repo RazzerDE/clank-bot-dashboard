@@ -1,17 +1,16 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {RouterLink} from "@angular/router";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
-import { nav_items } from '../../header/types/LNavigationItem';
 import {AnimationService} from "../../../../services/animation/animation.service";
 import {TranslatePipe} from "@ngx-translate/core";
+import {ApiService} from "../../../../services/api.service";
+import {GeneralStats} from "../../../../services/types/Statistics";
 
 @Component({
   selector: 'landing-section-intro',
   standalone: true,
   imports: [
     NgOptimizedImage,
-    RouterLink,
     NgClass,
     TranslatePipe
   ],
@@ -21,8 +20,8 @@ import {TranslatePipe} from "@ngx-translate/core";
 export class IntroComponent implements AfterViewInit, OnDestroy {
   @ViewChild('slider') protected slider!: ElementRef<HTMLDivElement>;
   protected readonly window: Window = window;
-  // TODO: Change with real data
-  protected readonly nav_items = nav_items;
+  protected bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
+                                        punish_count: 110, global_verified_count: '16.000' };
   protected slider_items: SliderItems[] = [
     {
       image_url: 'https://cdn.discordapp.com/icons/671065574821986348/313528b52bc81e964c3bd6c1bb406b9b.png?size=64',
@@ -89,8 +88,10 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
 
   private slidingInterval: any;  // datatype can't be imported
 
-  constructor(private animations: AnimationService) {
+  constructor(private animations: AnimationService, private apiService: ApiService) {
     this.duplicatedItems = [...this.slider_items, ...this.slider_items];
+
+    this.getBotStats();
   }
 
   /**
@@ -115,6 +116,24 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
     if (this.slidingInterval) {
       clearInterval(this.slidingInterval);
     }
+  }
+
+  /**
+   * Fetches general bot statistics and also some famous guilds from the API and updates the placeholder data correctly.
+   */
+  getBotStats(): void {
+    // general bot statistics
+    this.apiService.getGeneralStats().subscribe((stats: GeneralStats): void => {
+      console.log(stats);
+      this.bot_stats = {
+        user_count: Number(stats.user_count).toLocaleString('de-DE'),
+        guild_count: Number(stats.guild_count).toLocaleString('de-DE'),
+        giveaway_count: Number(stats.giveaway_count).toLocaleString('de-DE'),
+        ticket_count: Number(stats.ticket_count).toLocaleString('de-DE'),
+        punish_count: Number(stats.punish_count).toLocaleString('de-DE'),
+        global_verified_count: Number(stats.global_verified_count).toLocaleString('de-DE')
+      };
+    });
   }
 
   /**

@@ -13,7 +13,7 @@
   "SECTION_INTRO_BUTTON": "💝 ~ DISCORD-BOT EINLADEN",
 
   "SECTION_INTRO_BANNER_TITLE": "VERTRAUE AUF UNS",
-  "SECTION_INTRO_BANNER_DESC": "Clank erreicht mehr als 200.000 User auf 349 Servern.",
+  "SECTION_INTRO_BANNER_DESC": "Clank erreicht mehr als {{user_count}} User auf {{guild_count}} Servern.",
 
   "SECTION_FEATURES_SUBTITLE": "BOT-FEATURES",
   "SECTION_FEATURES_TITLE": "❓ ~ WAS MACHT UNSEREN DISCORD-BOT BESONDERS?",

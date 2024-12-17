@@ -13,7 +13,7 @@
   "SECTION_INTRO_BUTTON": "💝 ~ INVITE DISCORD BOT",
 
   "SECTION_INTRO_BANNER_TITLE": "TRUST US",
-  "SECTION_INTRO_BANNER_DESC": "Clank reaches more than 200,000 users on 349 servers.",
+  "SECTION_INTRO_BANNER_DESC": "Clank reaches more than {{user_count}} users on {{guild_count}} servers.",
 
   "SECTION_FEATURES_SUBTITLE": "BOT FEATURES",
   "SECTION_FEATURES_TITLE": "❓ ~ WHAT MAKES OUR DISCORD BOT SPECIAL?",
