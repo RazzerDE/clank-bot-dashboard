@@ -4,18 +4,21 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
 import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
+import {retry, timeout} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${config.client_id}&response_type=code&redirect_uri=${config.redirect_url}&scope=identify+guilds+guilds.members.read`
-  private headers: HttpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`});
+  private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
+  private headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+    if (localStorage.getItem('access_token')) {
+      this.headers = this.setAuthorizationHeader(localStorage.getItem('access_token')!);
+    }
+  }
 
   /**
    * Authenticates the user with the provided Discord authorization code and state.
@@ -28,19 +31,28 @@ export class AuthService {
    * @param {string} code - The Discord authorization code.
    * @param {string} state - The state parameter to prevent CSRF attacks.
    */
-  authenticateUser(code: string, state: string): void {
+  private authenticateUser(code: string, state: string): void {
+    // // state expiration check
+    const stateExpiry: string | null = localStorage.getItem('state_expiry');
+    if (!stateExpiry || Date.now() > parseInt(stateExpiry)) {
+      this.router.navigateByUrl(`/errors/invalid-login`).then();
+      return;
+    }
+
     // check if the state is the same as the one stored in local storage
-    if (state !== localStorage.getItem('state')) {
+    if (state !== atob(localStorage.getItem('state')!)) {
       this.router.navigateByUrl(`/errors/invalid-login`).then();
       return;
     }
 
     this.http.post<any>(`${config.api_url}/auth/discord`, { code: code, state: state })
-      .subscribe({
+      .pipe(timeout(5000), retry(2)).subscribe({
         next: (response: AccessCode): void => {
           localStorage.removeItem('state');  // clean up stored state
+          localStorage.removeItem('state_expiry');
+
           localStorage.setItem('access_token', response.access_token);
-          this.headers = this.headers.set('Authorization', `Bearer ${response.access_token}`);
+          this.headers = this.setAuthorizationHeader(response.access_token);
 
           // remove query parameters from URL
           this.router.navigateByUrl('/dashboard').then();
@@ -56,36 +68,12 @@ export class AuthService {
   }
 
   /**
-   * Verifies the login by checking the query parameters for a valid login code.
-   * If the code is not present, redirects the user to the Discord authentication URL.
-   * If the code is present, authenticates the user using the provided code.
-   */
-  discordLogin(): void {
-    this.route.queryParams.subscribe(params => {
-      if ((!params['code'] || !params['state']) && !window.location.pathname.includes("errors/")) {
-        // already authenticated
-        if (localStorage.getItem('access_token')) {
-          this.isValidToken();
-          return;
-        }
-
-        // redirect to discord if invalid login code
-        this.appendState();
-        window.location.href = this.authUrl;
-        return;
-      }
-
-      this.authenticateUser(params['code'], params['state']);
-    });
-  }
-
-  /**
    * Checks if the stored access token is valid.
    * If the token is not present, redirects the user to the invalid login error page.
    * If the token is present, sends a request to verify the token.
    * If the token is invalid or an error occurs, redirects the user to the appropriate error page.
    */
-  isValidToken(): void {
+  private isValidToken(): void {
     if (!localStorage.getItem('access_token')) {
       this.router.navigateByUrl(`/errors/invalid-login`).then();
       return;
@@ -110,18 +98,75 @@ export class AuthService {
    * Otherwise, it generates a new random state value and stores it in local storage.
    * The state parameter is then appended to the `authUrl`.
    */
-  appendState(): void {
-    const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    localStorage.setItem('state', state);
-    this.http.post<any>(`${config.api_url}/auth/saveState`, { state: state }).subscribe();
+  private appendState(): void {
+    const encodedState: string = btoa(this.generateSecureState());
+    localStorage.setItem('state', encodedState);
+    localStorage.setItem('state_expiry', (Date.now() + 5 * 60 * 1000).toString()); // Add 5min expiry
 
+    this.http.post<void>(`${config.api_url}/auth/saveState`, { state: atob(encodedState) })
+      .pipe(timeout(5000), retry(2)).subscribe({
+        error: (): void => {
+          // Handle state save error
+          this.router.navigateByUrl('/errors/unknown').then();
+          localStorage.removeItem('state');
+        }
+      });
+
+    // replace state if it already exists in the URL
     const stateRegex = /(&state=[^&]*)/;
     if (this.authUrl.match(stateRegex)) {
-      if (!this.authUrl.includes(`state=${state}`)) {
-        this.authUrl = this.authUrl.replace(stateRegex, `&state=${state}`);
+      if (!this.authUrl.includes(`state=${atob(encodedState)}`)) {
+        this.authUrl = this.authUrl.replace(stateRegex, `&state=${encodeURIComponent(atob(encodedState))}`);
       }
     } else {
-      this.authUrl += `&state=${state}`;
+      this.authUrl += `&state=${atob(encodedState)}`;
     }
+
+  }
+
+  /**
+   * Generates a secure random state string for OAuth2 flow.
+   * The state parameter is used to prevent CSRF attacks.
+   * This function uses the Web Crypto API to generate a cryptographically secure random value.
+   *
+   * @returns {string} A secure random state string.
+   */
+  private generateSecureState(): string {
+    const array = new Uint8Array(32);
+    return Array.from(crypto.getRandomValues(array), byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  /**
+   * Sets the Authorization header with the provided token.
+   *
+   * @param {string} token - The access token to be set in the Authorization header.
+   * @returns {HttpHeaders} The updated HttpHeaders object with the Authorization header set.
+   */
+  private setAuthorizationHeader(token: string): HttpHeaders {
+    return this.headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  /**
+   * Verifies the login by checking the query parameters for a valid login code.
+   * If the code is not present, redirects the user to the Discord authentication URL.
+   * If the code is present, authenticates the user using the provided code.
+   */
+  discordLogin(): void {
+    this.route.queryParams.subscribe(params => {
+      if ((!params['code'] || !params['state']) && !window.location.pathname.includes("errors/")) {
+        // already authenticated
+        if (localStorage.getItem('access_token')) {
+          this.isValidToken();
+          return;
+        }
+
+        // redirect to discord if invalid login code
+        this.appendState();
+        window.location.href = this.authUrl;
+        return;
+      }
+
+      this.authenticateUser(params['code'], params['state']);
+    });
   }
 }
