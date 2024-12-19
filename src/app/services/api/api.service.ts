@@ -3,13 +3,14 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
+import {config} from "../../../environments/config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private readonly API_URL: string = 'http://localhost:8081';
+  private readonly API_URL: string = config.api_url;
 
   constructor(private http: HttpClient) { }
 
