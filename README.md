@@ -68,10 +68,24 @@ It supports following <strong>features</strong>:
 
 Follow these steps to ensure everything runs smoothly:
 1. Clone the project and navigate with a terminal to the project root folder.
-2. Change the details in `src/environments/config.ts` to your needs.
-3. Run `npm install` to install all dependencies.
-4. Run `ng build` to build the project.
-5. Upload the content of the `dist/` folder to your webserver.
-6. visit the page of your webserver - HAVE FUN!
+2. Set up the configuration in `src/environments/config.ts` to your needs.
+4. Run `npm install` to install all dependencies.
+5. Run `ng build` to build the project.
+6. Upload the content of the `dist/` folder to your webserver.
+7. visit the page of your webserver - HAVE FUN!
 
 🪛 › <strong>I don't have a webserver:</strong> Thats not a problem! Just use `ng serve` instead of `ng build` and open the page `localhost:4200` in your web browser.
+
+## ❓ Configuration Example
+› You need to create the configuration file `src/environments/config.ts` in order to let the discord login & api calls work.
+
+An example of the configuration could look like this:
+```ts
+export const config = {
+  domain: 'http://localhost:4200',
+  api_url: 'http://localhost:8081',  // used for general api calls
+  discord_url: 'https://discord.com/api/v10',  // used for the discord oauth2
+  redirect_url: 'http://localhost:4200/dashboard',  // used for the discord oauth2
+  client_id: 'YOUR_DISCORD_CLIENT_ID'  // used for the discord oauth2
+}
+```
