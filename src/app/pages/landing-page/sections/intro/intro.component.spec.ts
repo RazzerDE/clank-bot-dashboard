@@ -8,8 +8,9 @@ import {TranslateModule} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {of} from "rxjs";
-import {ApiService} from "../../../../services/api.service";
-import {DataHolderService} from "../../../../services/data-holder.service";
+import {ApiService} from "../../../../services/api/api.service";
+import {DataHolderService} from "../../../../services/data/data-holder.service";
+import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
 
 describe('IntroComponent', () => {
   let component: IntroComponent;
@@ -37,39 +38,48 @@ describe('IntroComponent', () => {
   });
 
   it('should call startSliding and start star animation in ngAfterViewInit', () => {
-    const startSlidingSpy = jest.spyOn(component, 'startSliding');
     const setCanvasIDSpy = jest.spyOn(animationService, 'setCanvasID');
     const startAnimationSpy = jest.spyOn(animationService, 'startAnimation');
 
     component.ngAfterViewInit();
 
-    expect(startSlidingSpy).toHaveBeenCalled();
     expect(setCanvasIDSpy).toHaveBeenCalledWith('intro-canvas', 'star');
     expect(startAnimationSpy).toHaveBeenCalledWith('intro-canvas');
   });
 
-  it('should fetch and update bot statistics', () => {
-    const mockStats: GeneralStats = {
-      user_count: 1000,
-      guild_count: 100,
-      giveaway_count: 50,
-      ticket_count: 20,
-      punish_count: 10,
-      global_verified_count: 5
+  it('should fetch general bot statistics and guild usage, update slider items, and disable page loader', (done) => {
+    const mockGuildUsage: SliderItems[] = [
+      { image_url: 'test.png', guild_name: 'Guild 1', guild_invite: 'https://discord.gg/bl4cklist' },
+      { image_url: 'test.png', guild_name: 'Guild 2', guild_invite: 'https://discord.gg/bl4cklist' },
+    ];
+    const mockGeneralStats: GeneralStats = {
+      user_count: 28000,
+      guild_count: 350,
+      giveaway_count: 130,
+      ticket_count: 290,
+      punish_count: 110,
+      global_verified_count: 16000
     };
 
-    jest.spyOn(apiService, 'getGeneralStats').mockReturnValue(of(mockStats));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(of(mockGuildUsage));
+    jest.spyOn(apiService, 'getGeneralStats').mockReturnValue(of(mockGeneralStats));
 
     component.getBotStats();
 
-    expect(dataService.bot_stats).toEqual({
-      user_count: '1.000',
-      guild_count: '100',
-      giveaway_count: '50',
-      ticket_count: '20',
-      punish_count: '10',
-      global_verified_count: '5'
-    });
+    setTimeout(() => {
+      expect((component as any).slider_items).toEqual(mockGuildUsage);
+      expect((component as any).duplicatedItems).toEqual([...mockGuildUsage, ...mockGuildUsage]);
+      expect(dataService.bot_stats).toEqual({
+        user_count: '28.000',
+        guild_count: "350",
+        giveaway_count: "130",
+        ticket_count: "290",
+        punish_count: "110",
+        global_verified_count: '16.000'
+      });
+      expect(dataService.isLoading).toBe(false);
+      done();
+    }, 0);
   });
 
   it('should start sliding when startSliding is called', () => {

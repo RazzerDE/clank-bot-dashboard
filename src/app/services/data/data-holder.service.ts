@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {GeneralStats} from "./types/Statistics";
+import {GeneralStats} from "../types/Statistics";
 
 @Injectable({
   providedIn: 'root'

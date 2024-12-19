@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { LanguageSwitcherService } from './language-switcher.service';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {nav_items} from "../pages/landing-page/header/types/LNavigationItem";
+import {nav_items} from "../../pages/landing-page/header/types/LNavigationItem";
 
 describe('LanguageSwitcherService', () => {
   let service: LanguageSwitcherService;

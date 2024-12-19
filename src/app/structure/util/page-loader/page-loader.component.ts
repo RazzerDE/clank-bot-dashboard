@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NgClass} from "@angular/common";
-import {DataHolderService} from "../../../services/data-holder.service";
+import {DataHolderService} from "../../../services/data/data-holder.service";
 
 @Component({
   selector: 'app-page-loader',

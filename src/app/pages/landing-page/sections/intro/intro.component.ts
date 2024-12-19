@@ -3,9 +3,9 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
 import {AnimationService} from "../../../../services/animation/animation.service";
 import {TranslatePipe} from "@ngx-translate/core";
-import {ApiService} from "../../../../services/api.service";
+import {ApiService} from "../../../../services/api/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
-import {DataHolderService} from "../../../../services/data-holder.service";
+import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {forkJoin} from "rxjs";
 
 @Component({

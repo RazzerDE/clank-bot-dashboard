@@ -6,7 +6,7 @@ import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {nav_items} from "./types/LNavigationItem";
-import {LanguageSwitcherService} from "../../../services/language-switcher.service";
+import {LanguageSwitcherService} from "../../../services/language/language-switcher.service";
 import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({

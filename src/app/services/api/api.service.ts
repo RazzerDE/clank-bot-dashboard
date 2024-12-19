@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {GeneralStats} from "./types/Statistics";
-import {SliderItems} from "./types/landing-page/SliderItems";
+import {GeneralStats} from "../types/Statistics";
+import {SliderItems} from "../types/landing-page/SliderItems";
 
 @Injectable({
   providedIn: 'root'

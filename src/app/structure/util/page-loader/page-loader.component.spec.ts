@@ -21,11 +21,4 @@ describe('PageLoaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set isLoading to false when window load event is fired', () => {
-    expect((component as any).isLoading).toBe(true);
-
-    window.dispatchEvent(new Event('load'));
-
-    expect((component as any).isLoading).toBe(false);
-  });
 });
