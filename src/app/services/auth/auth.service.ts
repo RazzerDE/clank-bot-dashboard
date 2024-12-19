@@ -13,8 +13,7 @@ export class AuthService {
   private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${config.client_id}&response_type=code&redirect_uri=${config.redirect_url}&scope=identify+guilds+guilds.members.read`
   private headers: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-  });
+    'Authorization': `Bearer ${localStorage.getItem('access_token')}`});
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {}
 
@@ -42,6 +41,9 @@ export class AuthService {
           localStorage.removeItem('state');  // clean up stored state
           localStorage.setItem('access_token', response.access_token);
           this.headers = this.headers.set('Authorization', `Bearer ${response.access_token}`);
+
+          // remove query parameters from URL
+          this.router.navigateByUrl('/dashboard').then();
         },
         error: (error: HttpErrorResponse): void => {
           if (error.status === 400) {  // access_token is not valid
@@ -90,7 +92,9 @@ export class AuthService {
     }
 
     this.http.get<any>(`${config.discord_url}/users/@me`, { headers: this.headers }).subscribe({
-      next: (_response: DiscordUser): void => {},
+      next: (_response: DiscordUser): void => {
+        console.log(_response);
+      },
       error: (error: HttpErrorResponse): void => {
         localStorage.removeItem('access_token');
         const errorPath: string = error.status === 401 ? '/errors/invalid-login' : '/errors/unknown';
