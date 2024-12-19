@@ -68,7 +68,8 @@ It supports following <strong>features</strong>:
 
 Follow these steps to ensure everything runs smoothly:
 1. Clone the project and navigate with a terminal to the project root folder.
-2. Run `npm install` to install all dependencies.
+2. Change the details in `src/environments/config.ts` to your needs.
+3. Run `npm install` to install all dependencies.
 4. Run `ng build` to build the project.
 5. Upload the content of the `dist/` folder to your webserver.
 6. visit the page of your webserver - HAVE FUN!
