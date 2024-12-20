@@ -5,6 +5,7 @@ import {config} from "../../../environments/config";
 import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
 import {retry, timeout} from "rxjs";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class AuthService {
 
   private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
   private headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {
     if (localStorage.getItem('access_token')) {
@@ -51,6 +53,10 @@ export class AuthService {
           localStorage.removeItem('state');  // clean up stored state
           localStorage.removeItem('state_expiry');
 
+          // decrypt token and store it
+          response.access_token = this.decryptToken(response.access_token);
+          if (!response.access_token) { return; }
+
           localStorage.setItem('access_token', response.access_token);
           this.headers = this.setAuthorizationHeader(response.access_token);
 
@@ -60,6 +66,8 @@ export class AuthService {
         error: (error: HttpErrorResponse): void => {
           if (error.status === 400) {  // access_token is not valid
             this.router.navigateByUrl(`/errors/invalid-login`).then();
+          } else if (error.status === 429) {  // ratelimited
+            this.router.navigateByUrl(`/errors/ratelimited`).then();
           } else {
             this.router.navigateByUrl(`/errors/unknown`).then();
           }
@@ -74,11 +82,6 @@ export class AuthService {
    * If the token is invalid or an error occurs, redirects the user to the appropriate error page.
    */
   private isValidToken(): void {
-    if (!localStorage.getItem('access_token')) {
-      this.router.navigateByUrl(`/errors/invalid-login`).then();
-      return;
-    }
-
     this.http.get<any>(`${config.discord_url}/users/@me`, { headers: this.headers }).subscribe({
       next: (_response: DiscordUser): void => {
         console.log(_response);
@@ -144,6 +147,28 @@ export class AuthService {
    */
   private setAuthorizationHeader(token: string): HttpHeaders {
     return this.headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  /**
+   * Decrypts the given encrypted token.
+   *
+   * This method takes an encrypted token as input, decodes it using the JWT library,
+   * and returns the original Discord token. If the decryption fails, it logs an error
+   * and navigates the user to the invalid login error page.
+   *
+   * @param {string} encryptedToken - The encrypted token to be decrypted.
+   * @returns {string} The original Discord token.
+   */
+  private decryptToken(encryptedToken: string): string {
+    // The JWT library will automatically validate the signature using the same key
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(encryptedToken);
+      return decodedToken.sub; // The original Discord token
+    } catch (error) {
+      console.error('Error decrypting token:', error);
+      this.router.navigateByUrl('/errors/invalid-login').then();
+      return '';
+    }
   }
 
   /**
