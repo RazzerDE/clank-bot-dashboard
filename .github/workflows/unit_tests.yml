@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: '18' # Updated to Node.js 18 for compatibility
 
+      - name: Create directories
+        run: mkdir -p src/environments
+
       - name: Create config.ts
         run: |
           echo "export const config = {" > src/environments/config.ts
