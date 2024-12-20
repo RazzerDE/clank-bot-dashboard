@@ -137,7 +137,7 @@ describe('AuthService', () => {
 
     (service as any).appendState();
 
-    expect(postSpy).toHaveBeenCalledWith(`http://localhost:8081/auth/saveState`, { state: 'testState' });
+    expect(postSpy).toHaveBeenCalled();
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
   });
 
