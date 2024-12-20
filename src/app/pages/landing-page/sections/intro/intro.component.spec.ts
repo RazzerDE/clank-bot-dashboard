@@ -7,10 +7,11 @@ import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {GeneralStats} from "../../../../services/types/Statistics";
-import {of} from "rxjs";
+import {of, throwError} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
+import {HttpErrorResponse} from "@angular/common/http";
 
 describe('IntroComponent', () => {
   let component: IntroComponent;
@@ -79,6 +80,19 @@ describe('IntroComponent', () => {
       });
       expect(dataService.isLoading).toBe(false);
       done();
+    }, 0);
+  });
+
+  it('should set isLoading to false on HttpErrorResponse inside getBotStats', () => {
+    const mockError = new HttpErrorResponse({ error: 'test 404 error', status: 404, statusText: 'Not Found' });
+
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => mockError));
+    jest.spyOn(apiService, 'getGeneralStats').mockReturnValue(throwError(() => mockError));
+
+    component.getBotStats();
+
+    setTimeout(() => {
+      expect(dataService.isLoading).toBe(false);
     }, 0);
   });
 
