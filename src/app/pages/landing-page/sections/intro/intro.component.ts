@@ -7,6 +7,7 @@ import {ApiService} from "../../../../services/api/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {forkJoin} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'landing-section-intro',
@@ -64,25 +65,31 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    */
   getBotStats(): void {
     // Fetch both general stats and guild usage
-    forkJoin({guildUsage: this.apiService.getGuildUsage(), generalStats: this.apiService.getGeneralStats()
-    }).subscribe(({ guildUsage, generalStats }: {guildUsage: SliderItems[], generalStats: GeneralStats}): void => {
-      // Handle guild usage
-      this.slider_items = guildUsage;
-      this.duplicatedItems = [...this.slider_items, ...this.slider_items];
-      this.startSliding();
+    forkJoin({
+      guildUsage: this.apiService.getGuildUsage(), generalStats: this.apiService.getGeneralStats()
+    }).subscribe({
+      next: ({guildUsage, generalStats}: { guildUsage: SliderItems[], generalStats: GeneralStats }): void => {
+        // Handle guild usage
+        this.slider_items = guildUsage;
+        this.duplicatedItems = [...this.slider_items, ...this.slider_items];
+        this.startSliding();
 
-      // Handle general stats
-      this.dataService.bot_stats = {
-        user_count: Number(generalStats.user_count).toLocaleString('de-DE'),
-        guild_count: Number(generalStats.guild_count).toLocaleString('de-DE'),
-        giveaway_count: Number(generalStats.giveaway_count).toLocaleString('de-DE'),
-        ticket_count: Number(generalStats.ticket_count).toLocaleString('de-DE'),
-        punish_count: Number(generalStats.punish_count).toLocaleString('de-DE'),
-        global_verified_count: Number(generalStats.global_verified_count).toLocaleString('de-DE')
-      };
+        // Handle general stats
+        this.dataService.bot_stats = {
+          user_count: Number(generalStats.user_count).toLocaleString('de-DE'),
+          guild_count: Number(generalStats.guild_count).toLocaleString('de-DE'),
+          giveaway_count: Number(generalStats.giveaway_count).toLocaleString('de-DE'),
+          ticket_count: Number(generalStats.ticket_count).toLocaleString('de-DE'),
+          punish_count: Number(generalStats.punish_count).toLocaleString('de-DE'),
+          global_verified_count: Number(generalStats.global_verified_count).toLocaleString('de-DE')
+        };
 
-      // Disable page Loader
-      this.dataService.isLoading = false;
+        // Disable page Loader
+        this.dataService.isLoading = false;
+      },
+      error: (_err: HttpErrorResponse): void => {
+        this.dataService.isLoading = false;
+      }
     });
   }
 
