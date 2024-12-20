@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {ActivatedRoute} from "@angular/router";
+import {of} from "rxjs";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -8,10 +11,12 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent]
-    })
-    .compileComponents();
-    
+      imports: [DashboardComponent, HttpClientTestingModule],
+      providers: [ { provide: ActivatedRoute, useValue: { snapshot: {
+        queryParams: { code: 'test_code', state: 'test_state' } },
+          queryParams: of({ code: 'test_code', state: 'test_state' }) } } ]
+    }).compileComponents();
+
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
