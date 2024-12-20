@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageLoaderComponent } from './page-loader.component';
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('PageLoaderComponent', () => {
   let component: PageLoaderComponent;
@@ -8,7 +9,7 @@ describe('PageLoaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PageLoaderComponent]
+      imports: [PageLoaderComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
 

@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DataHolderService } from './data-holder.service';
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()]
+    });
     service = TestBed.inject(DataHolderService);
   });
 

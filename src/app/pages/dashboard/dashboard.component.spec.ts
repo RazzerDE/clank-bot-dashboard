@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {of} from "rxjs";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -11,7 +12,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent, HttpClientTestingModule],
+      imports: [DashboardComponent, HttpClientTestingModule, TranslateModule.forRoot()],
       providers: [ { provide: ActivatedRoute, useValue: { snapshot: {
         queryParams: { code: 'test_code', state: 'test_state' } },
           queryParams: of({ code: 'test_code', state: 'test_state' }) } } ]

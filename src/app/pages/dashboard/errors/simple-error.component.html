@@ -1,0 +1,42 @@
+<div class="flex w-screen h-screen flex-col">
+  <div class="flex h-full flex-auto flex-col items-center justify-center p-6 sm:p-10 bg-gray-100 dark:!bg-slate-900">
+    <div class="w-full max-w-3xl">
+      <img ngSrc="assets/img/bg/errors/server-error.svg" alt="Clank ~ Discord-Bot (Server-Error Bg)"
+           class="w-full h-auto animate-float" height="16" width="16" />
+    </div>
+
+    <div class="text-black dark:!text-white text-center text-4xl font-extrabold leading-tight tracking-tight
+                md:text-5xl md:leading-none">{{ this.dataService.error_title }}</div>
+    <div class="text-slate-500 mt-2 text-center text-lg font-medium tracking-tight md:text-xl">
+      {{ this.dataService.error_desc }}
+    </div>
+
+    <div class="flex items-center justify-between gap-x-8 mt-12">
+     <a routerLink="/dashboard">
+       <button type="button" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300
+                                 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 focus:outline-none
+                                 dark:focus:ring-red-500">
+         <fa-icon [icon]="faHome" class="mr-1"></fa-icon> {{ 'ERROR_LOGIN_BUTTON' | translate }}
+      </button>
+     </a>
+
+      <a href="https://discord.gg/bl4cklist">
+        <button type="button" class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:ring-gray-300
+                                   font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:bg-blue-600
+                                   dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-gray-600">
+          <fa-icon [icon]="faDiscord" class="mr-1"></fa-icon> {{ 'ERROR_SUPPORT_BUTTON' | translate }}
+        </button>
+      </a>
+    </div>
+  </div>
+
+  <div class="bg-card relative z-49 flex h-14 w-full flex-0 items-center border-t px-4 bg-white dark:!bg-slate-900/75
+            dark:border-slate-700 sm:h-20 md:px-6 print:hidden">
+    <a routerLink="/">
+      <span class="text-gray-500 font-medium hover:text-gray-400 transition-colors duration-300">clank.dev</span>
+    </a>
+
+    <!-- TODO: Theme Switcher footer right -->
+  </div>
+
+</div>

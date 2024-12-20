@@ -6,6 +6,7 @@ import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
 import {retry, timeout} from "rxjs";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {DataHolderService} from "../data/data-holder.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class AuthService {
   private headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
   private jwtHelper: JwtHelperService = new JwtHelperService();
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router,
+              private dataService: DataHolderService) {
     if (localStorage.getItem('access_token')) {
       this.headers = this.setAuthorizationHeader(localStorage.getItem('access_token')!);
     }
@@ -34,16 +36,16 @@ export class AuthService {
    * @param {string} state - The state parameter to prevent CSRF attacks.
    */
   private authenticateUser(code: string, state: string): void {
-    // // state expiration check
+    // state expiration check
     const stateExpiry: string | null = localStorage.getItem('state_expiry');
     if (!stateExpiry || Date.now() > parseInt(stateExpiry)) {
-      this.router.navigateByUrl(`/errors/invalid-login`).then();
+      this.dataService.redirectLoginError('EXPIRED');
       return;
     }
 
     // check if the state is the same as the one stored in local storage
     if (state !== atob(localStorage.getItem('state')!)) {
-      this.router.navigateByUrl(`/errors/invalid-login`).then();
+      this.dataService.redirectLoginError('INVALID');
       return;
     }
 
@@ -64,12 +66,12 @@ export class AuthService {
           this.router.navigateByUrl('/dashboard').then();
         },
         error: (error: HttpErrorResponse): void => {
-          if (error.status === 400) {  // access_token is not valid
-            this.router.navigateByUrl(`/errors/invalid-login`).then();
+          if (error.status === 400) {  // code is not valid
+            this.dataService.redirectLoginError('INVALID');
           } else if (error.status === 429) {  // ratelimited
-            this.router.navigateByUrl(`/errors/ratelimited`).then();
+            this.dataService.redirectLoginError('BLOCKED');
           } else {
-            this.router.navigateByUrl(`/errors/unknown`).then();
+            this.dataService.redirectLoginError('UNKNOWN');
           }
         }
       });
@@ -88,8 +90,12 @@ export class AuthService {
       },
       error: (error: HttpErrorResponse): void => {
         localStorage.removeItem('access_token');
-        const errorPath: string = error.status === 401 ? '/errors/invalid-login' : '/errors/unknown';
-        this.router.navigateByUrl(errorPath).then();
+
+        if (error.status === 401) {
+          this.dataService.redirectLoginError('EXPIRED');
+        } else {
+          this.dataService.redirectLoginError('UNKNOWN');
+        }
       }
     });
   }
@@ -110,8 +116,8 @@ export class AuthService {
       .pipe(timeout(5000), retry(2)).subscribe({
         error: (): void => {
           // Handle state save error
-          this.router.navigateByUrl('/errors/unknown').then();
           localStorage.removeItem('state');
+          this.dataService.redirectLoginError('UNKNOWN');
         }
       });
 
@@ -165,8 +171,7 @@ export class AuthService {
       const decodedToken = this.jwtHelper.decodeToken(encryptedToken);
       return decodedToken.sub; // The original Discord token
     } catch (error) {
-      console.error('Error decrypting token:', error);
-      this.router.navigateByUrl('/errors/invalid-login').then();
+      this.dataService.redirectLoginError('INVALID');
       return '';
     }
   }

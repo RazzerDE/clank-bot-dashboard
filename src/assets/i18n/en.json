@@ -83,5 +83,18 @@
   "SECTION_TUTORIAL_CARD_2_TITLE": "SET BOT LANGUAGE",
   "SECTION_TUTORIAL_CARD_2_DESC": "› Set the language of all texts & messages of the Discord bot by using the command <code>/bot-sprache</code> (or <code>/bot-language</code>).",
   "SECTION_TUTORIAL_CARD_3_TITLE": "SET UP BOT SYSTEMS",
-  "SECTION_TUTORIAL_CARD_3_DESC": "› With the slash command <code>/setup</code> you can see all the necessary settings you need to make for special modules (or use the new dashboard)."
+  "SECTION_TUTORIAL_CARD_3_DESC": "› With the slash command <code>/setup</code> you can see all the necessary settings you need to make for special modules (or use the new dashboard).",
+
+  "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login expired!",
+  "ERROR_LOGIN_EXPIRED_DESC": "› Please log in again to use the dashboard.",
+  "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Login failed!",
+  "ERROR_LOGIN_INVALID_DESC": "› Your login was not successful - please try again.",
+  "ERROR_LOGIN_BLOCKED_TITLE": "🚫 ~ Login blocked!",
+  "ERROR_LOGIN_BLOCKED_DESC": "› You are sending too many requests - please try again later.",
+  "ERROR_UNKNOWN_TITLE": "🤔 ~ Something went wrong..",
+  "ERROR_UNKNOWN_DESC": "› An unknown error occurred - contact support!",
+
+  "ERROR_PAGE_TITLE": "Error occured ~ Clank Discord-Bot",
+  "ERROR_LOGIN_BUTTON": "Back to Dashboard",
+  "ERROR_SUPPORT_BUTTON": "Support Server"
 }

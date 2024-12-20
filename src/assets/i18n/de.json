@@ -83,5 +83,18 @@
   "SECTION_TUTORIAL_CARD_2_TITLE": "BOT-SPRACHE FESTLEGEN",
   "SECTION_TUTORIAL_CARD_2_DESC": "› Lege die Sprache von allen Texten & Nachrichten des Discord-Bots fest, in dem du den Befehl <code>/bot-sprache</code> (oder <code>/bot-language</code>) verwendest.",
   "SECTION_TUTORIAL_CARD_3_TITLE": "BOT-SYSTEME EINRICHTEN",
-  "SECTION_TUTORIAL_CARD_3_DESC": "› Mit dem Slashbefehl <code>/setup</code> kannst du alle benötigten Einstellungen sehen, die du für spezielle Module vornehmen musst (oder du verwendest das neue Dashboard)."
+  "SECTION_TUTORIAL_CARD_3_DESC": "› Mit dem Slashbefehl <code>/setup</code> kannst du alle benötigten Einstellungen sehen, die du für spezielle Module vornehmen musst (oder du verwendest das neue Dashboard).",
+
+  "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
+  "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",
+  "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Anmeldung fehlgeschlagen!",
+  "ERROR_LOGIN_INVALID_DESC": "› Deine Anmeldung war nicht erfolgreich - bitte versuche es erneut.",
+  "ERROR_LOGIN_BLOCKED_TITLE": "🚫 ~ Anmeldung blockiert!",
+  "ERROR_LOGIN_BLOCKED_DESC": "› Du sendest zu viele Anfragen - bitte versuche es später erneut.",
+  "ERROR_UNKNOWN_TITLE": "🤔 ~ Etwas ist schiefgelaufen..",
+  "ERROR_UNKNOWN_DESC": "› Ein unbekannter Fehler ist aufgetreten - Kontaktiere den Support!",
+
+  "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
+  "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
+  "ERROR_SUPPORT_BUTTON": "Support Server"
 }
