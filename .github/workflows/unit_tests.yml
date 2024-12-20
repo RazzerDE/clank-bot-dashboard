@@ -13,16 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18' # Updated to Node.js 18 for compatibility
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18' # Updated to Node.js 18 for compatibility
 
-    - name: Install dependencies
-      run: npm install
+      - name: Create config.ts
+        run: |
+          echo "export const config = {" > src/environments/config.ts
+          echo "  client_id: 'your_client_id'," >> src/environments/config.ts
+          echo "  redirect_url: 'your_redirect_url'," >> src/environments/config.ts
+          echo "  api_url: 'your_api_url'," >> src/environments/config.ts
+          echo "  discord_url: 'your_discord_url'" >> src/environments/config.ts
+          echo "};" >> src/environments/config.ts
 
-    - name: Run tests
-      run: npm test
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
