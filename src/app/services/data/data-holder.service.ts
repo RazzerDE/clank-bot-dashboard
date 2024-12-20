@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 })
 export class DataHolderService {
   isLoading: boolean = true;
+  isDarkTheme: boolean = false;
 
   bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
                               punish_count: 110, global_verified_count: '16.000' };
@@ -42,6 +43,44 @@ export class DataHolderService {
     }
 
     this.router.navigateByUrl(`/errors/simple`).then();
+  }
+
+  /**
+   * Retrieves the theme preference from local storage or the user's system settings.
+   *
+   * @returns {boolean} - `true` if the theme is dark, otherwise `false`.
+   */
+  getThemeFromLocalStorage(): boolean {
+    const darkMode: string | null = localStorage.getItem('dark');
+    if (darkMode !== null) {
+      return darkMode === 'true';
+    }
+
+    // check user's system theme
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+  }
+
+  /**
+   * Toggles the theme between light and dark mode.
+   */
+  toggleTheme(): void {
+    this.isDarkTheme = !this.isDarkTheme;
+    localStorage.setItem('dark', this.isDarkTheme.toString());
+    this.applyTheme();
+  }
+
+  /**
+   * Applies the current theme to the document
+   */
+  applyTheme(): void {
+    const html: HTMLHtmlElement = document.querySelector('html') as HTMLHtmlElement;
+    if (html) {
+      if (this.isDarkTheme) {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+    }
   }
 
 }

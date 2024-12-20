@@ -43,13 +43,7 @@
             <li class="mx-3 lang-switch-btn animate__animated animate__infinite" #langSwitcher
                 (mouseover)="langSwitcher.classList.add('animate__pulse')"
                 (mouseleave)="langSwitcher.classList.remove('animate__pulse')">
-              @if (translateService.getLanguage() === 'en') {
-                <img ngSrc="assets/img/icons/lang/united-states.png" alt="Clank ~ Discord-Bot (America Icon)"
-                     width="35" height="35" (click)="translateService.setLanguage('de')" />
-              } @else {
-                <img ngSrc="assets/img/icons/lang/germany.png" alt="Clank ~ Discord-Bot (Germany Icon)"
-                     width="35" height="35" (click)="translateService.setLanguage('en')" />
-              }
+              <lang-switch-button></lang-switch-button>
             </li>
 
             <li class="!inline-flex">

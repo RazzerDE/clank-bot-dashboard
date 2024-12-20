@@ -1,0 +1,28 @@
+// little animation if theme got switched
+.animate-rotate {
+  &.rotate-left {
+    animation: rotate-left 0.5s ease-in-out;
+  }
+
+  &.rotate-right {
+    animation: rotate-right 0.5s ease-in-out;
+  }
+}
+
+@keyframes rotate-left {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate-right {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}

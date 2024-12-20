@@ -1,0 +1,10 @@
+<div class="transition-transform duration-500 ease-in-out transform animate-rotate"
+     [ngClass]="{'rotate-left': !this.isLangSwitched, 'rotate-right': this.isLangSwitched}">
+  @if (translateService.getLanguage() === 'en') {
+    <img ngSrc="assets/img/icons/lang/united-states.png" alt="Clank ~ Discord-Bot (America Icon)"
+         width="35" height="35" (click)="switchLanguage('de')" />
+  } @else {
+    <img ngSrc="assets/img/icons/lang/germany.png" alt="Clank ~ Discord-Bot (Germany Icon)"
+         width="35" height="35" (click)="switchLanguage('en')" />
+  }
+</div>

@@ -8,6 +8,7 @@ import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {nav_items} from "./types/LNavigationItem";
 import {LanguageSwitcherService} from "../../../services/language/language-switcher.service";
 import {TranslatePipe} from "@ngx-translate/core";
+import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
 
 @Component({
   selector: 'landing-header',
@@ -16,7 +17,8 @@ import {TranslatePipe} from "@ngx-translate/core";
     NgOptimizedImage,
     RouterLink,
     FontAwesomeModule,
-    TranslatePipe
+    TranslatePipe,
+    LangSwitchButtonComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'

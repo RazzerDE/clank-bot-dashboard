@@ -3,6 +3,7 @@ import {RouterOutlet} from "@angular/router";
 import {PageLoaderComponent} from "./structure/util/page-loader/page-loader.component";
 import {LanguageSwitcherService} from "./services/language/language-switcher.service";
 import {config} from "../environments/config";
+import {DataHolderService} from "./services/data/data-holder.service";
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,11 @@ import {config} from "../environments/config";
 })
 export class AppComponent {
 
-  constructor(private langService: LanguageSwitcherService) {
+  constructor(private langService: LanguageSwitcherService, private dataService: DataHolderService) {
     this.langService.setLanguage();
+
+    this.dataService.isDarkTheme = this.dataService.getThemeFromLocalStorage();
+    this.dataService.applyTheme();
 
     // add Content-Security-Policy to header
     const meta = document.createElement('meta');
