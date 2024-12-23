@@ -6,12 +6,15 @@ import {RouterLink} from "@angular/router";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faBan, faBirthdayCake,
+  faChevronDown,
+  faChevronRight,
   faComments, faEarthEurope, faFilter, faGift,
   faHouse, faImage,
   faPenToSquare, faScrewdriverWrench, faScroll, faServer, faShieldHalved,
   faStar, faTableColumns, faTicket,
   faTruckMedical, faUserGroup, faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,10 +22,43 @@ import {
   imports: [
     NgOptimizedImage,
     RouterLink,
-    FaIconComponent
+    FaIconComponent,
   ],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
+  animations: [
+    trigger('expandCollapse', [
+      state('collapsed', style({
+        height: '86px',
+        overflow: 'hidden',
+        opacity: 1
+      })),
+      state('expanded', style({
+        height: '*',
+        overflow: 'hidden',
+        opacity: 1
+      })),
+      transition('expanded => collapsed', [
+        style({ height: '*' }),
+        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)',
+          style({ height: '96px' })
+        )
+      ]),
+      transition('collapsed => expanded', [
+        style({ height: '96px' }),
+        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)',
+          style({ height: '*' })
+        )
+      ])
+    ]),
+    trigger('rotateChevron', [
+      state('down', style({ transform: 'rotate(0deg)' })),
+      state('down', style({ transform: 'rotate(90deg)' })),
+      transition('right <=> down', [
+        animate('300ms ease-in-out')
+      ])
+    ])
+  ]
 })
 export class DashboardComponent {
 
@@ -40,7 +76,7 @@ export class DashboardComponent {
     {
       category: "Support-System",
       color: "blue",
-      description: "Ticket-Tool für das Anliegen der User",
+      description: "Ticket-Tool für die Fragen der User",
       pages: [
         { title: "Modul-Einrichtung", icon: faScrewdriverWrench, redirect_url: "/support/setup" },
         { title: "Offene Tickets", icon: faTicket, redirect_url: "/support/tickets" },
@@ -64,7 +100,7 @@ export class DashboardComponent {
     {
       category: "Server-Sicherheit",
       color: "red",
-      description: "Schütze deinen Server vor Raids & Griefs",
+      description: "Schütze dich vor Raids & Griefs",
       pages: [
         { title: "Server-Mitglieder", icon: faUserGroup, redirect_url: "/security/members" },
         { title: "Aktive Schutzsysteme", icon: faShieldHalved, redirect_url: "/security/shield" },
@@ -83,10 +119,26 @@ export class DashboardComponent {
     },
   ];
 
+  expandedGroups: { [key: string]: boolean } = {};
+  faChevronDown = faChevronDown;
+  faChevronRight = faChevronRight;
+
+  toggleGroup(category: string) {
+    console.log('Before toggle:', category, this.expandedGroups[category]);
+    this.expandedGroups[category] = !this.expandedGroups[category];
+    console.log('After toggle:', category, this.expandedGroups[category]);
+  }
+
   constructor(protected authService: AuthService, private dataService: DataHolderService) {
     this.dataService.isLoading = false;
 
     this.authService.discordLogin();
+
+    this.navigation.forEach(group => {
+      this.expandedGroups[group.category] = false;
+    });
+
+    console.log('Initial state:', this.expandedGroups);
   }
 
 }
