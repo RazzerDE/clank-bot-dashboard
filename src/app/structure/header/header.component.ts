@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {LangSwitchButtonComponent} from "../util/lang-switch-button/lang-switch-button.component";
 import {ThemeSwitchButtonComponent} from "../util/theme-switch-button/theme-switch-button.component";
+import {DataHolderService} from "../../services/data/data-holder.service";
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,8 @@ import {ThemeSwitchButtonComponent} from "../util/theme-switch-button/theme-swit
 export class HeaderComponent {
   private server_picker_width: number = 0;
   protected showSearchInput: boolean = false;
+
+  constructor(private dataService: DataHolderService) {}
 
   /**
    * Toggles the visibility of the server picker sidebar.
@@ -38,6 +41,8 @@ export class HeaderComponent {
         // hide it
         element.style.width = '0';
       }
+
+      this.dataService.showSidebarLogo = !this.dataService.showSidebarLogo;
     }
   }
 

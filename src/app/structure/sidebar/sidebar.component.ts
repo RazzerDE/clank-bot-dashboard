@@ -52,6 +52,22 @@ import {Server, servers} from "./types/Servers";
       transition('right <=> down', [
         animate('300ms ease-in-out')
       ])
+    ]),
+    trigger('slideAnimation', [
+      state('hidden', style({
+        transform: 'translateX(-100%)',
+        opacity: 0
+      })),
+      state('visible', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      transition('hidden => visible', [
+        animate('0.3s ease-out')
+      ]),
+      transition('visible => hidden', [
+        animate('0.3s ease-in')
+      ])
     ])
   ]
 })
@@ -62,7 +78,7 @@ export class SidebarComponent {
   protected expandedGroups: { [key: string]: boolean } = {};
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
-  constructor(protected authService: AuthService, private dataService: DataHolderService) {
+  constructor(protected authService: AuthService, protected dataService: DataHolderService) {
     // initialize navigation pages to allow expanding/collapsing
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = false;

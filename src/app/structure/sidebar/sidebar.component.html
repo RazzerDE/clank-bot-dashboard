@@ -3,11 +3,11 @@
   <div class="w-[74px] bg-gray-900/95 dark:bg-gray-900/25 h-screen flex-shrink-0 flex flex-col items-center gap-2
               overflow-hidden pb-2 duration-500 ease-in-out transition-all transform"
        id="discord-server-picker">
-    <div class="w-12 h-12 bg-gray-700 dark:!bg-gray-800 rounded-full flex items-center justify-center cursor-pointer
-                mb-2 transition-all duration-300 ease-in-out transform hover:scale-105 mt-3 flex-shrink-0">
-      <img class="w-8 h-8" height="32" width="32" ngSrc="assets/img/icons/sidebar/discord-mark-blue.svg"
+    <a routerLink="/" class="w-12 h-12 flex items-center justify-center mb-2 transition-all duration-300 ease-in-out
+                             transform hover:scale-105 mt-3 flex-shrink-0">
+      <img class="w-12 h-12 rounded-full" height="50" width="50" ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png"
            alt="Clank ~ Discord-Bot (Discord Sidebar-Logo) " />
-    </div>
+    </a>
 
     <div class="w-8 h-0.5 bg-gray-700 rounded-full mb-2"></div>
 
@@ -30,9 +30,12 @@
   <aside class="w-72 bg-gray-900 shadow-lg flex flex-col h-screen">
 
     <!-- Header of Sidebar -->
-    <div class="p-4 flex items-center justify-between pb-1 pt-3" style="padding-right: 1rem !important;">
+    <div class="p-4 flex items-center justify-between pb-1"
+         style="padding-right: 1rem !important; padding-top: 0.75rem !important;">
+
       <a routerLink="/">
         <img alt="Clank ~ Discord-Bot (Logo)" class="w-10 h-10" height="50"
+             [@slideAnimation]="this.dataService.showSidebarLogo ? 'visible' : 'hidden'"
              ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" width="50"/>
       </a>
 
