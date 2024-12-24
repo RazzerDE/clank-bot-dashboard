@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
-import {nav_items, NavigationItem} from "../header/types/NavigationItem";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
@@ -8,6 +7,7 @@ import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {nav_items, NavigationItem} from "./types/NavigationItem";
 
 @Component({
   selector: 'app-sidebar',
