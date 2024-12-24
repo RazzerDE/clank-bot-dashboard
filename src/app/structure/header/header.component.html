@@ -39,8 +39,8 @@
   <div class="relative w-full h-full flex items-center">
     <img ngSrc="assets/img/icons/sidebar/search.svg" alt="Clank ~ Discord-Bot (Search Icon)"
          class="absolute left-1 top-1/2 transform -translate-y-1/2 w-6 h-6" height="24" width="24"/>
-    <input type="text" placeholder="Suchen.. ✍️" class="w-11/12 h-6 pl-12 sm:pl-14 leading-3 text-black
-                                                      dark:!bg-gray-900" maxlength="100" />
+    <input type="text" placeholder="{{ 'PLACEHOLDER_SEARCH' | translate }} ✍️"
+           class="w-11/12 h-6 pl-12 sm:pl-14 leading-3 text-black dark:!bg-gray-900" maxlength="100" />
 
     <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 dark:hover:!bg-gray-700 items-center
                 justify-center cursor-pointer select-none absolute right-1 top-1/2 transform -translate-y-1/2"

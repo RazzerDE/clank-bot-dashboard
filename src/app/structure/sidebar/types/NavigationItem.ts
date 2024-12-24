@@ -26,52 +26,52 @@ export const nav_items: NavigationItem[] = [
   {
     category: "Dashboard",
     color: "purple",
-    description: "Allgemeine Funktionen des Bots",
+    description: "SIDEBAR_CATEGORY_1_DESC",
     pages: [
-      { title: "Startseite", icon: faHouse, redirect_url: "/dashboard" },
-      { title: "Wunschliste", icon: faStar, redirect_url: "/contact" },
-      { title: "Teamliste verwalten", icon: faTruckMedical, redirect_url: "/embed-builder" }
+      { title: "SIDEBAR_PAGE_HOME", icon: faHouse, redirect_url: "/dashboard" },
+      { title: "SIDEBAR_PAGE_WISHLIST", icon: faStar, redirect_url: "/contact" },
+      { title: "SIDEBAR_PAGE_TEAM", icon: faTruckMedical, redirect_url: "/embed-builder" }
     ]
   },
   {
     category: "Support-System",
     color: "blue",
-    description: "Ticket-Tool für die Fragen der User",
+    description: "SIDEBAR_CATEGORY_2_DESC",
     pages: [
-      { title: "Modul-Einrichtung", icon: faScrewdriverWrench, redirect_url: "/support/setup" },
-      { title: "Offene Tickets", icon: faTicket, redirect_url: "/support/tickets" },
-      { title: "Support-Themen", icon: faComments, redirect_url: "/support/themes" },
-      { title: "Nachricht Panels", icon: faTableColumns, redirect_url: "/support/panels" },
-      { title: "Text-Snippets", icon: faScroll, redirect_url: "/support/snippets" },
-      { title: "Geblockte User", icon: faBan, redirect_url: "/support/bans" },
+      { title: "SIDEBAR_PAGE_MODULE_SETUP", icon: faScrewdriverWrench, redirect_url: "/support/setup" },
+      { title: "SIDEBAR_PAGE_TICKETS_OPEN", icon: faTicket, redirect_url: "/support/tickets" },
+      { title: "SIDEBAR_PAGE_SUPPORT_THEMES", icon: faComments, redirect_url: "/support/themes" },
+      { title: "SIDEBAR_PAGE_SUPPORT_PANELS", icon: faTableColumns, redirect_url: "/support/panels" },
+      { title: "SIDEBAR_PAGE_TEXT_SNIPPETS", icon: faScroll, redirect_url: "/support/snippets" },
+      { title: "SIDEBAR_PAGE_BLOCKED", icon: faBan, redirect_url: "/support/bans" },
     ]
   },
   {
-    category: "Gewinnspiele & Events",
+    category: "SIDEBAR_CATEGORY_3_TITLE",
     color: "orange",
-    description: "Erstelle blitzschnell hübsche Events",
+    description: "SIDEBAR_CATEGORY_3_DESC",
     pages: [
-      { title: "Gewinnspiel erstellen", icon: faGift, redirect_url: "/events/create" },
-      { title: "Laufende Events", icon: faBirthdayCake, redirect_url: "/events/view" },
-      { title: "Nachricht-Design", icon: faImage, redirect_url: "/events/design" },
-      { title: "Kanal-& Rollen-Effekte", icon: faWandMagicSparkles, redirect_url: "/events/channel-roles" }
+      { title: "SIDEBAR_PAGE_GIVEAWAYS", icon: faGift, redirect_url: "/events/create" },
+      { title: "SIDEBAR_PAGE_EVENTS", icon: faBirthdayCake, redirect_url: "/events/view" },
+      { title: "SIDEBAR_PAGE_MSG_DESIGN", icon: faImage, redirect_url: "/events/design" },
+      { title: "SIDEBAR_PAGE_CHC_ROLES", icon: faWandMagicSparkles, redirect_url: "/events/channel-roles" }
     ]
   },
   {
-    category: "Server-Sicherheit",
+    category: "SIDEBAR_CATEGORY_4_TITLE",
     color: "red",
-    description: "Schütze dich vor Raids & Griefs",
+    description: "SIDEBAR_CATEGORY_4_DESC",
     pages: [
-      { title: "Server-Mitglieder", icon: faUserGroup, redirect_url: "/security/members" },
-      { title: "Aktive Schutzsysteme", icon: faShieldHalved, redirect_url: "/security/shield" },
-      { title: "Backup-Status einsehen", icon: faServer, redirect_url: "/events/design" },
-      { title: "AutoMod-Einstellungen", icon: faFilter, redirect_url: "/events/channel-roles" }
+      { title: "SIDEBAR_PAGE_MEMBERS", icon: faUserGroup, redirect_url: "/security/members" },
+      { title: "SIDEBAR_PAGE_SHIELD", icon: faShieldHalved, redirect_url: "/security/shield" },
+      { title: "SIDEBAR_PAGE_BACKUPS", icon: faServer, redirect_url: "/events/design" },
+      { title: "SIDEBAR_PAGE_AUTOMOD", icon: faFilter, redirect_url: "/events/channel-roles" }
     ]
   },
   {
-    category: "Sonstiges",
+    category: "SIDEBAR_CATEGORY_5_TITLE",
     color: "green",
-    description: "Nützliche Tools und Funktionen",
+    description: "SIDEBAR_CATEGORY_5_DESC",
     pages: [
       { title: "Embed-Builder", icon: faPenToSquare, redirect_url: "/misc/embed-builder" },
       { title: "Global-Chat", icon: faEarthEurope, redirect_url: "/misc/global-chat" },

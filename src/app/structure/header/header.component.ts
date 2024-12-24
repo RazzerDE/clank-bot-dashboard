@@ -3,6 +3,7 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
 import {LangSwitchButtonComponent} from "../util/lang-switch-button/lang-switch-button.component";
 import {ThemeSwitchButtonComponent} from "../util/theme-switch-button/theme-switch-button.component";
 import {DataHolderService} from "../../services/data/data-holder.service";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-header',
@@ -11,7 +12,8 @@ import {DataHolderService} from "../../services/data/data-holder.service";
     NgOptimizedImage,
     LangSwitchButtonComponent,
     ThemeSwitchButtonComponent,
-    NgClass
+    NgClass,
+    TranslatePipe
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'

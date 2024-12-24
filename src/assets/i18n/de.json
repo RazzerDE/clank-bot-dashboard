@@ -96,5 +96,34 @@
 
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
-  "ERROR_SUPPORT_BUTTON": "Support Server"
+  "ERROR_SUPPORT_BUTTON": "Support Server",
+
+  "SIDEBAR_CATEGORY_3_TITLE": "Gewinnspiele & Events",
+  "SIDEBAR_CATEGORY_4_TITLE": "Server-Sicherheit",
+  "SIDEBAR_CATEGORY_5_TITLE": "Sonstiges",
+  "SIDEBAR_CATEGORY_1_DESC": "Allgemeine Funktionen des Bots",
+  "SIDEBAR_CATEGORY_2_DESC": "Ticket-Tool für die Fragen der User",
+  "SIDEBAR_CATEGORY_3_DESC": "Erstelle blitzschnell hübsche Events",
+  "SIDEBAR_CATEGORY_4_DESC": "Schütze dich vor Raids & Griefs",
+  "SIDEBAR_CATEGORY_5_DESC": "Nützliche Tools und Funktionen",
+
+  "SIDEBAR_PAGE_HOME": "Startseite",
+  "SIDEBAR_PAGE_WISHLIST": "Wunschliste",
+  "SIDEBAR_PAGE_TEAM": "Teamliste verwalten",
+  "SIDEBAR_PAGE_MODULE_SETUP": "Modul-Einrichtung",
+  "SIDEBAR_PAGE_TICKETS_OPEN": "Offene Tickets",
+  "SIDEBAR_PAGE_SUPPORT_THEMES": "Support-Themen",
+  "SIDEBAR_PAGE_SUPPORT_PANELS": "Nachricht Panels",
+  "SIDEBAR_PAGE_TEXT_SNIPPETS": "Text-Schnipsel",
+  "SIDEBAR_PAGE_BLOCKED": "Geblockte User",
+  "SIDEBAR_PAGE_GIVEAWAYS": "Gewinnspiel erstellen",
+  "SIDEBAR_PAGE_EVENTS": "Laufende Events",
+  "SIDEBAR_PAGE_MSG_DESIGN": "Nachricht-Design",
+  "SIDEBAR_PAGE_CHC_ROLES": "Kanal-& Rollen-Effekte",
+  "SIDEBAR_PAGE_MEMBERS": "Server-Mitglieder",
+  "SIDEBAR_PAGE_SHIELD": "Aktive Schutzsysteme",
+  "SIDEBAR_PAGE_BACKUPS": "Backup-Status einsehen",
+  "SIDEBAR_PAGE_AUTOMOD": "AutoMod-Einstellungen",
+
+  "PLACEHOLDER_SEARCH": "Suchen.."
 }

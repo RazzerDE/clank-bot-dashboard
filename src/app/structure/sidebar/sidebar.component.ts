@@ -9,6 +9,7 @@ import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {nav_items, NavigationItem} from "./types/NavigationItem";
 import {Server, servers} from "./types/Servers";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-sidebar',
@@ -17,7 +18,8 @@ import {Server, servers} from "./types/Servers";
     FaIconComponent,
     NgOptimizedImage,
     RouterLink,
-    NgClass
+    NgClass,
+    TranslatePipe
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
