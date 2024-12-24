@@ -1,12 +1,13 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {RouterLink} from "@angular/router";
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faHome, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
+import {ThemeSwitchButtonComponent} from "../../../structure/util/theme-switch-button/theme-switch-button.component";
 
 @Component({
   selector: 'app-simple-error',
@@ -16,8 +17,8 @@ import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-but
     NgOptimizedImage,
     TranslatePipe,
     FaIconComponent,
-    NgClass,
-    LangSwitchButtonComponent
+    LangSwitchButtonComponent,
+    ThemeSwitchButtonComponent
   ],
   templateUrl: './simple-error.component.html',
   styleUrl: './simple-error.component.scss'

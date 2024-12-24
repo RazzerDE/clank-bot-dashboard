@@ -1,1 +1,48 @@
-<p>header works!</p>
+<!-- Header -->
+<div class="bg-white relative z-[49] flex h-16 w-full flex-0 items-center px-4 shadow dark:border-b dark:bg-transparent
+            dark:shadow-none md:px-6 print:hidden" #Header>
+
+  <!-- Toggle Server-Picker -->
+  <div class="w-9 h-9 hover:rounded-full flex hover:bg-gray-200 items-center justify-center cursor-pointer select-none"
+       (click)="toggleServers()">
+    <img alt="Clank ~ Discord-Bot (Hamburger Icon)" class="w-5 h-5 rounded-none"
+         ngSrc="assets/img/icons/sidebar/menu-burger.svg" width="24" height="24" />
+  </div>
+
+  <!-- Header Icons -->
+  <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-2">
+
+    <!-- Search -->
+    <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 items-center justify-center cursor-pointer
+                select-none" (click)="showSearchInput = !showSearchInput">
+      <img alt="Clank ~ Discord-Bot (Search Icon)" class="w-6 h-6 rounded-none mt-0.5"
+           ngSrc="assets/img/icons/sidebar/search.svg" width="24" height="24" />
+    </div>
+
+    <!-- Switch Language -->
+    <div class="lang-switch-btn w-8 h-8">
+      <lang-switch-button></lang-switch-button>
+    </div>
+
+    <!-- Theme Switcher -->
+    <theme-switch-button></theme-switch-button>
+  </div>
+</div>
+
+<!-- Search Input -->
+<div class="absolute top-0 left-0 bg-white shadow-md z-50 p-4 transition-transform duration-300"
+     [ngClass]="{'-translate-y-full': !showSearchInput, 'translate-y-0': showSearchInput}"
+     [style.width.px]="Header.offsetWidth" [style.height.px]="Header.clientHeight"
+     [style.top.px]="Header.offsetTop" [style.left.px]="Header.offsetLeft">
+  <div class="relative w-full h-full flex items-center">
+    <img ngSrc="assets/img/icons/sidebar/search.svg" alt="Clank ~ Discord-Bot (Search Icon)"
+         class="absolute left-1 top-1/2 transform -translate-y-1/2 w-6 h-6" height="24" width="24"/>
+    <input type="text" placeholder="Suchen.. ✍️" class="w-11/12 h-6 pl-12 sm:pl-14 leading-3 text-black" maxlength="100" />
+
+    <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 items-center justify-center cursor-pointer
+            select-none absolute right-1 top-1/2 transform -translate-y-1/2" (click)="showSearchInput = false">
+      <img ngSrc="assets/img/icons/sidebar/cross-circle.svg" alt="Clank ~ Discord-Bot (Close Icon)"
+           class="w-6 h-6 cursor-pointer" height="24" width="24" />
+    </div>
+  </div>
+</div>
