@@ -1,0 +1,84 @@
+<aside class="w-72 bg-gray-900 shadow-lg flex flex-col">
+
+  <!-- Header of Sidebar -->
+  <div class="p-4 flex items-center justify-between pb-1 pt-3" style="padding-right: 1rem !important;">
+    <a routerLink="/">
+      <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" alt="Clank ~ Discord-Bot (Logo)" class="w-10 h-10"
+           height="50" width="50" />
+    </a>
+
+    <div class="flex gap-x-1">
+      <a href="/contact#bot-idea">
+        <div class="w-8 h-8 hover:rounded-full flex hover:bg-gray-500 items-center justify-center">
+          <img ngSrc="assets/img/icons/sidebar/lightbulb-on.svg" alt="Clank ~ Discord-Bot (Suggest Idea Icon)"
+               class="w-5 h-5 rounded-none" height="24" width="24" />
+        </div>
+      </a>
+      <a href="https://discord.gg/bl4cklist" target="_blank">
+        <div class="w-8 h-8 hover:rounded-full flex hover:bg-gray-500 items-center justify-center">
+          <img ngSrc="assets/img/icons/sidebar/discord.svg" alt="Clank ~ Discord-Bot (Discord Icon)"
+               class="w-5 h-5 rounded-none" height="24" width="24" />
+        </div>
+      </a>
+      <a (click)="this.authService.logout()" class="cursor-pointer">
+        <div class="w-8 h-8 hover:rounded-full flex hover:bg-gray-500 items-center justify-center">
+          <img ngSrc="assets/img/icons/sidebar/sign-out-alt.svg" alt="Clank ~ Discord-Bot (Logout Icon)"
+               class="w-5 h-5 rounded-none" height="24" width="24" />
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- TODO: Change Server name, icon & details -->
+  <div class="p-6 pt-3 flex flex-col items-center border-b border-gray-700 pb-0">
+    <div class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden mb-3">
+      <img ngSrc="assets/img/80.png" alt="Clank ~ Discord-Bot (Server Avatar)"
+           class="w-full h-full object-cover" height="80" width="80" priority />
+    </div>
+    <p class="text-white text-lg mb-0 font-extrabold">BL4CKLIST - CODING</p>
+    <p class="text-xs text-slate-400">
+      3674 Mitglieder (512 online)
+    </p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="p-4 pl-0 overflow-y-auto">
+    @for (group of navigation; track $index) {
+      <div class="mb-2" [class.pb-3]="$index != navigation.length - 1">
+        <div class="flex flex-col">
+          <div class="flex items-center justify-between pl-2 pr-0 cursor-pointer gap-2 w-[104%]" (click)="toggleGroup(group.category)">
+            <div>
+              <h3 class="px-0 mb-0 text-xs font-semibold text-gray-500 uppercase tracking-wider text-{{group.color}}-gradient">
+                {{ group.category }}
+              </h3>
+              <p class="text-xs text-gray-500 mb-0">{{ group.description }}</p>
+            </div>
+
+            <!-- Display Chevron Icon if group has more than 3 pages -->
+            @if (group.pages.length >= 3) {
+              <fa-icon [icon]="faChevronRight" [@rotateChevron]="expandedGroups[group.category] ? 'down' : 'right'"
+                       class="text-gray-500"></fa-icon>
+            }
+          </div>
+        </div>
+
+        <div class="mt-2 space-y-1 overflow-hidden" [@expandCollapse]="expandedGroups[group.category] ? 'expanded' : 'collapsed'">
+          <div class="space-y-1">
+
+            <!-- Show only 3 pages if group is not expanded & be able to expand it -->
+            @for (page of (expandedGroups[group.category] ? group.pages : group.pages.slice(0, 3)); track $index) {
+              <a [routerLink]="page.redirect_url"
+                 class="flex items-center p-2 !text-slate-400 hover:bg-gray-500 rounded-lg transition-none hover:!text-white">
+                <div class="w-6 flex-shrink-0">
+                  <fa-icon [icon]="page.icon"></fa-icon>
+                </div>
+                <span class="ml-3 text-[0.9rem]">{{ page.title }}</span>
+              </a>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </nav>
+
+</aside>
