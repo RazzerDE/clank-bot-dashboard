@@ -1,4 +1,4 @@
-<aside class="w-72 bg-gray-900 shadow-lg flex flex-col">
+<aside class="w-72 bg-gray-900 shadow-lg flex flex-col h-screen">
 
   <!-- Header of Sidebar -->
   <div class="p-4 flex items-center justify-between pb-1 pt-3" style="padding-right: 1rem !important;">
@@ -42,7 +42,7 @@
   </div>
 
   <!-- Navigation -->
-  <nav class="p-4 pl-0 overflow-y-auto">
+  <nav class="p-4 pl-0 overflow-y-auto min-h-0">
     @for (group of navigation; track $index) {
       <div class="mb-2" [class.pb-3]="$index != navigation.length - 1">
         <div class="flex flex-col">
@@ -62,11 +62,11 @@
           </div>
         </div>
 
-        <div class="mt-2 space-y-1 overflow-hidden" [@expandCollapse]="expandedGroups[group.category] ? 'expanded' : 'collapsed'">
+        <div class="mt-2 space-y-1" [@expandCollapse]="expandedGroups[group.category] ? 'expanded' : 'collapsed'">
           <div class="space-y-1">
 
             <!-- Show only 3 pages if group is not expanded & be able to expand it -->
-            @for (page of (expandedGroups[group.category] ? group.pages : group.pages.slice(0, 3)); track $index) {
+            @for (page of group.pages; track $index) {
               <a [routerLink]="page.redirect_url"
                  class="flex items-center p-2 !text-slate-400 hover:bg-gray-500 rounded-lg transition-none hover:!text-white">
                 <div class="w-6 flex-shrink-0">

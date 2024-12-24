@@ -34,11 +34,11 @@ import {nav_items, NavigationItem} from "./types/NavigationItem";
       transition('expanded => collapsed', [
         style({ height: '*' }),
         animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)',
-          style({ height: '96px' })
+          style({ height: '86px' })
         )
       ]),
       transition('collapsed => expanded', [
-        style({ height: '96px' }),
+        style({ height: '86px' }),
         animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)',
           style({ height: '*' })
         )
