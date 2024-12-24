@@ -17,11 +17,6 @@
           <div class="w-12 h-12 bg-transparent rounded-3xl group-hover:rounded-xl transition-all duration-200 cursor-pointer
                       overflow-hidden group-hover:scale-105" [title]="server.name">
             <img [ngSrc]="server.image" [alt]="server.name" class="w-full h-full object-cover" width="48" height="48" />
-
-            <!-- Custom Tooltip -->
-            <div class="absolute left-16 hidden group-hover:flex items-center px-3 py-2 bg-gray-900 text-white text-sm rounded-md whitespace-nowrap">
-              {{server.name}}
-            </div>
           </div>
         </div>
       }
