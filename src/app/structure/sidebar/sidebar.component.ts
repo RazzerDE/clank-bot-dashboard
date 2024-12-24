@@ -8,6 +8,7 @@ import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {nav_items, NavigationItem} from "./types/NavigationItem";
+import {Server, servers} from "./types/Servers";
 
 @Component({
   selector: 'app-sidebar',
@@ -56,6 +57,8 @@ import {nav_items, NavigationItem} from "./types/NavigationItem";
 })
 export class SidebarComponent {
   protected navigation: NavigationItem[] = nav_items;
+  protected servers: Server[] = servers;
+
   protected expandedGroups: { [key: string]: boolean } = {};
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
