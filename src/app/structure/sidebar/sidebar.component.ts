@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {NgOptimizedImage} from "@angular/common";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {AuthService} from "../../services/auth/auth.service";
@@ -12,11 +12,12 @@ import {nav_items, NavigationItem} from "./types/NavigationItem";
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-    imports: [
-        FaIconComponent,
-        NgOptimizedImage,
-        RouterLink
-    ],
+  imports: [
+    FaIconComponent,
+    NgOptimizedImage,
+    RouterLink,
+    NgClass
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   animations: [

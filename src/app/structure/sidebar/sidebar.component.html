@@ -30,21 +30,25 @@
   </div>
 
   <!-- TODO: Change Server name, icon & details -->
-  <div class="p-6 pt-3 flex flex-col items-center border-b border-gray-700 pb-0">
-    <div class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden mb-3">
+  <div class="p-6 pt-3 flex items-center border-b border-gray-700 pb-4 pr-2">
+    <div class="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
       <img ngSrc="assets/img/80.png" alt="Clank ~ Discord-Bot (Server Avatar)"
            class="w-full h-full object-cover" height="80" width="80" priority />
     </div>
-    <p class="text-white text-lg mb-0 font-extrabold">BL4CKLIST - CODING</p>
-    <p class="text-xs text-slate-400">
-      3674 Mitglieder (512 online)
-    </p>
+    <div class="flex flex-col justify-center items-center ml-2 w-48">
+      <p class="text-white text-sm mb-0 font-extrabold whitespace-nowrap overflow-hidden text-ellipsis text-center w-full">
+        BL4CKLIST - CODING
+      </p>
+      <p class="text-xs text-slate-400 mb-0">
+        3674 Mitglieder (512 online)
+      </p>
+    </div>
   </div>
 
   <!-- Navigation -->
-  <nav class="p-4 pl-0 overflow-y-auto min-h-0">
+  <nav class="p-4 pl-0 overflow-y-auto min-h-0 pb-0">
     @for (group of navigation; track $index) {
-      <div class="mb-2" [class.pb-3]="$index != navigation.length - 1">
+      <div [ngClass]="$index != navigation.length - 1 ? 'mb-2 pb-3' : ''">
         <div class="flex flex-col">
           <div class="flex items-center justify-between pl-2 pr-0 cursor-pointer gap-2 w-[104%]" (click)="toggleGroup(group.category)">
             <div>
