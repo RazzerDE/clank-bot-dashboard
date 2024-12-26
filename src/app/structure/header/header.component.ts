@@ -189,4 +189,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   protected readonly window = window;
+    protected readonly localStorage = localStorage;
 }

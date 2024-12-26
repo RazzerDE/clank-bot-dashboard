@@ -5,7 +5,8 @@
   <!-- Toggle Server-Picker -->
   <div [ngClass]="['w-9 h-9 hover:rounded-full flex hover:bg-gray-200 dark:hover:bg-gray-700 items-center ' +
                    'justify-center cursor-pointer select-none', 'transition-transform duration-300 ease-in-out',
-                   this.dataService.showMobileSidebar ? 'max-lg:translate-x-[22rem]' : 'translate-x-0']"
+                   this.dataService.showMobileSidebar ? (!localStorage.getItem('active_guild') ?
+                   'max-lg:translate-x-14' : 'max-lg:translate-x-[22rem]') : 'translate-x-0']"
        (click)="toggleServers()">
     <img alt="Clank ~ Discord-Bot (Hamburger Icon)" class="w-5 h-5 rounded-none"
          ngSrc="assets/img/icons/sidebar/menu-burger.svg" width="24" height="24" />

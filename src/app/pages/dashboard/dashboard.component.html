@@ -2,7 +2,7 @@
 
   @if (this.dataService.showMobileSidebar) {
     <!-- Backdrop for mobile -->
-    <div class="fixed inset-0 bg-gray-800/60 lg:hidden z-5" (click)="this.dataService.toggleSidebar()"></div>
+    <div class="fixed inset-0 bg-gray-800/60 lg:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
   }
 
   <!-- Hide sidebar on mobile devices; only show after button click -->
@@ -20,7 +20,7 @@
 
       @if (!localStorage.getItem('active_guild')) {
         <!-- Page for Pick Server -->
-        <div class="w-full h-full flex items-center justify-center flex-col">
+        <div class="w-full h-full flex items-center justify-center flex-col z-1">
           <img ngSrc="assets/img/bg/nightly.png" alt="Clank ~ Discord-Bot (Server Pick Background)"
                height="2033" width="2908" class="w-3/6 h-3/6 drop-shadow-2xl mb-10 animate-float" />
 
