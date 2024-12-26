@@ -3,13 +3,13 @@ import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
 import {HeaderComponent} from "../../structure/header/header.component";
-import {TranslateService} from "@ngx-translate/core";
-import {NgClass} from "@angular/common";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SidebarComponent, HeaderComponent, NgClass],
+  imports: [SidebarComponent, HeaderComponent, NgClass, NgOptimizedImage, TranslatePipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -32,4 +32,5 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
+  protected readonly localStorage = localStorage;
 }

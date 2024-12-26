@@ -9,6 +9,10 @@
   }
 }
 
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
 @keyframes rotate-left {
   0% {
     transform: rotate(0deg);
@@ -33,5 +37,17 @@
   }
   100% {
     border-radius: 50%;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }

@@ -16,6 +16,21 @@
     <app-header></app-header>
 
     <!-- Body -->
-    <div class="flex flex-auto flex-col"></div>
+    <div class="flex flex-auto flex-col">
+
+      @if (!localStorage.getItem('active_guild')) {
+        <!-- Page for Pick Server -->
+        <div class="w-full h-full flex items-center justify-center flex-col">
+          <img ngSrc="assets/img/bg/nightly.png" alt="Clank ~ Discord-Bot (Server Pick Background)"
+               height="2033" width="2908" class="w-3/6 h-3/6 drop-shadow-2xl mb-10 animate-float" />
+
+          <div class="text-black dark:!text-white text-center text-4xl font-extrabold leading-tight tracking-tight
+                md:text-5xl md:leading-none">{{ 'PLACEHOLDER_PICK_SERVER_TITLE' | translate }}</div>
+          <div class="text-slate-500 mt-2 text-center text-lg font-medium tracking-tight md:text-xl"
+               [innerHTML]="'PLACEHOLDER_PICK_SERVER_DESC' | translate">
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>

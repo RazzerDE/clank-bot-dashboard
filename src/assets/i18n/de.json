@@ -146,5 +146,7 @@
   "SIDEBAR_PAGE_GLOBAL_CHAT_DESC": "Chatte serverweit mit fremden Discord-Usern.",
 
   "PLACEHOLDER_SEARCH": "Suchen..",
-  "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden.."
+  "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden..",
+  "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Wähle einen Server aus..",
+  "PLACEHOLDER_PICK_SERVER_DESC": "› Klicke in der <strong>linken Seitenleiste</strong> auf einen Server, um fortzufahren."
 }
