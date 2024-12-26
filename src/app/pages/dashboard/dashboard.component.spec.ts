@@ -4,8 +4,9 @@ import { DashboardComponent } from './dashboard.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {of} from "rxjs";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {DataHolderService} from "../../services/data/data-holder.service";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -26,5 +27,19 @@ describe('DashboardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update document title and set isLoading to false on language change', () => {
+    const translateService = TestBed.inject(TranslateService);
+    const dataService = TestBed.inject(DataHolderService);
+
+    // Simulate language change event
+    translateService.onLangChange.emit();
+
+    // Check if document title is updated
+    expect(document.title).toBe("Dashboard ~ Clank Discord-Bot");
+
+    // Check if isLoading is set to false
+    expect(dataService.isLoading).toBeFalsy();
   });
 });

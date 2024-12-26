@@ -13,6 +13,7 @@ describe('DataHolderService', () => {
       imports: [TranslateModule.forRoot()]
     });
 
+    localStorage.setItem('active_guild', 'true');
     router = TestBed.inject(Router);
     service = TestBed.inject(DataHolderService);
   });
@@ -72,6 +73,12 @@ describe('DataHolderService', () => {
     expect(service.isDarkTheme).toBe(false);
     expect(localStorage.getItem('dark')).toBe('false');
     expect(applyThemeSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should toggle the visibility of the mobile sidebar', () => {
+    const initialVisibility = service.showMobileSidebar;
+    service.toggleSidebar();
+    expect(service.showMobileSidebar).toBe(!initialVisibility);
   });
 
 });
