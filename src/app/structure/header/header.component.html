@@ -43,7 +43,7 @@
       <img ngSrc="assets/img/icons/sidebar/search.svg" alt="Clank ~ Discord-Bot (Search Icon)"
            class="absolute left-1 top-1/2 transform -translate-y-1/2 w-6 h-6" height="24" width="24" />
       <input type="text" placeholder="{{ 'PLACEHOLDER_SEARCH' | translate }} ✍️" maxlength="100"
-             [(ngModel)]="searchInput"
+             [(ngModel)]="searchInput" (keydown)="getFilteredResults()"
              class="w-11/12 h-6 pl-12 sm:pl-14 leading-3 text-black dark:!text-white dark:!bg-gray-900"  />
 
       <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 dark:hover:!bg-gray-700 items-center
@@ -55,26 +55,35 @@
     </div>
 
     <!-- Search Results -->
-    @if (searchInput != '') {
-      <div [@slideDown] class="mt-[26px] w-full relative bg-white dark:!bg-gray-900 z-40"
+    @if (searchInput) {
+      <div [@slideDown] class="mt-[26px] w-full relative bg-white dark:!bg-gray-900 z-40 max-h-[28vh] overflow-y-auto"
            [style.left.px]="-24" [style.width.px]="Header.offsetWidth">
+        @if (getFilteredResults().length === 0) {
+          <div class="p-6 border-b border-gray-300 dark:border-gray-700 text-gray-400 dark:!text-gray-600">
+            <span>{{ 'PLACEHOLDER_SEARCH_EMPTY' | translate }}</span>
+          </div>
+        }
 
-        <!-- Category type of search result; currently only PAGES -->
-        <div class="p-6 uppercase font-bold tracking-wider text-sm pb-1 text-gray-500 dark:!text-gray-300">
-          KATEGORIE
-        </div>
-
-        <!-- Category Item -->
-        <div class="p-6 pl-4 border-b border-gray-300 dark:border-gray-700 pt-2">
-          <a routerLink="/test" class="flex items-center hover:bg-gray-100 dark:hover:!bg-gray-800 p-2 rounded-2xl">
-            <fa-icon [icon]="faHouse" class="text-slate-400 mr-3"></fa-icon>
-            <div class="text-gray-800 dark:!text-white flex flex-col text-sm">
-              <span>Page-Title</span>
-              <span class="text-gray-500 dark:!text-gray-400">test beschreibung hier</span>
+        @for (item of getFilteredResults(); track item.category) {
+          <div>
+            <div class="p-6 uppercase font-bold tracking-wider text-sm pb-1 text-gray-500 dark:!text-gray-300">
+              {{ item.category }}
             </div>
-          </a>
-        </div>
 
+            <div class="p-6 pl-4 border-b border-gray-300 dark:border-gray-700 pt-2">
+              @for (page of item.showPages; track page.redirect_url) {
+                <a [routerLink]="page.redirect_url"
+                   class="flex items-center hover:bg-gray-100 dark:hover:!bg-gray-800 p-2 rounded-2xl">
+                  <fa-icon [icon]="page.icon" class="text-slate-400 mr-3"></fa-icon>
+                  <div class="text-gray-800 dark:!text-white flex flex-col text-sm">
+                    <span>{{ page.title }}</span>
+                    <span class="text-gray-500 dark:!text-gray-400">› {{ page.desc }}</span>
+                  </div>
+                </a>
+              }
+            </div>
+          </div>
+        }
       </div>
     }
 

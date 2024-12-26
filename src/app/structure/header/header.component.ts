@@ -1,14 +1,15 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {LangSwitchButtonComponent} from "../util/lang-switch-button/lang-switch-button.component";
 import {ThemeSwitchButtonComponent} from "../util/theme-switch-button/theme-switch-button.component";
 import {DataHolderService} from "../../services/data/data-holder.service";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FormsModule} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faHouse} from "@fortawesome/free-solid-svg-icons";
 import {RouterLink} from "@angular/router";
+import {FilteredNavigationItem, nav_items, NavigationItem} from "../sidebar/types/NavigationItem";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -46,22 +47,38 @@ import {RouterLink} from "@angular/router";
     ])
   ]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('Header') protected header!: ElementRef<HTMLDivElement>;
   @ViewChild('searchContainer') protected searchContainer!: ElementRef<HTMLDivElement>;
 
+  protected navigation: NavigationItem[] = nav_items;
+  protected filteredNavItems: NavigationItem[] = nav_items;
+
+  private langSubscription!: Subscription;
   private server_picker_width: number = 0;
   protected showSearchInput: boolean = false;
   protected searchInput: string = '';
 
-  constructor(private dataService: DataHolderService) {}
+  constructor(private dataService: DataHolderService, private translate: TranslateService) {}
 
   /**
    * Angular lifecycle hook that is called after the component's view has been fully initialized.
    * This method sets the width of the search input container to match the width of the header.
+   * Also, it translates the navigation items and stores them in the translatedNavItems array for search purposes.
    */
   ngOnInit(): void {
     this.setSearchInputWidth();
+    this.translateNavItems();
+  }
+
+  /**
+   * Angular lifecycle hook that is called when the component is destroyed.
+   * This method unsubscribes from the language change subscription to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -89,6 +106,33 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
+   * Translates the navigation items and stores them in the translatedNavItems array for search purposes.
+   * This method subscribes to the onLangChange event of the TranslateService to update the translatedNavItems array
+   * whenever the language changes.
+   */
+  translateNavItems(): void {
+    this.langSubscription = this.translate.onLangChange.subscribe((): void => {
+      // reload the navigation items with the new translations
+      this.navigation = nav_items.map(item => ({
+        ...item,
+        category: this.translate.instant(item.category),
+        description: this.translate.instant(item.description),
+        pages: item.pages.map(page => ({
+          ...page,
+          title: this.translate.instant(page.title),
+          desc: this.translate.instant(page.desc)
+        }))
+      }));
+
+      // update the filtered navigation items
+      this.filteredNavItems = this.navigation;
+      if (this.searchInput) {
+        this.getFilteredResults();
+      }
+    });
+  }
+
+  /**
    * Closes the search input - it is used to fix a animation jump when the search input is closed, but results are shown.
    *
    * If there is any text in the search input, it clears the input and then hides the search input after a delay.
@@ -104,6 +148,31 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
+   * Filters the navigation items based on the search input and returns the filtered results.
+   * The search term is converted to lowercase and compared against the category,
+   * description, title, and redirect URL of each navigation item and its pages.
+   * The filtered results are stored in the `filteredNavItems` array.
+   *
+   * @returns {FilteredNavigationItem[]} An array of filtered navigation items with matching pages.
+   */
+  getFilteredResults(): FilteredNavigationItem[] {
+    const searchTerm: string = this.searchInput.toLowerCase();
+    return this.filteredNavItems
+      .map(item => {
+        const isCategoryMatch: boolean = item.category.toLowerCase().includes(searchTerm);
+        return {
+          ...item,
+          showPages: isCategoryMatch ? item.pages : item.pages.filter(page =>
+            page.title.toLowerCase().includes(searchTerm) ||
+            page.desc.toLowerCase().includes(searchTerm) ||
+            page.redirect_url.toLowerCase().includes(searchTerm)
+          )
+        };
+      })
+      .filter(item => item.showPages.length > 0);
+  }
+
+  /**
    * Sets the width of the search input container to match the width of the header.
    * This function is triggered on window resize events.
    *
@@ -111,10 +180,9 @@ export class HeaderComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   @HostListener('document:fullscreenchange', ['$event'])
   setSearchInputWidth(): void {
-    this.searchContainer.nativeElement.style.width = `${this.header.nativeElement.offsetWidth}px`;
+    if (this.searchContainer && this.header) {
+      this.searchContainer.nativeElement.style.width = `${this.header.nativeElement.offsetWidth}px`;
+    }
   }
 
-
-
-  protected readonly faHouse = faHouse;
 }

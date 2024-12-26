@@ -56,6 +56,8 @@ It supports following <strong>features</strong>:
   <br /> 
   <li>🔺 <strong>Work with API-Data</strong>: Here you can see how API data from a REST server could be processed.</li>
   <br /> 
+  <li>🔍 <strong>Search function</strong>: Users can search for specific functions or pages in the bot's dashboard if they are logged in.</li> 
+  <br /> 
   <li>⏳ <strong>Page-Loader</strong>: While the website is being built and all data is loading, a nice animated icon is displayed, which was built entirely with CSS.</li> 
 </ul>
 
