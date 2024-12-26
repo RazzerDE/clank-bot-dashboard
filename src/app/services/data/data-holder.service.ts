@@ -19,6 +19,10 @@ export class DataHolderService {
   error_desc: string = '';
 
   constructor(private translate: TranslateService, private router: Router) {
+    if (localStorage.getItem('active_guild')) {
+      this.showSidebarLogo = true;
+    }
+
     // check if translations are loaded
     this.translate.onLangChange.subscribe((): void => {
       this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
