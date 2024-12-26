@@ -10,6 +10,7 @@ export class DataHolderService {
   isLoading: boolean = true;
   isDarkTheme: boolean = false;
   showSidebarLogo: boolean = false;
+  showMobileSidebar: boolean = false;
 
   bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
                               punish_count: 110, global_verified_count: '16.000' };
@@ -86,6 +87,13 @@ export class DataHolderService {
         html.classList.remove('dark');
       }
     }
+  }
+
+  /**
+   * Toggles the visibility of the mobile sidebar.
+   */
+  toggleSidebar(): void {
+    this.showMobileSidebar = !this.showMobileSidebar;
   }
 
 }

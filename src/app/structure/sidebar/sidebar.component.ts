@@ -77,6 +77,7 @@ export class SidebarComponent {
   protected navigation: NavigationItem[] = nav_items;
   protected servers: Server[] = servers;
 
+  protected readonly window = window;
   protected expandedGroups: { [key: string]: boolean } = {};
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
@@ -93,7 +94,7 @@ export class SidebarComponent {
    *
    * @param category - The category of the navigation group to toggle.
    */
-  toggleGroup(category: string) {
+  toggleGroup(category: string): void {
     this.expandedGroups[category] = !this.expandedGroups[category];
   }
 }

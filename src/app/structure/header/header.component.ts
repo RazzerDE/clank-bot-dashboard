@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   protected showSearchInput: boolean = false;
   protected searchInput: string = '';
 
-  constructor(private dataService: DataHolderService, private translate: TranslateService) {}
+  constructor(protected dataService: DataHolderService, private translate: TranslateService) {}
 
   /**
    * Angular lifecycle hook that is called after the component's view has been fully initialized.
@@ -97,11 +97,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (element.style.width === '0px') {
         element.style.width = this.server_picker_width + 'px';
       } else {
-        // hide it
-        element.style.width = '0';
+        // hide it (don't on mobile)
+        if (window.innerWidth > 1025) {
+          element.style.width = '0';
+        }
       }
 
       this.dataService.showSidebarLogo = !this.dataService.showSidebarLogo;
+      this.dataService.toggleSidebar();
     }
   }
 
@@ -185,4 +188,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected readonly window = window;
 }
