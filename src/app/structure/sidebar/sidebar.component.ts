@@ -96,6 +96,4 @@ export class SidebarComponent {
   toggleGroup(category: string) {
     this.expandedGroups[category] = !this.expandedGroups[category];
   }
-
-  protected readonly localStorage = localStorage;
 }
