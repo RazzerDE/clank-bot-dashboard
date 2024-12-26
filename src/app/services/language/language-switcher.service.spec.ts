@@ -58,4 +58,17 @@ describe('LanguageSwitcherService', () => {
     expect(useSpy).toHaveBeenCalledWith('en');
     expect(localStorage.getItem('lang')).toBe('en');
   });
+
+  it('should set the language to "en" if the browser language is neither "de" nor "en"', () => {
+    localStorage.removeItem('lang');
+    const browserLang = 'fr';
+
+    jest.spyOn(translateService, 'getBrowserLang').mockReturnValue(browserLang);
+    const useSpy = jest.spyOn(translateService, 'use');
+
+    service.setLanguage();
+
+    expect(useSpy).toHaveBeenCalledWith('en');
+    expect(localStorage.getItem('lang')).toBe('en');
+  });
 });

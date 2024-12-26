@@ -15,11 +15,13 @@ describe('AuthService', () => {
   let httpClientSpy: jest.SpyInstance;
   let route: ActivatedRoute;
   let jwtHelperSpy: jest.SpyInstance;
+  let routerSpy: jest.SpyInstance;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-      providers: [{ provide: ActivatedRoute, useValue: { snapshot: {}, queryParams: of({}) }}]
+      providers: [{ provide: ActivatedRoute, useValue: { snapshot: {}, queryParams: of({}) }},
+        { provide: Router, useValue: { navigateByUrl: jest.fn().mockResolvedValue(true) } }]
     });
 
     localStorage.setItem('access_token', 'test');
@@ -28,6 +30,7 @@ describe('AuthService', () => {
     route = TestBed.inject(ActivatedRoute);
     jwtHelperSpy = jest.spyOn(service['jwtHelper'], 'decodeToken');
     httpClientSpy = jest.spyOn(TestBed.inject(HttpClient), 'get') as jest.SpyInstance;
+    routerSpy = jest.spyOn(TestBed.inject(Router), 'navigateByUrl');
   });
 
   it('should be created', () => {
@@ -169,6 +172,13 @@ describe('AuthService', () => {
 
     expect(result).toBe('');
     expect(redirectSpy).toHaveBeenCalledWith('INVALID');
+  });
+
+  it('should remove access_token from localStorage and navigate to home page on logout', () => {
+    localStorage.setItem('access_token', 'testToken');
+    service.logout();
+    expect(localStorage.getItem('access_token')).toBeNull();
+    expect(routerSpy).toHaveBeenCalledWith('/');
   });
 
   it('should redirect to Discord if no code or state is present and not on error page', () => {

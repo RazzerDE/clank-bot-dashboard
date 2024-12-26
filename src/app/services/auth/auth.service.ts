@@ -177,6 +177,15 @@ export class AuthService {
   }
 
   /**
+   * Logs out the user by removing the access token from local storage
+   * and navigating to the home page.
+   */
+  logout(): void {
+    localStorage.removeItem('access_token');
+    this.router.navigateByUrl('/').then();
+  }
+
+  /**
    * Verifies the login by checking the query parameters for a valid login code.
    * If the code is not present, redirects the user to the Discord authentication URL.
    * If the code is present, authenticates the user using the provided code.

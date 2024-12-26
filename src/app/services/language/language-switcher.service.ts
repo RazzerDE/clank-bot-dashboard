@@ -19,10 +19,16 @@ export class LanguageSwitcherService {
    * @param lang - The language code to set (optional).
    */
   setLanguage(lang?: string): void {
-    if (!lang) { // load default language or saved one
-      lang = this.translate.getBrowserLang() || 'en';
+    if (!lang) {
+      // language already saved
       if (localStorage.getItem('lang')) {
         lang = localStorage.getItem('lang')!;
+      } else {
+        // get browser language
+        lang = this.translate.getBrowserLang() || 'en';
+        if (lang !== 'de' && lang !== 'en') {
+          lang = 'en';
+        }
       }
     }
 
@@ -30,7 +36,7 @@ export class LanguageSwitcherService {
     this.translate.use(lang);
 
     // update header item; its set in a interface type so update it manually
-    setTimeout(() => { nav_items[2].title = this.translate.instant('HEADER_LANDING_ITEM_BOT_SETUP'); }, 50);
+    setTimeout((): void => { nav_items[2].title = this.translate.instant('HEADER_LANDING_ITEM_BOT_SETUP'); }, 50);
   }
 
   /**
