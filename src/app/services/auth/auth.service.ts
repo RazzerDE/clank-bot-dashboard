@@ -85,9 +85,7 @@ export class AuthService {
    */
   private isValidToken(): void {
     this.http.get<any>(`${config.discord_url}/users/@me`, { headers: this.headers }).subscribe({
-      next: (_response: DiscordUser): void => {
-        console.log(_response);
-      },
+      next: (_response: DiscordUser): void => {},
       error: (error: HttpErrorResponse): void => {
         localStorage.removeItem('access_token');
 
@@ -156,6 +154,15 @@ export class AuthService {
   }
 
   /**
+   * Returns the current HTTP headers.
+   *
+   * @returns {HttpHeaders} The current HTTP headers.
+   */
+  getHeaders(): HttpHeaders {
+    return this.headers;
+  }
+
+  /**
    * Decrypts the given encrypted token.
    *
    * This method takes an encrypted token as input, decodes it using the JWT library,
@@ -174,6 +181,21 @@ export class AuthService {
       this.dataService.redirectLoginError('INVALID');
       return '';
     }
+  }
+
+  /**
+   * Checks if the user has administrator permissions.
+   *
+   * This method takes a permission string, converts it to a BigInt, and checks if the
+   * administrator permission bit is set. The administrator permission is represented
+   * by the bit value `0x00000008`.
+   *
+   * @param {string} perm_string - The permission string to check.
+   * @returns {boolean} `true` if the user has administrator permissions, `false` otherwise.
+   */
+  isAdmin(perm_string: string): boolean {
+    const ADMINISTRATOR_PERMISSION = 0x00000008;
+    return (BigInt(perm_string) & BigInt(ADMINISTRATOR_PERMISSION)) !== 0n;
   }
 
   /**

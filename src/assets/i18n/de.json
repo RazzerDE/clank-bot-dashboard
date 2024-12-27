@@ -148,5 +148,6 @@
   "PLACEHOLDER_SEARCH": "Suchen..",
   "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden..",
   "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Wähle einen Server aus..",
-  "PLACEHOLDER_PICK_SERVER_DESC": "› Klicke in der <strong>linken Seitenleiste</strong> auf einen Server, um fortzufahren."
+  "PLACEHOLDER_PICK_SERVER_DESC": "› Klicke in der <strong>linken Seitenleiste</strong> auf einen Server, um fortzufahren.",
+  "PLACEHOLDER_MEMBER_STATS": "{{members}} Mitglieder ({{online}} online)"
 }

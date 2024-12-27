@@ -8,8 +8,11 @@ import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {nav_items, NavigationItem} from "./types/NavigationItem";
-import {Server, servers} from "./types/Servers";
 import {TranslatePipe} from "@ngx-translate/core";
+import {forkJoin} from "rxjs";
+import {DiscordComService} from "../../services/discord-com/discord-com.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Guild} from "../../services/discord-com/types/Guilds";
 
 @Component({
   selector: 'app-sidebar',
@@ -70,23 +73,35 @@ import {TranslatePipe} from "@ngx-translate/core";
       transition('visible => hidden', [
         animate('0.3s ease-in')
       ])
+    ]),
+    trigger('slideInLeft', [
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)' }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)' }))
+      ]),
+      transition(':leave',  [
+        animate('300ms ease-in', style({ transform: 'translateX(-100%)' }))
+      ])
     ])
   ]
 })
 export class SidebarComponent {
+  protected readonly localStorage: Storage = localStorage;
   protected navigation: NavigationItem[] = nav_items;
-  protected servers: Server[] = servers;
+  protected servers: Guild[] = [];
 
-  protected readonly window = window;
+  protected readonly window: Window = window;
   protected expandedGroups: { [key: string]: boolean } = {};
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
-  constructor(protected authService: AuthService, protected dataService: DataHolderService) {
+  constructor(protected authService: AuthService, protected dataService: DataHolderService, private discordService: DiscordComService) {
     // initialize navigation pages to allow expanding/collapsing
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = false;
-      this.dataService.isLoading = false;
     });
+
+    // Fetch guilds
+    this.getGuilds();
   }
 
   /**
@@ -98,5 +113,65 @@ export class SidebarComponent {
     this.expandedGroups[category] = !this.expandedGroups[category];
   }
 
-    protected readonly localStorage = localStorage;
+  /**
+   * Selects a server (guild) and updates the active guild in the data service.
+   *
+   * If the selected guild is already the active guild, it will be deselected and removed from local storage.
+   * Otherwise, the selected guild will be set as the active guild and stored in local storage.
+   *
+   * @param {Guild} guild - The guild to select or deselect.
+   */
+  selectServer(guild: Guild): void {
+    if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id) {
+      localStorage.removeItem('active_guild');
+      this.dataService.active_guild = null;
+
+    } else {
+      localStorage.setItem('active_guild', JSON.stringify(guild));
+      this.dataService.active_guild = guild;
+
+      const server_picker: HTMLDivElement | null = document.getElementById('discord-server-picker') as HTMLDivElement;
+      if (!server_picker) return;
+
+      if (window.innerWidth > 1025) {
+        // hide server picker on desktop
+        server_picker.style.width = '0';
+      } else {
+        // hide mobile menu
+        this.dataService.showMobileSidebar = false;
+      }
+
+      this.dataService.showSidebarLogo = !this.dataService.showSidebarLogo;
+    }
+  }
+
+  getGuilds(): void {
+    forkJoin({Guilds: this.discordService.getGuilds()}).subscribe({
+      next: ({Guilds}: { Guilds: Guild[] }): void => {
+        this.servers = Guilds
+          .filter((guild: Guild): boolean =>
+            // check if user has admin perms and if guild is public
+            (this.authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))
+          .map((guild: Guild): Guild => {
+            if (guild.icon !== null) {  // add image url if guild has an icon
+              guild.image_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`;
+            }
+
+            // format thousand approximate_member_count with dot
+            guild.approximate_member_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_member_count));
+            guild.approximate_presence_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_presence_count));
+
+            return guild;
+          }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
+
+        this.dataService.isLoading = false;
+      },
+      error: (_err: HttpErrorResponse): void => {
+        this.dataService.redirectLoginError('EXPIRED');
+        this.dataService.isLoading = false;
+      }
+    });
+  }
+
+
 }

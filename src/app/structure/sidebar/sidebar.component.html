@@ -13,13 +13,18 @@
     <div class="w-8 h-0.5 bg-gray-700 rounded-full mb-2"></div>
 
     <div class="flex flex-col items-center gap-2 overflow-y-auto scrollbar-hide">
-      <!-- TODO: Replace with real guilds -->
       @for (server of servers; track server.id) {
-        <div class="group relative">
+        <div class="group relative" (click)="selectServer(server);">
           <div class="absolute -left-3 w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div class="w-12 h-12 bg-transparent rounded-3xl group-hover:rounded-xl transition-all duration-200 cursor-pointer
-                      overflow-hidden group-hover:scale-105" [title]="server.name">
-            <img [ngSrc]="server.image" [alt]="server.name" class="w-full h-full object-cover" width="48" height="48" />
+                overflow-hidden group-hover:scale-105" [title]="server.name">
+            @if (server.image_url) {
+              <img [ngSrc]="server.image_url" [alt]="server.name" class="w-full h-full object-cover" width="48" height="48" />
+            } @else {
+              <div class="w-full h-full flex items-center justify-center bg-white/10 text-white text-xl">
+                {{ server.name.charAt(0) + server.name.charAt(1) }}
+              </div>
+            }
           </div>
         </div>
       }
@@ -28,7 +33,7 @@
 
   <!-- Dashboard Navigation Sidebar -->
   @if (localStorage.getItem('active_guild')) {
-    <aside class="w-72 bg-gray-900 shadow-lg flex flex-col h-screen">
+    <aside class="w-72 bg-gray-900 shadow-lg flex flex-col h-screen" [@slideInLeft]>
 
       <!-- Header of Sidebar -->
       <div class="p-4 flex items-center justify-between pb-1"
@@ -62,21 +67,31 @@
         </div>
       </div>
 
-      <!-- TODO: Change Server name, icon & details -->
       <div class="p-6 pt-3 flex items-center border-b border-gray-700 pb-4 pr-2">
-        <div class="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
-          <img alt="Clank ~ Discord-Bot (Server Avatar)" class="w-full h-full object-cover"
-               height="80" ngSrc="assets/img/80.png" priority width="80"/>
-        </div>
-        <div class="flex flex-col justify-center items-center ml-2 w-48">
-          <p
-            class="text-white text-sm mb-0 font-extrabold whitespace-nowrap overflow-hidden text-ellipsis text-center w-full">
-            BL4CKLIST - CODING
-          </p>
-          <p class="text-xs text-slate-400 mb-0">
-            3674 Mitglieder (512 online)
-          </p>
-        </div>
+        @if (this.dataService.active_guild) {
+          <div class="w-12 h-12 rounded-full  overflow-hidden">
+              @if (this.dataService.active_guild.image_url) {
+                <img alt="Clank ~ Discord-Bot (Server Avatar)" class="w-full h-full object-cover"
+                     height="80" [ngSrc]="this.dataService.active_guild.image_url" priority width="80"/>
+              } @else {
+                <div class="w-full h-full flex items-center justify-center bg-white/10 text-white text-xl">
+                  {{ this.dataService.active_guild.name.charAt(0) + this.dataService.active_guild.name.charAt(1) }}
+                </div>
+              }
+          </div>
+          <div class="flex flex-col justify-center items-center ml-2 w-48">
+            <p
+              class="text-white text-sm mb-0 font-extrabold whitespace-nowrap overflow-hidden text-ellipsis text-center w-full">
+              {{ this.dataService.active_guild!.name }}
+            </p>
+            <p class="text-xs text-slate-400 mb-0">
+
+              {{ 'PLACEHOLDER_MEMBER_STATS' | translate:
+              {members: this.dataService.active_guild!.approximate_member_count,
+                    online: this.dataService.active_guild!.approximate_presence_count} }}
+            </p>
+          </div>
+       }
       </div>
 
       <!-- Navigation -->

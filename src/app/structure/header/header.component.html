@@ -16,7 +16,7 @@
   <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-2">
 
     <!-- Search -->
-    @if (!this.dataService.showMobileSidebar || window.innerWidth > 1025) {
+    @if ((!this.dataService.showMobileSidebar || window.innerWidth > 1025) && localStorage.getItem('active_guild')) {
       <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 dark:hover:!bg-gray-700 items-center
                 justify-center cursor-pointer select-none" (click)="showSearchInput = !showSearchInput">
         <img alt="Clank ~ Discord-Bot (Search Icon)" class="w-6 h-6 rounded-none mt-0.5"

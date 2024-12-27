@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
+import {Guild} from "../discord-com/types/Guilds";
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,14 @@ export class DataHolderService {
   error_title: string = '';
   error_desc: string = '';
 
+  // api related
+  active_guild: Guild | null = null;
+
   constructor(private translate: TranslateService, private router: Router) {
-    if (localStorage.getItem('active_guild')) {
+    const temp_guild: string | null = localStorage.getItem('active_guild');
+    if (temp_guild) {
       this.showSidebarLogo = true;
+      this.active_guild = JSON.parse(temp_guild) as Guild;
     }
 
     // check if translations are loaded

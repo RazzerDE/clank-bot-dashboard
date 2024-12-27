@@ -28,7 +28,6 @@ export class DashboardComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.translate.onLangChange.subscribe((): void => {
       document.title = "Dashboard ~ Clank Discord-Bot";
-      this.dataService.isLoading = false;
     });
   }
 
