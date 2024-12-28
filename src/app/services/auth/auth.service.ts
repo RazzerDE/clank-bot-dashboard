@@ -13,7 +13,7 @@ import {DataHolderService} from "../data/data-holder.service";
 export class AuthService {
 
   private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
-  private headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
   private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router,
@@ -60,6 +60,7 @@ export class AuthService {
 
           localStorage.setItem('access_token', response.access_token);
           this.headers = this.setAuthorizationHeader(response.access_token);
+          window.dispatchEvent(new StorageEvent('storage'));  // trigger event listener
 
           // remove query parameters from URL
           this.router.navigateByUrl('/dashboard').then();
@@ -84,7 +85,9 @@ export class AuthService {
    */
   private isValidToken(): void {
     this.http.get<any>(`${config.discord_url}/users/@me`, { headers: this.headers }).subscribe({
-      next: (_response: DiscordUser): void => {},
+      next: (response: DiscordUser): void => {
+        this.dataService.profile = response;
+      },
       error: (error: HttpErrorResponse): void => {
         localStorage.removeItem('access_token');
 
@@ -148,7 +151,7 @@ export class AuthService {
    * @param {string} token - The access token to be set in the Authorization header.
    * @returns {HttpHeaders} The updated HttpHeaders object with the Authorization header set.
    */
-  private setAuthorizationHeader(token: string): HttpHeaders {
+  setAuthorizationHeader(token: string): HttpHeaders {
     return this.headers.set('Authorization', `Bearer ${token}`);
   }
 
