@@ -40,9 +40,9 @@ export class SimpleErrorComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.translate.onLangChange.subscribe((): void => {
       document.title = this.translate.instant('ERROR_PAGE_TITLE');
-
-      this.dataService.isLoading = false;
     });
+
+    this.dataService.isLoading = false;
   }
 
 }

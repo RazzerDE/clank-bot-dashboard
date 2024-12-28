@@ -9,7 +9,6 @@ import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {nav_items, NavigationItem} from "./types/NavigationItem";
 import {TranslatePipe} from "@ngx-translate/core";
-import {forkJoin} from "rxjs";
 import {DiscordComService} from "../../services/discord-com/discord-com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Guild} from "../../services/discord-com/types/Guilds";
@@ -145,9 +144,29 @@ export class SidebarComponent {
     }
   }
 
+  /**
+   * Fetches the list of guilds (servers) from the Discord API and updates the local storage.
+   *
+   * If the guilds are already stored in local storage and were updated within the last 5 minutes,
+   * the cached guilds are used instead of making a new API request.
+   *
+   * The function filters the guilds to include only those where the user has administrator permissions
+   * or is the owner, and the guild has the "COMMUNITY" feature. It also formats the member and presence
+   * counts for display and sorts the guilds by name.
+   *
+   * If the API request fails, the user is redirected to the login error page.
+   */
   getGuilds(): void {
-    forkJoin({Guilds: this.discordService.getGuilds()}).subscribe({
-      next: ({Guilds}: { Guilds: Guild[] }): void => {
+    // check if guilds are already stored in local storage
+    if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
+        Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 300000) {
+      this.servers = JSON.parse(localStorage.getItem('guilds') as string);
+      this.dataService.isLoading = false;
+      return;
+    }
+
+    this.discordService.getGuilds().subscribe({
+      next: (Guilds: Guild[]): void => {
         this.servers = Guilds
           .filter((guild: Guild): boolean =>
             // check if user has admin perms and if guild is public
@@ -165,9 +184,15 @@ export class SidebarComponent {
           }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
 
         this.dataService.isLoading = false;
+        localStorage.setItem('guilds', JSON.stringify(this.servers));
+        localStorage.setItem('guilds_last_updated', Date.now().toString());
       },
-      error: (_err: HttpErrorResponse): void => {
-        this.dataService.redirectLoginError('EXPIRED');
+      error: (err: HttpErrorResponse): void => {
+        if (err.status === 429) {
+          this.dataService.redirectLoginError('UNKNOWN');
+        } else {
+          this.dataService.redirectLoginError('EXPIRED');
+        }
         this.dataService.isLoading = false;
       }
     });

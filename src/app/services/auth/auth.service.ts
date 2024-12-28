@@ -4,7 +4,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
 import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
-import {retry, timeout} from "rxjs";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {DataHolderService} from "../data/data-holder.service";
 
@@ -50,7 +49,7 @@ export class AuthService {
     }
 
     this.http.post<any>(`${config.api_url}/auth/discord`, { code: code, state: state })
-      .pipe(timeout(5000), retry(2)).subscribe({
+      .subscribe({
         next: (response: AccessCode): void => {
           localStorage.removeItem('state');  // clean up stored state
           localStorage.removeItem('state_expiry');
@@ -111,7 +110,7 @@ export class AuthService {
     localStorage.setItem('state_expiry', (Date.now() + 5 * 60 * 1000).toString()); // Add 5min expiry
 
     this.http.post<void>(`${config.api_url}/auth/saveState`, { state: atob(encodedState) })
-      .pipe(timeout(5000), retry(2)).subscribe({
+      .subscribe({
         error: (): void => {
           // Handle state save error
           localStorage.removeItem('state');
