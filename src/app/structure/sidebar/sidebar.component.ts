@@ -183,19 +183,19 @@ export class SidebarComponent {
             return guild;
           }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
 
-        this.dataService.isLoading = false;
+        // this.dataService.isLoading = false;
         localStorage.setItem('guilds', JSON.stringify(this.servers));
         localStorage.setItem('guilds_last_updated', Date.now().toString());
       },
       error: (err: HttpErrorResponse): void => {
         if (err.status === 429) {
           this.dataService.redirectLoginError('UNKNOWN');
-          this.dataService.isLoading = false;
+          // this.dataService.isLoading = false;
         } else if (err.status === 401) {
           // do nothing because header is weird af
         } else {
           this.dataService.redirectLoginError('EXPIRED');
-          this.dataService.isLoading = false;
+          // this.dataService.isLoading = false;
         }
       }
     }));

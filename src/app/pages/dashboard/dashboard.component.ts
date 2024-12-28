@@ -8,6 +8,9 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {faTruckMedical} from "@fortawesome/free-solid-svg-icons";
+import {ApiService} from "../../services/api/api.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {SliderItems} from "../../services/types/landing-page/SliderItems";
 
 @Component({
   selector: 'app-dashboard',
@@ -17,10 +20,15 @@ import {faTruckMedical} from "@fortawesome/free-solid-svg-icons";
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements AfterViewInit {
+  protected servers: SliderItems[] = [];
 
-  constructor(protected authService: AuthService, protected dataService: DataHolderService, private translate: TranslateService) {
+  constructor(protected authService: AuthService, protected dataService: DataHolderService,
+              private translate: TranslateService, private apiService: ApiService) {
     this.dataService.isLoading = true;
     this.authService.discordLogin();
+
+    // get server data for serverlist
+    this.getServerData();
   }
 
   /**
@@ -34,8 +42,25 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
+  /**
+   * Retrieves the server data for the server list.
+   * Makes a GET request to the backend API to retrieve the server data.
+   */
+  getServerData(): void {
+    this.apiService.getGuildUsage(100).subscribe({
+      next: (response: SliderItems[]): void => {
+        this.servers = response;
+        this.dataService.isLoading = false;
+      },
+      error: (_err: HttpErrorResponse): void => {
+        this.dataService.isLoading = false;
+      }
+    });
+  }
+
   protected readonly localStorage = localStorage;
   protected readonly faDiscord = faDiscord;
   protected readonly Math = Math;
   protected readonly faTruckMedical = faTruckMedical;
+  protected readonly Intl = Intl;
 }

@@ -28,7 +28,7 @@ export class ApiService {
    *
    * @returns An Observable that emits an array of SliderItems, each containing information about a guild.
    */
-  getGuildUsage(): Observable<SliderItems[]> {
-    return this.http.get<SliderItems[]>(`${this.API_URL}/stats/guilds_usage`);
+  getGuildUsage(limit: number): Observable<SliderItems[]> {
+    return this.http.get<SliderItems[]>(`${this.API_URL}/stats/guilds_usage` + (limit ? `?limit=${limit}` : ''));
   }
 }
