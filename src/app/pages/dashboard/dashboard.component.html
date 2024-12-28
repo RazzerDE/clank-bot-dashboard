@@ -16,7 +16,7 @@
     <app-header></app-header>
 
     <!-- Body -->
-    <div class="flex flex-auto flex-col">
+    <div class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
       @if (!localStorage.getItem('active_guild')) {
         <!-- Page for Pick Server -->
@@ -28,6 +28,28 @@
                 md:text-5xl md:leading-none">{{ 'PLACEHOLDER_PICK_SERVER_TITLE' | translate }}</div>
           <div class="text-slate-500 mt-2 text-center text-lg font-medium tracking-tight md:text-xl"
                [innerHTML]="'PLACEHOLDER_PICK_SERVER_DESC' | translate">
+          </div>
+        </div>
+      } @else {
+        <div class="flex-1 w-full h-full p-4">
+          <div class="grid grid-cols-5 gap-4 h-full">
+            <div class="col-span-3 grid grid-rows-2 gap-4">
+              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
+                Bereich 1
+              </div>
+              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
+                Bereich 2
+              </div>
+            </div>
+
+            <div class="col-span-2 grid grid-rows-4 gap-4">
+              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 row-span-1 transition-colors duration-500">
+                Bereich 3
+              </div>
+              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 row-span-3 transition-colors duration-500">
+                Bereich 4
+              </div>
+            </div>
           </div>
         </div>
       }
