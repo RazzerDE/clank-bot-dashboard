@@ -122,7 +122,8 @@
                 <!-- Show only 3 pages if group is not expanded & be able to expand it -->
                 @for (page of group.pages; track $index) {
                   <a [routerLink]="page.redirect_url"
-                     class="flex items-center p-2 !text-slate-400 hover:bg-gray-500 rounded-lg transition-none hover:!text-white">
+                     class="flex items-center p-2 !text-slate-400 hover:bg-gray-400/10 rounded-lg transition-none hover:!text-white"
+                     [ngClass]="window.location.href.endsWith(page.redirect_url) ? 'bg-gray-400/10 text-white' : ''">
                     <div class="w-6 flex-shrink-0">
                       <fa-icon [icon]="page.icon"></fa-icon>
                     </div>

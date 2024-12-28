@@ -165,7 +165,7 @@ export class SidebarComponent {
       return;
     }
 
-    this.discordService.getGuilds().subscribe({
+    this.discordService.getGuilds().then((observable) => observable.subscribe({
       next: (Guilds: Guild[]): void => {
         this.servers = Guilds
           .filter((guild: Guild): boolean =>
@@ -173,7 +173,7 @@ export class SidebarComponent {
             (this.authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))
           .map((guild: Guild): Guild => {
             if (guild.icon !== null) {  // add image url if guild has an icon
-              guild.image_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`;
+              guild.image_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}${guild.icon.startsWith('a_') ? '.gif' : '.png'}`;
             }
 
             // format thousand approximate_member_count with dot
@@ -190,13 +190,15 @@ export class SidebarComponent {
       error: (err: HttpErrorResponse): void => {
         if (err.status === 429) {
           this.dataService.redirectLoginError('UNKNOWN');
+          this.dataService.isLoading = false;
+        } else if (err.status === 401) {
+          // do nothing because header is weird af
         } else {
           this.dataService.redirectLoginError('EXPIRED');
+          this.dataService.isLoading = false;
         }
-        this.dataService.isLoading = false;
       }
-    });
+    }));
   }
-
 
 }

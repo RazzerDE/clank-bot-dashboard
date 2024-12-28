@@ -3,6 +3,7 @@ import {GeneralStats} from "../types/Statistics";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {Guild} from "../discord-com/types/Guilds";
+import {DiscordUser} from "../types/discord/User";
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +14,15 @@ export class DataHolderService {
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
 
-  bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
-                              punish_count: 110, global_verified_count: '16.000' };
-
   // error handler related
   error_title: string = '';
   error_desc: string = '';
 
   // api related
   active_guild: Guild | null = null;
+  profile: DiscordUser | null = null;
+  bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
+                              punish_count: 110, global_verified_count: '16.000' };
 
   constructor(private translate: TranslateService, private router: Router) {
     const temp_guild: string | null = localStorage.getItem('active_guild');

@@ -5,11 +5,13 @@ import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
 import {HeaderComponent} from "../../structure/header/header.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SidebarComponent, HeaderComponent, NgClass, NgOptimizedImage, TranslatePipe],
+  imports: [SidebarComponent, HeaderComponent, NgClass, NgOptimizedImage, TranslatePipe, FaIconComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -32,4 +34,6 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   protected readonly localStorage = localStorage;
+  protected readonly faDiscord = faDiscord;
+  protected readonly Math = Math;
 }

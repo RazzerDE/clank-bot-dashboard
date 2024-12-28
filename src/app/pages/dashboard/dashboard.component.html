@@ -16,7 +16,7 @@
     <app-header></app-header>
 
     <!-- Body -->
-    <div class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+    <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
       @if (!localStorage.getItem('active_guild')) {
         <!-- Page for Pick Server -->
@@ -31,28 +31,87 @@
           </div>
         </div>
       } @else {
-        <div class="flex-1 w-full h-full p-4">
-          <div class="grid grid-cols-5 gap-4 h-full">
-            <div class="col-span-3 grid grid-rows-2 gap-4">
-              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
-                Bereich 1
-              </div>
-              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
-                Bereich 2
+        <div class="flex flex-col h-full w-full">
+          <!-- Login Notice -->
+          <div class="bg-gray-50 dark:!bg-gray-800 transition-colors duration-500">
+            <div class="ml-6 sm:ml-14 flex w-full flex-col px-6 sm:px-8">
+              <div class="my-8 flex flex-auto flex-col w-11/12 sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0">
+                <div class="flex flex-auto items-center">
+                  @if (this.dataService.profile) {
+                    <div class="h-16 w-16 flex-0 overflow-hidden rounded-full">
+
+                        @if (this.dataService.profile.avatar) {
+                          <img
+                            ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile.id}}/{{this.dataService.profile.avatar}}{{this.dataService.profile.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
+                            class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64">
+                        } @else {
+                          <img ngSrc="https://cdn.discordapp.com/embed/avatars/{{ Math.floor(Math.random() * 6) }}.png"
+                               class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64">
+                        }
+                    </div>
+
+                    <div class="ml-4 flex min-w-0 flex-col">
+                      <div class="text-dark dark:!text-white truncate text-xl font-semibold leading-7
+                                  tracking-tight md:text-4xl md:leading-snug transition-colors duration-500">
+                        Hallo,
+                        <span class="bg-gradient-to-r from-[#FF5F6D] to-[#FFC371] bg-clip-text text-transparent
+                                     capitalize inline-block">
+                        {{ this.dataService.profile.username }}
+                        </span>! 👋
+                      </div>
+                      <div class="flex items-center">
+                        <div class="text-gray-500 ml-1.5 truncate leading-6">› Wende dich bei Fragen an unser
+                          <a href="https://discord.gg/bl4cklist" target="_blank"
+                             class="text-gray-500 hover:!text-gray-800 dark:hover:!text-gray-300">
+                            Support-Team</a>.
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <a href="discord://" class="mx-auto sm:mx-0">
+                  <button type="button" class="text-white bg-gradient-to-r from-purple-500 via-purple-600
+                                           to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none
+                                           focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg
+                                           shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80
+                                           font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2">
+                    <fa-icon [icon]="faDiscord" class="me-2"></fa-icon>
+                    Discord öffnen
+                  </button>
+                </a>
               </div>
             </div>
+          </div>
 
-            <div class="col-span-2 grid grid-rows-4 gap-4">
-              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 row-span-1 transition-colors duration-500">
-                Bereich 3
+          <!-- Main Content -->
+          <div class="flex-1 w-full h-full p-4">
+            <div class="grid grid-cols-5 gap-4 h-full">
+              <div class="col-span-3 grid grid-rows-2 gap-4">
+                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
+                  🚀 › Tipps zur Bot-Einrichtung
+                </div>
+                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
+                  📢 › Willkommen im Dashboard!
+                </div>
               </div>
-              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 row-span-3 transition-colors duration-500">
-                Bereich 4
+
+              <div class="col-span-2 grid grid-rows-6 grid-cols-2 gap-4">
+                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 row-span-2 transition-colors duration-500">
+                  🎟️ › Offene Tickets
+                </div>
+                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 row-span-2 transition-colors duration-500">
+                  🎁 › Aktive Gewinnspiele
+                </div>
+                <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-4 transition-colors duration-500">
+                  🌍 › Entdecke neue Server
+                </div>
               </div>
+
             </div>
           </div>
         </div>
       }
-    </div>
+    </section>
   </div>
 </div>
