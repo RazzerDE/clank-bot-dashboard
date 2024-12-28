@@ -7,6 +7,7 @@ import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
+import {faTruckMedical} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-dashboard',
@@ -36,4 +37,5 @@ export class DashboardComponent implements AfterViewInit {
   protected readonly localStorage = localStorage;
   protected readonly faDiscord = faDiscord;
   protected readonly Math = Math;
+  protected readonly faTruckMedical = faTruckMedical;
 }
