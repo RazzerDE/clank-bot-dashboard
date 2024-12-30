@@ -55,7 +55,7 @@
                     <div class="ml-4 flex min-w-0 flex-col">
                       <div class="text-dark dark:!text-white truncate text-xl font-semibold leading-7
                                   tracking-tight md:text-4xl md:leading-snug transition-colors duration-500">
-                        Hallo,
+                        {{ 'SECTION_LOGIN_NOTICE_TITLE' | translate }},
                         <span class="bg-gradient-to-r from-[#FF5F6D] to-[#FFC371] bg-clip-text text-transparent
                                      capitalize inline-block">
                         {{ this.dataService.profile.username }}
@@ -63,7 +63,7 @@
                       </div>
                       <div class="flex items-center">
                         <fa-icon [icon]="faTruckMedical" class="text-gray-500"></fa-icon>
-                        <div class="text-gray-500 ml-1.5 leading-6">› Wende dich bei Fragen an unser
+                        <div class="text-gray-500 ml-1.5 leading-6">{{'SECTION_LOGIN_NOTICE_DESC' | translate }}
                           <a href="https://discord.gg/bl4cklist" target="_blank"
                              class="text-gray-500 hover:!text-gray-800 dark:hover:!text-gray-300">
                             Support-Team</a>.
@@ -80,7 +80,7 @@
                                            shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80
                                            font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2">
                     <fa-icon [icon]="faDiscord" class="me-2"></fa-icon>
-                    Discord öffnen
+                    {{ 'SECTION_LOGIN_NOTICE_BUTTON' | translate }}
                   </button>
                 </a>
               </div>
@@ -94,7 +94,9 @@
                 <div
                   class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col flex-grow transition-colors duration-500">
                   <div class="p-4 pb-0">
-                    <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">🚀 › Bot Einrichtung's Fortschritt</span>
+                    <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
+                      {{ 'SECTION_BOT_SETUP_TITLE' | translate }}
+                    </span>
 
                     <!-- Task List -->
                     <div class="flex flex-col max-h-[25vh] overflow-y-auto mt-3 scrollbar-thin flex-grow">
@@ -116,7 +118,7 @@
                             }
 
                             <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90
-                                         transition-colors duration-500">{{ task.title }}</span>
+                                         transition-colors duration-500">{{ task.title | translate }}</span>
                             <fa-icon [icon]="faChevronRight"
                                      [class]="'h-5 text-gray-400 transition-transform duration-300 ' +
                               (expandedTasks.includes(task.position) ? 'rotate-90' : '')"></fa-icon>
@@ -138,7 +140,7 @@
                                   <a [routerLink]="subtask.redirect_url">
                                     <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90 text-sm
                                                  hover:text-gray-400 dark:hover:!text-gray-300 transition-colors duration-300">
-                                      {{ subtask.name }}
+                                      {{ subtask.name | translate }}
                                     </span>
                                   </a>
                                 </div>
@@ -160,25 +162,24 @@
                   </div>
                 </div>
                 <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col">
-                  <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">📢 › Willkommen im
-                    Dashboard!</h4>
+                  <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">
+                    {{ 'SECTION_WELCOME_DASHBOARD_TITLE' | translate }}
+                  </h4>
                   <p class="text-gray-500 dark:!text-gray-400/90 transition-colors duration-500">
-                    Mit diesem Dashboard kannst du viele verschiedene Einstellungen an unserem Discord-Bot "Clank"
-                    vornehmen, ohne die Slashbefehle in Discord selbst verwenden zu müssen. Dies kann viel einfacher
-                    und schneller durchgeführt werden, da es meist nur wenige Klicks statt lange Nachrichten erfordert.
+                    {{ 'SECTION_WELCOME_DASHBOARD_DESC' | translate }}
                   </p>
                   <p class="text-gray-500 dark:!text-gray-400/90 mt-auto mb-0 transition-colors duration-500">
-                    🚑 › Solltest du Fragen haben zu bestimmten Funktionen oder vielleicht einen Fehler melden wollen,
-                    kannst du dich jederzeit an unser Server-Team wenden - wir antworten in der Regel in wenigen
-                    Minuten.</p>
+                    {{ 'SECTION_WELCOME_DASHBOARD_OUTRO' | translate }}
+                  </p>
                 </div>
               </div>
 
               <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4">
                 <div
                   class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors duration-500">
-                  <span
-                    class="text-black/90 dark:!text-white/80 transition-colors duration-500">🌍 › Clank's Serverliste</span>
+                  <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
+                    {{ 'SECTION_SERVERLIST_TITLE' | translate }}
+                  </span>
 
                   <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-[60vh]">
                     <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400 ">
@@ -189,10 +190,10 @@
                           Server-Name
                         </th>
                         <th scope="col" class="px-6 py-3">
-                          Mitglieder
+                          {{ 'SECTION_SERVERLIST_TABLE_MEMBERS' | translate }}
                         </th>
                         <th scope="col" class="px-6 py-3">
-                          Aktion
+                          {{ 'SECTION_SERVERLIST_TABLE_ACTION' | translate }}
                         </th>
                       </tr>
                       </thead>
@@ -211,8 +212,9 @@
                             </td>
                             <td class="px-6 py-4">
                               <a href="{{server.guild_invite}}" target="_blank"
-                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Server
-                                beitreten</a>
+                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                {{ 'SECTION_SERVERLIST_TABLE_INVITE' | translate }}
+                              </a>
                             </td>
                           </tr>
                         }

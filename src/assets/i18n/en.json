@@ -85,6 +85,33 @@
   "SECTION_TUTORIAL_CARD_3_TITLE": "SET UP BOT SYSTEMS",
   "SECTION_TUTORIAL_CARD_3_DESC": "› With the slash command <code>/setup</code> you can see all the necessary settings you need to make for special modules (or use the new dashboard).",
 
+  "SECTION_LOGIN_NOTICE_TITLE": "Hello",
+  "SECTION_LOGIN_NOTICE_DESC": "› If you have any questions, contact our ",
+  "SECTION_LOGIN_NOTICE_BUTTON": "Open Discord",
+
+  "SECTION_WELCOME_DASHBOARD_TITLE": "📢 › Welcome to the Dashboard!",
+  "SECTION_WELCOME_DASHBOARD_DESC": "With this dashboard, you can make many different settings to our Discord bot \"Clank\" without having to use the slash commands in Discord itself. This can be done much easier and faster, as it usually only requires a few clicks instead of long messages.",
+  "SECTION_WELCOME_DASHBOARD_OUTRO": "🚑 › If you have any questions about specific functions or maybe want to report an error, you can always contact our server team - we usually respond within a few minutes.",
+
+  "SECTION_SERVERLIST_TITLE": "🌍 › Clank's Server List",
+  "SECTION_SERVERLIST_TABLE_MEMBERS": "Members",
+  "SECTION_SERVERLIST_TABLE_ACTION": "Action",
+  "SECTION_SERVERLIST_TABLE_INVITE": "Join Server",
+
+  "SECTION_BOT_SETUP_TITLE": "🚀 › Bot Setup Progress",
+  "SECTION_BOT_SETUP_TASK_SUPPORT": "Support system set up & usable for new tickets",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_1": "Discord forum channel created & set up",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_2": "Server team established for better use",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_3": "Support topics created that users can select for tickets",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_4": "Set ticket mentions to be informed immediately",
+  "SECTION_BOT_SETUP_TASK_SECURITY": "Backup protection & security measures active",
+  "SECTION_BOT_SETUP_TASK_SECURITY_1": "Log system set up to be informed about important events",
+  "SECTION_BOT_SETUP_TASK_SECURITY_2": "AutoModeration rules set up for more chat control",
+  "SECTION_BOT_SETUP_TASK_SECURITY_3": "Set unban method so banned users can apologize",
+  "SECTION_BOT_SETUP_TASK_SECURITY_4": "Nuke protection active & a backup was created",
+  "SECTION_BOT_SETUP_TASK_GLOBAL": "Global chat set up to chat server-wide",
+  "SECTION_BOT_SETUP_TASK_GLOBAL_1": "Channel for global chatting set up",
+
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login expired!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Please log in again to use the dashboard.",
   "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Login failed!",
