@@ -1,4 +1,4 @@
-<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500">
+<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500 overflow-hidden">
 
   @if (this.dataService.showMobileSidebar) {
     <!-- Backdrop for mobile -->
@@ -40,14 +40,16 @@
                   @if (this.dataService.profile) {
                     <div class="h-16 w-16 flex-0 overflow-hidden rounded-full">
 
-                        @if (this.dataService.profile.avatar) {
-                          <img
-                            ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile.id}}/{{this.dataService.profile.avatar}}{{this.dataService.profile.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
-                            class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64">
-                        } @else {
-                          <img ngSrc="https://cdn.discordapp.com/embed/avatars/{{ Math.floor(Math.random() * 6) }}.png"
-                               class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64">
-                        }
+                      @if (this.dataService.profile.avatar) {
+                        <img
+                          ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile.id}}/{{this.dataService.profile.avatar}}{{this.dataService.profile.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
+                          class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
+                          height="64">
+                      } @else {
+                        <img ngSrc="https://cdn.discordapp.com/embed/avatars/{{ Math.floor(Math.random() * 6) }}.png"
+                             class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
+                             height="64">
+                      }
                     </div>
 
                     <div class="ml-4 flex min-w-0 flex-col">
@@ -89,48 +91,119 @@
           <div class="flex-1 w-full h-full p-4">
             <div class="grid grid-cols-5 gap-4 h-full">
               <div class="col-span-3 grid grid-rows-2 gap-4">
-                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500">
-                  <span class="text-black/80 dark:!text-white/70">🚀 › Tipps zur Bot-Einrichtung</span>
+                <div
+                  class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col flex-grow transition-colors duration-500">
+                  <div class="p-4 pb-0">
+                    <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">🚀 › Bot Einrichtung's Fortschritt</span>
+
+                    <!-- Task List -->
+                    <div class="flex flex-col max-h-[25vh] overflow-y-auto mt-3 scrollbar-thin flex-grow">
+                      @for (task of tasks; track task.position) {
+                        <div
+                          class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
+                          <button (click)="toggleTask(task.position)"
+                                  class="flex items-center w-full p-3 py-2.5 text-left hover:bg-gray-100
+                       dark:hover:bg-slate-700/70 transition-colors">
+                            @if (task.finished) {
+                              <img ngSrc="assets/img/icons/check.png" class="w-5 h-5" height="64" width="64"
+                                   alt="Clank ~ Discord-Bot (Check Icon)"/>
+                            } @else if (task.finished === null) {
+                              <img ngSrc="assets/img/icons/info.png" class="w-6 h-6 -ml-0.5" height="64" width="64"
+                                   alt="Clank ~ Discord-Bot (Info Icon)"/>
+                            } @else {
+                              <img ngSrc="assets/img/icons/deny.png" class="w-5 h-5" height="64" width="64"
+                                   alt="Clank ~ Discord-Bot (Deny Icon)"/>
+                            }
+
+                            <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90
+                                         transition-colors duration-500">{{ task.title }}</span>
+                            <fa-icon [icon]="faChevronRight"
+                                     [class]="'h-5 text-gray-400 transition-transform duration-300 ' +
+                              (expandedTasks.includes(task.position) ? 'rotate-90' : '')"></fa-icon>
+                          </button>
+
+                          <!-- Subtasks -->
+                          @if (expandedTasks.includes(task.position)) {
+                            <div class="space-y-1" [@expandCollapse]>
+                              @for (subtask of task.subtasks; track $index) {
+                                <div class="flex items-center w-full p-3 py-2 text-left border-t border-gray-300
+                                          dark:!border-gray-700 transition-colors duration-500">
+                                  @if (subtask.finished) {
+                                    <img ngSrc="assets/img/icons/check.png" class="w-4 h-4 ml-8" height="64" width="64"
+                                         alt="Clank ~ Discord-Bot (Check Icon)"/>
+                                  } @else {
+                                    <img ngSrc="assets/img/icons/deny.png" class="w-4 h-4 ml-8" height="64" width="64"
+                                         alt="Clank ~ Discord-Bot (Deny Icon)"/>
+                                  }
+                                  <a [routerLink]="subtask.redirect_url">
+                                    <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90 text-sm
+                                                 hover:text-gray-400 dark:hover:!text-gray-300 transition-colors duration-300">
+                                      {{ subtask.name }}
+                                    </span>
+                                  </a>
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Progress Bar -->
+                  <div class="mt-auto h-1 w-full rounded-full transition-all duration-300"
+                       [ngClass]="{'bg-red-500': (completedTasks / totalTasks * 100) < 25,
+                                 'bg-green-500': (completedTasks / totalTasks * 100) >= 50,
+                                 'bg-orange-500': (completedTasks / totalTasks * 100) >= 25 && (completedTasks / totalTasks * 100) < 50,
+                               }"
+                       [style.width]="(completedTasks / totalTasks * 100) + '%'">
+                  </div>
                 </div>
                 <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col">
-                  <h4 class="mb-2 text-black/80 dark:!text-white/70">📢 › Willkommen im Dashboard!</h4>
-                  <p class="text-gray-500 dark:!text-gray-400/90">
+                  <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">📢 › Willkommen im
+                    Dashboard!</h4>
+                  <p class="text-gray-500 dark:!text-gray-400/90 transition-colors duration-500">
                     Mit diesem Dashboard kannst du viele verschiedene Einstellungen an unserem Discord-Bot "Clank"
                     vornehmen, ohne die Slashbefehle in Discord selbst verwenden zu müssen. Dies kann viel einfacher
                     und schneller durchgeführt werden, da es meist nur wenige Klicks statt lange Nachrichten erfordert.
                   </p>
-                  <p class="text-gray-500 dark:!text-gray-400/90 mt-auto mb-0">
+                  <p class="text-gray-500 dark:!text-gray-400/90 mt-auto mb-0 transition-colors duration-500">
                     🚑 › Solltest du Fragen haben zu bestimmten Funktionen oder vielleicht einen Fehler melden wollen,
-                    kannst du dich jederzeit an unser Server-Team wenden - wir antworten in der Regel in wenigen Minuten.</p>
+                    kannst du dich jederzeit an unser Server-Team wenden - wir antworten in der Regel in wenigen
+                    Minuten.</p>
                 </div>
               </div>
 
               <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4">
-                <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors duration-500">
-                  <span class="text-black/80 dark:!text-white/70">🌍 › Clank's Serverliste</span>
+                <div
+                  class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors duration-500">
+                  <span
+                    class="text-black/90 dark:!text-white/80 transition-colors duration-500">🌍 › Clank's Serverliste</span>
 
                   <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-[60vh]">
                     <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400 ">
                       <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
                                     sticky top-0 transition-colors duration-500">
-                        <tr>
-                          <th scope="col" class="px-6 py-3">
-                            Server-Name
-                          </th>
-                          <th scope="col" class="px-6 py-3">
-                            Mitglieder
-                          </th>
-                          <th scope="col" class="px-6 py-3">
-                            Aktion
-                          </th>
-                        </tr>
+                      <tr>
+                        <th scope="col" class="px-6 py-3">
+                          Server-Name
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          Mitglieder
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          Aktion
+                        </th>
+                      </tr>
                       </thead>
                       <tbody>
                         @for (server of this.servers; track $index) {
                           <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800
                                      border-b dark:border-gray-700 transition-colors duration-500">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white w-1/3">
-                              <img ngSrc="{{server.image_url}}" class="inline-block mr-2 mb-0.5 rounded-full" width="20" height="20"
+                            <th scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 dark:text-white w-1/3 transition-colors duration-500">
+                              <img ngSrc="{{server.image_url}}" class="inline-block mr-2 mb-0.5 rounded-full" width="20"
+                                   height="20"
                                    alt="Clank ~ Discord-Bot ({{server.guild_name}} Icon)"/>{{ server.guild_name }}
                             </th>
                             <td class="px-6 py-4">
@@ -138,7 +211,8 @@
                             </td>
                             <td class="px-6 py-4">
                               <a href="{{server.guild_invite}}" target="_blank"
-                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Server beitreten</a>
+                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Server
+                                beitreten</a>
                             </td>
                           </tr>
                         }
