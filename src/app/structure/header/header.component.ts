@@ -8,8 +8,8 @@ import {FormsModule} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
-import {FilteredNavigationItem, nav_items, NavigationItem} from "../sidebar/types/NavigationItem";
 import {Subscription} from "rxjs";
+import {FilteredNavigationItem, nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 
 @Component({
   selector: 'app-header',

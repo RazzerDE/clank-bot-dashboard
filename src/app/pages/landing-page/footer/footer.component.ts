@@ -1,11 +1,11 @@
 import {Component, AfterViewInit, ViewChild, ElementRef, HostListener} from '@angular/core';
 import { faChevronUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { nav_items } from '../header/types/LNavigationItem';
 import {NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
 import {AnimationService} from "../../../services/animation/animation.service";
 import {TranslatePipe} from "@ngx-translate/core";
+import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
 
 @Component({
   selector: 'landing-footer',

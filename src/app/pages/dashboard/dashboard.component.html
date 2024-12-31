@@ -1,4 +1,4 @@
-<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500 overflow-hidden">
+<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500">
 
   @if (this.dataService.showMobileSidebar) {
     <!-- Backdrop for mobile -->
@@ -88,18 +88,18 @@
           </div>
 
           <!-- Main Content -->
-          <div class="flex-1 w-full h-full p-4">
+          <div class="flex-1 w-full h-full p-4" style="padding-bottom: 20px !important;">
             <div class="grid grid-cols-5 gap-4 h-full">
               <div class="col-span-3 grid grid-rows-2 gap-4">
-                <div
-                  class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col flex-grow transition-colors duration-500">
+                <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col flex-grow transition-colors
+                            duration-500" #tasklistContainer>
                   <div class="p-4 pb-0">
                     <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                       {{ 'SECTION_BOT_SETUP_TITLE' | translate }}
                     </span>
 
                     <!-- Task List -->
-                    <div class="flex flex-col max-h-[25vh] overflow-y-auto mt-3 scrollbar-thin flex-grow">
+                    <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv>
                       @for (task of tasks; track task.id) {
                         <div
                           class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">

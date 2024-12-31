@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
-import {TasksCompletionList} from "../../pages/dashboard/types/Tasks";
+import {TasksCompletionList} from "../types/Tasks";
 
 @Injectable({
   providedIn: 'root'

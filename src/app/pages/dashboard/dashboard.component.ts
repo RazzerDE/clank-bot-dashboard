@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnChanges} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
@@ -11,11 +11,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {faTruckMedical, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {SubTasks, Tasks, tasks, TasksCompletionList} from "./types/Tasks";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RouterLink} from "@angular/router";
 import {forkJoin} from "rxjs";
+import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
 
 @Component({
   selector: 'app-dashboard',
@@ -44,6 +44,8 @@ export class DashboardComponent implements AfterViewInit {
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
   protected readonly tasks: Tasks[] = tasks;
+  @ViewChild('tasklistContainer') tasklistContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('tasklistDiv') tasklistDiv!: ElementRef<HTMLDivElement>;
 
   protected readonly localStorage: Storage = localStorage;
   protected readonly Math: Math = Math;
@@ -68,9 +70,24 @@ export class DashboardComponent implements AfterViewInit {
    * Also sets the `isLoading` flag in the `DataHolderService` to `false` after the language change event.
    */
   ngAfterViewInit(): void {
+    this.setTaskListMaxHeight();
     this.translate.onLangChange.subscribe((): void => {
       document.title = "Dashboard ~ Clank Discord-Bot";
     });
+  }
+
+  /**
+   * HostListener for window resize events.
+   * Sets the maximum height of the task list container.
+   *
+   * @param _event - The resize event (optional).
+   */
+  @HostListener('window:resize', ['$event'])
+  setTaskListMaxHeight(_event?: Event): void {
+    setTimeout(() => {
+      let newHeight = this.tasklistContainer.nativeElement.offsetHeight;
+      this.tasklistDiv.nativeElement.style.height = `${newHeight - 90}px`;
+    }, 50);
   }
 
   /**

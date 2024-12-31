@@ -7,12 +7,12 @@ import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {nav_items, NavigationItem} from "./types/NavigationItem";
 import {TranslatePipe} from "@ngx-translate/core";
 import {DiscordComService} from "../../services/discord-com/discord-com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Guild} from "../../services/discord-com/types/Guilds";
 import {DashboardComponent} from "../../pages/dashboard/dashboard.component";
+import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 
 @Component({
   selector: 'app-sidebar',
