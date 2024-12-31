@@ -12,6 +12,7 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {DiscordComService} from "../../services/discord-com/discord-com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Guild} from "../../services/discord-com/types/Guilds";
+import {DashboardComponent} from "../../pages/dashboard/dashboard.component";
 
 @Component({
   selector: 'app-sidebar',
@@ -93,7 +94,8 @@ export class SidebarComponent {
   protected expandedGroups: { [key: string]: boolean } = {};
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
-  constructor(protected authService: AuthService, protected dataService: DataHolderService, private discordService: DiscordComService) {
+  constructor(protected authService: AuthService, protected dataService: DataHolderService,
+              private discordService: DiscordComService, private dashboard: DashboardComponent) {
     // initialize navigation pages to allow expanding/collapsing
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = false;
@@ -140,7 +142,9 @@ export class SidebarComponent {
         this.dataService.showMobileSidebar = false;
       }
 
+      this.dashboard.getServerData();
       this.dataService.showSidebarLogo = !this.dataService.showSidebarLogo;
+      this.dataService.toggleSidebar();
     }
   }
 
@@ -161,7 +165,6 @@ export class SidebarComponent {
     if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
         Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 300000) {
       this.servers = JSON.parse(localStorage.getItem('guilds') as string);
-      this.dataService.isLoading = false;
       return;
     }
 

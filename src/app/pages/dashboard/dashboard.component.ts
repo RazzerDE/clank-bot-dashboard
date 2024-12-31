@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnChanges} from '@angular/core';
 import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
@@ -11,10 +11,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {faTruckMedical, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {Tasks, tasks} from "./types/Tasks";
+import {SubTasks, Tasks, tasks, TasksCompletionList} from "./types/Tasks";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RouterLink} from "@angular/router";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-dashboard',
@@ -73,17 +74,41 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   /**
-   * Retrieves the server data for the server list.
+   * Retrieves the server data for the server list and gets the module completion status.
    * Makes a GET request to the backend API to retrieve the server data.
    */
   getServerData(): void {
-    this.apiService.getGuildUsage(100).subscribe({
-      next: (response: SliderItems[]): void => {
-        this.servers = response;
-        this.dataService.isLoading = false;
-      },
-      error: (_err: HttpErrorResponse): void => {
-        this.dataService.isLoading = false;
+    forkJoin({guildUsage: this.apiService.getGuildUsage(100),
+              moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
+      .subscribe({
+        next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
+          this.updateTasks(moduleStatus);
+          this.servers = guildUsage;
+          // Handle moduleStatus if needed
+          this.dataService.isLoading = false;
+        },
+        error: (_err: HttpErrorResponse): void => {
+          this.dataService.isLoading = false;
+        }
+    });
+  }
+
+  /**
+   * Updates the tasks with their completion status based on the provided module status.
+   *
+   * @param moduleStatus - The status of the modules, containing information about the completion of tasks and subtasks.
+   */
+  private updateTasks(moduleStatus: TasksCompletionList): void {
+    this.tasks.forEach(task => {
+      const status = moduleStatus[`task_${task.id}`];
+      if (status) {
+        task.finished = status.finished;
+        task.subtasks.forEach(subtask => {
+          const matchingSubtask = status.subtasks.find(st => st.id === subtask.id.toString());
+          if (matchingSubtask) {
+            subtask.finished = matchingSubtask.finished;
+          }
+        });
       }
     });
   }
@@ -102,6 +127,16 @@ export class DashboardComponent implements AfterViewInit {
     } else {
       this.expandedTasks.splice(index, 1);
     }
+  }
+
+  /**
+   * Checks if the main task (based of the given subtasks) is in progress.
+   *
+   * @param subtasks - The list of subtasks to check.
+   * @returns `true` if any subtask is finished, otherwise `false`.
+   */
+  isInProgress(subtasks: SubTasks[]): boolean {
+    return subtasks.some(subtask => subtask.finished)
   }
 
   /**
