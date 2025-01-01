@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
@@ -53,6 +53,7 @@ export class DashboardComponent implements AfterViewInit {
   protected readonly localStorage: Storage = localStorage;
   protected readonly Math: Math = Math;
   protected readonly Intl = Intl;
+  protected readonly window: Window = window;
 
   protected readonly faDiscord: IconDefinition = faDiscord;
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
@@ -73,33 +74,9 @@ export class DashboardComponent implements AfterViewInit {
    * Also sets the `isLoading` flag in the `DataHolderService` to `false` after the language change event.
    */
   ngAfterViewInit(): void {
-    this.setResponsiveFixedHeight();
     this.translate.onLangChange.subscribe((): void => {
       document.title = "Dashboard ~ Clank Discord-Bot";
     });
-  }
-
-  /**
-   * HostListener for window resize events.
-   * Sets the maximum height of various containers, which needfixed heights.
-   *
-   * @param _event - The resize event (optional).
-   */
-  @HostListener('window:resize', ['$event'])
-  setResponsiveFixedHeight(_event?: Event): void {
-    setTimeout((): void => {
-      // Tasklist-Container
-      if (this.tasklistContainer && this.tasklistDiv) {
-        let newHeight: number = this.tasklistContainer.nativeElement.offsetHeight;
-        this.tasklistDiv.nativeElement.style.height = `${newHeight - 90}px`;
-      }
-
-      // Serverlist-Container
-      if (this.serverlistContainer && this.serverlistDiv) {
-        let newHeight: number = this.serverlistContainer.nativeElement.offsetHeight;
-        this.serverlistDiv.nativeElement.style.height = `${newHeight - 90}px`;
-      }
-    }, 50);
   }
 
   /**

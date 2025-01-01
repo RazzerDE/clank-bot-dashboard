@@ -2,12 +2,12 @@
 
   @if (this.dataService.showMobileSidebar) {
     <!-- Backdrop for mobile -->
-    <div class="fixed inset-0 bg-gray-800/60 lg:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
+    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
   }
 
   <!-- Hide sidebar on mobile devices; only show after button click -->
-  <div [ngClass]="['fixed lg:static z-[100] h-screen transition-transform duration-300',
-                    dataService.showMobileSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0']">
+  <div [ngClass]="['fixed xl:static z-[100] h-screen transition-transform duration-300',
+                    dataService.showMobileSidebar ? 'translate-x-0' : '-translate-x-full xl:translate-x-0']">
     <app-sidebar></app-sidebar>
   </div>
 
@@ -88,22 +88,23 @@
           </div>
 
           <!-- Main Content -->
-          <div class="w-full p-4 overflow-auto h-[calc(100dvh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
+          <div class="w-full p-4 overflow-auto h-[calc(100vh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
             <div class="grid grid-cols-5 gap-4 h-full">
-              <div class="col-span-3 grid grid-rows-2 gap-4">
-                <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col flex-grow transition-colors
-                            duration-500" #tasklistContainer>
+              <div class="col-span-3 grid grid-rows-2 gap-4 min-h-0">
+                <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col transition-colors
+                            duration-500">
                   <div class="p-4 pb-0">
                     <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                       {{ 'SECTION_BOT_SETUP_TITLE' | translate }}
                     </span>
 
                     <!-- Task List -->
-                    <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv>
+                    <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv
+                         [style.height.px]="welcomeContainer.clientHeight - 80">
                       @for (task of tasks; track task.id) {
                         <div
                           class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
-                          <button (click)="toggleTask(task.id)"
+                          <button (click)="toggleTask(task.id);"
                                   class="flex items-center w-full p-3 py-2.5 text-left hover:bg-gray-100
                                        dark:hover:bg-slate-700/70 transition-colors">
                             @if (task.finished) {
@@ -163,27 +164,32 @@
                        [style.width]="(completedTasks / totalTasks * 100) + '%'">
                   </div>
                 </div>
-                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col">
+
+                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col"
+                     #welcomeContainer>
                   <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">
                     {{ 'SECTION_WELCOME_DASHBOARD_TITLE' | translate }}
                   </h4>
+
+                  <div class="overflow-y-auto" [style.height.px]="welcomeContainer.clientHeight - 80">
                   <p class="text-gray-500 dark:!text-gray-400/90 transition-colors duration-500">
                     {{ 'SECTION_WELCOME_DASHBOARD_DESC' | translate }}
                   </p>
                   <p class="text-gray-500 dark:!text-gray-400/90 mt-auto mb-0 transition-colors duration-500">
                     {{ 'SECTION_WELCOME_DASHBOARD_OUTRO' | translate }}
                   </p>
+                  </div>
                 </div>
               </div>
 
-              <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4">
-                <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors duration-500"
-                     #serverlistContainer>
+              <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4 min-h-0">
+                <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors
+                            duration-500 flex flex-col h-[calc(100dvh-280px)]" #serverlistContainer>
                   <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                     {{ 'SECTION_SERVERLIST_TITLE' | translate }}
                   </span>
 
-                  <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto h-[60dvh]" #serverlistDiv>
+                  <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
                     <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
                       <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
                                     sticky top-0 transition-colors duration-500">
