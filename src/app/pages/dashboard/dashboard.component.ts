@@ -44,8 +44,11 @@ export class DashboardComponent implements AfterViewInit {
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
   protected readonly tasks: Tasks[] = tasks;
-  @ViewChild('tasklistContainer') tasklistContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('tasklistDiv') tasklistDiv!: ElementRef<HTMLDivElement>;
+  @ViewChild('dashboardContainer') protected dashboardContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('tasklistContainer') protected tasklistContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('tasklistDiv') protected tasklistDiv!: ElementRef<HTMLDivElement>;
+  @ViewChild('serverlistContainer') protected serverlistContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('serverlistDiv') protected serverlistDiv!: ElementRef<HTMLDivElement>;
 
   protected readonly localStorage: Storage = localStorage;
   protected readonly Math: Math = Math;
@@ -70,7 +73,7 @@ export class DashboardComponent implements AfterViewInit {
    * Also sets the `isLoading` flag in the `DataHolderService` to `false` after the language change event.
    */
   ngAfterViewInit(): void {
-    this.setTaskListMaxHeight();
+    this.setResponsiveFixedHeight();
     this.translate.onLangChange.subscribe((): void => {
       document.title = "Dashboard ~ Clank Discord-Bot";
     });
@@ -78,15 +81,24 @@ export class DashboardComponent implements AfterViewInit {
 
   /**
    * HostListener for window resize events.
-   * Sets the maximum height of the task list container.
+   * Sets the maximum height of various containers, which needfixed heights.
    *
    * @param _event - The resize event (optional).
    */
   @HostListener('window:resize', ['$event'])
-  setTaskListMaxHeight(_event?: Event): void {
-    setTimeout(() => {
-      let newHeight = this.tasklistContainer.nativeElement.offsetHeight;
-      this.tasklistDiv.nativeElement.style.height = `${newHeight - 90}px`;
+  setResponsiveFixedHeight(_event?: Event): void {
+    setTimeout((): void => {
+      // Tasklist-Container
+      if (this.tasklistContainer && this.tasklistDiv) {
+        let newHeight: number = this.tasklistContainer.nativeElement.offsetHeight;
+        this.tasklistDiv.nativeElement.style.height = `${newHeight - 90}px`;
+      }
+
+      // Serverlist-Container
+      if (this.serverlistContainer && this.serverlistDiv) {
+        let newHeight: number = this.serverlistContainer.nativeElement.offsetHeight;
+        this.serverlistDiv.nativeElement.style.height = `${newHeight - 90}px`;
+      }
     }, 50);
   }
 

@@ -36,7 +36,7 @@
           <div class="bg-gray-50 dark:!bg-gray-800 transition-colors duration-500">
             <div class="ml-6 sm:ml-14 flex w-full flex-col px-6 sm:px-8">
               <div class="my-8 flex flex-auto flex-col w-11/12 sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0">
-                <div class="flex flex-auto items-center">
+                <div class="flex flex-auto items-center animate__animated animate__fadeIn">
                   @if (this.dataService.profile) {
                     <div class="h-16 w-16 flex-0 overflow-hidden rounded-full">
 
@@ -88,7 +88,7 @@
           </div>
 
           <!-- Main Content -->
-          <div class="flex-1 w-full h-full p-4" style="padding-bottom: 20px !important;">
+          <div class="w-full p-4 overflow-auto h-[calc(100dvh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
             <div class="grid grid-cols-5 gap-4 h-full">
               <div class="col-span-3 grid grid-rows-2 gap-4">
                 <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col flex-grow transition-colors
@@ -177,14 +177,14 @@
               </div>
 
               <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4">
-                <div
-                  class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors duration-500">
+                <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors duration-500"
+                     #serverlistContainer>
                   <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                     {{ 'SECTION_SERVERLIST_TITLE' | translate }}
                   </span>
 
-                  <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-[60vh]">
-                    <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400 ">
+                  <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto h-[60dvh]" #serverlistDiv>
+                    <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
                       <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
                                     sticky top-0 transition-colors duration-500">
                       <tr>
