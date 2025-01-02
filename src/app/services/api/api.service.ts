@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
 import {TasksCompletionList} from "../types/Tasks";
+import {AuthService} from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class ApiService {
 
   private readonly API_URL: string = config.api_url;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   /**
    * Fetches general statistics about the clank bot (guild count, user count & module related statistics).
@@ -40,7 +41,7 @@ export class ApiService {
    * @returns An Observable that emits the status of the modules.
    */
   getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
-    console.log('guild_id', guild_id);
-    return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`);
+    const headers: HttpHeaders = this.authService.getHeaders();
+    return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`, { headers });
   }
 }

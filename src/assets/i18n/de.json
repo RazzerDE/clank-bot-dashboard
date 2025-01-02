@@ -118,6 +118,10 @@
   "ERROR_LOGIN_INVALID_DESC": "› Deine Anmeldung war nicht erfolgreich - bitte versuche es erneut.",
   "ERROR_LOGIN_BLOCKED_TITLE": "🚫 ~ Anmeldung blockiert!",
   "ERROR_LOGIN_BLOCKED_DESC": "› Du sendest zu viele Anfragen - bitte versuche es später erneut.",
+  "ERROR_LOGIN_FORBIDDEN_TITLE": "🔒 ~ Keine Berechtigung!",
+  "ERROR_LOGIN_FORBIDDEN_DESC": "› Du hast keine Berechtigung, um diesen Server zu verwalten.",
+  "ERROR_LOGIN_REQUESTS_TITLE": "🚑 ~ Beruhige dich!",
+  "ERROR_LOGIN_REQUESTS_DESC": "› Du sendest zu viele Anfragen - bitte versuche es später erneut.",
   "ERROR_UNKNOWN_TITLE": "🤔 ~ Etwas ist schiefgelaufen..",
   "ERROR_UNKNOWN_DESC": "› Ein unbekannter Fehler ist aufgetreten - Kontaktiere den Support!",
 

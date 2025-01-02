@@ -118,6 +118,10 @@
   "ERROR_LOGIN_INVALID_DESC": "› Your login was not successful - please try again.",
   "ERROR_LOGIN_BLOCKED_TITLE": "🚫 ~ Login blocked!",
   "ERROR_LOGIN_BLOCKED_DESC": "› You are sending too many requests - please try again later.",
+  "ERROR_LOGIN_FORBIDDEN_TITLE": "🔒 ~ No Permission!",
+  "ERROR_LOGIN_FORBIDDEN_DESC": "› You do not have permission to manage this server.",
+  "ERROR_LOGIN_REQUESTS_TITLE": "🚑 ~ Calm down!",
+  "ERROR_LOGIN_REQUESTS_DESC": "› You are sending too many requests - please try again later.",
   "ERROR_UNKNOWN_TITLE": "🤔 ~ Something went wrong..",
   "ERROR_UNKNOWN_DESC": "› An unknown error occurred - contact support!",
 

@@ -84,16 +84,27 @@ export class DashboardComponent implements AfterViewInit {
    * Makes a GET request to the backend API to retrieve the server data.
    */
   getServerData(): void {
+    if (!this.dataService.active_guild) {
+      this.dataService.isLoading = false;
+      return;
+    }
+
     forkJoin({guildUsage: this.apiService.getGuildUsage(100),
               moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
       .subscribe({
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
           this.updateTasks(moduleStatus);
           this.servers = guildUsage;
-          // Handle moduleStatus if needed
           this.dataService.isLoading = false;
         },
-        error: (_err: HttpErrorResponse): void => {
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 403) {
+            this.dataService.redirectLoginError('FORBIDDEN');
+            return;
+          } else if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          }
           this.dataService.isLoading = false;
         }
     });

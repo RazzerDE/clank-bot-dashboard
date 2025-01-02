@@ -44,9 +44,9 @@ export class DataHolderService {
    * This method sets the error title and description based on the provided error type
    * and navigates the user to the `/errors/simple` page.
    *
-   * @param {'LOGIN_INVALID' | 'LOGIN_EXPIRED' | 'LOGIN_BLOCKED' | 'UNKNOWN'} type - The type of error to display.
+   * @param {'LOGIN_INVALID' | 'LOGIN_EXPIRED' | 'LOGIN_BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS'} type - The type of error to display.
    */
-  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN'): void {
+  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS'): void {
     if (type === 'UNKNOWN') {
       this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
       this.error_desc = this.translate.instant("ERROR_UNKNOWN_DESC");

@@ -114,23 +114,25 @@ export class AuthService {
 
     this.http.post<void>(`${config.api_url}/auth/saveState`, { state: atob(encodedState) })
       .subscribe({
+        next: (): void => {
+          // replace state if it already exists in the URL
+          const stateRegex = /(&state=[^&]*)/;
+          if (this.authUrl.match(stateRegex)) {
+            if (!this.authUrl.includes(`state=${atob(encodedState)}`)) {
+              this.authUrl = this.authUrl.replace(stateRegex, `&state=${encodeURIComponent(atob(encodedState))}`);
+            }
+          } else {
+            this.authUrl += `&state=${atob(encodedState)}`;
+          }
+          window.location.href = this.authUrl;
+        },
         error: (): void => {
           // Handle state save error
           localStorage.removeItem('state');
+          localStorage.removeItem('state_expiry');
           this.dataService.redirectLoginError('UNKNOWN');
         }
       });
-
-    // replace state if it already exists in the URL
-    const stateRegex = /(&state=[^&]*)/;
-    if (this.authUrl.match(stateRegex)) {
-      if (!this.authUrl.includes(`state=${atob(encodedState)}`)) {
-        this.authUrl = this.authUrl.replace(stateRegex, `&state=${encodeURIComponent(atob(encodedState))}`);
-      }
-    } else {
-      this.authUrl += `&state=${atob(encodedState)}`;
-    }
-
   }
 
   /**
@@ -225,11 +227,12 @@ export class AuthService {
 
         // redirect to discord if invalid login code
         this.appendState();
-        window.location.href = this.authUrl;
         return;
       }
 
-      this.authenticateUser(params['code'], params['state']);
+      if (params['code'] && params['state']) {
+        this.authenticateUser(params['code'], params['state']);
+      }
     });
   }
 }
