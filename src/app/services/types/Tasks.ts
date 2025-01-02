@@ -32,10 +32,10 @@ export const tasks: Tasks[] = [
     finished: true,
     title: 'SECTION_BOT_SETUP_TASK_SUPPORT',
     subtasks: [
-      { id: 1.1, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_1', finished: true, redirect_url: '/support/setup' },
-      { id: 1.2, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_2', finished: true, redirect_url: '/teamlist' },
-      { id: 1.3, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_3', finished: true, redirect_url: '/support/themes' },
-      { id: 1.4, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_4', finished: true, redirect_url: '/support/themes' },
+      { id: 1.1, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_1', finished: true, redirect_url: '/dashboard/support/setup' },
+      { id: 1.2, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_2', finished: true, redirect_url: '/dashboard/teamlist' },
+      { id: 1.3, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_3', finished: true, redirect_url: '/dashboard/support/themes' },
+      { id: 1.4, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_4', finished: true, redirect_url: '/dashboard/support/themes' },
     ]
   },
   {
@@ -43,10 +43,10 @@ export const tasks: Tasks[] = [
     finished: null,
     title: 'SECTION_BOT_SETUP_TASK_SECURITY',
     subtasks: [
-      { id: 2.1, name: 'SECTION_BOT_SETUP_TASK_SECURITY_1', finished: false, redirect_url: '/security/automod' },
-      { id: 2.2, name: 'SECTION_BOT_SETUP_TASK_SECURITY_2', finished: true, redirect_url: '/security/automod' },
-      { id: 2.3, name: 'SECTION_BOT_SETUP_TASK_SECURITY_3', finished: false, redirect_url: '/security/shield' },
-      { id: 2.4, name: 'SECTION_BOT_SETUP_TASK_SECURITY_4', finished: true, redirect_url: '/security/backups' }
+      { id: 2.1, name: 'SECTION_BOT_SETUP_TASK_SECURITY_1', finished: false, redirect_url: '/dashboard/security/automod' },
+      { id: 2.2, name: 'SECTION_BOT_SETUP_TASK_SECURITY_2', finished: true, redirect_url: '/dashboard/security/automod' },
+      { id: 2.3, name: 'SECTION_BOT_SETUP_TASK_SECURITY_3', finished: false, redirect_url: '/dashboard/security/shield' },
+      { id: 2.4, name: 'SECTION_BOT_SETUP_TASK_SECURITY_4', finished: true, redirect_url: '/dashboard/security/backups' }
     ],
   },
   {
@@ -54,7 +54,7 @@ export const tasks: Tasks[] = [
     finished: false,
     title: 'SECTION_BOT_SETUP_TASK_GLOBAL',
     subtasks: [
-      { id: 3.1, name: 'SECTION_BOT_SETUP_TASK_GLOBAL_1', finished: false, redirect_url: '/misc/global-chat' }
+      { id: 3.1, name: 'SECTION_BOT_SETUP_TASK_GLOBAL_1', finished: false, redirect_url: '/dashboard/misc/global-chat' }
     ],
   },
 ];
