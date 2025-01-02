@@ -97,6 +97,8 @@
   "SECTION_SERVERLIST_TABLE_MEMBERS": "Members",
   "SECTION_SERVERLIST_TABLE_ACTION": "Action",
   "SECTION_SERVERLIST_TABLE_INVITE": "Join Server",
+  "SECTION_SERVERLIST_EMPTY_TITLE": "🔍 ~ No servers found",
+  "SECTION_SERVERLIST_EMPTY_DESC": "› This cannot be correct - is the API down?",
 
   "SECTION_BOT_SETUP_TITLE": "🚀 › Bot Setup Progress",
   "SECTION_BOT_SETUP_TASK_SUPPORT": "Support system set up & usable for new tickets",
@@ -124,6 +126,8 @@
   "ERROR_LOGIN_REQUESTS_DESC": "› You are sending too many requests - please try again later.",
   "ERROR_UNKNOWN_TITLE": "🤔 ~ Something went wrong..",
   "ERROR_UNKNOWN_DESC": "› An unknown error occurred - contact support!",
+  "ERROR_OFFLINE_TITLE": "📡 ~ Server is offline!",
+  "ERROR_OFFLINE_DESC": "› The server is currently not reachable - please try again later.",
 
   "ERROR_PAGE_TITLE": "Error occured ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Back to Dashboard",

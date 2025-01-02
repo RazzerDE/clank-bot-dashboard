@@ -97,6 +97,8 @@
   "SECTION_SERVERLIST_TABLE_MEMBERS": "Mitglieder",
   "SECTION_SERVERLIST_TABLE_ACTION": "Aktion",
   "SECTION_SERVERLIST_TABLE_INVITE": "Server beitreten",
+  "SECTION_SERVERLIST_EMPTY_TITLE": "🔍 ~ Keine Server gefunden",
+  "SECTION_SERVERLIST_EMPTY_DESC": "› Das kann nicht korrekt sein - hat die API eine Störung?",
 
   "SECTION_BOT_SETUP_TITLE": "🚀 › Bot Einrichtung's Fortschritt",
   "SECTION_BOT_SETUP_TASK_SUPPORT": "Support-System eingerichtet & nutzbar für neue Tickets",
@@ -124,6 +126,8 @@
   "ERROR_LOGIN_REQUESTS_DESC": "› Du sendest zu viele Anfragen - bitte versuche es später erneut.",
   "ERROR_UNKNOWN_TITLE": "🤔 ~ Etwas ist schiefgelaufen..",
   "ERROR_UNKNOWN_DESC": "› Ein unbekannter Fehler ist aufgetreten - Kontaktiere den Support!",
+  "ERROR_OFFLINE_TITLE": "📡 ~ Server ist offline!",
+  "ERROR_OFFLINE_DESC": "› Der Server ist aktuell nicht erreichbar - bitte versuche es später erneut.",
 
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",

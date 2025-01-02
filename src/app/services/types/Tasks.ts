@@ -29,24 +29,24 @@ export interface Tasks {
 export const tasks: Tasks[] = [
   {
     id: 1,
-    finished: true,
+    finished: false,
     title: 'SECTION_BOT_SETUP_TASK_SUPPORT',
     subtasks: [
-      { id: 1.1, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_1', finished: true, redirect_url: '/dashboard/support/setup' },
-      { id: 1.2, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_2', finished: true, redirect_url: '/dashboard/teamlist' },
-      { id: 1.3, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_3', finished: true, redirect_url: '/dashboard/support/themes' },
-      { id: 1.4, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_4', finished: true, redirect_url: '/dashboard/support/themes' },
+      { id: 1.1, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_1', finished: false, redirect_url: '/dashboard/support/setup' },
+      { id: 1.2, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_2', finished: false, redirect_url: '/dashboard/teamlist' },
+      { id: 1.3, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_3', finished: false, redirect_url: '/dashboard/support/themes' },
+      { id: 1.4, name: 'SECTION_BOT_SETUP_TASK_SUPPORT_4', finished: false, redirect_url: '/dashboard/support/themes' },
     ]
   },
   {
     id: 2,
-    finished: null,
+    finished: false,
     title: 'SECTION_BOT_SETUP_TASK_SECURITY',
     subtasks: [
       { id: 2.1, name: 'SECTION_BOT_SETUP_TASK_SECURITY_1', finished: false, redirect_url: '/dashboard/security/automod' },
-      { id: 2.2, name: 'SECTION_BOT_SETUP_TASK_SECURITY_2', finished: true, redirect_url: '/dashboard/security/automod' },
+      { id: 2.2, name: 'SECTION_BOT_SETUP_TASK_SECURITY_2', finished: false, redirect_url: '/dashboard/security/automod' },
       { id: 2.3, name: 'SECTION_BOT_SETUP_TASK_SECURITY_3', finished: false, redirect_url: '/dashboard/security/shield' },
-      { id: 2.4, name: 'SECTION_BOT_SETUP_TASK_SECURITY_4', finished: true, redirect_url: '/dashboard/security/backups' }
+      { id: 2.4, name: 'SECTION_BOT_SETUP_TASK_SECURITY_4', finished: false, redirect_url: '/dashboard/security/backups' }
     ],
   },
   {

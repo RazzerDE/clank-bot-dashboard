@@ -104,6 +104,9 @@ export class DashboardComponent implements AfterViewInit {
           } else if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
           }
           this.dataService.isLoading = false;
         }
