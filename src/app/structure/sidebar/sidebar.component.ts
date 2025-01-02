@@ -144,7 +144,7 @@ export class SidebarComponent {
 
       this.dashboard.getServerData();
       this.dataService.showSidebarLogo = !this.dataService.showSidebarLogo;
-      this.dataService.toggleSidebar();
+      this.dataService.showMobileSidebar = false;
     }
   }
 
@@ -192,7 +192,7 @@ export class SidebarComponent {
       },
       error: (err: HttpErrorResponse): void => {
         if (err.status === 429) {
-          this.dataService.redirectLoginError('UNKNOWN');
+          this.dataService.redirectLoginError('REQUESTS');
           // this.dataService.isLoading = false;
         } else if (err.status === 401) {
           // do nothing because header is weird af
