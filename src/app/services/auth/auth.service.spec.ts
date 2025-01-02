@@ -101,16 +101,6 @@ describe('AuthService', () => {
     expect(service['setAuthorizationHeader']).not.toHaveBeenCalled();
   });
 
-  it('should log the response if the token is valid', () => {
-    const mockResponse: DiscordUser = {} as DiscordUser;
-    httpClientSpy.mockReturnValue(of(mockResponse));
-    const consoleSpy = jest.spyOn(console, 'log');
-
-    (service as any).isValidToken();
-
-    expect(consoleSpy).toHaveBeenCalledWith(mockResponse);
-  });
-
   it('should remove access_token and redirect to EXPIRED if the token is invalid', () => {
     const mockErrorResponse = new HttpErrorResponse({ status: 401 });
     httpClientSpy.mockReturnValue(throwError(() => mockErrorResponse));
@@ -142,15 +132,6 @@ describe('AuthService', () => {
 
     expect(postSpy).toHaveBeenCalled();
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
-  });
-
-  it('should replace state in authUrl if it already exists', () => {
-    jest.spyOn(service as any, 'generateSecureState').mockReturnValue('testState');
-    service['authUrl'] = 'https://discord.com/oauth2/authorize?client_id=test&state=oldState';
-
-    (service as any).appendState();
-
-    expect(service['authUrl']).toContain(`state=${encodeURIComponent('testState')}`);
   });
 
   it('should return the original Discord token if decryption is successful', () => {

@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AnimationService } from './animation.service';
-import {Firefly} from "./types/FireFly";
-import {Star} from "./types/Star";
+import {Firefly} from "../types/animation/FireFly";
+import {Star} from "../types/animation/Star";
 
 describe('AnimationService', () => {
   let service: AnimationService;

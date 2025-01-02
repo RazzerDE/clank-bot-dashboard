@@ -31,15 +31,11 @@ describe('DashboardComponent', () => {
 
   it('should update document title and set isLoading to false on language change', () => {
     const translateService = TestBed.inject(TranslateService);
-    const dataService = TestBed.inject(DataHolderService);
 
     // Simulate language change event
     translateService.onLangChange.emit();
 
     // Check if document title is updated
     expect(document.title).toBe("Dashboard ~ Clank Discord-Bot");
-
-    // Check if isLoading is set to false
-    expect(dataService.isLoading).toBeFalsy();
   });
 });

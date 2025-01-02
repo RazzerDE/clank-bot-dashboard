@@ -5,6 +5,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {DashboardComponent} from "../../pages/dashboard/dashboard.component";
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -13,7 +14,7 @@ describe('SidebarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SidebarComponent, HttpClientTestingModule, TranslateModule.forRoot(), BrowserAnimationsModule],
-      providers: [ { provide: ActivatedRoute, useValue: { } } ]
+      providers: [ { provide: ActivatedRoute, useValue: { } }, { provide: DashboardComponent, useValue: {} } ]
     })
     .compileComponents();
 
