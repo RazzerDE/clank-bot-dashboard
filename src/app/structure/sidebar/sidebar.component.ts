@@ -184,6 +184,7 @@ export class SidebarComponent implements AfterViewInit {
     if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
         Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000) {
       this.servers = JSON.parse(localStorage.getItem('guilds') as string);
+      if (!this.dataService.active_guild) { this.dataService.isLoading = false; }
       return;
     }
 
@@ -205,9 +206,9 @@ export class SidebarComponent implements AfterViewInit {
             return guild;
           }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
 
-        // this.dataService.isLoading = false;
         localStorage.setItem('guilds', JSON.stringify(this.servers));
         localStorage.setItem('guilds_last_updated', Date.now().toString());
+        if (!this.dataService.active_guild) { this.dataService.isLoading = false; }
       },
       error: (err: HttpErrorResponse): void => {
         if (err.status === 429) {

@@ -81,10 +81,7 @@ export class DashboardComponent implements AfterViewInit {
    * Makes a GET request to the backend API to retrieve the server data.
    */
   getServerData(): void {
-    if (!this.dataService.active_guild) {
-      this.dataService.isLoading = false;
-      return;
-    }
+    if (!this.dataService.active_guild) { return; }
 
     forkJoin({guildUsage: this.apiService.getGuildUsage(100),
               moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
