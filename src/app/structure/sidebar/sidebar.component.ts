@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -85,10 +85,12 @@ import {nav_items, NavigationItem} from "../../services/types/navigation/Navigat
     ])
   ]
 })
-export class SidebarComponent {
+export class SidebarComponent implements AfterViewInit {
   protected readonly localStorage: Storage = localStorage;
   protected navigation: NavigationItem[] = nav_items;
   protected servers: Guild[] = [];
+
+  @ViewChild('discordServerPicker') private server_picker!: ElementRef<HTMLDivElement>;
 
   protected readonly window: Window = window;
   protected expandedGroups: { [key: string]: boolean } = {};
@@ -100,9 +102,25 @@ export class SidebarComponent {
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = false;
     });
+  }
 
-    // Fetch guilds
-    this.getGuilds();
+  /**
+   * Lifecycle hook that is called after the component's view has been fully initialized.
+   * Sets up a MutationObserver to monitor changes to the `discordServerPicker` element's style attribute.
+   * When the element becomes visible (width > 0), it triggers the `getGuilds` method.
+   */
+  ngAfterViewInit(): void {
+    const observer = new MutationObserver((): void => {
+      console.log('Server picker style changed');
+      console.log(this.server_picker.nativeElement.style.width);
+      if (this.server_picker.nativeElement.style.width > '0' || this.server_picker.nativeElement.style.width === '') {
+        // call getGuilds() when server picker is visible only
+        console.log('Server picker is visible');
+        this.getGuilds();
+      }
+    });
+
+    observer.observe(this.server_picker.nativeElement, { attributes: true, attributeFilter: ['style'] });
   }
 
   /**
@@ -131,12 +149,11 @@ export class SidebarComponent {
       localStorage.setItem('active_guild', JSON.stringify(guild));
       this.dataService.active_guild = guild;
 
-      const server_picker: HTMLDivElement | null = document.getElementById('discord-server-picker') as HTMLDivElement;
-      if (!server_picker) return;
+      if (!this.server_picker) return;
 
       if (window.innerWidth > 1025) {
         // hide server picker on desktop
-        server_picker.style.width = '0';
+        this.server_picker.nativeElement.style.width = '0';
       } else {
         // hide mobile menu
         this.dataService.showMobileSidebar = false;
@@ -151,7 +168,7 @@ export class SidebarComponent {
   /**
    * Fetches the list of guilds (servers) from the Discord API and updates the local storage.
    *
-   * If the guilds are already stored in local storage and were updated within the last 5 minutes,
+   * If the guilds are already stored in local storage and were updated within the last 10 minutes,
    * the cached guilds are used instead of making a new API request.
    *
    * The function filters the guilds to include only those where the user has administrator permissions
@@ -163,7 +180,7 @@ export class SidebarComponent {
   getGuilds(): void {
     // check if guilds are already stored in local storage
     if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
-        Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 300000) {
+        Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000) {
       this.servers = JSON.parse(localStorage.getItem('guilds') as string);
       return;
     }
