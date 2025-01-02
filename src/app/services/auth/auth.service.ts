@@ -33,8 +33,9 @@ export class AuthService {
    *
    * @param {string} code - The Discord authorization code.
    * @param {string} state - The state parameter to prevent CSRF attacks.
+   * @param {boolean} fetch_profile - Whether to fetch the user profile after authentication.
    */
-  private authenticateUser(code: string, state: string): void {
+  authenticateUser(code: string, state: string, fetch_profile?: boolean): void {
     // state expiration check
     const stateExpiry: string | null = localStorage.getItem('state_expiry');
     if (!stateExpiry || Date.now() > parseInt(stateExpiry)) {
@@ -63,7 +64,12 @@ export class AuthService {
           window.dispatchEvent(new StorageEvent('storage'));  // trigger event listener
 
           // remove query parameters from URL
-          this.router.navigateByUrl('/dashboard').then();
+          this.router.navigateByUrl('/dashboard').then((): void => {
+              if (fetch_profile) { // fetch profile directly after discord callback
+                this.isValidToken(response.access_token);
+              }
+            }
+          );
         },
         error: (error: HttpErrorResponse): void => {
           if (error.status === 400) {  // code is not valid
@@ -82,9 +88,16 @@ export class AuthService {
    * If the token is not present, redirects the user to the invalid login error page.
    * If the token is present, sends a request to verify the token.
    * If the token is invalid or an error occurs, redirects the user to the appropriate error page.
+   *
+   * @param {string} access_token - The access token to verify. If not provided, uses the stored access token.
    */
-  private isValidToken(): void {
-    this.http.get<any>(`${config.discord_url}/users/@me`, { headers: this.headers }).subscribe({
+  private isValidToken(access_token?: string): void {
+    let temp_headers: HttpHeaders = this.headers;
+    if (access_token) {
+      temp_headers = this.headers.set('Authorization', `Bearer ${access_token}`);
+    }
+
+    this.http.get<DiscordUser>(`${config.discord_url}/users/@me`, { headers: temp_headers }).subscribe({
       next: (response: DiscordUser): void => {
         this.dataService.profile = response;
       },
@@ -155,15 +168,6 @@ export class AuthService {
    */
   setAuthorizationHeader(token: string): HttpHeaders {
     return this.headers.set('Authorization', `Bearer ${token}`);
-  }
-
-  /**
-   * Returns the current HTTP headers.
-   *
-   * @returns {HttpHeaders} The current HTTP headers.
-   */
-  getHeaders(): HttpHeaders {
-    return this.headers;
   }
 
   /**

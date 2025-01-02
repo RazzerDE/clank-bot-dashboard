@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
 import {HeaderComponent} from "../../structure/header/header.component";
@@ -59,11 +58,9 @@ export class DashboardComponent implements AfterViewInit {
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
-  constructor(protected authService: AuthService, protected dataService: DataHolderService,
-              private translate: TranslateService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private translate: TranslateService,
+              private apiService: ApiService) {
     this.dataService.isLoading = true;
-    this.authService.discordLogin();
-
     // get server data for serverlist
     this.getServerData();
   }

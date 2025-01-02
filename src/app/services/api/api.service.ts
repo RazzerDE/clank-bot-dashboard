@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
@@ -41,7 +41,7 @@ export class ApiService {
    * @returns An Observable that emits the status of the modules.
    */
   getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
-    const headers: HttpHeaders = this.authService.getHeaders();
-    return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`, { headers });
+    return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
   }
 }

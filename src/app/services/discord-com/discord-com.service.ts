@@ -43,6 +43,6 @@ export class DiscordComService {
   async getGuilds(): Promise<Observable<Guild[]>> {
     await this.ensureInitialized();
     return this.http.get<Guild[]>(`${config.discord_url}/users/@me/guilds?with_counts=True`,
-      { headers: this.authService.getHeaders() });
+      { headers: this.authService.headers });
   }
 }

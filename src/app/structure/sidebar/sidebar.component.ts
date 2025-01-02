@@ -111,16 +111,18 @@ export class SidebarComponent implements AfterViewInit {
    */
   ngAfterViewInit(): void {
     const observer = new MutationObserver((): void => {
-      console.log('Server picker style changed');
-      console.log(this.server_picker.nativeElement.style.width);
       if (this.server_picker.nativeElement.style.width > '0' || this.server_picker.nativeElement.style.width === '') {
         // call getGuilds() when server picker is visible only
-        console.log('Server picker is visible');
         this.getGuilds();
       }
     });
 
     observer.observe(this.server_picker.nativeElement, { attributes: true, attributeFilter: ['style'] });
+
+    // first time call
+    setTimeout((): void => {
+      if (this.server_picker.nativeElement.style.width === '') { this.getGuilds(); }
+    }, 25);
   }
 
   /**
