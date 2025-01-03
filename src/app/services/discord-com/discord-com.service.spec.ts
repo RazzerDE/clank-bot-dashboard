@@ -7,6 +7,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {Guild} from "./types/Guilds";
 import {AuthService} from "../auth/auth.service";
 import {HttpHeaders} from "@angular/common/http";
+import {config} from "../../../environments/config";
 
 describe('DiscordComService', () => {
   let service: DiscordComService;
@@ -63,7 +64,7 @@ describe('DiscordComService', () => {
       expect(guilds).toEqual(mockGuilds);
     });
 
-    const req = httpMock.expectOne(`https://discord.com/api/v10/users/@me/guilds?with_counts=True`);
+    const req = httpMock.expectOne(`${config.discord_url}/users/@me/guilds?with_counts=True`);
     expect(req.request.method).toBe('GET');
     req.flush(mockGuilds);
   });
