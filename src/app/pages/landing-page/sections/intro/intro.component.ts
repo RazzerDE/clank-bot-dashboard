@@ -66,7 +66,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
   getBotStats(): void {
     // Fetch both general stats and guild usage
     forkJoin({
-      guildUsage: this.apiService.getGuildUsage(), generalStats: this.apiService.getGeneralStats()
+      guildUsage: this.apiService.getGuildUsage(25), generalStats: this.apiService.getGeneralStats()
     }).subscribe({
       next: ({guildUsage, generalStats}: { guildUsage: SliderItems[], generalStats: GeneralStats }): void => {
         // Handle guild usage

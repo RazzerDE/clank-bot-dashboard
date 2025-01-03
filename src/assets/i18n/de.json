@@ -85,14 +85,49 @@
   "SECTION_TUTORIAL_CARD_3_TITLE": "BOT-SYSTEME EINRICHTEN",
   "SECTION_TUTORIAL_CARD_3_DESC": "› Mit dem Slashbefehl <code>/setup</code> kannst du alle benötigten Einstellungen sehen, die du für spezielle Module vornehmen musst (oder du verwendest das neue Dashboard).",
 
+  "SECTION_LOGIN_NOTICE_TITLE": "Hallo",
+  "SECTION_LOGIN_NOTICE_DESC": "› Wende dich bei Fragen an unser ",
+  "SECTION_LOGIN_NOTICE_BUTTON": "Discord öffnen",
+
+  "SECTION_WELCOME_DASHBOARD_TITLE": "📢 › Willkommen im Dashboard!",
+  "SECTION_WELCOME_DASHBOARD_DESC": "Mit diesem Dashboard kannst du viele verschiedene Einstellungen an unserem Discord-Bot \"Clank\" vornehmen, ohne die Slashbefehle in Discord selbst verwenden zu müssen. Dies kann viel einfacher und schneller durchgeführt werden, da es meist nur wenige Klicks statt lange Nachrichten erfordert.",
+  "SECTION_WELCOME_DASHBOARD_OUTRO": "🚑 › Solltest du Fragen haben zu bestimmten Funktionen oder vielleicht einen Fehler melden wollen, kannst du dich jederzeit an unser Server-Team wenden - wir antworten in der Regel in wenigen Minuten.",
+
+  "SECTION_SERVERLIST_TITLE": "🌍 › Clank's Serverliste",
+  "SECTION_SERVERLIST_TABLE_MEMBERS": "Mitglieder",
+  "SECTION_SERVERLIST_TABLE_ACTION": "Aktion",
+  "SECTION_SERVERLIST_TABLE_INVITE": "Server beitreten",
+  "SECTION_SERVERLIST_EMPTY_TITLE": "🔍 ~ Keine Server gefunden",
+  "SECTION_SERVERLIST_EMPTY_DESC": "› Das kann nicht korrekt sein - hat die API eine Störung?",
+
+  "SECTION_BOT_SETUP_TITLE": "🚀 › Bot Einrichtung's Fortschritt",
+  "SECTION_BOT_SETUP_TASK_SUPPORT": "Support-System eingerichtet & nutzbar für neue Tickets",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_1": "Discord Forumkanal erstellt & eingerichtet",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_2": "Server-Team festgelegt für eine verbesserte Verwendung",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_3": "Support-Themen erstellt die User bei Tickets auswählen können",
+  "SECTION_BOT_SETUP_TASK_SUPPORT_4": "Ticket-Erwähnungen festlegen, um sofort informiert zu werden",
+  "SECTION_BOT_SETUP_TASK_SECURITY": "Backup-Schutz & Sicherheitsmaßnahmen aktiv",
+  "SECTION_BOT_SETUP_TASK_SECURITY_1": "Log-System eingerichtet um über wichtige Ereignisse informiert zu werden",
+  "SECTION_BOT_SETUP_TASK_SECURITY_2": "AutoModeration's Regeln für mehr Chatkontrolle eingerichtet",
+  "SECTION_BOT_SETUP_TASK_SECURITY_3": "Entsperrungs-Methode festlegen, damit gesperrte User sich entschuldigen können",
+  "SECTION_BOT_SETUP_TASK_SECURITY_4": "Nukeschutz aktiv & ein Backup wurde erstellt",
+  "SECTION_BOT_SETUP_TASK_GLOBAL": "Global-Chat eingerichtet, um serverweit zu chatten",
+  "SECTION_BOT_SETUP_TASK_GLOBAL_1": "Kanal für das globale Chatten festgelegt",
+
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",
   "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Anmeldung fehlgeschlagen!",
   "ERROR_LOGIN_INVALID_DESC": "› Deine Anmeldung war nicht erfolgreich - bitte versuche es erneut.",
   "ERROR_LOGIN_BLOCKED_TITLE": "🚫 ~ Anmeldung blockiert!",
   "ERROR_LOGIN_BLOCKED_DESC": "› Du sendest zu viele Anfragen - bitte versuche es später erneut.",
+  "ERROR_LOGIN_FORBIDDEN_TITLE": "🔒 ~ Keine Berechtigung!",
+  "ERROR_LOGIN_FORBIDDEN_DESC": "› Du hast keine Berechtigung, um diesen Server zu verwalten.",
+  "ERROR_LOGIN_REQUESTS_TITLE": "🚑 ~ Beruhige dich!",
+  "ERROR_LOGIN_REQUESTS_DESC": "› Du sendest zu viele Anfragen - bitte versuche es später erneut.",
   "ERROR_UNKNOWN_TITLE": "🤔 ~ Etwas ist schiefgelaufen..",
   "ERROR_UNKNOWN_DESC": "› Ein unbekannter Fehler ist aufgetreten - Kontaktiere den Support!",
+  "ERROR_OFFLINE_TITLE": "📡 ~ Server ist offline!",
+  "ERROR_OFFLINE_DESC": "› Der Server ist aktuell nicht erreichbar - bitte versuche es später erneut.",
 
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
@@ -146,5 +181,8 @@
   "SIDEBAR_PAGE_GLOBAL_CHAT_DESC": "Chatte serverweit mit fremden Discord-Usern.",
 
   "PLACEHOLDER_SEARCH": "Suchen..",
-  "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden.."
+  "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden..",
+  "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Wähle einen Server aus..",
+  "PLACEHOLDER_PICK_SERVER_DESC": "› Klicke in der <strong>linken Seitenleiste</strong> auf einen Server, um fortzufahren.",
+  "PLACEHOLDER_MEMBER_STATS": "{{members}} Mitglieder ({{online}} online)"
 }

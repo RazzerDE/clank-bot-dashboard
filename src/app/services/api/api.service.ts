@@ -4,6 +4,8 @@ import {Observable} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
+import {TasksCompletionList} from "../types/Tasks";
+import {AuthService} from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class ApiService {
 
   private readonly API_URL: string = config.api_url;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   /**
    * Fetches general statistics about the clank bot (guild count, user count & module related statistics).
@@ -28,7 +30,18 @@ export class ApiService {
    *
    * @returns An Observable that emits an array of SliderItems, each containing information about a guild.
    */
-  getGuildUsage(): Observable<SliderItems[]> {
-    return this.http.get<SliderItems[]>(`${this.API_URL}/stats/guilds_usage`);
+  getGuildUsage(limit: number): Observable<SliderItems[]> {
+    return this.http.get<SliderItems[]>(`${this.API_URL}/stats/guilds_usage` + (limit ? `?limit=${limit}` : ''));
+  }
+
+  /**
+   * Fetches the status of all bot modules for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the module status.
+   * @returns An Observable that emits the status of the modules.
+   */
+  getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
+    return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
   }
 }

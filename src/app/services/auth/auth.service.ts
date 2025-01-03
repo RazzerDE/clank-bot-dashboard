@@ -4,7 +4,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
 import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
-import {retry, timeout} from "rxjs";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {DataHolderService} from "../data/data-holder.service";
 
@@ -14,7 +13,7 @@ import {DataHolderService} from "../data/data-holder.service";
 export class AuthService {
 
   private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
-  private headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
   private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router,
@@ -34,8 +33,9 @@ export class AuthService {
    *
    * @param {string} code - The Discord authorization code.
    * @param {string} state - The state parameter to prevent CSRF attacks.
+   * @param {boolean} fetch_profile - Whether to fetch the user profile after authentication.
    */
-  private authenticateUser(code: string, state: string): void {
+  authenticateUser(code: string, state: string, fetch_profile?: boolean): void {
     // state expiration check
     const stateExpiry: string | null = localStorage.getItem('state_expiry');
     if (!stateExpiry || Date.now() > parseInt(stateExpiry)) {
@@ -50,7 +50,7 @@ export class AuthService {
     }
 
     this.http.post<any>(`${config.api_url}/auth/discord`, { code: code, state: state })
-      .pipe(timeout(5000), retry(2)).subscribe({
+      .subscribe({
         next: (response: AccessCode): void => {
           localStorage.removeItem('state');  // clean up stored state
           localStorage.removeItem('state_expiry');
@@ -61,9 +61,15 @@ export class AuthService {
 
           localStorage.setItem('access_token', response.access_token);
           this.headers = this.setAuthorizationHeader(response.access_token);
+          window.dispatchEvent(new StorageEvent('storage'));  // trigger event listener
 
           // remove query parameters from URL
-          this.router.navigateByUrl('/dashboard').then();
+          this.router.navigateByUrl('/dashboard').then((): void => {
+              if (fetch_profile) { // fetch profile directly after discord callback
+                this.isValidToken(response.access_token);
+              }
+            }
+          );
         },
         error: (error: HttpErrorResponse): void => {
           if (error.status === 400) {  // code is not valid
@@ -82,11 +88,18 @@ export class AuthService {
    * If the token is not present, redirects the user to the invalid login error page.
    * If the token is present, sends a request to verify the token.
    * If the token is invalid or an error occurs, redirects the user to the appropriate error page.
+   *
+   * @param {string} access_token - The access token to verify. If not provided, uses the stored access token.
    */
-  private isValidToken(): void {
-    this.http.get<any>(`${config.discord_url}/users/@me`, { headers: this.headers }).subscribe({
-      next: (_response: DiscordUser): void => {
-        console.log(_response);
+  private isValidToken(access_token?: string): void {
+    let temp_headers: HttpHeaders = this.headers;
+    if (access_token) {
+      temp_headers = this.headers.set('Authorization', `Bearer ${access_token}`);
+    }
+
+    this.http.get<DiscordUser>(`${config.discord_url}/users/@me`, { headers: temp_headers }).subscribe({
+      next: (response: DiscordUser): void => {
+        this.dataService.profile = response;
       },
       error: (error: HttpErrorResponse): void => {
         localStorage.removeItem('access_token');
@@ -113,24 +126,26 @@ export class AuthService {
     localStorage.setItem('state_expiry', (Date.now() + 5 * 60 * 1000).toString()); // Add 5min expiry
 
     this.http.post<void>(`${config.api_url}/auth/saveState`, { state: atob(encodedState) })
-      .pipe(timeout(5000), retry(2)).subscribe({
+      .subscribe({
+        next: (): void => {
+          // replace state if it already exists in the URL
+          const stateRegex = /(&state=[^&]*)/;
+          if (this.authUrl.match(stateRegex)) {
+            if (!this.authUrl.includes(`state=${atob(encodedState)}`)) {
+              this.authUrl = this.authUrl.replace(stateRegex, `&state=${encodeURIComponent(atob(encodedState))}`);
+            }
+          } else {
+            this.authUrl += `&state=${atob(encodedState)}`;
+          }
+          window.location.href = this.authUrl;
+        },
         error: (): void => {
           // Handle state save error
           localStorage.removeItem('state');
+          localStorage.removeItem('state_expiry');
           this.dataService.redirectLoginError('UNKNOWN');
         }
       });
-
-    // replace state if it already exists in the URL
-    const stateRegex = /(&state=[^&]*)/;
-    if (this.authUrl.match(stateRegex)) {
-      if (!this.authUrl.includes(`state=${atob(encodedState)}`)) {
-        this.authUrl = this.authUrl.replace(stateRegex, `&state=${encodeURIComponent(atob(encodedState))}`);
-      }
-    } else {
-      this.authUrl += `&state=${atob(encodedState)}`;
-    }
-
   }
 
   /**
@@ -151,7 +166,7 @@ export class AuthService {
    * @param {string} token - The access token to be set in the Authorization header.
    * @returns {HttpHeaders} The updated HttpHeaders object with the Authorization header set.
    */
-  private setAuthorizationHeader(token: string): HttpHeaders {
+  setAuthorizationHeader(token: string): HttpHeaders {
     return this.headers.set('Authorization', `Bearer ${token}`);
   }
 
@@ -174,6 +189,21 @@ export class AuthService {
       this.dataService.redirectLoginError('INVALID');
       return '';
     }
+  }
+
+  /**
+   * Checks if the user has administrator permissions.
+   *
+   * This method takes a permission string, converts it to a BigInt, and checks if the
+   * administrator permission bit is set. The administrator permission is represented
+   * by the bit value `0x00000008`.
+   *
+   * @param {string} perm_string - The permission string to check.
+   * @returns {boolean} `true` if the user has administrator permissions, `false` otherwise.
+   */
+  isAdmin(perm_string: string): boolean {
+    const ADMINISTRATOR_PERMISSION = 0x00000008;
+    return (BigInt(perm_string) & BigInt(ADMINISTRATOR_PERMISSION)) !== 0n;
   }
 
   /**
@@ -201,11 +231,12 @@ export class AuthService {
 
         // redirect to discord if invalid login code
         this.appendState();
-        window.location.href = this.authUrl;
         return;
       }
 
-      this.authenticateUser(params['code'], params['state']);
+      if (params['code'] && params['state']) {
+        this.authenticateUser(params['code'], params['state']);
+      }
     });
   }
 }

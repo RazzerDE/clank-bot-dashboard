@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
+import {Guild} from "../discord-com/types/Guilds";
+import {DiscordUser} from "../types/discord/User";
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +14,21 @@ export class DataHolderService {
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
 
-  bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
-                              punish_count: 110, global_verified_count: '16.000' };
-
   // error handler related
   error_title: string = '';
   error_desc: string = '';
 
+  // api related
+  active_guild: Guild | null = null;
+  profile: DiscordUser | null = null;
+  bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
+                              punish_count: 110, global_verified_count: '16.000' };
+
   constructor(private translate: TranslateService, private router: Router) {
-    if (localStorage.getItem('active_guild')) {
+    const temp_guild: string | null = localStorage.getItem('active_guild');
+    if (temp_guild) {
       this.showSidebarLogo = true;
+      this.active_guild = JSON.parse(temp_guild) as Guild;
     }
 
     // check if translations are loaded
@@ -37,12 +44,12 @@ export class DataHolderService {
    * This method sets the error title and description based on the provided error type
    * and navigates the user to the `/errors/simple` page.
    *
-   * @param {'LOGIN_INVALID' | 'LOGIN_EXPIRED' | 'LOGIN_BLOCKED' | 'UNKNOWN'} type - The type of error to display.
+   * @param {'LOGIN_INVALID' | 'LOGIN_EXPIRED' | 'LOGIN_BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE'} type - The type of error to display.
    */
-  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN'): void {
-    if (type === 'UNKNOWN') {
-      this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
-      this.error_desc = this.translate.instant("ERROR_UNKNOWN_DESC");
+  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE'): void {
+    if (type === 'UNKNOWN' || type === 'OFFLINE') {
+      this.error_title = this.translate.instant(`ERROR_${type}_TITLE`);
+      this.error_desc = this.translate.instant(`ERROR_${type}_DESC`);
     } else {
       this.error_title = this.translate.instant(`ERROR_LOGIN_${type}_TITLE`);
       this.error_desc = this.translate.instant(`ERROR_LOGIN_${type}_DESC`);

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {feature_items} from "./types/feature-item";
 import {TranslatePipe} from "@ngx-translate/core";
+import { feature_items } from '../../../../services/types/landing-page/feature-item';
 
 @Component({
   selector: 'landing-section-features',
@@ -15,6 +15,7 @@ import {TranslatePipe} from "@ngx-translate/core";
   styleUrl: './features.component.scss'
 })
 export class LandingSectionFeaturesComponent {
+  protected readonly feature_items = feature_items;
 
   /**
    * Toggles fullscreen mode for a video element.
@@ -31,6 +32,4 @@ export class LandingSectionFeaturesComponent {
     }
 
   }
-
-  protected readonly feature_items = feature_items;
 }

@@ -1,7 +1,7 @@
 import {HostListener, Injectable, OnDestroy} from '@angular/core';
-import {Firefly} from "./types/FireFly";
-import {Star} from "./types/Star";
-import {CanvasAnimation} from "./types/CanvasAnimation";
+import {CanvasAnimation} from "../types/animation/CanvasAnimation";
+import {Firefly} from "../types/animation/FireFly";
+import {Star} from "../types/animation/Star";
 
 @Injectable({
   providedIn: 'root'

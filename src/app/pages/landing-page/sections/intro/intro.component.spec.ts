@@ -50,8 +50,8 @@ describe('IntroComponent', () => {
 
   it('should fetch general bot statistics and guild usage, update slider items, and disable page loader', (done) => {
     const mockGuildUsage: SliderItems[] = [
-      { image_url: 'test.png', guild_name: 'Guild 1', guild_invite: 'https://discord.gg/bl4cklist' },
-      { image_url: 'test.png', guild_name: 'Guild 2', guild_invite: 'https://discord.gg/bl4cklist' },
+      { image_url: 'test.png', guild_name: 'Guild 1', guild_invite: 'https://discord.gg/bl4cklist', member_count: 3120 },
+      { image_url: 'test.png', guild_name: 'Guild 2', guild_invite: 'https://discord.gg/bl4cklist', member_count: 512 },
     ];
     const mockGeneralStats: GeneralStats = {
       user_count: 28000,

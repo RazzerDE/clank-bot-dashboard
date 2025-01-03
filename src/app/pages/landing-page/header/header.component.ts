@@ -5,10 +5,10 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import {nav_items} from "./types/LNavigationItem";
 import {LanguageSwitcherService} from "../../../services/language/language-switcher.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
+import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
 
 @Component({
   selector: 'landing-header',

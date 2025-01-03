@@ -1,0 +1,26 @@
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 100, 100, 0.5) !important;
+  }
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  @apply w-[6px];
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-white/10;
+  border-radius: 3px;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5);
+}

@@ -4,7 +4,7 @@ import { HeaderComponent } from './header.component';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {ElementRef} from "@angular/core";
 import {faHouse} from "@fortawesome/free-solid-svg-icons";
-import {NavigationItem} from "../sidebar/types/NavigationItem";
+import {NavigationItem} from "../../services/types/navigation/NavigationItem";
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

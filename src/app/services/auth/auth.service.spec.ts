@@ -38,6 +38,16 @@ describe('AuthService', () => {
     localStorage.removeItem('access_token');
   });
 
+  it('should redirect to EXPIRED error page if state is expired', () => {
+    const stateExpiry = Date.now() - 10000; // Set expiry to 10 seconds in the past
+    localStorage.setItem('state_expiry', stateExpiry.toString());
+    const redirectSpy = jest.spyOn(dataService, 'redirectLoginError');
+
+    (service as any).authenticateUser('testCode', 'testState');
+
+    expect(redirectSpy).toHaveBeenCalledWith('EXPIRED');
+  });
+
   it('should authenticate user and store access token on successful response', () => {
     const mockResponse = { access_token: 'encryptedToken' };
     const decryptedToken = 'decryptedToken';
@@ -48,7 +58,7 @@ describe('AuthService', () => {
     localStorage.setItem('state', btoa('testState'));
     localStorage.setItem('state_expiry', (Date.now() + 10000).toString());
 
-    (service as any).authenticateUser('testCode', 'testState');
+    (service as any).authenticateUser('testCode', 'testState', true);
 
     expect(postSpy).toHaveBeenCalled();
     expect(localStorage.getItem('access_token')).toBe(decryptedToken);
@@ -101,14 +111,20 @@ describe('AuthService', () => {
     expect(service['setAuthorizationHeader']).not.toHaveBeenCalled();
   });
 
-  it('should log the response if the token is valid', () => {
-    const mockResponse: DiscordUser = {} as DiscordUser;
-    httpClientSpy.mockReturnValue(of(mockResponse));
-    const consoleSpy = jest.spyOn(console, 'log');
+  it('should set the profile in dataService if access_token is provided and valid', () => {
+    const mockAccessToken = 'validAccessToken';
+    const mockResponse: DiscordUser = { id: '123', username: 'testUser' } as DiscordUser;
+    const headersSpy = jest.spyOn(service['headers'], 'set').mockReturnValue(service['headers']);
+    const httpSpy = jest.spyOn(TestBed.inject(HttpClient), 'get').mockReturnValue(of(mockResponse));
 
-    (service as any).isValidToken();
+    (service as any).isValidToken(mockAccessToken);
 
-    expect(consoleSpy).toHaveBeenCalledWith(mockResponse);
+    expect(headersSpy).toHaveBeenCalledWith('Authorization', `Bearer ${mockAccessToken}`);
+    expect(httpSpy).toHaveBeenCalled();
+    expect(dataService.profile).toEqual(mockResponse);
+
+    headersSpy.mockRestore();
+    httpSpy.mockRestore();
   });
 
   it('should remove access_token and redirect to EXPIRED if the token is invalid', () => {
@@ -133,6 +149,39 @@ describe('AuthService', () => {
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
   });
 
+  it('should append state and redirect to the auth URL on successful state save', () => {
+    jest.spyOn(service as any, 'generateSecureState').mockReturnValue('testState');
+    const postSpy = jest.spyOn(TestBed.inject(HttpClient), 'post').mockReturnValue(of(void 0));
+    const windowSpy = jest.spyOn(window, 'location', 'get').mockReturnValue({
+      ...window.location,
+      href: '',
+    });
+
+    (service as any).appendState();
+
+    expect(postSpy).toHaveBeenCalled();
+    expect(windowSpy).toHaveBeenCalled();
+    postSpy.mockRestore();
+    windowSpy.mockRestore();
+  });
+
+  it('should append state and redirect to the auth URL on successful state save (replace state because it exists)', () => {
+    jest.spyOn(service as any, 'generateSecureState').mockReturnValue('testState');
+    const postSpy = jest.spyOn(TestBed.inject(HttpClient), 'post').mockReturnValue(of(void 0));
+    const windowSpy = jest.spyOn(window, 'location', 'get').mockReturnValue({
+      ...window.location,
+      href: '',
+    });
+    service['authUrl'] = service['authUrl'] + '&state=oldState';
+
+    (service as any).appendState();
+
+    expect(postSpy).toHaveBeenCalled();
+    expect(windowSpy).toHaveBeenCalled();
+    postSpy.mockRestore();
+    windowSpy.mockRestore();
+  });
+
   it('should call redirectLoginError with UNKNOWN if state save fails', () => {
     jest.spyOn(service as any, 'generateSecureState').mockReturnValue('testState');
     const postSpy = jest.spyOn(TestBed.inject(HttpClient), 'post').mockReturnValue(throwError(() => new Error('Error')));
@@ -142,15 +191,6 @@ describe('AuthService', () => {
 
     expect(postSpy).toHaveBeenCalled();
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
-  });
-
-  it('should replace state in authUrl if it already exists', () => {
-    jest.spyOn(service as any, 'generateSecureState').mockReturnValue('testState');
-    service['authUrl'] = 'https://discord.com/oauth2/authorize?client_id=test&state=oldState';
-
-    (service as any).appendState();
-
-    expect(service['authUrl']).toContain(`state=${encodeURIComponent('testState')}`);
   });
 
   it('should return the original Discord token if decryption is successful', () => {
@@ -172,6 +212,14 @@ describe('AuthService', () => {
 
     expect(result).toBe('');
     expect(redirectSpy).toHaveBeenCalledWith('INVALID');
+  });
+
+  it('should check if user has admin permissions', () => {
+    const permString = '8'; // Binary: 1000, which includes the admin permission bit
+    const nonAdminPermString = '4'; // Binary: 0100, which does not include the admin permission bit
+
+    expect(service.isAdmin(permString)).toBe(true);
+    expect(service.isAdmin(nonAdminPermString)).toBe(false);
   });
 
   it('should remove access_token from localStorage and navigate to home page on logout', () => {
