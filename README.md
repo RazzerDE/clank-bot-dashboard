@@ -38,7 +38,7 @@
 › `Clank Dashboard` offers some fundamental features that help you better understand or apply basic concepts in certain areas.
 <br />
 
-📢 › This project uses a handful third-party libraries: `Tailwind`, `Bootstrap`, `JEST` and `Bootstrap`.
+📢 › This project uses a handful third-party libraries: `Tailwind`, `Bootstrap`, `JEST` and `Animate.css`.
 
 It supports following <strong>features</strong>:
 <ul> 
