@@ -42,7 +42,7 @@ import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/
 export class DashboardComponent implements AfterViewInit {
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
-  protected readonly tasks: Tasks[] = tasks;
+  protected tasks: Tasks[] = tasks;
   @ViewChild('dashboardContainer') protected dashboardContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('tasklistContainer') protected tasklistContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('tasklistDiv') protected tasklistDiv!: ElementRef<HTMLDivElement>;
