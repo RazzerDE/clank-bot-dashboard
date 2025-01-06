@@ -61,8 +61,14 @@ export class DashboardComponent implements AfterViewInit {
   constructor(protected dataService: DataHolderService, private translate: TranslateService,
               private apiService: ApiService) {
     this.dataService.isLoading = true;
-    // get server data for serverlist
-    this.getServerData();
+    this.dataService.hideGuildSidebar = false;
+
+    this.getServerData(); // first call to get the server data
+    this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+      if (value) { // only fetch data if allowed
+        this.getServerData();
+      }
+    });
   }
 
   /**

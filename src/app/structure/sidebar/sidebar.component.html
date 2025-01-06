@@ -4,8 +4,9 @@
               overflow-hidden pb-2 duration-500 ease-in-out transition-all transform z-[100]"
        id="discord-server-picker" #discordServerPicker
        [style.width.px]="this.dataService.showSidebarLogo && !this.dataService.showMobileSidebar ? '0' : ''">
-    <a routerLink="/" class="w-12 h-12 flex items-center justify-center mb-2 transition-all duration-300 ease-in-out
-                             transform hover:scale-105 mt-3 flex-shrink-0">
+    <a routerLink="/dashboard" (click)="this.dataService.allowDataFetch.next(true);"
+       class="w-12 h-12 flex items-center justify-center mb-2 transition-all duration-300 ease-in-out
+              transform hover:scale-105 mt-3 flex-shrink-0">
       <img class="w-12 h-12 rounded-full" height="50" width="50" ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png"
            alt="Clank ~ Discord-Bot (Discord Sidebar-Logo) " />
     </a>
@@ -39,21 +40,21 @@
   </div>
 
   <!-- Dashboard Navigation Sidebar -->
-  @if (localStorage.getItem('active_guild')) {
+  @if (localStorage.getItem('active_guild') && !this.dataService.hideGuildSidebar) {
     <aside class="w-72 bg-gray-900 shadow-lg flex flex-col h-screen" [@slideInLeft]>
 
       <!-- Header of Sidebar -->
       <div class="p-4 flex items-center justify-between pb-1"
            style="padding-right: 1rem !important; padding-top: 0.75rem !important;">
 
-        <a routerLink="/">
+        <a routerLink="/dashboard">
           <img alt="Clank ~ Discord-Bot (Logo)" class="w-10 h-10" height="50"
                [@slideAnimation]="this.dataService.showSidebarLogo && window.innerWidth > 1025 ? 'visible' : 'hidden'"
                ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" width="50"/>
         </a>
 
         <div class="flex gap-x-1">
-          <a href="/contact#bot-idea" aria-label="Contact" title="Contact">
+          <a routerLink="/dashboard/contact" aria-label="Contact" title="Contact">
             <div class="w-8 h-8 hover:rounded-full flex hover:bg-gray-500 items-center justify-center">
               <img alt="Clank ~ Discord-Bot (Suggest Idea Icon)" class="w-5 h-5 rounded-none"
                    height="24" ngSrc="assets/img/icons/sidebar/lightbulb-on.svg" width="24"/>
