@@ -142,7 +142,7 @@ export class SidebarComponent implements AfterViewInit {
    * @param {Guild} guild - The guild to select or deselect.
    */
   selectServer(guild: Guild): void {
-    if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id) {
+    if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id && !window.location.href.includes("/dashboard/contact")) {
       localStorage.removeItem('active_guild');
       this.dataService.active_guild = null;
 
