@@ -3,6 +3,10 @@ import {DataHolderService} from "../../../services/data/data-holder.service";
 import {HeaderComponent} from "../../../structure/header/header.component";
 import {NgClass} from "@angular/common";
 import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
+import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {RouterLink} from "@angular/router";
+import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: 'app-contact',
@@ -10,7 +14,9 @@ import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
   imports: [
     HeaderComponent,
     SidebarComponent,
-    NgClass
+    NgClass,
+    FaIconComponent,
+    RouterLink
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss'
@@ -31,4 +37,6 @@ export class ContactComponent implements AfterViewInit {
     this.dataService.isLoading = false;
   }
 
+  protected readonly faChevronRight = faChevronRight;
+  protected readonly faDiscord = faDiscord;
 }

@@ -17,7 +17,46 @@
 
     <!-- Body -->
     <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
-      <p>hi</p>
+
+      <!-- Header Thumb -->
+      <div class="bg-white dark:!bg-gray-800/50 flex flex-0 flex-col border-b border-gray-300 dark:!border-gray-700
+                  p-6 py sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-10 transition-colors duration-500">
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center font-medium">
+            <a routerLink="/dashboard" class="whitespace-nowrap bg-gradient-to-r dark:from-[#83ccff] dark:to-[#4290fb]
+                                              bg-clip-text text-transparent from-[#005f99] to-[#003366]
+                                              transition-colors duration-500">
+              Dashboard
+            </a>
+
+            <div class="ml-1 flex items-center whitespace-nowrap">
+              <fa-icon [icon]="faChevronRight" [size]="'xs'" class="mx-2 text-gray-400"></fa-icon>
+              <a class="ml-1 font-semibold bg-gradient-to-r dark:from-[#83ccff] dark:to-[#4290fb] bg-clip-text
+                        text-transparent cursor-pointer from-[#005f99] to-[#003366] transition-colors duration-500">
+                Fehler oder Idee melden
+              </a>
+            </div>
+          </div>
+          <div class="mt-2">
+            <h2 class="truncate text-3xl font-semibold md:text-4xl tracking-wider mb-0">📝
+              <span class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] bg-clip-text text-transparent">
+                ~ Kontaktiere Uns!
+              </span>
+            </h2>
+          </div>
+        </div>
+        <div class="flex items-center justify-end">
+          <a href="https://discord.gg/bl4cklist">
+            <button class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] text-white font-bold
+                           py-2 pl-3 pr-4 rounded hover:from-[#6a8df5] hover:to-[#6ac1f5]">
+              <fa-icon [icon]="faDiscord" class="me-2"></fa-icon>
+              Support-Server
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <!-- Page Content -->
     </section>
   </div>
 </div>
