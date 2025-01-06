@@ -68,6 +68,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.setSearchInputWidth();
+
+    // translate the navigation items for search function
+    this.langSubscription = this.translate.onLangChange.subscribe((): void => { this.translateNavItems(); });
     this.translateNavItems();
   }
 
@@ -114,25 +117,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * whenever the language changes.
    */
   translateNavItems(): void {
-    this.langSubscription = this.translate.onLangChange.subscribe((): void => {
-      // reload the navigation items with the new translations
-      this.navigation = nav_items.map(item => ({
-        ...item,
-        category: this.translate.instant(item.category),
-        description: this.translate.instant(item.description),
-        pages: item.pages.map(page => ({
-          ...page,
-          title: this.translate.instant(page.title),
-          desc: this.translate.instant(page.desc)
-        }))
-      }));
+    // reload the navigation items with the new translations
+    this.navigation = nav_items.map(item => ({
+      ...item,
+      category: this.translate.instant(item.category),
+      description: this.translate.instant(item.description),
+      pages: item.pages.map(page => ({
+        ...page,
+        title: this.translate.instant(page.title),
+        desc: this.translate.instant(page.desc)
+      }))
+    }));
 
-      // update the filtered navigation items
-      this.filteredNavItems = this.navigation;
-      if (this.searchInput) {
-        this.getFilteredResults();
-      }
-    });
+    // update the filtered navigation items
+    this.filteredNavItems = this.navigation;
+    if (this.searchInput) {
+      this.getFilteredResults();
+    }
   }
 
   /**
