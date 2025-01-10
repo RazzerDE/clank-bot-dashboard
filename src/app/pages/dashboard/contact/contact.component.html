@@ -57,15 +57,17 @@
       </div>
 
       <!-- Page Content -->
-      <div class="flex-auto p-6 sm:p-10">
-        <div class="flex flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-10">
+      <div class="flex-auto p-6 sm:p-10 overflow-y-auto pt-4 pb-1">
+        <!-- Site Description -->
+        <div class="flex flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-8">
           <p class="mb-2 flex-1">✏️› Auf dieser Seite zeigen wir dir <strong>einige Kontaktmöglichkeiten</strong>, wie du unser <strong>Entwicklungs-& Support-Team</strong> kinderleicht erreichen kannst. Dies ist nützlich bei dringenden Fällen wie rechtliche Fragen, kritische Fehlermeldungen oder einfach nur um uns deine Ideen für das Dashboard, oder unserem Clank-Bot generell mitzuteilen.</p>
           <div class="self-center border-l border-gray-400 dark:!border-gray-700 mx-4 transition-colors duration-500
                       h-20"></div>
           <p class="mb-2 flex-1 text-right">⚡ › Unsere Reaktionszeit ist in der Regel <strong>sehr schnell</strong> und erfolgt in wenigen Tagen - wir antworten dir auf deine Anfrage jedoch in den meisten Fällen nur, wenn <strong>weitere Rückfragen</strong> bei deinem Fall aufgekommen sind, wie bei einer Bug-Meldung, wo wir mehr Informationen zum reproduzieren des Fehlers benötigen. </p>
         </div>
 
-        <div class="flex items-center p-3 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50
+        <!-- Alert Box -->
+        <div class="flex items-center p-3 mb-10 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50
                   dark:bg-gray-800 dark:text-blue-400 dark:!border-blue-800 transition-colors duration-500">
           <svg class="flex-shrink-0 inline w-5 h-5 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -75,6 +77,140 @@
             <strong><a class="text-blue-900 dark:text-blue-500" href="https://bl4cklist.de/contact/">Blacklist.de ~ Discord-Server Webseite</a></strong> findest.
           </div>
         </div>
+
+        <!-- Contact Forms -->
+        <div class="flex flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%]">
+
+          <!-- Bug Report Form -->
+          <div class="flex-1 p-6 !pb-4 bg-gray-50 rounded-lg">
+            <!-- Form-Header -->
+            <div class="flex items-center mb-4 w-full justify-center">
+              @for (step of steps; track $index) {
+                <div class="flex p-2 rounded-lg hover:bg-gray-200 cursor-pointer" (click)="toggleStep($index)">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm"
+                       [ngClass]="this.currentStep >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'">
+                    {{ $index + 1 }}
+                  </div>
+                  <span class="ml-2" [ngClass]="this.currentStep >= $index + 1 ? 'text-blue-600': 'text-gray-600'">
+                  {{step.title}}
+                </span>
+                </div>
+                <!-- Divider -->
+                @if ($index < steps.length - 1) {
+                  <div class="w-8 h-[1px] bg-gray-300 mx-4"></div>
+                }
+              }
+            </div>
+
+            <!-- Content of Form -->
+            <div class="relative overflow-hidden border-b border-gray-300" #formBugReport [style.height]="formContainerHeight">
+                @switch (currentStep) {
+                  @case (1) {
+                    <div [@stepContent]>
+                      <!-- Form Title -->
+                      <div>
+                        <p class="text-gray-500">› In diesem Schritt sammeln wir allgemeine Informationen über deinen Fehler, damit das Entwicklungs-Team weiß worum es konkret geht. 🤔</p>
+                      </div>
+
+                      <!-- Form Fields -->
+                      <form [formGroup]="formGroup" class="space-y-4">
+                        <div class="relative">
+                          <label for="bug-name" class="block mb-2 text-gray-600">✏️ Beschreibe das Problem kurz</label>
+                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
+                            <fa-icon [icon]="faBug"></fa-icon>
+                          </div>
+                          <input id="bug-name" type="text" formControlName="bugName" maxlength="75" minlength="10" autocomplete="off"
+                                 placeholder='Beschreibe das Problem in einem Satz - Vermeide Sätze wie "es ist kaputt" oder "das glitcht". '
+                                 class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                        text-gray-700 placeholder:text-gray-400"
+                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugName')!.touched}" />
+                        </div>
+                      </form>
+                    </div>
+                  }
+                  @case (2) {
+                    <div [@stepContent] class="mb-3">
+                      <!-- Form Title -->
+                      <div>
+                        <p class="text-gray-500 mb-3">› In diesem Schritt versuchen wir besser zu verstehen, wieso dies ein Fehler ist. 💡</p>
+                      </div>
+
+                      <!-- Form Fields -->
+                      <form [formGroup]="formGroup" class="space-y-4">
+                        <div class="relative">
+                          <label for="bug-expected" class="block mb-2 text-gray-600">✅ Erwartetes Ergebnis</label>
+                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
+                            <fa-icon [icon]="faLightbulb"></fa-icon>
+                          </div>
+                          <input id="bug-expected" type="text" formControlName="bugExpected" maxlength="75" minlength="10" autocomplete="off"
+                                 placeholder='Der Slashbefehl sollte antworten mit einem Dropdown & Embed.'
+                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:!border-blue-500
+                                      text-gray-700 placeholder:text-gray-400"
+                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugExpected')!.touched}"/>
+                        </div>
+
+                        <div class="relative">
+                          <label for="bug-expected" class="block mb-2 text-gray-600">❌ Aktuelles Ergebnis</label>
+                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
+                            <fa-icon [icon]="faLightbulb"></fa-icon>
+                          </div>
+                          <input id="bug-actual" type="text" formControlName="bugActual" maxlength="75" minlength="10" autocomplete="off"
+                                 placeholder='Der Slashbefehl schlägt fehl mit dem Fehler "Interaction failed".'
+                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:!border-blue-500
+                                        text-gray-700 placeholder:text-gray-400"
+                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugActual')!.touched}" />
+                        </div>
+                      </form>
+                    </div>
+                  }
+                  @case (3) {
+                    <!-- Form Title -->
+                    <div [@stepContent]>
+                      <div>
+                        <p class="text-gray-500 mb-2">› Wie hast du den Bug erzeugt? Das hilft uns, ihn leichter nachzuvollziehen. 📝</p>
+                      </div>
+
+                      <!-- Form Fields -->
+                      <form [formGroup]="formGroup">
+                        <div class="relative">
+                          <label for="bug-steps" class="block mb-2 text-gray-600">🐞 Schritte, um Fehler zu erzeugen</label>
+                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
+                            <fa-icon [icon]="faClipboardCheck"></fa-icon>
+                          </div>
+                          <textarea id="bug-steps" type="text" formControlName="bugSteps" maxlength="75" minlength="10" autocomplete="off"
+                                 placeholder='1. Besuche discord.gg/bl4cklist Discord-Server&#10;2. Verwende /help von dem Clank-Bot&#10;3. Die Antwort vom Bot wird fehlschlagen.'
+                                 class="w-full h-24 pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:!border-blue-500 resize-none
+                                        text-gray-700 placeholder:text-gray-400"
+                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugSteps')!.touched}">
+                          </textarea>
+                        </div>
+                      </form>
+                    </div>
+                  }
+                }
+            </div>
+
+            <!-- Form-Footer -->
+            <div class="mt-3 flex justify-between items-center overflow-hidden">
+              <h5 class="mb-0 text-gray-700">🐞 ~ Fehler melden</h5>
+              <div class="flex justify-end items-center">
+                @if (this.bugReportSent) {
+                  <p class="mb-0 text-green-500 me-4" #bugReportInfo [@slideAnimation]>Bug wurde weitergeleitet - Danke!</p>
+                }
+                <button class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-500
+                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400"
+                        (click)="sendBugReport()" [disabled]="isFormValid()" #sendBugReportBtn>
+                  {{ currentStep === steps.length ? 'Meldung absenden' : 'Fortfahren' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggest idea -->
+          <div class="flex-1"></div>
+
+        </div>
+
       </div>
     </section>
   </div>
