@@ -1,6 +1,12 @@
-import {faBomb, faLightbulb, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faBomb, faComments, faLightbulb, faHeading, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardCheck";
+import {faFolderOpen} from "@fortawesome/free-regular-svg-icons";
+
+export interface CurrentStep {
+  bug_report: number;
+  idea_suggestion: number;
+}
 
 export interface WizardStep {
   title: string;
@@ -19,10 +25,10 @@ interface FormField {
   icon: IconDefinition;
   controlName: string;
   placeholder: string;
-  type: 'text' | 'textarea';
+  type: 'text' | 'textarea' | 'select';
 }
 
-export const steps: FormStep[] = [
+export const bug_steps: FormStep[] = [
   {
     id: 1,
     title: 'FORM_BUG_REPORT_1_TITLE',
@@ -68,5 +74,48 @@ export const steps: FormStep[] = [
       type: 'textarea',
       placeholder: 'FORM_BUG_REPORT_3_FIELD_1_PLACEHOLDER'
     }]
+  }
+];
+
+export const idea_steps: FormStep[] = [
+  {
+    id: 1,
+    title: 'FORM_IDEA_SUGGESTION_1_TITLE',
+    fields: [{
+      id: 'idea-title',
+      label: 'FORM_IDEA_SUGGESTION_1_FIELD_1_TITLE',
+      icon: faHeading,
+      controlName: 'ideaTitle',
+      type: 'text',
+      placeholder: 'FORM_IDEA_SUGGESTION_1_FIELD_1_PLACEHOLDER'
+    }]
+  },
+  {
+    id: 2,
+    title: 'FORM_IDEA_SUGGESTION_2_TITLE',
+    fields: [
+      {
+        id: 'idea-description',
+        label: 'FORM_IDEA_SUGGESTION_2_FIELD_1_TITLE',
+        icon: faComments,
+        controlName: 'ideaDescription',
+        type: 'textarea',
+        placeholder: 'FORM_IDEA_SUGGESTION_2_FIELD_1_PLACEHOLDER'
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: 'FORM_IDEA_SUGGESTION_3_TITLE',
+    fields: [
+      {
+        id: "idea-category",
+        label: "FORM_IDEA_SUGGESTION_3_FIELD_1_TITLE",
+        icon: faFolderOpen,
+        controlName: "ideaCategory",
+        type: "select",
+        placeholder: "FORM_IDEA_SUGGESTION_3_FIELD_1_PLACEHOLDER"
+      }
+    ]
   }
 ];
