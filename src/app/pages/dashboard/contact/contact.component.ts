@@ -152,7 +152,7 @@ export class ContactComponent implements AfterViewInit {
    */
   toggleStep(step: number): void {
     // don't go if step is empty using formGroup
-    if (this.steps[step - 1] && this.steps[step - 1].isEmpty() && step >= this.currentStep) {
+    if ((this.steps[step - 1] && this.steps[step - 1].isEmpty() && step >= this.currentStep) || this.bugReportSent) {
       return;
     }
 
