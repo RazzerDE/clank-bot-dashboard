@@ -25,48 +25,48 @@ interface FormField {
 export const steps: FormStep[] = [
   {
     id: 1,
-    title: '› In diesem Schritt sammeln wir allgemeine Informationen über deinen Fehler, damit das Entwicklungs-Team weiß worum es konkret geht. 🤔',
+    title: 'FORM_BUG_REPORT_1_TITLE',
     fields: [{
       id: 'bug-name',
-      label: '✏️ Beschreibe das Problem kurz',
+      label: 'FORM_BUG_REPORT_1_FIELD_1_TITLE',
       icon: faBug,
       controlName: 'bugName',
       type: 'text',
-      placeholder: 'Beschreibe das Problem in einem Satz - Vermeide Sätze wie "es ist kaputt" oder "das glitcht".'
+      placeholder: 'FORM_BUG_REPORT_1_FIELD_1_PLACEHOLDER'
     }]
   },
   {
     id: 2,
-    title: '› In diesem Schritt versuchen wir besser zu verstehen, wieso dies ein Fehler ist. 💡',
+    title: 'FORM_BUG_REPORT_2_TITLE',
     fields: [
       {
         id: 'bug-expected',
-        label: '✅ Erwartetes Ergebnis',
+        label: 'FORM_BUG_REPORT_2_FIELD_1_TITLE',
         icon: faLightbulb,
         controlName: 'bugExpected',
         type: 'text',
-        placeholder: 'Der Slashbefehl sollte antworten mit einem Dropdown & Embed.'
+        placeholder: 'FORM_BUG_REPORT_2_FIELD_1_PLACEHOLDER'
       },
       {
         id: 'bug-actual',
-        label: '❌ Aktuelles Ergebnis',
+        label: 'FORM_BUG_REPORT_2_FIELD_2_TITLE',
         icon: faBomb,
         controlName: 'bugActual',
         type: 'text',
-        placeholder: 'Der Slashbefehl schlägt fehl mit dem Fehler "Interaction failed".'
+        placeholder: 'FORM_BUG_REPORT_2_FIELD_2_PLACEHOLDER'
       }
     ]
   },
   {
     id: 3,
-    title: '› Wie hast du den Bug erzeugt? Das hilft uns, ihn leichter nachzuvollziehen. 📝',
+    title: 'FORM_BUG_REPORT_3_TITLE',
     fields: [{
       id: 'bug-steps',
-      label: '🐞 Schritte, um Fehler zu erzeugen',
+      label: 'FORM_BUG_REPORT_3_FIELD_1_TITLE',
       icon: faClipboardCheck,
       controlName: 'bugSteps',
       type: 'textarea',
-      placeholder: '1. Besuche discord.gg/bl4cklist Discord-Server\\n2. Verwende /help von dem Clank-Bot\\n3. Die Antwort vom Bot wird fehlschlagen.'
+      placeholder: 'FORM_BUG_REPORT_3_FIELD_1_PLACEHOLDER'
     }]
   }
 ];

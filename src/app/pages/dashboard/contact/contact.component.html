@@ -33,14 +33,14 @@
               <fa-icon [icon]="faChevronRight" [size]="'xs'" class="mx-2 text-gray-400"></fa-icon>
               <a class="ml-1 font-semibold bg-gradient-to-r dark:from-[#83ccff] dark:to-[#4290fb] bg-clip-text
                         text-transparent cursor-pointer from-[#005f99] to-[#003366] transition-colors duration-500">
-                Fehler oder Idee melden
+                {{ 'PAGE_CONTACT_THUMB_INFO' | translate }}
               </a>
             </div>
           </div>
           <div class="mt-2">
             <h2 class="truncate text-3xl font-semibold md:text-4xl tracking-wider mb-0">📡
               <span class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] bg-clip-text text-transparent">
-                ~ Kontaktiere Uns!
+                {{ 'PAGE_CONTACT_THUMB_TITLE' | translate }}
               </span>
             </h2>
           </div>
@@ -60,10 +60,10 @@
       <div class="flex-auto p-6 sm:p-10 overflow-y-auto pt-4 pb-1">
         <!-- Site Description -->
         <div class="flex flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-8">
-          <p class="mb-2 flex-1">✏️› Auf dieser Seite zeigen wir dir <strong>einige Kontaktmöglichkeiten</strong>, wie du unser <strong>Entwicklungs-& Support-Team</strong> kinderleicht erreichen kannst. Dies ist nützlich bei dringenden Fällen wie rechtliche Fragen, kritische Fehlermeldungen oder einfach nur um uns deine Ideen für das Dashboard, oder unserem Clank-Bot generell mitzuteilen.</p>
+          <p class="mb-2 flex-1" [innerHTML]="'PAGE_CONTACT_DESC_LEFT' | translate"></p>
           <div class="self-center border-l border-gray-400 dark:!border-gray-700 mx-4 transition-colors duration-500
                       h-20"></div>
-          <p class="mb-2 flex-1 text-right">⚡ › Unsere Reaktionszeit ist in der Regel <strong>sehr schnell</strong> und erfolgt in wenigen Tagen - wir antworten dir auf deine Anfrage jedoch in den meisten Fällen nur, wenn <strong>weitere Rückfragen</strong> bei deinem Fall aufgekommen sind, wie bei einer Bug-Meldung, wo wir mehr Informationen zum reproduzieren des Fehlers benötigen. </p>
+          <p class="mb-2 flex-1 text-right" [innerHTML]="'PAGE_CONTACT_DESC_RIGHT' | translate"></p>
         </div>
 
         <!-- Alert Box -->
@@ -72,10 +72,7 @@
           <svg class="flex-shrink-0 inline w-5 h-5 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
-          <div>
-            <strong>Ich habe eine Allgemeine Frage:</strong> In diesem Fall solltest du dich mit einem spezielleren Kontaktformular an uns wenden, welches du auf unserer
-            <strong><a class="text-blue-900 dark:text-blue-500" href="https://bl4cklist.de/contact/">Blacklist.de ~ Discord-Server Webseite</a></strong> findest.
-          </div>
+          <div [innerHTML]="'PAGE_CONTACT_ALERT' | translate"></div>
         </div>
 
         <!-- Contact Forms -->
@@ -87,12 +84,12 @@
             <div class="flex items-center mb-4 w-full justify-center">
               @for (step of wizard_steps; track $index) {
                 <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500" (click)="toggleStep($index)">
-                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm"
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
                        [ngClass]="this.currentStep >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
                     {{ $index + 1 }}
                   </div>
-                  <span class="ml-2" [ngClass]="this.currentStep >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
-                  {{step.title}}
+                  <span class="ml-2 transition-colors duration-500" [ngClass]="this.currentStep >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
+                  {{step.title | translate}}
                 </span>
                 </div>
 
@@ -109,7 +106,7 @@
                 @for (step of getFormStep(); track step) {
                   <div [@stepContent] class="mb-3">
                     <!-- Form Description -->
-                    <p class="text-gray-500 mb-3">{{ step.title }}</p>
+                    <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
 
                     <!-- Form Fields -->
                     @for (field of step.fields; track field) {
@@ -117,7 +114,7 @@
                         <div class="relative">
                           <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
                                                          transition-colors duration-500">
-                            {{ field.label }}
+                            {{ field.label | translate }}
                           </label>
 
                           <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
@@ -125,7 +122,7 @@
                           </div>
                           @if (field.type === 'textarea') {
                             <textarea [id]="field.id" [formControlName]="field.controlName"
-                                      maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder.replaceAll('\\n', '&#10;')"
+                                      maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="(field.placeholder | translate).replaceAll('\\n', '&#10;')"
                                       class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                              text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                              transition-colors duration-500 dark:!text-gray-300 max-h-32"
@@ -133,7 +130,7 @@
                             </textarea>
                           } @else {
                             <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
-                                   maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder"
+                                   maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder | translate"
                                    class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                         text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                         transition-colors duration-500 dark:!text-gray-300"
@@ -148,16 +145,20 @@
 
             <!-- Form-Footer -->
             <div class="mt-3 flex justify-between items-center overflow-hidden">
-              <h5 class="mb-0 text-gray-700 dark:!text-gray-200 transition-colors duration-500">🐞 ~ Fehler melden</h5>
+              <h5 class="mb-0 text-gray-700 dark:!text-gray-200 transition-colors duration-500">
+                {{ 'FORM_BUG_REPORT_TITLE' | translate }}
+              </h5>
               <div class="flex justify-end items-center">
                 @if (this.bugReportSent) {
-                  <p class="mb-0 text-green-500 me-4" #bugReportInfo [@slideAnimation]>Bug wurde weitergeleitet - Danke!</p>
+                  <p class="mb-0 text-green-500 me-4" #bugReportInfo [@slideAnimation]>
+                    {{ 'PLACEHOLDER_BUG_REPORT_SUCCESS' | translate }}
+                  </p>
                 }
                 <button class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-500
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400
                              disabled:dark:bg-gray-600"
                         (click)="sendBugReport()" [disabled]="isFormValid() || this.bugReportSent" #sendBugReportBtn>
-                  {{ currentStep === wizard_steps.length ? 'Meldung absenden' : 'Fortfahren' }}
+                  {{ currentStep === wizard_steps.length ? this.translate.instant('WIZARD_BUTTON_BUG_SEND') : this.translate.instant('WIZARD_BUTTON_CONTINUE') }}
                 </button>
               </div>
             </div>

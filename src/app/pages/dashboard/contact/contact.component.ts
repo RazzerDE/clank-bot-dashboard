@@ -9,10 +9,9 @@ import {RouterLink} from "@angular/router";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {animate, group, query, state, style, transition, trigger} from "@angular/animations";
-import {faLightbulb, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
-import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardCheck";
+import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {WizardStep, steps, FormStep} from "../../../services/types/Forms";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-contact',
@@ -23,7 +22,8 @@ import {WizardStep, steps, FormStep} from "../../../services/types/Forms";
     NgClass,
     FaIconComponent,
     RouterLink,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslatePipe
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
@@ -87,12 +87,12 @@ export class ContactComponent implements AfterViewInit {
   protected bugReportSent: boolean = false;
 
   protected wizard_steps: WizardStep[] = [
-    { title: 'Art des Fehlers', isEmpty: () => this.formGroup.get('bugName')?.value === '' },
-    { title: 'Verhalten', isEmpty: () => this.formGroup.get('bugExpected')!.value === '' || this.formGroup.get('bugActual')!.value === '' },
-    { title: 'Reproduktion', isEmpty: () => this.formGroup.get('bugSteps')?.value === '' },
+    { title: 'WIZARD_STEP_FIRST', isEmpty: () => this.formGroup.get('bugName')?.value === '' },
+    { title: 'WIZARD_STEP_SECOND', isEmpty: () => this.formGroup.get('bugExpected')!.value === '' || this.formGroup.get('bugActual')!.value === '' },
+    { title: 'WIZARD_STEP_THIRD', isEmpty: () => this.formGroup.get('bugSteps')?.value === '' },
   ];
   protected form_steps = steps;
-  protected formGroup = new FormGroup({
+  protected formGroup: FormGroup = new FormGroup({
     bugName: new FormControl('', [Validators.required]),
     bugSteps: new FormControl('', [Validators.required]),
     bugExpected: new FormControl('', [Validators.required]),
@@ -105,11 +105,8 @@ export class ContactComponent implements AfterViewInit {
 
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faDiscord: IconDefinition = faDiscord;
-  protected readonly faBug: IconDefinition = faBug;
-  protected readonly faClipboardCheck: IconDefinition = faClipboardCheck;
-  protected readonly faLightbulb: IconDefinition = faLightbulb;
 
-  constructor(protected dataService: DataHolderService) {
+  constructor(protected dataService: DataHolderService, protected translate: TranslateService) {
     this.dataService.hideGuildSidebar = true;
   }
 
@@ -138,7 +135,7 @@ export class ContactComponent implements AfterViewInit {
     if (this.currentStep < this.wizard_steps.length) {
       this.currentStep++;
     } else {
-      // send bug report
+      // send bug report TODO
       console.log(this.formGroup.value);
       this.bugReportSent = true;
     }
@@ -166,6 +163,10 @@ export class ContactComponent implements AfterViewInit {
     return this.wizard_steps[this.currentStep - 1].isEmpty();
   }
 
+  /**
+   * Retrieves the form step corresponding to the current step.
+   * @returns An array of FormStep objects that match the current step.
+   */
   getFormStep(): FormStep[] {
     return this.form_steps.filter((step: FormStep): boolean => step.id === this.currentStep);
   }
