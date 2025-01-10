@@ -11,10 +11,8 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {animate, group, query, state, style, transition, trigger} from "@angular/animations";
 import {faLightbulb, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
-import {faClipboard} from "@fortawesome/free-solid-svg-icons/faClipboard";
-import {faCircleInfo} from "@fortawesome/free-solid-svg-icons/faCircleInfo";
-import {faListOl} from "@fortawesome/free-solid-svg-icons/faListOl";
 import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardCheck";
+import {WizardStep, steps, FormStep} from "../../../services/types/Forms";
 
 @Component({
   selector: 'app-contact',
@@ -85,23 +83,23 @@ import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardChe
   ]
 })
 export class ContactComponent implements AfterViewInit {
-  currentStep: number = 2;
-  bugReportSent: boolean = false;
+  protected currentStep: number = 2;
+  protected bugReportSent: boolean = false;
 
-  steps = [
+  protected wizard_steps: WizardStep[] = [
     { title: 'Art des Fehlers', isEmpty: () => this.formGroup.get('bugName')?.value === '' },
     { title: 'Verhalten', isEmpty: () => this.formGroup.get('bugExpected')!.value === '' || this.formGroup.get('bugActual')!.value === '' },
     { title: 'Reproduktion', isEmpty: () => this.formGroup.get('bugSteps')?.value === '' },
   ];
-
-  formGroup = new FormGroup({
+  protected form_steps = steps;
+  protected formGroup = new FormGroup({
     bugName: new FormControl('', [Validators.required]),
     bugSteps: new FormControl('', [Validators.required]),
     bugExpected: new FormControl('', [Validators.required]),
     bugActual: new FormControl('', [Validators.required]),
   });
 
-  @ViewChild('formBugReport') protected formBugReport!: ElementRef<HTMLDivElement>;
+  @ViewChild('formBugReport') private formBugReport!: ElementRef<HTMLDivElement>;
   @ViewChild('bugReportInfo') protected bugReportInfo!: ElementRef<HTMLParagraphElement>;
   protected formContainerHeight: string = 'auto';
 
@@ -137,7 +135,7 @@ export class ContactComponent implements AfterViewInit {
    */
   sendBugReport(): void {
     // switch to next step in form
-    if (this.currentStep < this.steps.length) {
+    if (this.currentStep < this.wizard_steps.length) {
       this.currentStep++;
     } else {
       // send bug report
@@ -152,7 +150,8 @@ export class ContactComponent implements AfterViewInit {
    */
   toggleStep(step: number): void {
     // don't go if step is empty using formGroup
-    if ((this.steps[step - 1] && this.steps[step - 1].isEmpty() && step >= this.currentStep) || this.bugReportSent) {
+    if ((this.wizard_steps[step - 1] && this.wizard_steps[step - 1].isEmpty() && step >= this.currentStep) ||
+        this.bugReportSent) {
       return;
     }
 
@@ -164,6 +163,10 @@ export class ContactComponent implements AfterViewInit {
    * @returns True if the current step is empty, otherwise false.
    */
   isFormValid(): boolean {
-    return this.steps[this.currentStep - 1].isEmpty();
+    return this.wizard_steps[this.currentStep - 1].isEmpty();
+  }
+
+  getFormStep(): FormStep[] {
+    return this.form_steps.filter((step: FormStep): boolean => step.id === this.currentStep);
   }
 }

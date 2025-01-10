@@ -85,7 +85,7 @@
           <div class="flex-1 p-6 !pb-4 bg-gray-50 dark:!bg-slate-800 transition-colors duration-500 rounded-lg">
             <!-- Form-Header -->
             <div class="flex items-center mb-4 w-full justify-center">
-              @for (step of steps; track $index) {
+              @for (step of wizard_steps; track $index) {
                 <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500" (click)="toggleStep($index)">
                   <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm"
                        [ngClass]="this.currentStep >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
@@ -97,7 +97,7 @@
                 </div>
 
                 <!-- Divider -->
-                @if ($index < steps.length - 1) {
+                @if ($index < wizard_steps.length - 1) {
                   <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
                 }
               }
@@ -106,99 +106,43 @@
             <!-- Content of Form -->
             <div class="relative overflow-hidden border-b border-gray-300 dark:!border-gray-700
                         transition-colors duration-500" #formBugReport [style.height]="formContainerHeight">
-                @switch (currentStep) {
-                  @case (1) {
-                    <div [@stepContent]>
-                      <!-- Form Title -->
-                      <div>
-                        <p class="text-gray-500">› In diesem Schritt sammeln wir allgemeine Informationen über deinen Fehler, damit das Entwicklungs-Team weiß worum es konkret geht. 🤔</p>
-                      </div>
+                @for (step of getFormStep(); track step) {
+                  <div [@stepContent] class="mb-3">
+                    <!-- Form Description -->
+                    <p class="text-gray-500 mb-3">{{ step.title }}</p>
 
-                      <!-- Form Fields -->
-                      <form [formGroup]="formGroup" class="space-y-4">
-                        <div class="relative">
-                          <label for="bug-name" class="block mb-2 text-gray-600 dark:!text-gray-300
-                                                       transition-colors duration-500">
-                            ✏️ Beschreibe das Problem kurz
-                          </label>
-                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
-                            <fa-icon [icon]="faBug"></fa-icon>
-                          </div>
-                          <input id="bug-name" type="text" formControlName="bugName" maxlength="75" minlength="10" autocomplete="off"
-                                 placeholder='Beschreibe das Problem in einem Satz - Vermeide Sätze wie "es ist kaputt" oder "das glitcht". '
-                                 class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                        text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                        transition-colors duration-500 dark:!text-gray-300"
-                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugName')!.touched}" />
-                        </div>
-                      </form>
-                    </div>
-                  }
-                  @case (2) {
-                    <div [@stepContent] class="mb-3">
-                      <!-- Form Title -->
-                      <div>
-                        <p class="text-gray-500 mb-3">› In diesem Schritt versuchen wir besser zu verstehen, wieso dies ein Fehler ist. 💡</p>
-                      </div>
-
-                      <!-- Form Fields -->
+                    <!-- Form Fields -->
+                    @for (field of step.fields; track field) {
                       <form [formGroup]="formGroup" class="space-y-4 pb-3">
                         <div class="relative">
-                          <label for="bug-expected" class="block mb-2 text-gray-600 dark:!text-gray-300
-                                                       transition-colors duration-500">✅ Erwartetes Ergebnis</label>
+                          <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
+                                                         transition-colors duration-500">
+                            {{ field.label }}
+                          </label>
+
                           <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
-                            <fa-icon [icon]="faLightbulb"></fa-icon>
+                            <fa-icon [icon]="field.icon"></fa-icon>
                           </div>
-                          <input id="bug-expected" type="text" formControlName="bugExpected" maxlength="75" minlength="10" autocomplete="off"
-                                 placeholder='Der Slashbefehl sollte antworten mit einem Dropdown & Embed.'
-                                 class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                          @if (field.type === 'textarea') {
+                            <textarea [id]="field.id" [formControlName]="field.controlName"
+                                      maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder.replaceAll('\\n', '&#10;')"
+                                      class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                             text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
+                                             transition-colors duration-500 dark:!text-gray-300 max-h-32"
+                                      [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get(field.controlName)!.touched}">
+                            </textarea>
+                          } @else {
+                            <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
+                                   maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder"
+                                   class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                         text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                         transition-colors duration-500 dark:!text-gray-300"
-                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugExpected')!.touched}"/>
-                        </div>
-
-                        <div class="relative">
-                          <label for="bug-expected" class="block mb-2 text-gray-600 dark:!text-gray-300
-                                                       transition-colors duration-500">❌ Aktuelles Ergebnis</label>
-                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
-                            <fa-icon [icon]="faLightbulb"></fa-icon>
-                          </div>
-                          <input id="bug-actual" type="text" formControlName="bugActual" maxlength="75" minlength="10" autocomplete="off"
-                                 placeholder='Der Slashbefehl schlägt fehl mit dem Fehler "Interaction failed".'
-                                 class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                        text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                        transition-colors duration-500 dark:!text-gray-300"
-                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugActual')!.touched}" />
+                                   [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get(field.controlName)!.touched}" />
+                          }
                         </div>
                       </form>
-                    </div>
-                  }
-                  @case (3) {
-                    <!-- Form Title -->
-                    <div [@stepContent]>
-                      <div>
-                        <p class="text-gray-500 mb-2">› Wie hast du den Bug erzeugt? Das hilft uns, ihn leichter nachzuvollziehen. 📝</p>
-                      </div>
-
-                      <!-- Form Fields -->
-                      <form [formGroup]="formGroup">
-                        <div class="relative">
-                          <label for="bug-steps" class="block mb-2 text-gray-600 dark:!text-gray-300
-                                                       transition-colors duration-500">🐞 Schritte, um Fehler zu erzeugen</label>
-                          <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
-                            <fa-icon [icon]="faClipboardCheck"></fa-icon>
-                          </div>
-                          <textarea id="bug-steps" type="text" formControlName="bugSteps" maxlength="75" minlength="10" autocomplete="off"
-                                 placeholder='1. Besuche discord.gg/bl4cklist Discord-Server&#10;2. Verwende /help von dem Clank-Bot&#10;3. Die Antwort vom Bot wird fehlschlagen.'
-                                 class="w-full h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                        text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                        transition-colors duration-500 dark:!text-gray-300 resize-none"
-                                 [ngClass]="{'!border-red-500': sendBugReportBtn.disabled && this.formGroup.get('bugSteps')!.touched}">
-                          </textarea>
-                        </div>
-                      </form>
-                    </div>
-                  }
+                    }
+                  </div>
                 }
             </div>
 
@@ -213,7 +157,7 @@
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400
                              disabled:dark:bg-gray-600"
                         (click)="sendBugReport()" [disabled]="isFormValid() || this.bugReportSent" #sendBugReportBtn>
-                  {{ currentStep === steps.length ? 'Meldung absenden' : 'Fortfahren' }}
+                  {{ currentStep === wizard_steps.length ? 'Meldung absenden' : 'Fortfahren' }}
                 </button>
               </div>
             </div>
