@@ -127,7 +127,8 @@
                                     class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                              text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                              transition-colors duration-500 dark:!text-gray-300 max-h-32"
-                                    [ngClass]="{'!border-red-500': sendIdeaSuggestBtn.disabled && this.formGroupIdea.get(field.controlName)!.touched}">
+                                    [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
+                                                                 && this.formGroupIdea.get(field.controlName)!.touched}">
                             </textarea>
                         } @else if (field.type === 'text') {
                           <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
@@ -135,13 +136,15 @@
                                  class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                         text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                         transition-colors duration-500 dark:!text-gray-300"
-                                 [ngClass]="{'!border-red-500': sendIdeaSuggestBtn.disabled && this.formGroupIdea.get(field.controlName)!.touched}" />
+                                 [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
+                                                                 && this.formGroupIdea.get(field.controlName)!.touched}" />
                         } @else {
                           <select [id]="field.id" [formControlName]="field.controlName"
                                   class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                          text-gray-700 dark:bg-gray-700 dark:border-gray-600
                                          transition-colors duration-500 dark:text-gray-300"
-                                  [ngClass]="{'!text-gray-400': formGroupIdea.get(field.controlName)?.value === ''}">
+                                  [ngClass]="{'!text-gray-400': this.formGroupIdea.get(field.controlName)!.value == ''
+                                                                 && this.formGroupIdea.get(field.controlName)!.touched}">
                             <option selected disabled value="">{{ 'FORM_IDEA_SUGGESTION_3_FIELD_1_PLACEHOLDER' | translate }}</option>
                             <!-- Discord-Server -->
                             <option value="1035289083284557865">{{ 'FORM_IDEA_SUGGESTION_3_TAG_1' | translate }}</option>
