@@ -2,6 +2,7 @@ import {faBomb, faComments, faLightbulb, faHeading, IconDefinition} from "@forta
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardCheck";
 import {faFolderOpen} from "@fortawesome/free-regular-svg-icons";
+import {DiscordUser} from "./discord/User";
 
 export interface formGroupBug {
   bugName: string;
@@ -14,6 +15,7 @@ export interface formGroupIdea {
   ideaTitle: string;
   ideaDescription: string;
   ideaCategory: string;
+  profile: DiscordUser;
 }
 
 export interface CurrentStep {

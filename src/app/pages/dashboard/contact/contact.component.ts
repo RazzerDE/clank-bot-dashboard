@@ -169,7 +169,8 @@ export class ContactComponent implements AfterViewInit {
         // send idea suggestion
         this.ideaSuggestionSent = true;
 
-        this.apiService.sendIdeaSuggestion(this.formGroupIdea.value).subscribe({
+        const form_data = { ...this.formGroupIdea.value, profile: this.dataService.profile };
+        this.apiService.sendIdeaSuggestion(form_data).subscribe({
           error: (_error: HttpErrorResponse): void => {
             this.ideaSuggestionInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.ideaSuggestionInfo.nativeElement.classList.add('!text-red-600');
