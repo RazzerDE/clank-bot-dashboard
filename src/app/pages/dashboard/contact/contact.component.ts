@@ -112,7 +112,6 @@ export class ContactComponent implements AfterViewInit {
   });
 
   @ViewChild('formBugReport') private formBugReport!: ElementRef<HTMLDivElement>;
-  @ViewChild('sendBugReportBtn') private sendBugReportBtn!: ElementRef<HTMLButtonElement>;
   @ViewChild('bugReportInfo') protected bugReportInfo!: ElementRef<HTMLParagraphElement>;
   @ViewChild('ideaSuggestionInfo') protected ideaSuggestionInfo!: ElementRef<HTMLParagraphElement>;
   protected formContainerHeight: string = 'auto';
@@ -167,9 +166,15 @@ export class ContactComponent implements AfterViewInit {
       if (this.current_steps.idea_suggestion < this.wizard_idea_suggestion.length) {
         this.current_steps.idea_suggestion++;
       } else {
-        // send idea suggestion TODO
-        console.log(this.formGroupIdea.value);
+        // send idea suggestion
         this.ideaSuggestionSent = true;
+
+        this.apiService.sendIdeaSuggestion(this.formGroupIdea.value).subscribe({
+          error: (_error: HttpErrorResponse): void => {
+            this.ideaSuggestionInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
+            this.ideaSuggestionInfo.nativeElement.classList.add('!text-red-600');
+          }
+        });
       }
     }
   }
@@ -180,9 +185,9 @@ export class ContactComponent implements AfterViewInit {
    * @param type - The type of form to switch to.
    */
   toggleStep(step: number, type: 'IDEA' | 'BUG'): void {
-    const steps = type === 'BUG' ? this.wizard_bug_steps : this.wizard_idea_suggestion;
-    const currentStep = type === 'BUG' ? this.current_steps.bug_report : this.current_steps.idea_suggestion;
-    const reportSent = type === 'BUG' ? this.bugReportSent : this.ideaSuggestionSent;
+    const steps: WizardStep[] = type === 'BUG' ? this.wizard_bug_steps : this.wizard_idea_suggestion;
+    const currentStep: number = type === 'BUG' ? this.current_steps.bug_report : this.current_steps.idea_suggestion;
+    const reportSent: boolean = type === 'BUG' ? this.bugReportSent : this.ideaSuggestionSent;
 
     // don't go if step is empty using formGroup
     if ((steps[step - 1] && steps[step - 1].isEmpty() && step >= currentStep) || reportSent) {

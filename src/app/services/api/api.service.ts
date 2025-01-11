@@ -6,7 +6,7 @@ import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
 import {TasksCompletionList} from "../types/Tasks";
 import {AuthService} from "../auth/auth.service";
-import {formGroupBug} from "../types/Forms";
+import {formGroupBug, formGroupIdea} from "../types/Forms";
 
 @Injectable({
   providedIn: 'root'
@@ -54,5 +54,15 @@ export class ApiService {
    */
   sendBugReport(data: formGroupBug): Observable<Object> {
     return this.http.post(`${this.API_URL}/contact/bug`, data, { headers: this.authService.headers });
+  }
+
+  /**
+   * Sends an idea suggestion to the server.
+   *
+   * @param data - The data of the idea suggestion to be sent.
+   * @returns An Observable that emits the server's response.
+   */
+  sendIdeaSuggestion(data: formGroupIdea): Observable<Object> {
+    return this.http.post(`${this.API_URL}/contact/idea`, data, { headers: this.authService.headers });
   }
 }

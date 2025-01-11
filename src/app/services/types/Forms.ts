@@ -10,6 +10,12 @@ export interface formGroupBug {
   bugActual: string;
 }
 
+export interface formGroupIdea {
+  ideaTitle: string;
+  ideaDescription: string;
+  ideaCategory: string;
+}
+
 export interface CurrentStep {
   bug_report: number;
   idea_suggestion: number;

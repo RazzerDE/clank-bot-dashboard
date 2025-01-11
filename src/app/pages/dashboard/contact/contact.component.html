@@ -269,7 +269,7 @@
                 <button class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-500
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400
                              disabled:dark:bg-gray-600"
-                        (click)="sendForm('BUG')" [disabled]="isFormValid('BUG') || this.bugReportSent" #sendBugReportBtn>
+                        (click)="sendForm('BUG')" [disabled]="isFormValid('BUG') || this.bugReportSent">
                   {{ current_steps.bug_report === wizard_bug_steps.length ? this.translate.instant('WIZARD_BUTTON_BUG_SEND') : this.translate.instant('WIZARD_BUTTON_CONTINUE') }}
                 </button>
               </div>
