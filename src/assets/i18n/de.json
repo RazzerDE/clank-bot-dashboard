@@ -228,6 +228,7 @@
   "FORM_BUG_REPORT_3_FIELD_1_PLACEHOLDER": "1. Besuche discord.gg/bl4cklist Discord-Server\\n2. Verwende /help von dem Clank-Bot\\n3. Die Antwort vom Bot wird fehlschlagen.",
 
   "PLACEHOLDER_BUG_REPORT_SUCCESS": "Bug wurde weitergeleitet - Danke!",
+  "PLACEHOLDER_CONTACT_ERROR": "Fehler ist aufgetreten - Probiere es erneut!",
   "PLACEHOLDER_IDEA_SUGGESTION_SUCCESS": "Idee wurde weitergeleitet - Danke!",
   "PLACEHOLDER_SEARCH": "Suchen..",
   "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden..",

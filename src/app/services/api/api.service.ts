@@ -6,6 +6,7 @@ import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
 import {TasksCompletionList} from "../types/Tasks";
 import {AuthService} from "../auth/auth.service";
+import {formGroupBug} from "../types/Forms";
 
 @Injectable({
   providedIn: 'root'
@@ -43,5 +44,15 @@ export class ApiService {
   getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
     return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
       { headers: this.authService.headers });
+  }
+
+  /**
+   * Sends a bug report to the server.
+   *
+   * @param data - The data of the bug report to be sent.
+   * @returns An Observable that emits the server's response.
+   */
+  sendBugReport(data: formGroupBug): Observable<Object> {
+    return this.http.post(`${this.API_URL}/contact/bug`, data, { headers: this.authService.headers });
   }
 }

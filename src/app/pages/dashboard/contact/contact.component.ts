@@ -12,6 +12,8 @@ import {animate, group, query, state, style, transition, trigger} from "@angular
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {WizardStep, FormStep, bug_steps, CurrentStep, idea_steps} from "../../../services/types/Forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {ApiService} from "../../../services/api/api.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-contact',
@@ -88,25 +90,29 @@ export class ContactComponent implements AfterViewInit {
   protected ideaSuggestionSent: boolean = false;
 
   protected wizard_bug_steps: WizardStep[] = [
-    { title: 'WIZARD_STEP_FIRST', isEmpty: () => this.formGroup.get('bugName')?.value === '' },
-    { title: 'WIZARD_STEP_SECOND', isEmpty: () => this.formGroup.get('bugExpected')!.value === '' || this.formGroup.get('bugActual')!.value === '' },
-    { title: 'WIZARD_STEP_THIRD', isEmpty: () => this.formGroup.get('bugSteps')?.value === '' },
+    { title: 'WIZARD_STEP_FIRST', isEmpty: () => this.formGroupBug.get('bugName')?.value === '' },
+    { title: 'WIZARD_STEP_SECOND', isEmpty: () => this.formGroupBug.get('bugExpected')!.value === '' ||
+                                                           this.formGroupBug.get('bugActual')!.value === '' },
+    { title: 'WIZARD_STEP_THIRD', isEmpty: () => this.formGroupBug.get('bugSteps')?.value === '' },
   ];
   protected wizard_idea_suggestion: WizardStep[] = [
-    { title: 'WIZARD_STEP_FIRST_IDEA', isEmpty: () => this.formGroup.get('ideaTitle')?.value === '' },
-    { title: 'WIZARD_STEP_SECOND_IDEA', isEmpty: () => this.formGroup.get('ideaDescription')?.value === '' },
-    { title: 'WIZARD_STEP_THIRD_IDEA', isEmpty: () => this.formGroup.get('ideaCategory')?.value === '' },
+    { title: 'WIZARD_STEP_FIRST_IDEA', isEmpty: () => this.formGroupIdea.get('ideaTitle')?.value === '' },
+    { title: 'WIZARD_STEP_SECOND_IDEA', isEmpty: () => this.formGroupIdea.get('ideaDescription')?.value === '' },
+    { title: 'WIZARD_STEP_THIRD_IDEA', isEmpty: () => this.formGroupIdea.get('ideaCategory')?.value === '' },
   ];
 
   protected form_bug_steps = bug_steps;
   protected form_idea_steps = idea_steps;
-  protected formGroup: FormGroup = new FormGroup({ bugName: new FormControl('', [Validators.required]),
+  protected formGroupBug: FormGroup = new FormGroup({ bugName: new FormControl('', [Validators.required]),
     bugSteps: new FormControl('', [Validators.required]), bugExpected: new FormControl('', [Validators.required]),
-    bugActual: new FormControl('', [Validators.required]), ideaTitle: new FormControl('', [Validators.required]),
+    bugActual: new FormControl('', [Validators.required])
+  });
+  protected formGroupIdea: FormGroup = new FormGroup({ ideaTitle: new FormControl('', [Validators.required]),
     ideaDescription: new FormControl('', [Validators.required]), ideaCategory: new FormControl('', [Validators.required]),
   });
 
   @ViewChild('formBugReport') private formBugReport!: ElementRef<HTMLDivElement>;
+  @ViewChild('sendBugReportBtn') private sendBugReportBtn!: ElementRef<HTMLButtonElement>;
   @ViewChild('bugReportInfo') protected bugReportInfo!: ElementRef<HTMLParagraphElement>;
   @ViewChild('ideaSuggestionInfo') protected ideaSuggestionInfo!: ElementRef<HTMLParagraphElement>;
   protected formContainerHeight: string = 'auto';
@@ -114,7 +120,8 @@ export class ContactComponent implements AfterViewInit {
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faDiscord: IconDefinition = faDiscord;
 
-  constructor(protected dataService: DataHolderService, protected translate: TranslateService) {
+  constructor(protected dataService: DataHolderService, protected translate: TranslateService,
+              private apiService: ApiService) {
     this.dataService.hideGuildSidebar = true;
   }
 
@@ -145,9 +152,15 @@ export class ContactComponent implements AfterViewInit {
       if (this.current_steps.bug_report < this.wizard_bug_steps.length) {
         this.current_steps.bug_report++;
       } else {
-        // send bug report TODO
-        console.log(this.formGroup.value);
+        // send bug report
         this.bugReportSent = true;
+
+        this.apiService.sendBugReport(this.formGroupBug.value).subscribe({
+          error: (_error: HttpErrorResponse): void => {
+            this.bugReportInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
+            this.bugReportInfo.nativeElement.classList.add('!text-red-600');
+          }
+        });
       }
     } else if (type === 'IDEA') {
       // switch to next step in idea suggestion form
@@ -155,7 +168,7 @@ export class ContactComponent implements AfterViewInit {
         this.current_steps.idea_suggestion++;
       } else {
         // send idea suggestion TODO
-        console.log(this.formGroup.value);
+        console.log(this.formGroupIdea.value);
         this.ideaSuggestionSent = true;
       }
     }

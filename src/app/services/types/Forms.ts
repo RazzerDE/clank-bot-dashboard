@@ -3,6 +3,13 @@ import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardCheck";
 import {faFolderOpen} from "@fortawesome/free-regular-svg-icons";
 
+export interface formGroupBug {
+  bugName: string;
+  bugSteps: string;
+  bugExpected: string;
+  bugActual: string;
+}
+
 export interface CurrentStep {
   bug_report: number;
   idea_suggestion: number;
