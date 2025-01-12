@@ -88,7 +88,7 @@ export class DashboardComponent implements AfterViewInit {
    */
   getServerData(): void {
     if (!this.dataService.active_guild) { return; }
-    if (!document.location.href.endsWith('/dashboard')) { return; }
+    if (!window.location.href.endsWith('/dashboard')) { return; }
 
     forkJoin({guildUsage: this.apiService.getGuildUsage(100),
               moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})

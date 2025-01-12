@@ -24,7 +24,7 @@ describe('DashboardComponent', () => {
       providers: [ { provide: ActivatedRoute, useValue: { snapshot: {
         queryParams: { code: 'test_code', state: 'test_state' } },
           queryParams: of({ code: 'test_code', state: 'test_state' }) } },
-        { provide: DataHolderService, useValue: { redirectLoginError: jest.fn() } },
+        { provide: DataHolderService, useValue: { redirectLoginError: jest.fn(), allowDataFetch: of(true) } },
         { provide: ApiService, useValue: { getGuildUsage: jest.fn(), getModuleStatus: jest.fn() } }]
     }).compileComponents();
 
@@ -54,6 +54,7 @@ describe('DashboardComponent', () => {
     const moduleStatusMock = {
       task_1: {
         finished: true,
+        guild_id: '1',
         subtasks: [
           { id: '1', finished: true },
           { id: '2', finished: false }
@@ -64,6 +65,9 @@ describe('DashboardComponent', () => {
     jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(of(guildUsageMock));
     jest.spyOn(apiService, 'getModuleStatus').mockReturnValue(of(moduleStatusMock));
     jest.spyOn(dataService, 'redirectLoginError');
+
+    window = Object.create(window);
+    Object.defineProperty(window, 'location', { value: { href: 'http://localhost/dashboard' }, writable: true });
 
     dataService.active_guild = { id: '1', name: '' } as unknown as Guild;
     component.getServerData();
@@ -97,10 +101,43 @@ describe('DashboardComponent', () => {
     expect(dataService.isLoading).toBeFalsy();
   });
 
+  it('should not re-cache same data if already cached & don\'t do anything if its not in dashboard page', () => {
+    const guildUsageMock: SliderItems[] = [{ image_url: '', guild_name: '', guild_invite: '', member_count: 0 }];
+    const moduleStatusMock = {
+      task_1: {
+        finished: true,
+        cached: true,
+        guild_id: '1',
+        subtasks: [
+          { id: '1', finished: true },
+          { id: '2', finished: false }
+        ]
+      }
+    };
+
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(of(guildUsageMock));
+    jest.spyOn(apiService, 'getModuleStatus').mockReturnValue(of(moduleStatusMock));
+    dataService.active_guild = { id: '1', name: '' } as unknown as Guild;
+
+    localStorage.removeItem('moduleStatus');
+    localStorage.removeItem('moduleStatusTimestamp');
+    component.getServerData();
+
+    expect(dataService.isLoading).toBeFalsy();
+    expect(localStorage.getItem('moduleStatus')).toBeNull();
+
+    window = Object.create(window);
+    dataService.isLoading = true;
+    Object.defineProperty(window, 'location', { value: { href: 'http://localhost/' }, writable: true });
+    component.getServerData();
+    expect(dataService.isLoading).toBeTruthy();
+  });
+
   it('should update tasks with their completion status', () => {
     const moduleStatus = {
       task_1: {
         finished: true,
+        guild_id: '1',
         subtasks: [
           { id: '1', finished: true },
           { id: '2', finished: false }
@@ -108,6 +145,7 @@ describe('DashboardComponent', () => {
       },
       task_2: {
         finished: false,
+        guild_id: '1',
         subtasks: [
           { id: '3', finished: true }
         ]
