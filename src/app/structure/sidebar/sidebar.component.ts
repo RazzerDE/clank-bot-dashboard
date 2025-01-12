@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
@@ -11,7 +11,6 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {DiscordComService} from "../../services/discord-com/discord-com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Guild} from "../../services/discord-com/types/Guilds";
-import {DashboardComponent} from "../../pages/dashboard/dashboard.component";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 
 @Component({
@@ -97,7 +96,7 @@ export class SidebarComponent implements AfterViewInit {
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
   constructor(protected authService: AuthService, protected dataService: DataHolderService,
-              private discordService: DiscordComService, private dashboard: DashboardComponent) {
+              private discordService: DiscordComService, private router: Router) {
     // initialize navigation pages to allow expanding/collapsing
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = false;
@@ -143,7 +142,7 @@ export class SidebarComponent implements AfterViewInit {
    * @param {Guild} guild - The guild to select or deselect.
    */
   selectServer(guild: Guild): void {
-    if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id) {
+    if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id && !window.location.href.includes("/dashboard/contact")) {
       localStorage.removeItem('active_guild');
       this.dataService.active_guild = null;
 
@@ -161,9 +160,14 @@ export class SidebarComponent implements AfterViewInit {
         this.dataService.showMobileSidebar = false;
       }
 
-      this.dashboard.getServerData();
+      this.dataService.allowDataFetch.next(true);
       this.dataService.showSidebarLogo = !this.dataService.showSidebarLogo;
       this.dataService.showMobileSidebar = false;
+
+      // redirect to server's dashboard if contact page is open
+      if (window.location.href.includes("/dashboard/contact")) {
+        this.router.navigateByUrl('/dashboard').then();
+      }
     }
   }
 

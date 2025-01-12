@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
 import {TasksCompletionList} from "../types/Tasks";
 import {AuthService} from "../auth/auth.service";
+import {formGroupBug, formGroupIdea} from "../types/Forms";
 
 @Injectable({
   providedIn: 'root'
@@ -36,12 +37,49 @@ export class ApiService {
 
   /**
    * Fetches the status of all bot modules for a specific guild.
+   * This function also caches the module status for 1 minute, to avoid ratelimits.
    *
    * @param guild_id - The ID of the guild for which to fetch the module status.
    * @returns An Observable that emits the status of the modules.
    */
   getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
+    const moduleStatusTimestamp: string | null = localStorage.getItem('moduleStatusTimestamp');
+    const moduleStatus: string | null = localStorage.getItem('moduleStatus');
+
+    try {
+      if (moduleStatusTimestamp && moduleStatus) {
+        const timestamp: number = parseInt(moduleStatusTimestamp);
+        const module: TasksCompletionList = JSON.parse(moduleStatus);
+
+        // check if module status cache is younger than 1 minute
+        if (Date.now() - timestamp < 60000 && module['task_1'].guild_id === guild_id) {
+          module['task_1'].cached = true;
+          return of(module);
+        }
+      }
+    } catch (error) { console.error('Cache reading error:', error); }
+
     return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
       { headers: this.authService.headers });
+  }
+
+  /**
+   * Sends a bug report to the server.
+   *
+   * @param data - The data of the bug report to be sent.
+   * @returns An Observable that emits the server's response.
+   */
+  sendBugReport(data: formGroupBug): Observable<Object> {
+    return this.http.post(`${this.API_URL}/contact/bug`, data, { headers: this.authService.headers });
+  }
+
+  /**
+   * Sends an idea suggestion to the server.
+   *
+   * @param data - The data of the idea suggestion to be sent.
+   * @returns An Observable that emits the server's response.
+   */
+  sendIdeaSuggestion(data: formGroupIdea): Observable<Object> {
+    return this.http.post(`${this.API_URL}/contact/idea`, data, { headers: this.authService.headers });
   }
 }

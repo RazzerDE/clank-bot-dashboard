@@ -24,7 +24,7 @@ describe('SidebarComponent', () => {
       imports: [SidebarComponent, HttpClientTestingModule, TranslateModule.forRoot(), NoopAnimationsModule],
       providers: [ { provide: ActivatedRoute, useValue: { } }, { provide: DashboardComponent, useValue: {} },
         { provide: DashboardComponent, useValue: { getServerData: jest.fn() } },
-        { provide: DataHolderService, useValue: { isLoading: false, redirectLoginError: jest.fn() } },
+        { provide: DataHolderService, useValue: { isLoading: false, redirectLoginError: jest.fn(), allowDataFetch: { next: jest.fn() } } },
         { provide: DiscordComService, useValue: { getGuilds: jest.fn().mockReturnValue(Promise.resolve(of([]))) } } ]
     })
     .compileComponents();
@@ -86,7 +86,7 @@ describe('SidebarComponent', () => {
 
     component.selectServer({ id: '1', name: 'Guild 1' } as Guild);
 
-    expect(component['dashboard'].getServerData).not.toHaveBeenCalled();
+    expect(component['dataService'].allowDataFetch.next).not.toHaveBeenCalled();
     component['server_picker'] = org_server_picker;
   });
 
@@ -116,13 +116,17 @@ describe('SidebarComponent', () => {
     const mockGuild: Guild = { id: '1', name: 'Guild 1' } as Guild;
     component['dataService'].active_guild = null;
     component['server_picker'] = { nativeElement: { style: { width: '100px' } } } as ElementRef<HTMLDivElement>;
-    const getServerDataSpy = jest.spyOn(component['dashboard'], 'getServerData');
     component['dataService'].showSidebarLogo = false;
+    jest.spyOn(component['router'], 'navigateByUrl').mockResolvedValue(true);
+
+    window = Object.create(window);
+    Object.defineProperty(window, 'location', { value: { href: 'http://localhost/dashboard/contact' }, writable: true });
 
     component.selectServer(mockGuild);
 
-    expect(getServerDataSpy).toHaveBeenCalled();
+    expect(component['dataService'].allowDataFetch.next).toHaveBeenCalled();
     expect(component['dataService'].showSidebarLogo).toBe(true);
+    expect(component['router'].navigateByUrl).toHaveBeenCalledWith('/dashboard');
   });
 
   it('should toggle the expansion state of a navigation group', () => {

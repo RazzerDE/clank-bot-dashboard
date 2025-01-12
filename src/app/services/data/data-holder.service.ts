@@ -4,6 +4,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {Guild} from "../discord-com/types/Guilds";
 import {DiscordUser} from "../types/discord/User";
+import {Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ export class DataHolderService {
   isDarkTheme: boolean = false;
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
+  hideGuildSidebar: boolean = false;
+  allowDataFetch: Subject<boolean> = new Subject<boolean>();
 
   // error handler related
   error_title: string = '';

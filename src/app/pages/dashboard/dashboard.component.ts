@@ -61,8 +61,14 @@ export class DashboardComponent implements AfterViewInit {
   constructor(protected dataService: DataHolderService, private translate: TranslateService,
               private apiService: ApiService) {
     this.dataService.isLoading = true;
-    // get server data for serverlist
-    this.getServerData();
+    this.dataService.hideGuildSidebar = false;
+
+    this.getServerData(); // first call to get the server data
+    this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+      if (value) { // only fetch data if allowed
+        this.getServerData();
+      }
+    });
   }
 
   /**
@@ -82,6 +88,7 @@ export class DashboardComponent implements AfterViewInit {
    */
   getServerData(): void {
     if (!this.dataService.active_guild) { return; }
+    if (!window.location.href.endsWith('/dashboard')) { return; }
 
     forkJoin({guildUsage: this.apiService.getGuildUsage(100),
               moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
@@ -89,7 +96,12 @@ export class DashboardComponent implements AfterViewInit {
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
           this.updateTasks(moduleStatus);
           this.servers = guildUsage;
+
           this.dataService.isLoading = false;
+
+          if (moduleStatus['task_1'].cached) { return; }
+          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
+          localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
           if (err.status === 403) {
