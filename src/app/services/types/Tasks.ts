@@ -12,6 +12,8 @@ export interface SubTasks {
 
 export interface TasksCompletion {
   finished: boolean;
+  guild_id: string;
+  cached?: boolean;
   subtasks: SubTasksCompletion[];
 }
 

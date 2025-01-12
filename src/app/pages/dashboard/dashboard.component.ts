@@ -96,7 +96,12 @@ export class DashboardComponent implements AfterViewInit {
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
           this.updateTasks(moduleStatus);
           this.servers = guildUsage;
+
           this.dataService.isLoading = false;
+
+          if (moduleStatus['task_1'].cached) { return; }
+          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
+          localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
           if (err.status === 403) {
