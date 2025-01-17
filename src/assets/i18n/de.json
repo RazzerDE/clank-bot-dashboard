@@ -124,6 +124,13 @@
   "PAGE_WISHLIST_TITLE": "Zukünftige Features",
   "PAGE_WISHLIST_DESC": "› Die unteren Features sind große neue Dinge, die sich von unserer Community (euch) gewünscht wurden im Laufe der Zeit und bald in den Bot integriert werden.",
 
+  "WISHLIST_TAG_FEATURES": "Alle Features",
+  "WISHLIST_TAG_GIVEAWAYS": "Gewinnspiele & Events",
+  "WISHLIST_TAG_MODULES": "Neue Module",
+  "WISHLIST_BUTTON_IDEA": "Idee vorschlagen",
+  "WISHLIST_BUTTON_DEV": "Idee erstellen",
+  "WISHLIST_SEARCH_PLACEHOLDER": "Nach Feature suchen.. 🔎",
+
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",
   "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Anmeldung fehlgeschlagen!",

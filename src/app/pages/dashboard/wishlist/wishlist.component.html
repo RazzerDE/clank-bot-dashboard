@@ -19,7 +19,8 @@
     <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
       <!-- Page Thumb -->
-      <div class="relative flex-0 overflow-hidden bg-gray-300 dark:bg-gray-800 px-4 py-5 sm:p-16 transition-colors duration-500">
+      <div class="relative flex-shrink-0 overflow-hidden bg-gray-300 dark:bg-gray-800 px-4 sm:p-16 transition-colors duration-500"
+           style="padding-top: 2.5rem !important; padding-bottom: 2.5rem !important;">
         <svg viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 pointer-events-none">
           <g fill="none" stroke="currentColor" stroke-width="100" class="text-gray-400 dark:text-gray-700 opacity-25 transition-colors duration-500">
             <circle r="234" cx="196" cy="23"></circle>
@@ -30,16 +31,51 @@
           <p class="text-lg font-semibold mb-1 text-gray-500 dark:text-gray-400 transition-colors duration-500">
             {{ 'PAGE_WISHLIST_SUBTITLE' | translate }}
           </p>
-          <div class="mt-1 text-center text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-gray-800
-                    dark:text-white transition-colors duration-500">{{ 'PAGE_WISHLIST_TITLE' | translate }}</div>
+          <div class="mt-1 text-center text-4xl md:text-5xl font-extrabold !leading-tight tracking-tight
+                    transition-colors duration-500 bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
+            {{ 'PAGE_WISHLIST_TITLE' | translate }}
+          </div>
           <div class="text-gray-500 mt-2 text-xl max-w-3xl text-center tracking-tight transition-colors duration-500">
             {{ 'PAGE_WISHLIST_DESC' | translate }}
           </div>
         </div>
       </div>
 
-      <div class="flex flex-auto p-6 sm:p-10 overflow-y-auto">
+      <!-- Content -->
+      <div class="flex-1 flex flex-row p-6 sm:p-10 gap-6 overflow-hidden !pl-2 !pb-4">
+        <div class="space-y-2">
+            @for (tag of tags; track tag.name) {
+              <div class="flex items-center px-4 py-2 rounded-full cursor-pointer transition-colors duration-500"
+                   [ngClass]="tag.isActive ? 'bg-black/10 dark:bg-gray-700' : 'hover:bg-black/5 dark:hover:bg-gray-800'">
+                <fa-icon [icon]="tag.icon" size="xl" class="w-7 transition-colors duration-500"
+                         [ngClass]="tag.isActive ? 'text-orange-600 dark:text-orange-400' : 'text-yellow-500 dark:text-yellow-400'"></fa-icon>
+                <span class="ml-3 text-gray-700 dark:text-gray-300 font-medium transition-colors duration-50">
+                  {{ tag.name | translate }}
+                </span>
+              </div>
+            }
+        </div>
 
+        <div class="flex-1">
+          <div class="flex items-center gap-x-5 mb-4">
+            <div class="flex-1 ml-4 lg:ml-0">
+              <div class="relative mb-[6px]">
+                <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                <input type="text" [placeholder]="'WISHLIST_SEARCH_PLACEHOLDER' | translate"
+                       class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+                            dark:!border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors duration-500" />
+              </div>
+            </div>
+
+            <button type="button" class="text-white bg-gradient-to-r from-yellow-600 via-orange-500
+                               to-orange-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none
+                               font-medium px-3 py-2.5 text-center rounded-2xl">
+                <fa-icon [icon]="faLightbulb" class="me-2"></fa-icon>
+                <p [innerText]="isDev ? ('WISHLIST_BUTTON_DEV' | translate) : ('WISHLIST_BUTTON_IDEA' | translate)"
+                   class="inline-block mb-0"></p>
+            </button>
+          </div>
+        </div>
       </div>
 
     </section>
