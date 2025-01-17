@@ -120,6 +120,10 @@
   "PAGE_CONTACT_THUMB_INFO": "Fehler oder Idee melden",
   "PAGE_CONTACT_THUMB_TITLE": "~ Kontaktiere Uns!",
 
+  "PAGE_WISHLIST_SUBTITLE": "🌟 ~ EURE WUNSCHLISTE FÜR CLANK",
+  "PAGE_WISHLIST_TITLE": "Zukünftige Features",
+  "PAGE_WISHLIST_DESC": "› Die unteren Features sind große neue Dinge, die sich von unserer Community (euch) gewünscht wurden im Laufe der Zeit und bald in den Bot integriert werden.",
+
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",
   "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Anmeldung fehlgeschlagen!",
