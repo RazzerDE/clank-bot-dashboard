@@ -38,7 +38,7 @@ export const nav_items: NavigationItem[] = [
     description: "SIDEBAR_CATEGORY_1_DESC",
     pages: [
       { title: "SIDEBAR_PAGE_HOME", desc: "SIDEBAR_PAGE_HOME_DESC", icon: faHouse, redirect_url: "/dashboard" },
-      { title: "SIDEBAR_PAGE_WISHLIST", desc: "SIDEBAR_PAGE_WISHLIST_DESC", icon: faStar, redirect_url: "/dashboard/contact" },
+      { title: "SIDEBAR_PAGE_WISHLIST", desc: "SIDEBAR_PAGE_WISHLIST_DESC", icon: faStar, redirect_url: "/dashboard/wishlist" },
       { title: "SIDEBAR_PAGE_TEAM", desc: "SIDEBAR_PAGE_TEAM_DESC", icon: faTruckMedical, redirect_url: "/dashboard/teamlist" }
     ]
   },
