@@ -5,7 +5,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
-import {Feature, Tag} from "../../../services/types/navigation/WishlistTags";
+import {feature_list, tags} from "../../../services/types/navigation/WishlistTags";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faClock,
@@ -14,6 +14,7 @@ import {
   faSearch, faThumbsUp,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-wishlist',
@@ -28,10 +29,20 @@ import {
     NgOptimizedImage
   ],
   templateUrl: './wishlist.component.html',
-  styleUrl: './wishlist.component.scss'
+  styleUrl: './wishlist.component.scss',
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('200ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'scale(0.95)' }))
+      ])
+    ])
+  ]
 })
 export class WishlistComponent implements AfterViewInit {
-  protected isDev: boolean = false;
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faLightbulb: IconDefinition = faLightbulb;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -42,24 +53,7 @@ export class WishlistComponent implements AfterViewInit {
   @ViewChild('Divider') protected divider!: ElementRef<HTMLDivElement>
   @ViewChild('WishlistContainer') protected wishlistContainer!: ElementRef<HTMLDivElement>
 
-  protected tags: Tag[] = [
-    { id: 1, name: "WISHLIST_TAG_FEATURES", isActive: true },
-    { id: 2, name: 'Support-Tool', isActive: false },
-    { id: 3, name: 'Security-System', isActive: false },
-    { id: 4, name: 'WISHLIST_TAG_GIVEAWAYS', isActive: false },
-    { id: 5, name: 'WISHLIST_TAG_MODULES', isActive: false }
-  ];
-
-  protected feature_list: Feature[] = [
-    { name: 'Modernes Levelsystem', icon_url: "assets/img/icons/utility/star.png", tag_id: 5, votes: 10, dislikes: 4,
-      created_at: '23.01.2025', desc: "› User sollen XP erhalten und Level aufsteigen, in dem sie sich auf dem Server aktiv beteiligen." },
-    { name: 'Temp-Voice-System', icon_url: "assets/img/icons/utility/sound.png", tag_id: 5, votes: 3, dislikes: 0,
-      created_at: '19.01.2025', desc: "› User sollen temporäre Voice-Channels erstellen können, die automatisch gelöscht werden." },
-    { name: 'Live-Benachrichtigungen', icon_url: "assets/img/icons/utility/live.png", tag_id: 5, votes: 3, dislikes: 6,
-      created_at: '19.01.2025', desc: "› Admins sollen YouTube/Twitch-Kanäle festlegen können, wobei der Bot Live-Infos rausschickt." },
-    { name: 'Willkommens-Nachrichten', icon_url: "assets/img/icons/utility/wave.png", tag_id: 5, votes: 5, dislikes: 21,
-      created_at: '19.01.2025', desc: "› Server sollten stark personalisierte Willkommens-Nachrichten & Join-Rollen festlegen können." },
-  ]
+  protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
 
   constructor(protected dataService: DataHolderService) {
     this.dataService.hideGuildSidebar = false;
@@ -71,6 +65,27 @@ export class WishlistComponent implements AfterViewInit {
    */
   ngAfterViewInit(): void {
     this.setResponsiveHeight();
+  }
+
+  /**
+   * Filters the features based on the provided tag ID.
+   *
+   * This method updates the `enabled` property of each feature in the `feature_list`
+   * based on the provided tag ID. If the tag ID is 1, all features are enabled.
+   * Otherwise, only features with a matching tag ID are enabled.
+   *
+   * @param tagId - The ID of the tag to filter features by. If null, no features are enabled.
+   */
+  filterFeatures(tagId: number | null) {
+    feature_list.forEach(f => {
+      f.enabled = tagId === 1 || f.tag_id === tagId;
+    });
+
+    tags.forEach(t => {
+      t.isActive = t.id === tagId;
+    });
+
+    this.allItemsDisabled = feature_list.every(f => !f.enabled);
   }
 
   /**
@@ -89,4 +104,6 @@ export class WishlistComponent implements AfterViewInit {
   }
 
 
+  protected readonly feature_list = feature_list;
+  protected readonly tags = tags;
 }
