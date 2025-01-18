@@ -103,7 +103,8 @@ export class WishlistComponent implements AfterViewInit {
   searchFeatures(event: KeyboardEvent): void {
     const searchValue: string = (event.target as HTMLInputElement).value.toLowerCase();
     feature_list.forEach(f => {
-      f.enabled = this.translate.instant(f.name).toLowerCase().includes(searchValue) || this.translate.instant(f.desc).toLowerCase().includes(searchValue);
+      f.enabled = f.enabled && (this.translate.instant(f.name).toLowerCase().includes(searchValue) ||
+                                this.translate.instant(f.desc).toLowerCase().includes(searchValue));
     });
 
     this.allItemsDisabled = feature_list.every(f => !f.enabled);
