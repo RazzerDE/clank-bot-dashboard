@@ -43,19 +43,34 @@
 
       <!-- Content -->
       <div class="flex-1 flex flex-row p-6 sm:p-10 gap-6 overflow-hidden !pl-2 !pb-4">
-        <div class="space-y-2">
-            @for (tag of tags; track tag.name) {
-              <div class="flex items-center px-4 py-2 rounded-full cursor-pointer transition-colors duration-500"
-                   [ngClass]="tag.isActive ? 'bg-black/10 dark:bg-gray-700' : 'hover:bg-black/5 dark:hover:bg-gray-800'">
-                <fa-icon [icon]="tag.icon" size="xl" class="w-7 transition-colors duration-500"
-                         [ngClass]="tag.isActive ? 'text-orange-600 dark:text-orange-400' : 'text-yellow-500 dark:text-yellow-400'"></fa-icon>
-                <span class="ml-3 text-gray-700 dark:text-gray-300 font-medium transition-colors duration-50">
-                  {{ tag.name | translate }}
+
+        <!-- Sidebar left -->
+        <div class="w-64">
+          <h2 class="text-lg font-medium mb-4 pt-2 text-gray-800 dark:text-gray-200 px-4 transition-colors duration-500">
+            TAGS
+          </h2>
+
+          <div class="space-y-2">
+            @for (tag of tags; track $index) {
+              <div class="flex px-4 py-2 rounded-full cursor-pointer transition-colors duration-300"
+                   [ngClass]="tag.isActive ? 'bg-orange-50 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-800'">
+                <fa-icon [icon]="$index === 0 ? faInbox : faHashtag" [ngClass]="tag.isActive ? 'text-orange-500 dark:text-orange-400' : 'text-gray-400 dark:text-gray-500'"
+                         class="w-5 h-5 transition-colors duration-500" size="lg"></fa-icon>
+                <span class="ml-3 font-medium transition-colors duration-500"
+                      [ngClass]="tag.isActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'">
+                {{ tag.name | translate }}
                 </span>
               </div>
             }
+          </div>
         </div>
 
+        <!-- Divider -->
+        <div class="flex items-center">
+          <div class="h-4/5 w-px bg-gray-300 dark:bg-gray-700 my-auto"></div>
+        </div>
+
+        <!-- Main Content -->
         <div class="flex-1">
           <div class="flex items-center gap-x-5 mb-4">
             <div class="flex-1 ml-4 lg:ml-0">

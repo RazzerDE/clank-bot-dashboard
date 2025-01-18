@@ -10,7 +10,7 @@ import {faLifeRing} from "@fortawesome/free-regular-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faBars,
-  faGift,
+  faGift, faHashtag, faInbox,
   faLightbulb,
   faSearch,
   faShieldHalved, faTools, IconDefinition
@@ -34,6 +34,8 @@ export class WishlistComponent {
   protected isDev: boolean = false;
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faLightbulb: IconDefinition = faLightbulb;
+  protected readonly faHashtag: IconDefinition = faHashtag;
+  protected readonly faInbox: IconDefinition = faInbox;
 
   protected tags: Tag[] = [
     { name: "WISHLIST_TAG_FEATURES", icon: faBars, isActive: true },
