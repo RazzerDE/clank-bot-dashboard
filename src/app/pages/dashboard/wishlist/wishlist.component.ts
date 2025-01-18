@@ -62,18 +62,30 @@ export class WishlistComponent implements AfterViewInit {
   ]
 
   constructor(protected dataService: DataHolderService) {
-    this.dataService.isLoading = false;
     this.dataService.hideGuildSidebar = false;
   }
 
+  /**
+   * Lifecycle hook that is called after the component's view has been fully initialized.
+   * This method sets the responsive height of the wishlist container by calling the setResponsiveHeight method.
+   */
   ngAfterViewInit(): void {
     this.setResponsiveHeight();
   }
 
+  /**
+   * Adjusts the height of the wishlist container to match the height of the divider element.
+   * This method is triggered on window resize and fullscreen change events.
+   *
+   */
   @HostListener('window:resize', ['$event'])
   @HostListener('document:fullscreenchange', ['$event'])
   protected setResponsiveHeight(): void {
-    this.wishlistContainer.nativeElement.style.height = `${this.divider.nativeElement.offsetHeight}px`;
+    if (this.divider && this.wishlistContainer && this.divider.nativeElement.offsetHeight > 0) {
+      this.wishlistContainer.nativeElement.style.height = `${this.divider.nativeElement.offsetHeight}px`;
+    }
+
+    this.dataService.isLoading = false;
   }
 
 
