@@ -4,8 +4,8 @@ import {HeaderComponent} from "../../../structure/header/header.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {TranslatePipe} from "@ngx-translate/core";
-import {feature_list, tags} from "../../../services/types/navigation/WishlistTags";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {Feature, feature_list, Tag, tags} from "../../../services/types/navigation/WishlistTags";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faClock,
@@ -53,9 +53,11 @@ export class WishlistComponent implements AfterViewInit {
   @ViewChild('Divider') protected divider!: ElementRef<HTMLDivElement>
   @ViewChild('WishlistContainer') protected wishlistContainer!: ElementRef<HTMLDivElement>
 
+  protected readonly feature_list: Feature[] = feature_list;
+  protected readonly tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
 
-  constructor(protected dataService: DataHolderService) {
+  constructor(protected dataService: DataHolderService, private translate: TranslateService) {
     this.dataService.hideGuildSidebar = false;
   }
 
@@ -76,13 +78,32 @@ export class WishlistComponent implements AfterViewInit {
    *
    * @param tagId - The ID of the tag to filter features by. If null, no features are enabled.
    */
-  filterFeatures(tagId: number | null) {
+  filterFeatures(tagId: number | null): void {
     feature_list.forEach(f => {
       f.enabled = tagId === 1 || f.tag_id === tagId;
     });
 
     tags.forEach(t => {
       t.isActive = t.id === tagId;
+    });
+
+    this.allItemsDisabled = feature_list.every(f => !f.enabled);
+  }
+
+  /**
+   * Filters the features based on the search input value.
+   *
+   * This method updates the `enabled` property of each feature in the `feature_list`
+   * based on whether the feature's name or description includes the search input value.
+   * The search input value is converted to lowercase for case-insensitive comparison.
+   * If no features match the search input value, the `allItemsDisabled` property is set to true.
+   *
+   * @param event - The keyboard event triggered by typing in the search input field.
+   */
+  searchFeatures(event: KeyboardEvent): void {
+    const searchValue: string = (event.target as HTMLInputElement).value.toLowerCase();
+    feature_list.forEach(f => {
+      f.enabled = this.translate.instant(f.name).toLowerCase().includes(searchValue) || this.translate.instant(f.desc).toLowerCase().includes(searchValue);
     });
 
     this.allItemsDisabled = feature_list.every(f => !f.enabled);
@@ -102,8 +123,4 @@ export class WishlistComponent implements AfterViewInit {
 
     this.dataService.isLoading = false;
   }
-
-
-  protected readonly feature_list = feature_list;
-  protected readonly tags = tags;
 }
