@@ -7,6 +7,7 @@ import {config} from "../../../environments/config";
 import {TasksCompletionList} from "../types/Tasks";
 import {AuthService} from "../auth/auth.service";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
+import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,19 @@ export class ApiService {
   }
 
   /**
+   * Fetches the votes of all features.
+   *
+   * This method sends an HTTP GET request to the /progress/features endpoint
+   * to retrieve the votes of all features. The request includes authorization headers
+   * for user authentication.
+   *
+   * @returns An Observable that emits the feature votes.
+   */
+  getFeatureVotes(): Observable<FeatureVotes> {
+    return this.http.get<FeatureVotes>(`${this.API_URL}/progress/features`, { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the status of all bot modules for a specific guild.
    * This function also caches the module status for 1 minute, to avoid ratelimits.
    *
@@ -61,6 +75,20 @@ export class ApiService {
 
     return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
       { headers: this.authService.headers });
+  }
+
+  /**
+   * Sends a vote for a feature.
+   *
+   * This method sends an HTTP POST request to the /progress/features endpoint
+   * to submit a vote for a feature. The request includes authorization headers
+   * for user authentication and the feature vote details in the request body.
+   *
+   * @param data - The feature vote details to be sent.
+   * @returns An Observable that emits the server's response.
+   */
+  sendFeatureVote(data: FeatureData): Observable<Object> {
+    return this.http.post(`${this.API_URL}/progress/features`, data, { headers: this.authService.headers });
   }
 
   /**

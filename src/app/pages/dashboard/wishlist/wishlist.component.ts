@@ -5,7 +5,14 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {Feature, feature_list, Tag, tags} from "../../../services/types/navigation/WishlistTags";
+import {
+  Feature,
+  feature_list, FeatureData,
+  FeatureVote,
+  FeatureVotes,
+  Tag,
+  tags
+} from "../../../services/types/navigation/WishlistTags";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faClock,
@@ -15,6 +22,8 @@ import {
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {ApiService} from "../../../services/api/api.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-wishlist',
@@ -57,16 +66,58 @@ export class WishlistComponent implements AfterViewInit {
   protected readonly tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
 
-  constructor(protected dataService: DataHolderService, private translate: TranslateService) {
+  constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
     this.dataService.hideGuildSidebar = false;
   }
 
   /**
-   * Lifecycle hook that is called after the component's view has been fully initialized.
-   * This method sets the responsive height of the wishlist container by calling the setResponsiveHeight method.
+   * Lifecycle hook that is called after Angular has fully initialized a component's view.
+   *
+   * This method sets the responsive height of the wishlist container and retrieves the feature votes
+   * from the server. It is called once after the component's view has been initialized.
    */
   ngAfterViewInit(): void {
     this.setResponsiveHeight();
+    this.getFeatureVotes();
+  }
+
+  sendFeatureVote(feature_id: number, vote: boolean): void {
+    if (!this.dataService.profile || (this.dataService.profile && !this.dataService.profile.id)) { return; }
+
+    const data: FeatureData = { featureId: feature_id, userId: this.dataService.profile!.id, vote: vote };
+    this.apiService.sendFeatureVote(data).subscribe({
+      error: (_error: HttpErrorResponse): void => {
+        console.log(_error);
+      }
+    });
+  }
+
+  /**
+   * Retrieves the feature votes from the server and updates the feature list with the retrieved votes.
+   *
+   * This method sends an HTTP GET request to the server to fetch the votes for each feature.
+   * Upon receiving the response, it updates the `votes` and `dislikes` properties of each feature
+   * in the `feature_list` based on the retrieved data. If an error occurs during the request,
+   * it logs the error to the console.
+   */
+  getFeatureVotes(): void {
+    this.apiService.getFeatureVotes().subscribe({
+      next: (votes: FeatureVotes): void => {
+        this.feature_list.forEach(feature => {
+          const voteData: FeatureVote | undefined = votes.featureVotes.find(vote => vote.id === feature.id);
+          if (voteData) {
+            feature.votes = voteData.votes;
+            feature.dislikes = voteData.dislikes;
+          }
+        });
+
+        this.dataService.isLoading = false;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.dataService.isLoading = false;
+      }
+    });
   }
 
   /**
@@ -120,7 +171,5 @@ export class WishlistComponent implements AfterViewInit {
     if (this.divider && this.wishlistContainer && this.divider.nativeElement.offsetHeight > 0) {
       this.wishlistContainer.nativeElement.style.height = `${this.divider.nativeElement.offsetHeight}px`;
     }
-
-    this.dataService.isLoading = false;
   }
 }

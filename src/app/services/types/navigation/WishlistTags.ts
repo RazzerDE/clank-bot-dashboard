@@ -16,6 +16,22 @@ export interface Feature {
   enabled?: boolean;
 }
 
+export interface FeatureVote {
+  id: number;
+  votes: number;
+  dislikes: number;
+}
+
+export interface FeatureVotes {
+  featureVotes: FeatureVote[];
+}
+
+export interface FeatureData {
+  featureId: number;
+  userId: string;
+  vote: boolean;
+}
+
 export let tags: Tag[] = [
   { id: 1, name: "WISHLIST_TAG_FEATURES", isActive: true },
   { id: 2, name: 'Support-Tool', isActive: false },
