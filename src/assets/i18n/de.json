@@ -120,6 +120,32 @@
   "PAGE_CONTACT_THUMB_INFO": "Fehler oder Idee melden",
   "PAGE_CONTACT_THUMB_TITLE": "~ Kontaktiere Uns!",
 
+  "PAGE_WISHLIST_SUBTITLE": "🌟 ~ EURE WUNSCHLISTE FÜR CLANK",
+  "PAGE_WISHLIST_TITLE": "Zukünftige Features",
+  "PAGE_WISHLIST_DESC": "› Die unteren Features sind große neue Dinge, die sich von unserer Community (euch) gewünscht wurden im Laufe der Zeit und bald in den Bot integriert werden.",
+
+  "WISHLIST_TAG_FEATURES": "Alle Features",
+  "WISHLIST_TAG_GIVEAWAYS": "Gewinnspiele & Events",
+  "WISHLIST_TAG_MODULES": "Neue Module",
+  "WISHLIST_BUTTON_IDEA": "Idee vorschlagen",
+  "WISHLIST_SEARCH_PLACEHOLDER": "Nach Feature suchen.. 🔎",
+  "WISHLIST_EMPTY_TITLE": "Keine Features in dieser Kategorie gefunden..",
+  "WISHLIST_VOTES_PLACEHOLDER": "{{votes}} Stimmen dafür ({{dislikes}} dagegen)",
+  "WISHLIST_CREATION_PLACEHOLDER": "Erstellt am {{date}}",
+  "WISHLIST_VOTE_BUTTON_YES": "Dafür",
+  "WISHLIST_VOTE_BUTTON_NO": "Dagegen",
+
+  "WISHLIST_FEATURE_NAME_1": "Modernes Levelsystem",
+  "WISHLIST_FEATURE_DESC_1": "› User sollen XP erhalten und Level aufsteigen, in dem sie sich auf dem Server aktiv beteiligen.",
+  "WISHLIST_FEATURE_NAME_2": "Temp-Voice-System",
+  "WISHLIST_FEATURE_DESC_2": "› User sollen temporäre Voice-Channels erstellen können, die automatisch gelöscht werden.",
+  "WISHLIST_FEATURE_NAME_3": "Live-Benachrichtigungen",
+  "WISHLIST_FEATURE_DESC_3": "› Admins sollen YouTube/Twitch-Kanäle festlegen können, wobei der Bot Live-Infos rausschickt.",
+  "WISHLIST_FEATURE_NAME_4": "Willkommens-Nachrichten",
+  "WISHLIST_FEATURE_DESC_4": "› Server sollten stark personalisierte Willkommens-Nachrichten & Join-Rollen festlegen können.",
+  "WISHLIST_FEATURE_NAME_5": "Musik-Funktionalität",
+  "WISHLIST_FEATURE_DESC_5": "› User sollen Musik abspielen können, indem sie die YouTube-API o.ä. verwenden.",
+
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",
   "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Anmeldung fehlgeschlagen!",
@@ -135,9 +161,15 @@
   "ERROR_OFFLINE_TITLE": "📡 ~ Server ist offline!",
   "ERROR_OFFLINE_DESC": "› Der Server ist aktuell nicht erreichbar - bitte versuche es später erneut.",
 
+  "ERROR_VOTE_SAME_TITLE": "Keine Änderung",
+  "ERROR_VOTE_SAME_DESC": "Dein Vote bleibt unverändert, da du bereits dafür gestimmt hast.",
+
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
   "ERROR_SUPPORT_BUTTON": "Support Server",
+
+  "SUCCESS_VOTE_TITLE": "Erfolgreich abgestimmt",
+  "SUCCESS_VOTE_DESC": "Dein Vote wurde gespeichert - Danke fürs teilnehmen!",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Gewinnspiele & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server-Sicherheit",

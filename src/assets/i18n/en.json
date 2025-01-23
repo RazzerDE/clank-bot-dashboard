@@ -120,6 +120,32 @@
   "PAGE_CONTACT_THUMB_INFO": "Report a bug or idea",
   "PAGE_CONTACT_THUMB_TITLE": "~ Contact Us!",
 
+  "PAGE_WISHLIST_SUBTITLE": "🌟 ~ YOUR WISHLIST FOR CLANK",
+  "PAGE_WISHLIST_TITLE": "Future Features",
+  "PAGE_WISHLIST_DESC": "› The features below are major new things that have been requested by our community (you) over time and will soon be integrated into the bot.",
+
+  "WISHLIST_TAG_FEATURES": "All Features",
+  "WISHLIST_TAG_GIVEAWAYS": "Giveaways & Events",
+  "WISHLIST_TAG_MODULES": "New Modules",
+  "WISHLIST_BUTTON_IDEA": "Suggest Idea",
+  "WISHLIST_SEARCH_PLACEHOLDER": "Search for feature.. 🔎",
+  "WISHLIST_EMPTY_TITLE": "No features found in this category..",
+  "WISHLIST_VOTES_PLACEHOLDER": "{{votes}} votes for ({{dislikes}} against)",
+  "WISHLIST_CREATION_PLACEHOLDER": "Created on {{date}}",
+  "WISHLIST_VOTE_BUTTON_YES": "Yes!",
+  "WISHLIST_VOTE_BUTTON_NO": "No..",
+
+  "WISHLIST_FEATURE_NAME_1": "Modern Level System",
+  "WISHLIST_FEATURE_DESC_1": "› Users should earn XP and level up by actively participating on the server.",
+  "WISHLIST_FEATURE_NAME_2": "Temp-Voice System",
+  "WISHLIST_FEATURE_DESC_2": "› Users should be able to create temporary voice channels that are automatically deleted.",
+  "WISHLIST_FEATURE_NAME_3": "Live Notifications",
+  "WISHLIST_FEATURE_DESC_3": "› Admins should be able to set YouTube/Twitch channels, and the bot will send out live info.",
+  "WISHLIST_FEATURE_NAME_4": "Welcome Messages",
+  "WISHLIST_FEATURE_DESC_4": "› Servers should be able to set highly personalized welcome messages & join roles.",
+  "WISHLIST_FEATURE_NAME_5": "Music Functionality",
+  "WISHLIST_FEATURE_DESC_5": "› Users should be able to play music using the YouTube API or similar.",
+
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login expired!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Please log in again to use the dashboard.",
   "ERROR_LOGIN_INVALID_TITLE": "❌ ~ Login failed!",
@@ -135,9 +161,15 @@
   "ERROR_OFFLINE_TITLE": "📡 ~ Server is offline!",
   "ERROR_OFFLINE_DESC": "› The server is currently not reachable - please try again later.",
 
+  "ERROR_VOTE_SAME_TITLE": "No Change",
+  "ERROR_VOTE_SAME_DESC": "Your vote remains unchanged as you have already voted for this.",
+
   "ERROR_PAGE_TITLE": "Error occured ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Back to Dashboard",
   "ERROR_SUPPORT_BUTTON": "Support Server",
+
+  "SUCCESS_VOTE_TITLE": "Successfully Voted",
+  "SUCCESS_VOTE_DESC": "Your vote has been saved - Thank you for participating!",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Giveaways & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server Security",

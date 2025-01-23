@@ -9,7 +9,7 @@ import {AuthService} from "../auth/auth.service";
 import {HttpHeaders} from "@angular/common/http";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
-import {of} from "rxjs";
+import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -44,6 +44,20 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/stats/guilds_usage`);
     expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch feature votes successfully', () => {
+    const mockResponse: FeatureVotes = { feature_1: { votes: 10, userVote: true } } as unknown as FeatureVotes;
+    service['authService'].headers = new HttpHeaders({ 'Authorization': 'Bearer token' });
+
+    service.getFeatureVotes().subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/progress/features`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -136,6 +150,21 @@ describe('ApiService', () => {
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockModuleStatus);
+  });
+
+  it('should send a feature vote to the server', () => {
+    const mockData: FeatureData = { userId: "123", featureId: 123, vote: true };
+    const mockResponse = { success: true };
+
+    service.sendFeatureVote(mockData).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/progress/features`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockData);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
   });
 
   it('should send an idea suggestion to the server', () => {
