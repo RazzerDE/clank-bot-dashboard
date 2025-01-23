@@ -48,6 +48,21 @@ describe('DataHolderService', () => {
     expect(routerSpy).toHaveBeenCalledWith('/errors/simple');
   });
 
+  it('should display an alert box with the specified title and description', () => {
+    const title = 'Test Title';
+    const desc = 'Test Description';
+    service.showAlertBox = true;
+
+    jest.useFakeTimers();
+    service.showAlert(title, desc);
+    jest.advanceTimersByTime(5001);
+
+    expect(service.error_title).toBe(title);
+    expect(service.error_desc).toBe(desc);
+    expect(service.showAlertBox).toBeFalsy();
+
+  });
+
   it('should return true if darkMode is set to "true" in localStorage', () => {
     localStorage.setItem('dark', 'true');
 

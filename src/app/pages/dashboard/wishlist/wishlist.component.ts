@@ -79,8 +79,8 @@ export class WishlistComponent implements AfterViewInit {
   @ViewChild('WishlistContainer') protected wishlistContainer!: ElementRef<HTMLDivElement>
   @ViewChild('AlertContent') protected alertContent!: ElementRef<HTMLDivElement>
 
-  protected readonly feature_list: Feature[] = feature_list;
-  protected readonly tags: Tag[] = tags;
+  protected feature_list: Feature[] = feature_list;
+  protected tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
@@ -134,7 +134,6 @@ export class WishlistComponent implements AfterViewInit {
           this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
         }
 
-        console.log(error);
         if (cooldownFeature) { cooldownFeature.isLoading = false; }
 
         setTimeout((): void => {
@@ -169,10 +168,9 @@ export class WishlistComponent implements AfterViewInit {
         }
         this.dataService.isLoading = false;
       },
-      error: (error: HttpErrorResponse): void => {
+      error: (_error: HttpErrorResponse): void => {
         this.dataService.error_color = 'red';
         this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
-        console.error(error);
         this.dataService.isLoading = false;
       }
     });
