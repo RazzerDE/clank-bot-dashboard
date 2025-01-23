@@ -32,6 +32,12 @@ export interface FeatureData {
   vote: boolean;
 }
 
+export interface CooldownFeatures {
+  featureId: number;
+  onCooldown: boolean;
+  isLoading: boolean;
+}
+
 export let tags: Tag[] = [
   { id: 1, name: "WISHLIST_TAG_FEATURES", isActive: true },
   { id: 2, name: 'Support-Tool', isActive: false },

@@ -20,6 +20,8 @@ export class DataHolderService {
   // error handler related
   error_title: string = '';
   error_desc: string = '';
+  error_color: 'red' | 'green' = 'red';
+  showAlertBox: boolean = false;
 
   // api related
   active_guild: Guild | null = null;
@@ -36,8 +38,10 @@ export class DataHolderService {
 
     // check if translations are loaded
     this.translate.onLangChange.subscribe((): void => {
-      this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
-      this.error_desc = this.translate.instant("ERROR_UNKNOWN_DESC");
+      if (this.error_title == '' && this.error_desc == '') {
+        this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
+        this.error_desc = this.translate.instant("ERROR_UNKNOWN_DESC");
+      }
     });
   }
 
@@ -59,6 +63,24 @@ export class DataHolderService {
     }
 
     this.router.navigateByUrl(`/errors/simple`).then();
+  }
+
+  /**
+   * Displays an alert box with the specified title and description.
+   *
+   * This method sets the `error_title` and `error_desc` properties of the `DataHolderService`
+   * to the provided title and description, respectively, and then sets the `showAlertBox`
+   * property to `true` to display the alert box.
+   *
+   * @param {string} title - The title of the alert box.
+   * @param {string} desc - The description of the alert box.
+   */
+  showAlert(title: string, desc: string): void {
+    this.error_title = title;
+    this.error_desc = desc;
+    this.showAlertBox = true;
+
+    setTimeout((): void => { this.showAlertBox = false; }, 5000);
   }
 
   /**

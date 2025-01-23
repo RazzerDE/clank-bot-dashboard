@@ -161,9 +161,15 @@
   "ERROR_OFFLINE_TITLE": "📡 ~ Server is offline!",
   "ERROR_OFFLINE_DESC": "› The server is currently not reachable - please try again later.",
 
+  "ERROR_VOTE_SAME_TITLE": "No Change",
+  "ERROR_VOTE_SAME_DESC": "Your vote remains unchanged as you have already voted for this.",
+
   "ERROR_PAGE_TITLE": "Error occured ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Back to Dashboard",
   "ERROR_SUPPORT_BUTTON": "Support Server",
+
+  "SUCCESS_VOTE_TITLE": "Successfully Voted",
+  "SUCCESS_VOTE_DESC": "Your vote has been saved - Thank you for participating!",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Giveaways & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server Security",
