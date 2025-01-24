@@ -1,7 +1,8 @@
+@use "sass:meta";
 @import 'animate.css/animate.min.css';
-@import './structure/header.scss';
-@import './structure/utility.scss';
-@import './structure/animation.scss';
+@include meta.load-css('structure/header.scss');
+@include meta.load-css('structure/utility.scss');
+@include meta.load-css('structure/animation.scss');
 
 /* Some useful global variables */
 :root {
