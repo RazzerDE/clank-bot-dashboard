@@ -16,73 +16,72 @@ import {ApiService} from "../../../services/api/api.service";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
-  selector: 'app-contact',
-  standalone: true,
-  imports: [
-    HeaderComponent,
-    SidebarComponent,
-    NgClass,
-    FaIconComponent,
-    RouterLink,
-    ReactiveFormsModule,
-    TranslatePipe
-  ],
-  templateUrl: './contact.component.html',
-  styleUrl: './contact.component.scss',
-  animations: [
-    trigger('stepContent', [
-      transition(':enter', [
-        style({
-          position: 'absolute',
-          top: 0,
-          left: '100%',
-          width: '100%',
-          opacity: 0,
-        }),
-        group([
-          animate('300ms ease-out', style({
-            left: '0',
-            opacity: 1
-          })),
-          query(':self', [
-            style({ height: '0' }),
-            animate('300ms ease-out', style({ height: '*' }))
-          ])
+    selector: 'app-contact',
+    imports: [
+        HeaderComponent,
+        SidebarComponent,
+        NgClass,
+        FaIconComponent,
+        RouterLink,
+        ReactiveFormsModule,
+        TranslatePipe
+    ],
+    templateUrl: './contact.component.html',
+    styleUrl: './contact.component.scss',
+    animations: [
+        trigger('stepContent', [
+            transition(':enter', [
+                style({
+                    position: 'absolute',
+                    top: 0,
+                    left: '100%',
+                    width: '100%',
+                    opacity: 0,
+                }),
+                group([
+                    animate('300ms ease-out', style({
+                        left: '0',
+                        opacity: 1
+                    })),
+                    query(':self', [
+                        style({ height: '0' }),
+                        animate('300ms ease-out', style({ height: '*' }))
+                    ])
+                ])
+            ]),
+            transition(':leave', [
+                style({
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%'
+                }),
+                group([
+                    animate('300ms ease-out', style({
+                        left: '-100%',
+                        opacity: 0
+                    })),
+                    query(':self', [
+                        style({ height: '*' }),
+                        animate('300ms ease-out', style({ height: '0' }))
+                    ])
+                ])
+            ])
+        ]),
+        trigger('slideAnimation', [
+            state('void', style({
+                transform: 'translateX(100%)',
+                opacity: 0
+            })),
+            state('*', style({
+                transform: 'translateX(0)',
+                opacity: 1
+            })),
+            transition('void => *', [
+                animate('300ms ease-out')
+            ])
         ])
-      ]),
-      transition(':leave', [
-        style({
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%'
-        }),
-        group([
-          animate('300ms ease-out', style({
-            left: '-100%',
-            opacity: 0
-          })),
-          query(':self', [
-            style({ height: '*' }),
-            animate('300ms ease-out', style({ height: '0' }))
-          ])
-        ])
-      ])
-    ]),
-    trigger('slideAnimation', [
-      state('void', style({
-        transform: 'translateX(100%)',
-        opacity: 0
-      })),
-      state('*', style({
-        transform: 'translateX(0)',
-        opacity: 1
-      })),
-      transition('void => *', [
-        animate('300ms ease-out')
-      ])
-    ])
-  ]
+    ]
 })
 export class ContactComponent implements AfterViewInit {
   protected current_steps: CurrentStep = { bug_report: 2, idea_suggestion: 1 };

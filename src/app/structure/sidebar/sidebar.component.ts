@@ -14,75 +14,70 @@ import {Guild} from "../../services/discord-com/types/Guilds";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [
-    FaIconComponent,
-    NgOptimizedImage,
-    RouterLink,
-    NgClass,
-    TranslatePipe
-  ],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss',
-  animations: [
-    trigger('expandCollapse', [
-      state('collapsed', style({
-        height: '86px',
-        overflow: 'hidden',
-        opacity: 1
-      })),
-      state('expanded', style({
-        height: '*',
-        overflow: 'hidden',
-        opacity: 1
-      })),
-      transition('expanded => collapsed', [
-        style({ height: '*' }),
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)',
-          style({ height: '86px' })
-        )
-      ]),
-      transition('collapsed => expanded', [
-        style({ height: '86px' }),
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)',
-          style({ height: '*' })
-        )
-      ])
-    ]),
-    trigger('rotateChevron', [
-      state('down', style({ transform: 'rotate(0deg)' })),
-      state('down', style({ transform: 'rotate(90deg)' })),
-      transition('right <=> down', [
-        animate('300ms ease-in-out')
-      ])
-    ]),
-    trigger('slideAnimation', [
-      state('hidden', style({
-        transform: 'translateX(-100%)',
-        opacity: 0
-      })),
-      state('visible', style({
-        transform: 'translateX(0)',
-        opacity: 1
-      })),
-      transition('hidden => visible', [
-        animate('0.3s ease-out')
-      ]),
-      transition('visible => hidden', [
-        animate('0.3s ease-in')
-      ])
-    ]),
-    trigger('slideInLeft', [
-      transition(':enter', [
-        style({ transform: 'translateX(-100%)' }),
-        animate('300ms ease-out', style({ transform: 'translateX(0)' }))
-      ]),
-      transition(':leave',  [
-        animate('300ms ease-in', style({ transform: 'translateX(-100%)' }))
-      ])
-    ])
-  ]
+    selector: 'app-sidebar',
+    imports: [
+        FaIconComponent,
+        NgOptimizedImage,
+        RouterLink,
+        NgClass,
+        TranslatePipe
+    ],
+    templateUrl: './sidebar.component.html',
+    styleUrl: './sidebar.component.scss',
+    animations: [
+        trigger('expandCollapse', [
+            state('collapsed', style({
+                height: '86px',
+                overflow: 'hidden',
+                opacity: 1
+            })),
+            state('expanded', style({
+                height: '*',
+                overflow: 'hidden',
+                opacity: 1
+            })),
+            transition('expanded => collapsed', [
+                style({ height: '*' }),
+                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ height: '86px' }))
+            ]),
+            transition('collapsed => expanded', [
+                style({ height: '86px' }),
+                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ height: '*' }))
+            ])
+        ]),
+        trigger('rotateChevron', [
+            state('down', style({ transform: 'rotate(0deg)' })),
+            state('down', style({ transform: 'rotate(90deg)' })),
+            transition('right <=> down', [
+                animate('300ms ease-in-out')
+            ])
+        ]),
+        trigger('slideAnimation', [
+            state('hidden', style({
+                transform: 'translateX(-100%)',
+                opacity: 0
+            })),
+            state('visible', style({
+                transform: 'translateX(0)',
+                opacity: 1
+            })),
+            transition('hidden => visible', [
+                animate('0.3s ease-out')
+            ]),
+            transition('visible => hidden', [
+                animate('0.3s ease-in')
+            ])
+        ]),
+        trigger('slideInLeft', [
+            transition(':enter', [
+                style({ transform: 'translateX(-100%)' }),
+                animate('300ms ease-out', style({ transform: 'translateX(0)' }))
+            ]),
+            transition(':leave', [
+                animate('300ms ease-in', style({ transform: 'translateX(-100%)' }))
+            ])
+        ])
+    ]
 })
 export class SidebarComponent implements AfterViewInit {
   protected readonly localStorage: Storage = localStorage;

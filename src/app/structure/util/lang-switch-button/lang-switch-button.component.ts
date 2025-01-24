@@ -3,14 +3,13 @@ import {LanguageSwitcherService} from "../../../services/language/language-switc
 import {NgClass, NgOptimizedImage} from "@angular/common";
 
 @Component({
-  selector: 'lang-switch-button',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    NgClass
-  ],
-  templateUrl: './lang-switch-button.component.html',
-  styleUrl: './lang-switch-button.component.scss'
+    selector: 'lang-switch-button',
+    imports: [
+        NgOptimizedImage,
+        NgClass
+    ],
+    templateUrl: './lang-switch-button.component.html',
+    styleUrl: './lang-switch-button.component.scss'
 })
 export class LangSwitchButtonComponent {
   protected isLangSwitched: boolean = false;

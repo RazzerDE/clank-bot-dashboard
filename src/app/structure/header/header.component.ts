@@ -12,40 +12,39 @@ import {Subscription} from "rxjs";
 import {FilteredNavigationItem, nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    LangSwitchButtonComponent,
-    ThemeSwitchButtonComponent,
-    NgClass,
-    TranslatePipe,
-    FormsModule,
-    FaIconComponent,
-    RouterLink
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
-  animations: [
-    trigger('slideDown', [
-      transition(':enter', [
-        style({ transform: 'translateY(-24px)', opacity: 0 }), // Start from top of border
-        animate('300ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ transform: 'translateY(-24px)', opacity: 0 }))
-      ])
-    ]),
-    trigger('searchAnimation', [
-      transition(':enter', [
-        style({ transform: 'translateY(-100%)' }),
-        animate('300ms ease-out')
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ transform: 'translateY(-100%)' }))
-      ])
-    ])
-  ]
+    selector: 'app-header',
+    imports: [
+        NgOptimizedImage,
+        LangSwitchButtonComponent,
+        ThemeSwitchButtonComponent,
+        NgClass,
+        TranslatePipe,
+        FormsModule,
+        FaIconComponent,
+        RouterLink
+    ],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss',
+    animations: [
+        trigger('slideDown', [
+            transition(':enter', [
+                style({ transform: 'translateY(-24px)', opacity: 0 }), // Start from top of border
+                animate('300ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+            ]),
+            transition(':leave', [
+                animate('300ms ease-in', style({ transform: 'translateY(-24px)', opacity: 0 }))
+            ])
+        ]),
+        trigger('searchAnimation', [
+            transition(':enter', [
+                style({ transform: 'translateY(-100%)' }),
+                animate('300ms ease-out')
+            ]),
+            transition(':leave', [
+                animate('300ms ease-in', style({ transform: 'translateY(-100%)' }))
+            ])
+        ])
+    ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('Header') protected header!: ElementRef<HTMLDivElement>;

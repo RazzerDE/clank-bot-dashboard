@@ -29,40 +29,39 @@ import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
 
 @Component({
-  selector: 'app-wishlist',
-  standalone: true,
-  imports: [
-    HeaderComponent,
-    ReactiveFormsModule,
-    SidebarComponent,
-    NgClass,
-    TranslatePipe,
-    FaIconComponent,
-    NgOptimizedImage,
-    RouterLink
-  ],
-  templateUrl: './wishlist.component.html',
-  styleUrl: './wishlist.component.scss',
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'scale(0.95)' }),
-        animate('200ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({ opacity: 0, transform: 'scale(0.95)' }))
-      ])
-    ]),
-    trigger('fadeAnimation', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('300ms', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+    selector: 'app-wishlist',
+    imports: [
+        HeaderComponent,
+        ReactiveFormsModule,
+        SidebarComponent,
+        NgClass,
+        TranslatePipe,
+        FaIconComponent,
+        NgOptimizedImage,
+        RouterLink
+    ],
+    templateUrl: './wishlist.component.html',
+    styleUrl: './wishlist.component.scss',
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ opacity: 0, transform: 'scale(0.95)' }),
+                animate('200ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+            ]),
+            transition(':leave', [
+                animate('200ms ease-in', style({ opacity: 0, transform: 'scale(0.95)' }))
+            ])
+        ]),
+        trigger('fadeAnimation', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('300ms', style({ opacity: 1 }))
+            ]),
+            transition(':leave', [
+                animate('300ms', style({ opacity: 0 }))
+            ])
+        ])
+    ]
 })
 export class WishlistComponent implements AfterViewInit {
   protected readonly faSearch: IconDefinition = faSearch;

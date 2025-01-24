@@ -17,27 +17,22 @@ import {forkJoin} from "rxjs";
 import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [SidebarComponent, HeaderComponent, NgClass, NgOptimizedImage, TranslatePipe, FaIconComponent, RouterLink],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
-  animations: [
-    trigger('expandCollapse', [
-      transition(':enter', [
-        style({ height: 0, opacity: 0, overflow: 'hidden' }),
-        animate('300ms ease-out',
-          style({ height: '*', opacity: 1, overflow: 'hidden' })
-        )
-      ]),
-      transition(':leave', [
-        style({ height: '*', opacity: 1, overflow: 'hidden' }),
-        animate('300ms ease-out',
-          style({ height: 0, opacity: 0, overflow: 'hidden' })
-        )
-      ])
-    ])
-  ]
+    selector: 'app-dashboard',
+    imports: [SidebarComponent, HeaderComponent, NgClass, NgOptimizedImage, TranslatePipe, FaIconComponent, RouterLink],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss',
+    animations: [
+        trigger('expandCollapse', [
+            transition(':enter', [
+                style({ height: 0, opacity: 0, overflow: 'hidden' }),
+                animate('300ms ease-out', style({ height: '*', opacity: 1, overflow: 'hidden' }))
+            ]),
+            transition(':leave', [
+                style({ height: '*', opacity: 1, overflow: 'hidden' }),
+                animate('300ms ease-out', style({ height: 0, opacity: 0, overflow: 'hidden' }))
+            ])
+        ])
+    ]
 })
 export class DashboardComponent implements AfterViewInit {
   protected servers: SliderItems[] = [];
