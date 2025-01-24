@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
-import {nav_items} from "../types/landing-page/LNavigationItem";
 
 @Injectable({
   providedIn: 'root'
@@ -34,9 +33,6 @@ export class LanguageSwitcherService {
 
     localStorage.setItem('lang', lang);
     this.translate.use(lang);
-
-    // update header item; its set in a interface type so update it manually
-    setTimeout((): void => { nav_items[2].title = this.translate.instant('HEADER_LANDING_ITEM_BOT_SETUP'); }, 50);
   }
 
   /**
