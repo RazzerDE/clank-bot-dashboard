@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ApiService } from './api.service';
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {TasksCompletionList} from "../types/Tasks";
 import {AuthService} from "../auth/auth.service";
-import {HttpHeaders} from "@angular/common/http";
+import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
@@ -17,12 +17,14 @@ describe('ApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-      providers: [
+    imports: [TranslateModule.forRoot()],
+    providers: [
         { provide: ActivatedRoute, useValue: {} },
-        { provide: AuthService, useValue: { headers: new HttpHeaders({ 'Authorization': 'Bearer token' }) } }
-      ]
-    });
+        { provide: AuthService, useValue: { headers: new HttpHeaders({ 'Authorization': 'Bearer token' }) } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(ApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });

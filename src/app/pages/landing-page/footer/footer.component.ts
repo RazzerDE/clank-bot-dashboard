@@ -8,16 +8,15 @@ import {TranslatePipe} from "@ngx-translate/core";
 import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
 
 @Component({
-  selector: 'landing-footer',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    FaIconComponent,
-    RouterLink,
-    TranslatePipe
-  ],
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss'
+    selector: 'landing-footer',
+    imports: [
+        NgOptimizedImage,
+        FaIconComponent,
+        RouterLink,
+        TranslatePipe
+    ],
+    templateUrl: './footer.component.html',
+    styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements AfterViewInit {
   @ViewChild('invite_btn')

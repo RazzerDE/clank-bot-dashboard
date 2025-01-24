@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactComponent } from './contact.component';
 import {TranslateModule} from "@ngx-translate/core";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {WizardStep} from "../../../services/types/Forms";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {of, throwError} from "rxjs";
 import {ElementRef} from "@angular/core";
 
@@ -16,9 +16,9 @@ describe('ContactComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContactComponent, TranslateModule.forRoot(), HttpClientTestingModule, BrowserAnimationsModule],
-      providers: [ { provide: ActivatedRoute, useValue: { } } ]
-    })
+    imports: [ContactComponent, TranslateModule.forRoot(), BrowserAnimationsModule],
+    providers: [{ provide: ActivatedRoute, useValue: {} }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(ContactComponent);

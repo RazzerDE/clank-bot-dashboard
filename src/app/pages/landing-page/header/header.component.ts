@@ -11,17 +11,16 @@ import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-but
 import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
 
 @Component({
-  selector: 'landing-header',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    RouterLink,
-    FontAwesomeModule,
-    TranslatePipe,
-    LangSwitchButtonComponent
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+    selector: 'landing-header',
+    imports: [
+        NgOptimizedImage,
+        RouterLink,
+        FontAwesomeModule,
+        TranslatePipe,
+        LangSwitchButtonComponent
+    ],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
   protected mobileMenuExpanded: boolean = false;

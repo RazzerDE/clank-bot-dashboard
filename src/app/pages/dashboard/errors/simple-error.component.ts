@@ -10,18 +10,17 @@ import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-but
 import {ThemeSwitchButtonComponent} from "../../../structure/util/theme-switch-button/theme-switch-button.component";
 
 @Component({
-  selector: 'app-simple-error',
-  standalone: true,
-  imports: [
-    RouterLink,
-    NgOptimizedImage,
-    TranslatePipe,
-    FaIconComponent,
-    LangSwitchButtonComponent,
-    ThemeSwitchButtonComponent
-  ],
-  templateUrl: './simple-error.component.html',
-  styleUrl: './simple-error.component.scss'
+    selector: 'app-simple-error',
+    imports: [
+        RouterLink,
+        NgOptimizedImage,
+        TranslatePipe,
+        FaIconComponent,
+        LangSwitchButtonComponent,
+        ThemeSwitchButtonComponent
+    ],
+    templateUrl: './simple-error.component.html',
+    styleUrl: './simple-error.component.scss'
 })
 export class SimpleErrorComponent implements AfterViewInit {
 

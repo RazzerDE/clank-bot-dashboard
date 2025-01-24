@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
 import {AccessCode} from "../types/Authenticate";

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {Observable, of} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";

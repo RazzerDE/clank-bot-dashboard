@@ -7,18 +7,17 @@ import {ApiService} from "../../../../services/api/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {forkJoin} from "rxjs";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
-  selector: 'landing-section-intro',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    NgClass,
-    TranslatePipe
-  ],
-  templateUrl: './intro.component.html',
-  styleUrl: './intro.component.scss'
+    selector: 'landing-section-intro',
+    imports: [
+        NgOptimizedImage,
+        NgClass,
+        TranslatePipe
+    ],
+    templateUrl: './intro.component.html',
+    styleUrl: './intro.component.scss'
 })
 export class IntroComponent implements AfterViewInit, OnDestroy {
   @ViewChild('slider') protected slider!: ElementRef<HTMLDivElement>;

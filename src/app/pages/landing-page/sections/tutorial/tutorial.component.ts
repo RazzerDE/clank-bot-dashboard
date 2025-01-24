@@ -6,15 +6,14 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 
 @Component({
-  selector: 'landing-section-tutorial',
-  standalone: true,
-  imports: [
-    FaIconComponent,
-    NgOptimizedImage,
-    TranslatePipe
-  ],
-  templateUrl: './tutorial.component.html',
-  styleUrl: './tutorial.component.scss'
+    selector: 'landing-section-tutorial',
+    imports: [
+        FaIconComponent,
+        NgOptimizedImage,
+        TranslatePipe
+    ],
+    templateUrl: './tutorial.component.html',
+    styleUrl: './tutorial.component.scss'
 })
 export class TutorialComponent {
 

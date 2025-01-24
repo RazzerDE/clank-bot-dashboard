@@ -6,16 +6,15 @@ import {TutorialComponent} from "./sections/tutorial/tutorial.component";
 import {IntroComponent} from "./sections/intro/intro.component";
 
 @Component({
-  selector: 'landing-page',
-  standalone: true,
-  imports: [
-    HeaderComponent,
-    FooterComponent,
-    LandingSectionFeaturesComponent,
-    TutorialComponent,
-    IntroComponent
-  ],
-  templateUrl: './landing-page.component.html',
-  styleUrl: './landing-page.component.scss'
+    selector: 'landing-page',
+    imports: [
+        HeaderComponent,
+        FooterComponent,
+        LandingSectionFeaturesComponent,
+        TutorialComponent,
+        IntroComponent
+    ],
+    templateUrl: './landing-page.component.html',
+    styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {}

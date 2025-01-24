@@ -4,7 +4,7 @@ import {inject} from "@angular/core";
 import {AuthService} from "../services/auth/auth.service";
 import {DiscordUser} from "../services/types/discord/User";
 import {config} from "../../environments/config";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import {DataHolderService} from "../services/data/data-holder.service";
 
 export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Observable<boolean> => {

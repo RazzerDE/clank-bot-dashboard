@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {config} from "../../../environments/config";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
 import {Guild} from "./types/Guilds";
 

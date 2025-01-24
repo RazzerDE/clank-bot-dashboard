@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {DataHolderService} from "../data/data-holder.service";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {of, throwError} from "rxjs";
 import {DiscordUser} from "../types/discord/User";
 
@@ -19,10 +19,10 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-      providers: [{ provide: ActivatedRoute, useValue: { snapshot: {}, queryParams: of({}) }},
-        { provide: Router, useValue: { navigateByUrl: jest.fn().mockResolvedValue(true) } }]
-    });
+    imports: [TranslateModule.forRoot()],
+    providers: [{ provide: ActivatedRoute, useValue: { snapshot: {}, queryParams: of({}) } },
+        { provide: Router, useValue: { navigateByUrl: jest.fn().mockResolvedValue(true) } }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
 
     localStorage.setItem('access_token', 'test');
     service = TestBed.inject(AuthService);

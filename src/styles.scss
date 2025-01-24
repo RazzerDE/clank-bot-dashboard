@@ -1,4 +1,5 @@
 @charset "utf-8";
+@use "sass:meta";
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +7,7 @@
 
 
 /* Importing style libraries. */
-@import 'bootstrap/scss/bootstrap';
-@import 'assets/fonts/fonts.scss';
-@import 'assets/scss/base.scss';
-@import 'assets/scss/structure/responsive.scss';
+@include meta.load-css('bootstrap/scss/bootstrap');
+@include meta.load-css('assets/fonts/fonts.scss');
+@include meta.load-css('assets/scss/base.scss');
+@include meta.load-css('assets/scss/structure/responsive.scss');

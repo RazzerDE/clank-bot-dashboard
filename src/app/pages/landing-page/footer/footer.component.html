@@ -40,7 +40,7 @@
         <ul>
           @for (item of nav_items; track item) {
             <li>
-              <a href="{{ item.redirect_url }}">{{ item.title }}</a>
+              <a href="{{ item.redirect_url }}">{{ item.title | translate}}</a>
             </li>
           }
 

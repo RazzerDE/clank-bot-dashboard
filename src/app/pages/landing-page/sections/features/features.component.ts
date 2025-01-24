@@ -4,15 +4,14 @@ import {TranslatePipe} from "@ngx-translate/core";
 import { feature_items } from '../../../../services/types/landing-page/feature-item';
 
 @Component({
-  selector: 'landing-section-features',
-  standalone: true,
-  imports: [
-    NgOptimizedImage,
-    NgClass,
-    TranslatePipe
-  ],
-  templateUrl: './features.component.html',
-  styleUrl: './features.component.scss'
+    selector: 'landing-section-features',
+    imports: [
+        NgOptimizedImage,
+        NgClass,
+        TranslatePipe
+    ],
+    templateUrl: './features.component.html',
+    styleUrl: './features.component.scss'
 })
 export class LandingSectionFeaturesComponent {
   protected readonly feature_items = feature_items;

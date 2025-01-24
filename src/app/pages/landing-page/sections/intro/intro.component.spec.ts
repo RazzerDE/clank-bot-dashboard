@@ -5,13 +5,13 @@ import {ElementRef} from "@angular/core";
 import {AnimationService} from "../../../../services/animation/animation.service";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {of, throwError} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 describe('IntroComponent', () => {
   let component: IntroComponent;
@@ -22,9 +22,9 @@ describe('IntroComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IntroComponent, TranslateModule.forRoot(), HttpClientTestingModule],
-      providers: [ { provide: ActivatedRoute, useValue: {} }]
-    })
+    imports: [IntroComponent, TranslateModule.forRoot()],
+    providers: [{ provide: ActivatedRoute, useValue: {} }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(IntroComponent);
