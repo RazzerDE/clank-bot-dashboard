@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DiscordComService } from './discord-com.service';
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {Guild} from "./types/Guilds";
 import {AuthService} from "../auth/auth.service";
-import {HttpHeaders} from "@angular/common/http";
+import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {config} from "../../../environments/config";
 
 describe('DiscordComService', () => {
@@ -16,14 +16,15 @@ describe('DiscordComService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-      providers: [
+    imports: [TranslateModule.forRoot()],
+    providers: [
         { provide: ActivatedRoute, useValue: {} },
         { provide: AuthService, useValue: { headers: new HttpHeaders({ 'Authorization': 'Bearer token' }),
-          setAuthorizationHeader: jest.fn() } }
-
-      ]
-    });
+                setAuthorizationHeader: jest.fn() } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     service = TestBed.inject(DiscordComService);
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);

@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {of, throwError} from "rxjs";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -10,7 +10,7 @@ import {DataHolderService} from "../../services/data/data-holder.service";
 import {ApiService} from "../../services/api/api.service";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import {Guild} from "../../services/discord-com/types/Guilds";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -20,13 +20,14 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent, HttpClientTestingModule, TranslateModule.forRoot(), BrowserAnimationsModule],
-      providers: [ { provide: ActivatedRoute, useValue: { snapshot: {
-        queryParams: { code: 'test_code', state: 'test_state' } },
-          queryParams: of({ code: 'test_code', state: 'test_state' }) } },
+    imports: [DashboardComponent, TranslateModule.forRoot(), BrowserAnimationsModule],
+    providers: [{ provide: ActivatedRoute, useValue: { snapshot: {
+                    queryParams: { code: 'test_code', state: 'test_state' }
+                },
+                queryParams: of({ code: 'test_code', state: 'test_state' }) } },
         { provide: DataHolderService, useValue: { redirectLoginError: jest.fn(), allowDataFetch: of(true) } },
-        { provide: ApiService, useValue: { getGuildUsage: jest.fn(), getModuleStatus: jest.fn() } }]
-    }).compileComponents();
+        { provide: ApiService, useValue: { getGuildUsage: jest.fn(), getModuleStatus: jest.fn() } }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;

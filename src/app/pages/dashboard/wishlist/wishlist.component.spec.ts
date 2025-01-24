@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WishlistComponent } from './wishlist.component';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {ElementRef} from "@angular/core";
 import {Feature, FeatureVotes, Tag} from "../../../services/types/navigation/WishlistTags";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {of, throwError} from "rxjs";
 import {ApiService} from "../../../services/api/api.service";
 import {DiscordUser} from "../../../services/types/discord/User";
@@ -19,13 +19,15 @@ describe('WishlistComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WishlistComponent, TranslateModule.forRoot(), HttpClientTestingModule, NoopAnimationsModule],
-      providers: [
-        { provide: ActivatedRoute, useValue: { } },
+    imports: [WishlistComponent, TranslateModule.forRoot(), NoopAnimationsModule],
+    providers: [
+        { provide: ActivatedRoute, useValue: {} },
         { provide: ApiService, useValue: { getFeatureVotes: () => of({ featureVotes: [] }),
-          sendFeatureVote: () => of({}) } }
-      ]
-    })
+                sendFeatureVote: () => of({}) } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
 
     apiService = TestBed.inject(ApiService);

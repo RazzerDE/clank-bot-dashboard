@@ -24,7 +24,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {ApiService} from "../../../services/api/api.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
 

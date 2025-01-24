@@ -7,7 +7,7 @@ import {ApiService} from "../../../../services/api/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {forkJoin} from "rxjs";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: 'landing-section-intro',

@@ -6,7 +6,7 @@ import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {ApiService} from "../../services/api/api.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {faTruckMedical, IconDefinition} from "@fortawesome/free-solid-svg-icons";

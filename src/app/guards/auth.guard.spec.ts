@@ -3,9 +3,9 @@ import {ActivatedRoute, ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapsh
 import {AuthGuard} from "./auth.guard";
 import {AuthService} from "../services/auth/auth.service";
 import {DataHolderService} from "../services/data/data-holder.service";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {Observable, of, throwError} from "rxjs";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {TranslateModule} from "@ngx-translate/core";
 
 
@@ -15,11 +15,13 @@ describe('authGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-      providers: [
+    imports: [TranslateModule.forRoot()],
+    providers: [
         { provide: ActivatedRoute, useValue: { queryParams: {} } },
-      ]
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
   });
 
   it('should be created', () => {

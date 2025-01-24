@@ -13,7 +13,7 @@ import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {WizardStep, FormStep, bug_steps, CurrentStep, idea_steps} from "../../../services/types/Forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {ApiService} from "../../../services/api/api.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: 'app-contact',

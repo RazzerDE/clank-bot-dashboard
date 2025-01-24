@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SidebarComponent } from './sidebar.component';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
@@ -11,7 +11,7 @@ import {Guild} from "../../services/discord-com/types/Guilds";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {DiscordComService} from "../../services/discord-com/discord-com.service";
 import {of, throwError} from "rxjs";
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -21,12 +21,12 @@ describe('SidebarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidebarComponent, HttpClientTestingModule, TranslateModule.forRoot(), NoopAnimationsModule],
-      providers: [ { provide: ActivatedRoute, useValue: { } }, { provide: DashboardComponent, useValue: {} },
+    imports: [SidebarComponent, TranslateModule.forRoot(), NoopAnimationsModule],
+    providers: [{ provide: ActivatedRoute, useValue: {} }, { provide: DashboardComponent, useValue: {} },
         { provide: DashboardComponent, useValue: { getServerData: jest.fn() } },
         { provide: DataHolderService, useValue: { isLoading: false, redirectLoginError: jest.fn(), allowDataFetch: { next: jest.fn() } } },
-        { provide: DiscordComService, useValue: { getGuilds: jest.fn().mockReturnValue(Promise.resolve(of([]))) } } ]
-    })
+        { provide: DiscordComService, useValue: { getGuilds: jest.fn().mockReturnValue(Promise.resolve(of([]))) } }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(SidebarComponent);
