@@ -251,4 +251,22 @@ export class WishlistComponent implements AfterViewInit {
   isLoadingActive(featureId: number): boolean {
     return this.isOnCooldown.some(item => item.featureId === featureId && item.isLoading);
   }
+
+  /**
+   * Sorts the feature list by votes and alphabetically by name.
+   *
+   * This method sorts the `feature_list` array first by the number of votes in descending order.
+   * If two features have the same number of votes, they are sorted alphabetically by their name.
+   *
+   * @returns The sorted array of features.
+   */
+  sortFeatureList(): Feature[] {
+    // sort by "votes" and alphabetically by "name"
+    return this.feature_list.sort((a, b) => {
+      if (a.votes === b.votes) {
+        return a.name.localeCompare(b.name);
+      }
+      return b.votes - a.votes;
+    });
+  }
 }

@@ -127,7 +127,7 @@
             }
 
             <!-- Items -->
-            @for (feature of feature_list; track $index) {
+            @for (feature of sortFeatureList(); track $index) {
               @if (feature.enabled) {
                 <div [@fadeInOut] class="bg-white dark:!bg-slate-800 flex min-h-[380px] flex-col overflow-hidden rounded-2xl
                                          shadow transition-colors duration-500 hover:!bg-white/55 dark:hover:!bg-slate-800/75">
