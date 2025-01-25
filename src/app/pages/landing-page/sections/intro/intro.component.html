@@ -46,7 +46,7 @@
                   <div class="slider" #slider [style.transform]="'translateX(' + currentTranslate + 'px)'"
                        [style.transition]="isResetting ? 'none' : 'transform ' + transitionSpeed + 'ms linear'">
 
-                    @for (item of duplicatedItems; track item) {
+                    @for (item of duplicatedItems; track $index) {
                       <a href="{{ item.guild_invite }}" target="_blank">
                         <div class="slider-item">
                           <img ngSrc="{{ item.image_url }}" [alt]="item.guild_name + '~ Discord-Server'" width="50" height="50"
