@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {HeaderComponent} from "../../../structure/header/header.component";
 import {NgClass} from "@angular/common";
@@ -14,6 +14,7 @@ import {WizardStep, FormStep, bug_steps, CurrentStep, idea_steps} from "../../..
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {ApiService} from "../../../services/api/api.service";
 import { HttpErrorResponse } from "@angular/common/http";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'app-contact',
@@ -83,7 +84,7 @@ import { HttpErrorResponse } from "@angular/common/http";
         ])
     ]
 })
-export class ContactComponent implements AfterViewInit {
+export class ContactComponent implements AfterViewInit, OnDestroy {
   protected current_steps: CurrentStep = { bug_report: 2, idea_suggestion: 1 };
   protected bugReportSent: boolean = false;
   protected ideaSuggestionSent: boolean = false;
@@ -117,6 +118,7 @@ export class ContactComponent implements AfterViewInit {
 
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faDiscord: IconDefinition = faDiscord;
+  private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, protected translate: TranslateService,
               private apiService: ApiService) {
@@ -141,6 +143,15 @@ export class ContactComponent implements AfterViewInit {
   }
 
   /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub: Subscription): void => sub.unsubscribe());
+  }
+
+  /**
    * Sends the form data to the server.
    * @param type - The type of form to send.
    */
@@ -153,12 +164,14 @@ export class ContactComponent implements AfterViewInit {
         // send bug report
         this.bugReportSent = true;
 
-        this.apiService.sendBugReport(this.formGroupBug.value).subscribe({
+        const bug_report: Subscription = this.apiService.sendBugReport(this.formGroupBug.value).subscribe({
           error: (_error: HttpErrorResponse): void => {
             this.bugReportInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.bugReportInfo.nativeElement.classList.add('!text-red-600');
           }
         });
+
+        this.subscriptions.push(bug_report);
       }
     } else if (type === 'IDEA') {
       // switch to next step in idea suggestion form
@@ -169,12 +182,14 @@ export class ContactComponent implements AfterViewInit {
         this.ideaSuggestionSent = true;
 
         const form_data = { ...this.formGroupIdea.value, profile: this.dataService.profile };
-        this.apiService.sendIdeaSuggestion(form_data).subscribe({
+        const idea_suggest: Subscription = this.apiService.sendIdeaSuggestion(form_data).subscribe({
           error: (_error: HttpErrorResponse): void => {
             this.ideaSuggestionInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.ideaSuggestionInfo.nativeElement.classList.add('!text-red-600');
           }
         });
+
+        this.subscriptions.push(idea_suggest);
       }
     }
   }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
 import {HeaderComponent} from "../../structure/header/header.component";
@@ -13,7 +13,7 @@ import {faTruckMedical, IconDefinition} from "@fortawesome/free-solid-svg-icons"
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RouterLink} from "@angular/router";
-import {forkJoin} from "rxjs";
+import {forkJoin, Subscription} from "rxjs";
 import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
 
 @Component({
@@ -34,7 +34,7 @@ import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/
         ])
     ]
 })
-export class DashboardComponent implements AfterViewInit {
+export class DashboardComponent implements AfterViewInit, OnDestroy {
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
   protected tasks: Tasks[] = tasks;
@@ -52,6 +52,8 @@ export class DashboardComponent implements AfterViewInit {
   protected readonly faDiscord: IconDefinition = faDiscord;
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
+
+  private subscription: Subscription | undefined;
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService,
               private apiService: ApiService) {
@@ -78,6 +80,17 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  /**
    * Retrieves the server data for the server list and gets the module completion status.
    * Makes a GET request to the backend API to retrieve the server data.
    */
@@ -85,8 +98,8 @@ export class DashboardComponent implements AfterViewInit {
     if (!this.dataService.active_guild) { return; }
     if (!window.location.href.endsWith('/dashboard')) { return; }
 
-    forkJoin({guildUsage: this.apiService.getGuildUsage(100),
-              moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
+    this.subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
+                                  moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
       .subscribe({
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
           this.updateTasks(moduleStatus);

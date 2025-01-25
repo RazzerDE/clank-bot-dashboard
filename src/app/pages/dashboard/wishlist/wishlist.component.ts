@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {HeaderComponent} from "../../../structure/header/header.component";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -27,6 +27,7 @@ import {ApiService} from "../../../services/api/api.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'app-wishlist',
@@ -63,7 +64,7 @@ import {RouterLink} from "@angular/router";
         ])
     ]
 })
-export class WishlistComponent implements AfterViewInit {
+export class WishlistComponent implements AfterViewInit, OnDestroy {
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faLightbulb: IconDefinition = faLightbulb;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -81,6 +82,7 @@ export class WishlistComponent implements AfterViewInit {
   protected feature_list: Feature[] = feature_list;
   protected tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
+  private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
     this.dataService.hideGuildSidebar = false;
@@ -99,6 +101,15 @@ export class WishlistComponent implements AfterViewInit {
   }
 
   /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  /**
    * Sends a vote for a feature.
    *
    * This method sends a vote for a feature to the server. It first checks if the user is logged in
@@ -114,7 +125,7 @@ export class WishlistComponent implements AfterViewInit {
     if (cooldownFeature) { cooldownFeature.isLoading = true; cooldownFeature.onCooldown = true; }
 
     const data: FeatureData = { featureId: feature_id, userId: this.dataService.profile!.id, vote: vote };
-    this.apiService.sendFeatureVote(data).subscribe({
+    const feature_vote: Subscription = this.apiService.sendFeatureVote(data).subscribe({
       next: (_data: any): void => {
         this.getFeatureVotes();
         if (cooldownFeature) { cooldownFeature.isLoading = false; }
@@ -141,6 +152,8 @@ export class WishlistComponent implements AfterViewInit {
         }, 5500);
       }
     });
+
+    this.subscriptions.push(feature_vote);
   }
 
   /**
@@ -152,7 +165,7 @@ export class WishlistComponent implements AfterViewInit {
    * it logs the error to the console.
    */
   getFeatureVotes(): void {
-    this.apiService.getFeatureVotes().subscribe({
+    const get_votes: Subscription = this.apiService.getFeatureVotes().subscribe({
       next: (votes: FeatureVotes): void => {
         this.feature_list.forEach(feature => {
           const voteData: FeatureVote | undefined = votes.featureVotes.find(vote => vote.id === feature.id);
@@ -173,6 +186,8 @@ export class WishlistComponent implements AfterViewInit {
         this.dataService.isLoading = false;
       }
     });
+
+    this.subscriptions.push(get_votes);
   }
 
   /**

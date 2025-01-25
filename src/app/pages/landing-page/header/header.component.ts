@@ -5,7 +5,6 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import {LanguageSwitcherService} from "../../../services/language/language-switcher.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
 import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
@@ -29,7 +28,7 @@ export class HeaderComponent {
   protected faCode: IconDefinition = faCode;
   protected readonly nav_items = nav_items;
 
-  constructor(private renderer: Renderer2, protected translateService: LanguageSwitcherService) {}
+  constructor(private renderer: Renderer2) {}
 
   /**
    * Toggles the mobile menu's expanded state.

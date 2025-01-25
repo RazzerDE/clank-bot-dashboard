@@ -6,7 +6,7 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {ApiService} from "../../../../services/api/api.service";
 import {GeneralStats} from "../../../../services/types/Statistics";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
-import {forkJoin} from "rxjs";
+import {forkJoin, Subscription} from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
@@ -31,6 +31,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
   protected isPaused: boolean = false;
 
   private slidingInterval: any;  // datatype can't be imported
+  private subscription: Subscription | undefined;
 
   constructor(private animations: AnimationService, private apiService: ApiService,
               protected dataService: DataHolderService) {
@@ -52,10 +53,15 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
   /**
    * Lifecycle hook that is called when the component is destroyed.
    * - Clears the sliding interval to stop the sliding animation.
+   * - Unsubscribes from the API request.
    */
   ngOnDestroy(): void {
     if (this.slidingInterval) {
       clearInterval(this.slidingInterval);
+    }
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 
@@ -64,31 +70,31 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    */
   getBotStats(): void {
     // Fetch both general stats and guild usage
-    forkJoin({
-      guildUsage: this.apiService.getGuildUsage(25), generalStats: this.apiService.getGeneralStats()
-    }).subscribe({
-      next: ({guildUsage, generalStats}: { guildUsage: SliderItems[], generalStats: GeneralStats }): void => {
-        // Handle guild usage
-        this.slider_items = guildUsage;
-        this.duplicatedItems = [...this.slider_items, ...this.slider_items];
-        this.startSliding();
+    this.subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(25),
+                                  generalStats: this.apiService.getGeneralStats()})
+      .subscribe({
+        next: ({guildUsage, generalStats}: { guildUsage: SliderItems[], generalStats: GeneralStats }): void => {
+          // Handle guild usage
+          this.slider_items = guildUsage;
+          this.duplicatedItems = [...this.slider_items, ...this.slider_items];
+          this.startSliding();
 
-        // Handle general stats
-        this.dataService.bot_stats = {
-          user_count: Number(generalStats.user_count).toLocaleString('de-DE'),
-          guild_count: Number(generalStats.guild_count).toLocaleString('de-DE'),
-          giveaway_count: Number(generalStats.giveaway_count).toLocaleString('de-DE'),
-          ticket_count: Number(generalStats.ticket_count).toLocaleString('de-DE'),
-          punish_count: Number(generalStats.punish_count).toLocaleString('de-DE'),
-          global_verified_count: Number(generalStats.global_verified_count).toLocaleString('de-DE')
-        };
+          // Handle general stats
+          this.dataService.bot_stats = {
+            user_count: Number(generalStats.user_count).toLocaleString('de-DE'),
+            guild_count: Number(generalStats.guild_count).toLocaleString('de-DE'),
+            giveaway_count: Number(generalStats.giveaway_count).toLocaleString('de-DE'),
+            ticket_count: Number(generalStats.ticket_count).toLocaleString('de-DE'),
+            punish_count: Number(generalStats.punish_count).toLocaleString('de-DE'),
+            global_verified_count: Number(generalStats.global_verified_count).toLocaleString('de-DE')
+          };
 
-        // Disable page Loader
-        this.dataService.isLoading = false;
-      },
-      error: (_err: HttpErrorResponse): void => {
-        this.dataService.isLoading = false;
-      }
+          // Disable page Loader
+          this.dataService.isLoading = false;
+        },
+        error: (_err: HttpErrorResponse): void => {
+          this.dataService.isLoading = false;
+        }
     });
   }
 
