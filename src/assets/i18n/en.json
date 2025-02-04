@@ -124,6 +124,10 @@
   "PAGE_WISHLIST_TITLE": "Future Features",
   "PAGE_WISHLIST_DESC": "› The features below are major new things that have been requested by our community (you) over time and will soon be integrated into the bot.",
 
+  "PAGE_TEAMLIST_SUBTITLE": "🚨 ~ SET YOUR TEAM MEMBERS",
+  "PAGE_TEAMLIST_TITLE": "Bot's Team List",
+  "PAGE_TEAMLIST_DESC": "› This feature ensures that certain roles have access to important moderation features & unlocks more ticket tool features.",
+
   "WISHLIST_TAG_FEATURES": "All Features",
   "WISHLIST_TAG_GIVEAWAYS": "Giveaways & Events",
   "WISHLIST_TAG_MODULES": "New Modules",

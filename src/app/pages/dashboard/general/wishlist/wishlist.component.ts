@@ -27,19 +27,21 @@ import {
 } from "../../../../services/types/navigation/WishlistTags";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ApiService} from "../../../../services/api/api.service";
+import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 
 @Component({
     selector: 'app-wishlist',
-    imports: [
-        HeaderComponent,
-        ReactiveFormsModule,
-        SidebarComponent,
-        NgClass,
-        TranslatePipe,
-        FaIconComponent,
-        NgOptimizedImage,
-        RouterLink
-    ],
+  imports: [
+    HeaderComponent,
+    ReactiveFormsModule,
+    SidebarComponent,
+    NgClass,
+    TranslatePipe,
+    FaIconComponent,
+    NgOptimizedImage,
+    RouterLink,
+    PageThumbComponent
+  ],
     templateUrl: './wishlist.component.html',
     styleUrl: './wishlist.component.scss',
     animations: [

@@ -1,1 +1,33 @@
-<p>teamlist works!</p>
+<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500">
+
+  @if (this.dataService.showMobileSidebar) {
+    <!-- Backdrop for mobile -->
+    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
+  }
+
+  <!-- Hide sidebar on mobile devices; only show after button click -->
+  <div [ngClass]="['fixed xl:static z-[100] h-screen transition-transform duration-300',
+                    dataService.showMobileSidebar ? 'translate-x-0' : '-translate-x-full xl:translate-x-0']">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <!-- Page Content -->
+  <div class="flex w-full min-w-0 flex-auto flex-col">
+    <app-header></app-header>
+
+    <!-- Body -->
+    <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+
+      <!-- Page Thumb -->
+      <page-thumb [subtitle]="'PAGE_TEAMLIST_SUBTITLE' | translate" [title]="'PAGE_TEAMLIST_TITLE' | translate"
+                  [color]="'red'" [desc]="'PAGE_TEAMLIST_DESC' | translate"></page-thumb>
+
+      <div class="flex-1 m-4">
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md h-full transition-colors duration-500">
+          <!-- Hier kommt später der scrollbare Inhalt rein -->
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
