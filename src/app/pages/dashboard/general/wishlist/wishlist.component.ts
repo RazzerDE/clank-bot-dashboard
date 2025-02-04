@@ -1,19 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
-import {DataHolderService} from "../../../services/data/data-holder.service";
-import {HeaderComponent} from "../../../structure/header/header.component";
 import {ReactiveFormsModule} from "@angular/forms";
-import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {
-  CooldownFeatures,
-  Feature,
-  feature_list, FeatureData,
-  FeatureVote,
-  FeatureVotes,
-  Tag,
-  tags
-} from "../../../services/types/navigation/WishlistTags";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faClock,
@@ -23,11 +11,22 @@ import {
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {ApiService} from "../../../services/api/api.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
 import {Subscription} from "rxjs";
+import {HeaderComponent} from "../../../../structure/header/header.component";
+import {SidebarComponent} from "../../../../structure/sidebar/sidebar.component";
+import {
+  CooldownFeatures,
+  Feature,
+  feature_list,
+  FeatureData, FeatureVote, FeatureVotes,
+  Tag,
+  tags
+} from "../../../../services/types/navigation/WishlistTags";
+import {DataHolderService} from "../../../../services/data/data-holder.service";
+import {ApiService} from "../../../../services/api/api.service";
 
 @Component({
     selector: 'app-wishlist',

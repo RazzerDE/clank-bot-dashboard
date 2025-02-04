@@ -3,8 +3,8 @@ import {LandingPageComponent} from "./pages/landing-page/landing-page.component"
 import {DashboardComponent} from "./pages/dashboard/dashboard.component";
 import {SimpleErrorComponent} from "./pages/dashboard/errors/simple-error.component";
 import {AuthGuard} from "./guards/auth.guard";
-import {ContactComponent} from "./pages/dashboard/contact/contact.component";
-import {WishlistComponent} from "./pages/dashboard/wishlist/wishlist.component";
+import {ContactComponent} from "./pages/dashboard/general/contact/contact.component";
+import {WishlistComponent} from "./pages/dashboard/general/wishlist/wishlist.component";
 
 export const routes: Routes = [
   // General pages

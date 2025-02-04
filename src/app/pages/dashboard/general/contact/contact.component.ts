@@ -1,8 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {DataHolderService} from "../../../services/data/data-holder.service";
-import {HeaderComponent} from "../../../structure/header/header.component";
 import {NgClass} from "@angular/common";
-import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
@@ -10,11 +7,14 @@ import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {animate, group, query, state, style, transition, trigger} from "@angular/animations";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {WizardStep, FormStep, bug_steps, CurrentStep, idea_steps} from "../../../services/types/Forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {ApiService} from "../../../services/api/api.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {Subscription} from "rxjs";
+import {HeaderComponent} from "../../../../structure/header/header.component";
+import {SidebarComponent} from "../../../../structure/sidebar/sidebar.component";
+import {bug_steps, CurrentStep, FormStep, idea_steps, WizardStep} from "../../../../services/types/Forms";
+import {DataHolderService} from "../../../../services/data/data-holder.service";
+import {ApiService} from "../../../../services/api/api.service";
 
 @Component({
     selector: 'app-contact',
