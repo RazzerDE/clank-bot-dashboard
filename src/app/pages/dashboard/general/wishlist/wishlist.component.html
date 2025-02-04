@@ -1,202 +1,186 @@
-<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500">
+<dashboard-layout>
 
-  @if (this.dataService.showMobileSidebar) {
-    <!-- Backdrop for mobile -->
-    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
-  }
+  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
-  <!-- Hide sidebar on mobile devices; only show after button click -->
-  <div [ngClass]="['fixed xl:static z-[100] h-screen transition-transform duration-300',
-                    dataService.showMobileSidebar ? 'translate-x-0' : '-translate-x-full xl:translate-x-0']">
-    <app-sidebar></app-sidebar>
-  </div>
-
-  <!-- Page Content -->
-  <div class="flex w-full min-w-0 flex-auto flex-col">
-    <app-header></app-header>
-
-    <!-- Body -->
-    <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
-
-      <!-- Alert Box -->
-      @if (this.dataService.showAlertBox) {
-        <div @fadeAnimation class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-2xl mx-auto flex items-center
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <div @fadeAnimation class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-2xl mx-auto flex items-center
                                     p-4 mb-4 rounded-lg bg-red-50 dark:bg-gray-800
                                     border-1 transition-colors duration-500"
-        [ngClass]="this.dataService.error_color == 'red' ? 'text-red-800 dark:text-red-400 !border-red-600 ' :
+           [ngClass]="this.dataService.error_color == 'red' ? 'text-red-800 dark:text-red-400 !border-red-600 ' :
                                                            'text-green-800 dark:text-green-400 !border-green-600'">
-          <fa-icon [icon]="faBug" class="flex-shrink-0 mb-2 w-4 h-4"></fa-icon>
-          <span class="sr-only">Info</span>
-          <div class="ms-3 text-sm font-medium me-2" #AlertContent>
-            <strong>{{ this.dataService.error_title.replaceAll('..', '') }}:</strong>
-            {{ this.dataService.error_desc.replaceAll('›', '') }}
-          </div>
-          <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2
+        <fa-icon [icon]="faBug" class="flex-shrink-0 mb-2 w-4 h-4"></fa-icon>
+        <span class="sr-only">Info</span>
+        <div class="ms-3 text-sm font-medium me-2" #AlertContent>
+          <strong>{{ this.dataService.error_title.replaceAll('..', '') }}:</strong>
+          {{ this.dataService.error_desc.replaceAll('›', '') }}
+        </div>
+        <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2
                                    focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center
                                      h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700
                                      transition-colors duration-500"
-                  (click)="this.dataService.showAlertBox = false;">
-            <span class="sr-only">Close</span>
-            <fa-icon [icon]="faXmark" class="flex-shrink-0 mb-2 w-4 h-4"></fa-icon>
-          </button>
-        </div>
-      }
+                (click)="this.dataService.showAlertBox = false;">
+          <span class="sr-only">Close</span>
+          <fa-icon [icon]="faXmark" class="flex-shrink-0 mb-2 w-4 h-4"></fa-icon>
+        </button>
+      </div>
+    }
 
-      <!-- Page Thumb -->
-      <page-thumb [subtitle]="'PAGE_WISHLIST_SUBTITLE' | translate" [color]="'yellow'"
-                  [title]="'PAGE_WISHLIST_TITLE' | translate" [desc]="'PAGE_WISHLIST_DESC' | translate"></page-thumb>
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_WISHLIST_SUBTITLE' | translate" [color]="'yellow'"
+                [title]="'PAGE_WISHLIST_TITLE' | translate" [desc]="'PAGE_WISHLIST_DESC' | translate"></page-thumb>
 
-      <!-- Content -->
-      <div class="flex flex-col lg:flex-row p-6 sm:p-10 gap-6 overflow-hidden !pl-2 !pb-4 h-full">
-        <!-- Sidebar -->
-        <div class="w-full lg:w-64">
-          <h2 class="text-lg font-medium mb-4 pt-2 text-gray-800 dark:text-gray-200 px-4">TAGS</h2>
-          <div class="space-y-2">
-            @for (tag of tags; track $index) {
-              <div class="flex px-4 py-2 rounded-full cursor-pointer transition-colors duration-300" (click)="filterFeatures(tag.id)"
-                   [ngClass]="tag.isActive ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-300 dark:hover:bg-gray-800'">
-                <fa-icon [icon]="$index === 0 ? faInbox : faHashtag" [ngClass]="tag.isActive ? 'text-orange-500 dark:text-orange-400' : 'text-gray-400 dark:text-gray-500'"
-                         class="w-5 h-5 transition-colors duration-500" size="lg"></fa-icon>
-                <span class="ml-3 font-medium transition-colors duration-500"
-                      [ngClass]="tag.isActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'">
+    <!-- Content -->
+    <div class="flex flex-col lg:flex-row p-6 sm:p-10 gap-6 overflow-hidden !pl-2 !pb-4 h-full">
+      <!-- Sidebar -->
+      <div class="w-full lg:w-64">
+        <h2 class="text-lg font-medium mb-4 pt-2 text-gray-800 dark:text-gray-200 px-4">TAGS</h2>
+        <div class="space-y-2">
+          @for (tag of tags; track $index) {
+            <div class="flex px-4 py-2 rounded-full cursor-pointer transition-colors duration-300" (click)="filterFeatures(tag.id)"
+                 [ngClass]="tag.isActive ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-300 dark:hover:bg-gray-800'">
+              <fa-icon [icon]="$index === 0 ? faInbox : faHashtag" [ngClass]="tag.isActive ? 'text-orange-500 dark:text-orange-400' : 'text-gray-400 dark:text-gray-500'"
+                       class="w-5 h-5 transition-colors duration-500" size="lg"></fa-icon>
+              <span class="ml-3 font-medium transition-colors duration-500"
+                    [ngClass]="tag.isActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'">
                 {{ tag.name | translate }}
                 </span>
-              </div>
-            }
-          </div>
+            </div>
+          }
         </div>
+      </div>
 
-        <!-- Divider - nur auf großen Bildschirmen -->
-        <div class="hidden lg:flex items-center">
-          <div class="h-4/5 w-px bg-gray-300 dark:bg-gray-700" #Divider></div>
-        </div>
+      <!-- Divider - nur auf großen Bildschirmen -->
+      <div class="hidden lg:flex items-center">
+        <div class="h-4/5 w-px bg-gray-300 dark:bg-gray-700" #Divider></div>
+      </div>
 
-        <!-- Main Content -->
-        <div class="flex-1">
-          <!-- Search & Button -->
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-x-5 mb-4">
-            <div class="w-full sm:flex-1">
-              <div class="flex-1 ml-4 lg:ml-0 ">
-                <div class="relative self-center">
-                  <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                  <input type="text" [placeholder]="'WISHLIST_SEARCH_PLACEHOLDER' | translate" (keyup)="searchFeatures($event)"
-                         class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+      <!-- Main Content -->
+      <div class="flex-1">
+        <!-- Search & Button -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-x-5 mb-4">
+          <div class="w-full sm:flex-1">
+            <div class="flex-1 ml-4 lg:ml-0 ">
+              <div class="relative self-center">
+                <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                <input type="text" [placeholder]="'WISHLIST_SEARCH_PLACEHOLDER' | translate" (keyup)="searchFeatures($event)"
+                       class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                             dark:!border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors duration-500" />
-                </div>
               </div>
             </div>
-            <a routerLink="/dashboard/contact">
-              <button type="button" class="w-full sm:w-auto text-white bg-gradient-to-r from-yellow-600 via-orange-500
+          </div>
+          <a routerLink="/dashboard/contact">
+            <button type="button" class="w-full sm:w-auto text-white bg-gradient-to-r from-yellow-600 via-orange-500
                                to-orange-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-orange-700 focus:outline-none
                                font-medium px-3 py-2.5 text-center rounded-2xl">
-                <fa-icon [icon]="faLightbulb" class="me-2"></fa-icon>
-                <p [innerText]="'WISHLIST_BUTTON_IDEA' | translate" class="inline-block mb-0"></p>
-              </button>
-            </a>
-          </div>
+              <fa-icon [icon]="faLightbulb" class="me-2"></fa-icon>
+              <p [innerText]="'WISHLIST_BUTTON_IDEA' | translate" class="inline-block mb-0"></p>
+            </button>
+          </a>
+        </div>
 
-          <div class="mt-8 md:mt-4 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-[460px]
+        <div class="mt-8 md:mt-4 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-[460px]
                       pr-10 pl-5 lg:pl-0 w-[106%] lg:w-full" #WishlistContainer>
 
-            <!-- No items found -->
-            @if (this.allItemsDisabled) {
-              <div [@fadeInOut] class="col-span-full flex flex-col items-center">
-                <p class="mt-4 text-gray-500 dark:text-gray-400 transition-colors duration-500">
-                  {{ 'WISHLIST_EMPTY_TITLE' | translate }}
-                </p>
-              </div>
-            }
+          <!-- No items found -->
+          @if (this.allItemsDisabled) {
+            <div [@fadeInOut] class="col-span-full flex flex-col items-center">
+              <p class="mt-4 text-gray-500 dark:text-gray-400 transition-colors duration-500">
+                {{ 'WISHLIST_EMPTY_TITLE' | translate }}
+              </p>
+            </div>
+          }
 
-            <!-- Items -->
-            @for (feature of sortFeatureList(); track $index) {
-              @if (feature.enabled) {
-                <div [@fadeInOut] class="bg-white dark:!bg-slate-800 flex min-h-[380px] flex-col overflow-hidden rounded-2xl
+          <!-- Items -->
+          @for (feature of sortFeatureList(); track $index) {
+            @if (feature.enabled) {
+              <div [@fadeInOut] class="bg-white dark:!bg-slate-800 flex min-h-[380px] flex-col overflow-hidden rounded-2xl
                                          shadow transition-colors duration-500 hover:!bg-white/55 dark:hover:!bg-slate-800/75">
-                  <div class="flex flex-col p-6">
-                    <!-- Head -->
-                    <div class="flex items-center justify-between">
-                      <div class="rounded-full px-3 py-0.5 text-sm font-semibold bg-blue-100 text-blue-800
+                <div class="flex flex-col p-6">
+                  <!-- Head -->
+                  <div class="flex items-center justify-between">
+                    <div class="rounded-full px-3 py-0.5 text-sm font-semibold bg-blue-100 text-blue-800
                               dark:bg-blue-500 dark:text-blue-50 transition-colors duration-500">
-                        {{ tags[feature.tag_id - 1].name | translate }}
-                      </div>
-
-                      <img [ngSrc]="feature.icon_url" alt="Clank ~ Discord-Bot (Levelsystem-Icon)" height="32" width="32" class="w-6 h-6" />
+                      {{ tags[feature.tag_id - 1].name | translate }}
                     </div>
 
-                    <!-- Content -->
-                    <div class="mt-4 text-lg font-medium text-black dark:!text-white transition-colors duration-500">
-                      {{ feature.name | translate }}
-                    </div>
-                    <div class="text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-3 transition-colors duration-500"
-                         [title]="feature.desc | translate">
-                      {{ feature.desc | translate }}
-                    </div>
-                    <div class="my-6 h-1 w-16 border-t-2 dark:border-gray-700 transition-colors duration-500"></div>
-
-                    <div class="flex items-center text-sm leading-5">
-                      <fa-icon [icon]="faThumbsUp" class="me-2 text-gray-500 dark:text-gray-400 mt-0.5 transition-colors duration-500"></fa-icon>
-                      <p class="text-gray-500 dark:text-gray-400 transition-colors duration-500 mb-0 line-clamp-1">
-                        {{ 'WISHLIST_VOTES_PLACEHOLDER' | translate: { votes: feature.votes, dislikes: feature.dislikes } }}
-                      </p>
-                    </div>
-                    <div class="flex items-center text-sm leading-5">
-                      <fa-icon [icon]="faClock" class="me-2 text-gray-500 dark:text-gray-400 mt-0.5 transition-colors duration-500"></fa-icon>
-                      <p class="text-gray-500 dark:text-gray-400 mb-0 transition-colors duration-500 line-clamp-1">
-                        {{ 'WISHLIST_CREATION_PLACEHOLDER' | translate: { date: feature.created_at } }}
-                      </p>
-                    </div>
-
+                    <img [ngSrc]="feature.icon_url" alt="Clank ~ Discord-Bot (Levelsystem-Icon)" height="32" width="32" class="w-6 h-6" />
                   </div>
 
-                  <!-- Footer -->
-                  <div class="mt-auto flex w-full flex-col">
-                    <div class="relative h-0.5">
-                      <div class="absolute inset-0 w-full transition-colors duration-500"
-                      [ngClass]="feature.votes === 0 && feature.dislikes > 0 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-600'"></div>
-                      <div class="absolute z-2 inset-0 transition-colors duration-500"
-                           [style.width.%]="(feature.votes / (feature.votes + feature.dislikes)) * 100"
-                           [ngClass]="{
+                  <!-- Content -->
+                  <div class="mt-4 text-lg font-medium text-black dark:!text-white transition-colors duration-500">
+                    {{ feature.name | translate }}
+                  </div>
+                  <div class="text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-3 transition-colors duration-500"
+                       [title]="feature.desc | translate">
+                    {{ feature.desc | translate }}
+                  </div>
+                  <div class="my-6 h-1 w-16 border-t-2 dark:border-gray-700 transition-colors duration-500"></div>
+
+                  <div class="flex items-center text-sm leading-5">
+                    <fa-icon [icon]="faThumbsUp" class="me-2 text-gray-500 dark:text-gray-400 mt-0.5 transition-colors duration-500"></fa-icon>
+                    <p class="text-gray-500 dark:text-gray-400 transition-colors duration-500 mb-0 line-clamp-1">
+                      {{ 'WISHLIST_VOTES_PLACEHOLDER' | translate: { votes: feature.votes, dislikes: feature.dislikes } }}
+                    </p>
+                  </div>
+                  <div class="flex items-center text-sm leading-5">
+                    <fa-icon [icon]="faClock" class="me-2 text-gray-500 dark:text-gray-400 mt-0.5 transition-colors duration-500"></fa-icon>
+                    <p class="text-gray-500 dark:text-gray-400 mb-0 transition-colors duration-500 line-clamp-1">
+                      {{ 'WISHLIST_CREATION_PLACEHOLDER' | translate: { date: feature.created_at } }}
+                    </p>
+                  </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-auto flex w-full flex-col">
+                  <div class="relative h-0.5">
+                    <div class="absolute inset-0 w-full transition-colors duration-500"
+                         [ngClass]="feature.votes === 0 && feature.dislikes > 0 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-600'"></div>
+                    <div class="absolute z-2 inset-0 transition-colors duration-500"
+                         [style.width.%]="(feature.votes / (feature.votes + feature.dislikes)) * 100"
+                         [ngClass]="{
                        'bg-red-500': (feature.votes / (feature.votes + feature.dislikes)) * 100 < 25,
                        'bg-yellow-500': (feature.votes / (feature.votes + feature.dislikes)) * 100 >= 25 &&
                                         (feature.votes / (feature.votes + feature.dislikes)) * 100 < 50,
                        'bg-green-500': (feature.votes / (feature.votes + feature.dislikes)) * 100 >= 50}"></div>
-                    </div>
-                    <div class="px-6 py-3 bg-transparent flex justify-between transition-colors duration-500">
-                      @if (!this.isLoadingActive(feature.id)) {
-                        <button (click)="sendFeatureVote(feature.id, false)" [disabled]="isCooldownActive(feature.id)"
-                                [ngClass]="isCooldownActive(feature.id) ? 'cursor-not-allowed bg-gray-600' : 'cursor-pointer bg-gradient-to-r hover:bg-gradient-to-br'"
-                                type="button" class="text-white from-red-400 via-red-500 to-red-600
+                  </div>
+                  <div class="px-6 py-3 bg-transparent flex justify-between transition-colors duration-500">
+                    @if (!this.isLoadingActive(feature.id)) {
+                      <button (click)="sendFeatureVote(feature.id, false)" [disabled]="isCooldownActive(feature.id)"
+                              [ngClass]="isCooldownActive(feature.id) ? 'cursor-not-allowed bg-gray-600' : 'cursor-pointer bg-gradient-to-r hover:bg-gradient-to-br'"
+                              type="button" class="text-white from-red-400 via-red-500 to-red-600
                                                      focus:ring-4 focus:outline-none focus:ring-red-300
                                                      dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg
                                                      dark:shadow-red-800/80 font-medium rounded-lg text-sm px-3 py-2.5
                                                      text-center">
-                          {{ 'WISHLIST_VOTE_BUTTON_NO' | translate }} 👎
-                        </button>
+                        {{ 'WISHLIST_VOTE_BUTTON_NO' | translate }} 👎
+                      </button>
 
-                        <button (click)="sendFeatureVote(feature.id, true)" [disabled]="isCooldownActive(feature.id)"
-                                [ngClass]="isCooldownActive(feature.id) ? 'cursor-not-allowed bg-gray-600' : 'cursor-pointer bg-gradient-to-r hover:bg-gradient-to-br'"
-                                type="button" class="text-white from-green-400 via-green-500 to-green-600
+                      <button (click)="sendFeatureVote(feature.id, true)" [disabled]="isCooldownActive(feature.id)"
+                              [ngClass]="isCooldownActive(feature.id) ? 'cursor-not-allowed bg-gray-600' : 'cursor-pointer bg-gradient-to-r hover:bg-gradient-to-br'"
+                              type="button" class="text-white from-green-400 via-green-500 to-green-600
                                                      focus:ring-4 focus:outline-none focus:ring-green-300
                                                      dark:focus:ring-green-800 shadow-lg shadow-green-500/50
                                                      dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg
                                                      text-sm px-3 py-2.5 text-center">
-                          👍{{ 'WISHLIST_VOTE_BUTTON_YES' | translate }}
-                        </button>
+                        👍{{ 'WISHLIST_VOTE_BUTTON_YES' | translate }}
+                      </button>
 
-                      } @else {
-                        <div class="flex items-center justify-center w-full">
-                          <img ngSrc="assets/img/icons/sidebar/loading.svg" alt="Clank ~ Discord-Bot (Loading-Icon)"
-                               class="h-10 w-10" height="40" width="40">
-                        </div>
-                      }
-                    </div>
+                    } @else {
+                      <div class="flex items-center justify-center w-full">
+                        <img ngSrc="assets/img/icons/sidebar/loading.svg" alt="Clank ~ Discord-Bot (Loading-Icon)"
+                             class="h-10 w-10" height="40" width="40">
+                      </div>
+                    }
                   </div>
                 </div>
-              }
+              </div>
             }
-          </div>
+          }
         </div>
       </div>
-    </section>
-  </div>
-</div>
+    </div>
+  </section>
+
+</dashboard-layout>

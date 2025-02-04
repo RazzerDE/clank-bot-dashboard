@@ -15,8 +15,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
 import {Subscription} from "rxjs";
-import {HeaderComponent} from "../../../../structure/header/header.component";
-import {SidebarComponent} from "../../../../structure/sidebar/sidebar.component";
 import {
   CooldownFeatures,
   Feature,
@@ -28,19 +26,19 @@ import {
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ApiService} from "../../../../services/api/api.service";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
+import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 
 @Component({
     selector: 'app-wishlist',
   imports: [
-    HeaderComponent,
     ReactiveFormsModule,
-    SidebarComponent,
     NgClass,
     TranslatePipe,
     FaIconComponent,
     NgOptimizedImage,
     RouterLink,
-    PageThumbComponent
+    PageThumbComponent,
+    DashboardLayoutComponent
   ],
     templateUrl: './wishlist.component.html',
     styleUrl: './wishlist.component.scss',

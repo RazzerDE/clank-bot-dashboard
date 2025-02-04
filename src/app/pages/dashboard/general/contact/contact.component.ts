@@ -10,23 +10,21 @@ import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import {Subscription} from "rxjs";
-import {HeaderComponent} from "../../../../structure/header/header.component";
-import {SidebarComponent} from "../../../../structure/sidebar/sidebar.component";
 import {bug_steps, CurrentStep, FormStep, idea_steps, WizardStep} from "../../../../services/types/Forms";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ApiService} from "../../../../services/api/api.service";
+import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 
 @Component({
     selector: 'app-contact',
-    imports: [
-        HeaderComponent,
-        SidebarComponent,
-        NgClass,
-        FaIconComponent,
-        RouterLink,
-        ReactiveFormsModule,
-        TranslatePipe
-    ],
+  imports: [
+    NgClass,
+    FaIconComponent,
+    RouterLink,
+    ReactiveFormsModule,
+    TranslatePipe,
+    DashboardLayoutComponent
+  ],
     templateUrl: './contact.component.html',
     styleUrl: './contact.component.scss',
     animations: [

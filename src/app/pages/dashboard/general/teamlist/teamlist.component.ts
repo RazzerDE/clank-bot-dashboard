@@ -1,19 +1,15 @@
 import { Component } from '@angular/core';
-import {HeaderComponent} from "../../../../structure/header/header.component";
-import {SidebarComponent} from "../../../../structure/sidebar/sidebar.component";
-import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
+import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 
 @Component({
   selector: 'app-teamlist',
   imports: [
-    HeaderComponent,
-    SidebarComponent,
-    NgClass,
     TranslatePipe,
-    PageThumbComponent
+    PageThumbComponent,
+    DashboardLayoutComponent
   ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'

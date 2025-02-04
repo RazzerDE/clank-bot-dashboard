@@ -1,254 +1,238 @@
-<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500">
+<dashboard-layout>
 
-  @if (this.dataService.showMobileSidebar) {
-    <!-- Backdrop for mobile -->
-    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
-  }
+  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
-  <!-- Hide sidebar on mobile devices; only show after button click -->
-  <div [ngClass]="['fixed xl:static z-[100] h-screen transition-transform duration-300',
-                    dataService.showMobileSidebar ? 'translate-x-0' : '-translate-x-full xl:translate-x-0']">
-    <app-sidebar></app-sidebar>
-  </div>
+    @if (!localStorage.getItem('active_guild')) {
+      <!-- Page for Pick Server -->
+      <div class="w-full h-full flex items-center justify-center flex-col z-1">
+        <img ngSrc="assets/img/bg/nightly.png" alt="Clank ~ Discord-Bot (Server Pick Background)"
+             height="2033" width="2908" class="w-1/3 h-auto drop-shadow-2xl mb-10 animate-float" priority />
 
-  <!-- Page Content -->
-  <div class="flex w-full min-w-0 flex-auto flex-col">
-    <app-header></app-header>
-
-    <!-- Body -->
-    <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
-
-      @if (!localStorage.getItem('active_guild')) {
-        <!-- Page for Pick Server -->
-        <div class="w-full h-full flex items-center justify-center flex-col z-1">
-          <img ngSrc="assets/img/bg/nightly.png" alt="Clank ~ Discord-Bot (Server Pick Background)"
-               height="2033" width="2908" class="w-1/3 h-auto drop-shadow-2xl mb-10 animate-float" priority />
-
-          <div class="text-black dark:!text-white text-center text-4xl font-extrabold leading-tight tracking-tight
+        <div class="text-black dark:!text-white text-center text-4xl font-extrabold leading-tight tracking-tight
                 md:text-5xl md:leading-none">{{ 'PLACEHOLDER_PICK_SERVER_TITLE' | translate }}</div>
-          <div class="text-slate-500 mt-2 text-center text-lg font-medium tracking-tight md:text-xl"
-               [innerHTML]="'PLACEHOLDER_PICK_SERVER_DESC' | translate">
-          </div>
+        <div class="text-slate-500 mt-2 text-center text-lg font-medium tracking-tight md:text-xl"
+             [innerHTML]="'PLACEHOLDER_PICK_SERVER_DESC' | translate">
         </div>
-      } @else {
-        <div class="flex flex-col h-full w-full">
-          <!-- Login Notice -->
-          <div class="bg-gray-50 dark:!bg-gray-800 transition-colors duration-500">
-            <div class="ml-6 sm:ml-14 flex w-full flex-col px-6 sm:px-8">
-              <div class="my-8 flex flex-auto flex-col w-11/12 sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0">
-                <div class="flex flex-auto items-center animate__animated animate__fadeIn">
-                  @if (this.dataService.profile) {
-                    <div class="h-16 w-16 flex-0 overflow-hidden rounded-full">
+      </div>
+    } @else {
+      <div class="flex flex-col h-full w-full">
+        <!-- Login Notice -->
+        <div class="bg-gray-50 dark:!bg-gray-800 transition-colors duration-500">
+          <div class="ml-6 sm:ml-14 flex w-full flex-col px-6 sm:px-8">
+            <div class="my-8 flex flex-auto flex-col w-11/12 sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0">
+              <div class="flex flex-auto items-center animate__animated animate__fadeIn">
+                @if (this.dataService.profile) {
+                  <div class="h-16 w-16 flex-0 overflow-hidden rounded-full">
 
-                      @if (this.dataService.profile.avatar) {
-                        <img
-                          ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile.id}}/{{this.dataService.profile.avatar}}{{this.dataService.profile.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
-                          class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
-                          height="64">
-                      } @else {
-                        <img ngSrc="https://cdn.discordapp.com/embed/avatars/{{ Math.floor(Math.random() * 6) }}.png"
-                             class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
-                             height="64">
-                      }
-                    </div>
+                    @if (this.dataService.profile.avatar) {
+                      <img
+                        ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile.id}}/{{this.dataService.profile.avatar}}{{this.dataService.profile.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
+                        class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
+                        height="64">
+                    } @else {
+                      <img ngSrc="https://cdn.discordapp.com/embed/avatars/{{ Math.floor(Math.random() * 6) }}.png"
+                           class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
+                           height="64">
+                    }
+                  </div>
 
-                    <div class="ml-4 flex min-w-0 flex-col">
-                      <div class="text-dark dark:!text-white truncate text-xl font-semibold leading-7
+                  <div class="ml-4 flex min-w-0 flex-col">
+                    <div class="text-dark dark:!text-white truncate text-xl font-semibold leading-7
                                   tracking-tight md:text-4xl md:leading-snug transition-colors duration-500">
-                        {{ 'SECTION_LOGIN_NOTICE_TITLE' | translate }},
-                        <span class="bg-gradient-to-r from-[#FF5F6D] to-[#FFC371] bg-clip-text text-transparent
+                      {{ 'SECTION_LOGIN_NOTICE_TITLE' | translate }},
+                      <span class="bg-gradient-to-r from-[#FF5F6D] to-[#FFC371] bg-clip-text text-transparent
                                      capitalize inline-block">
                         {{ this.dataService.profile.username }}
                         </span>! 👋
-                      </div>
-                      <div class="flex items-center">
-                        <fa-icon [icon]="faTruckMedical" class="text-gray-500"></fa-icon>
-                        <div class="text-gray-500 ml-1.5 leading-6">{{'SECTION_LOGIN_NOTICE_DESC' | translate }}
-                          <a href="https://discord.gg/bl4cklist" target="_blank"
-                             class="text-gray-500 hover:!text-gray-800 dark:hover:!text-gray-300">
-                            Support-Team</a>.
-                        </div>
+                    </div>
+                    <div class="flex items-center">
+                      <fa-icon [icon]="faTruckMedical" class="text-gray-500"></fa-icon>
+                      <div class="text-gray-500 ml-1.5 leading-6">{{'SECTION_LOGIN_NOTICE_DESC' | translate }}
+                        <a href="https://discord.gg/bl4cklist" target="_blank"
+                           class="text-gray-500 hover:!text-gray-800 dark:hover:!text-gray-300">
+                          Support-Team</a>.
                       </div>
                     </div>
-                  }
-                </div>
+                  </div>
+                }
+              </div>
 
-                <a href="discord://" class="mx-auto sm:mx-0">
-                  <button type="button" class="text-white bg-gradient-to-r from-purple-500 via-purple-600
+              <a href="discord://" class="mx-auto sm:mx-0">
+                <button type="button" class="text-white bg-gradient-to-r from-purple-500 via-purple-600
                                            to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none
                                            focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg
                                            shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80
                                            font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2">
-                    <fa-icon [icon]="faDiscord" class="me-2"></fa-icon>
-                    {{ 'SECTION_LOGIN_NOTICE_BUTTON' | translate }}
-                  </button>
-                </a>
-              </div>
+                  <fa-icon [icon]="faDiscord" class="me-2"></fa-icon>
+                  {{ 'SECTION_LOGIN_NOTICE_BUTTON' | translate }}
+                </button>
+              </a>
             </div>
           </div>
+        </div>
 
-          <!-- Main Content -->
-          <div class="w-full p-4 overflow-auto h-[calc(100vh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
-            <div class="grid grid-cols-5 gap-4 h-full">
-              <div class="col-span-3 grid grid-rows-2 gap-4 min-h-0">
-                <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col transition-colors
+        <!-- Main Content -->
+        <div class="w-full p-4 overflow-auto h-[calc(100vh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
+          <div class="grid grid-cols-5 gap-4 h-full">
+            <div class="col-span-3 grid grid-rows-2 gap-4 min-h-0">
+              <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col transition-colors
                             duration-500">
-                  <div class="p-4 pb-0">
+                <div class="p-4 pb-0">
                     <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                       {{ 'SECTION_BOT_SETUP_TITLE' | translate }}
                     </span>
 
-                    <!-- Task List -->
-                    <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv
-                         [style.height.px]="welcomeContainer.clientHeight - 80">
-                      @for (task of tasks; track task.id) {
-                        <div
-                          class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
-                          <button (click)="toggleTask(task.id);"
-                                  class="flex items-center w-full p-3 py-2.5 text-left hover:bg-gray-100
+                  <!-- Task List -->
+                  <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv
+                       [style.height.px]="welcomeContainer.clientHeight - 80">
+                    @for (task of tasks; track task.id) {
+                      <div
+                        class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
+                        <button (click)="toggleTask(task.id);"
+                                class="flex items-center w-full p-3 py-2.5 text-left hover:bg-gray-100
                                        dark:hover:bg-slate-700/70 transition-colors">
-                            @if (task.finished) {
-                              <img ngSrc="assets/img/icons/check.png" class="w-5 h-5" height="64" width="64"
-                                   alt="Clank ~ Discord-Bot (Check Icon)"/>
-                            } @else if (isInProgress(task.subtasks)) {
-                              <img ngSrc="assets/img/icons/info.png" class="w-6 h-6 -ml-0.5" height="64" width="64"
-                                   alt="Clank ~ Discord-Bot (Info Icon)"/>
-                            } @else {
-                              <img ngSrc="assets/img/icons/deny.png" class="w-5 h-5" height="64" width="64"
-                                   alt="Clank ~ Discord-Bot (Deny Icon)"/>
-                            }
-                            <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90
+                          @if (task.finished) {
+                            <img ngSrc="assets/img/icons/check.png" class="w-5 h-5" height="64" width="64"
+                                 alt="Clank ~ Discord-Bot (Check Icon)"/>
+                          } @else if (isInProgress(task.subtasks)) {
+                            <img ngSrc="assets/img/icons/info.png" class="w-6 h-6 -ml-0.5" height="64" width="64"
+                                 alt="Clank ~ Discord-Bot (Info Icon)"/>
+                          } @else {
+                            <img ngSrc="assets/img/icons/deny.png" class="w-5 h-5" height="64" width="64"
+                                 alt="Clank ~ Discord-Bot (Deny Icon)"/>
+                          }
+                          <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90
                                          transition-colors duration-500">{{ task.title | translate }}</span>
-                            <fa-icon [icon]="faChevronRight"
-                                     [class]="'h-5 text-gray-400 transition-transform duration-300 ' +
+                          <fa-icon [icon]="faChevronRight"
+                                   [class]="'h-5 text-gray-400 transition-transform duration-300 ' +
                               (expandedTasks.includes(task.id) ? 'rotate-90' : '')"></fa-icon>
-                          </button>
+                        </button>
 
-                          <!-- Subtasks -->
-                          @if (expandedTasks.includes(task.id)) {
-                            <div class="space-y-1" [@expandCollapse]>
-                              @for (subtask of task.subtasks; track $index) {
-                                <div class="flex items-center w-full p-3 py-2 text-left border-t border-gray-300
+                        <!-- Subtasks -->
+                        @if (expandedTasks.includes(task.id)) {
+                          <div class="space-y-1" [@expandCollapse]>
+                            @for (subtask of task.subtasks; track $index) {
+                              <div class="flex items-center w-full p-3 py-2 text-left border-t border-gray-300
                                           dark:!border-gray-700 transition-colors duration-500">
-                                  @if (subtask.id === 2.2) {
-                                    <img ngSrc="assets/img/icons/info.png" class="w-5 h-5 ml-[30px]" height="64" width="64"
-                                         alt="Clank ~ Discord-Bot (Info Icon)"/>
-                                  } @else if (subtask.finished) {
-                                    <img ngSrc="assets/img/icons/check.png" class="w-4 h-4 ml-8" height="64" width="64"
-                                         alt="Clank ~ Discord-Bot (Check Icon)"/>
-                                  } @else {
-                                    <img ngSrc="assets/img/icons/deny.png" class="w-4 h-4 ml-8" height="64" width="64"
-                                         alt="Clank ~ Discord-Bot (Deny Icon)"/>
-                                  }
-                                  <a [routerLink]="subtask.redirect_url">
+                                @if (subtask.id === 2.2) {
+                                  <img ngSrc="assets/img/icons/info.png" class="w-5 h-5 ml-[30px]" height="64" width="64"
+                                       alt="Clank ~ Discord-Bot (Info Icon)"/>
+                                } @else if (subtask.finished) {
+                                  <img ngSrc="assets/img/icons/check.png" class="w-4 h-4 ml-8" height="64" width="64"
+                                       alt="Clank ~ Discord-Bot (Check Icon)"/>
+                                } @else {
+                                  <img ngSrc="assets/img/icons/deny.png" class="w-4 h-4 ml-8" height="64" width="64"
+                                       alt="Clank ~ Discord-Bot (Deny Icon)"/>
+                                }
+                                <a [routerLink]="subtask.redirect_url">
                                     <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90 text-sm
                                                  hover:text-gray-400 dark:hover:!text-gray-300 transition-colors duration-300">
                                       {{ subtask.name | translate }}
                                     </span>
-                                  </a>
-                                </div>
-                              }
-                            </div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  </div>
-
-                  <!-- Progress Bar -->
-                  <div class="mt-auto h-1 w-full rounded-full transition-all duration-300"
-                       [ngClass]="{'bg-red-500': (completedTasks / totalTasks * 100) < 25,
-                                 'bg-green-500': (completedTasks / totalTasks * 100) >= 50,
-                                 'bg-orange-500': (completedTasks / totalTasks * 100) >= 25 && (completedTasks / totalTasks * 100) < 50,
-                               }"
-                       [style.width]="(completedTasks / totalTasks * 100) + '%'">
+                                </a>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
                 </div>
 
-                <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col"
-                     #welcomeContainer>
-                  <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">
-                    {{ 'SECTION_WELCOME_DASHBOARD_TITLE' | translate }}
-                  </h4>
+                <!-- Progress Bar -->
+                <div class="mt-auto h-1 w-full rounded-full transition-all duration-300"
+                     [ngClass]="{'bg-red-500': (completedTasks / totalTasks * 100) < 25,
+                                 'bg-green-500': (completedTasks / totalTasks * 100) >= 50,
+                                 'bg-orange-500': (completedTasks / totalTasks * 100) >= 25 && (completedTasks / totalTasks * 100) < 50,
+                               }"
+                     [style.width]="(completedTasks / totalTasks * 100) + '%'">
+                </div>
+              </div>
 
-                  <div class="overflow-y-auto" [style.height.px]="welcomeContainer.clientHeight - 80">
+              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col"
+                   #welcomeContainer>
+                <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">
+                  {{ 'SECTION_WELCOME_DASHBOARD_TITLE' | translate }}
+                </h4>
+
+                <div class="overflow-y-auto" [style.height.px]="welcomeContainer.clientHeight - 80">
                   <p class="text-gray-500 dark:!text-gray-400/90 transition-colors duration-500">
                     {{ 'SECTION_WELCOME_DASHBOARD_DESC' | translate }}
                   </p>
                   <p class="text-gray-500 dark:!text-gray-400/90 mt-auto mb-0 transition-colors duration-500">
                     {{ 'SECTION_WELCOME_DASHBOARD_OUTRO' | translate }}
                   </p>
-                  </div>
                 </div>
               </div>
+            </div>
 
-              <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4 min-h-0">
-                <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors
+            <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4 min-h-0">
+              <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors
                             duration-500 flex flex-col h-[calc(100dvh-280px)]" #serverlistContainer>
                   <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                     {{ 'SECTION_SERVERLIST_TITLE' | translate }}
                   </span>
 
-                    @if (this.servers.length > 0) {
-                      <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
-                        <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
+                @if (this.servers.length > 0) {
+                  <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
+                    <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
+                      <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
                                     sticky top-0 transition-colors duration-500">
-                        <tr>
-                          <th scope="col" class="px-6 py-3">
-                            Server-Name
-                          </th>
-                          <th scope="col" class="px-6 py-3">
-                            {{ 'SECTION_SERVERLIST_TABLE_MEMBERS' | translate }}
-                          </th>
-                          <th scope="col" class="px-6 py-3">
-                            {{ 'SECTION_SERVERLIST_TABLE_ACTION' | translate }}
-                          </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                          @for (server of this.servers; track $index) {
-                            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800
+                      <tr>
+                        <th scope="col" class="px-6 py-3">
+                          Server-Name
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          {{ 'SECTION_SERVERLIST_TABLE_MEMBERS' | translate }}
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          {{ 'SECTION_SERVERLIST_TABLE_ACTION' | translate }}
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @for (server of this.servers; track $index) {
+                          <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800
                                      border-b dark:border-gray-700 transition-colors duration-500">
-                              <th scope="row"
-                                  class="px-6 py-4 font-medium text-gray-900 dark:text-white w-1/3 transition-colors duration-500">
-                                <img ngSrc="{{server.image_url}}" class="inline-block mr-2 mb-0.5 rounded-full" width="20"
-                                     height="20"
-                                     alt="Clank ~ Discord-Bot ({{server.guild_name}} Icon)"/>{{ server.guild_name }}
-                              </th>
-                              <td class="px-6 py-4">
-                                {{ Intl.NumberFormat('de-DE').format(server.member_count) }}
-                              </td>
-                              <td class="px-6 py-4">
-                                <a href="{{server.guild_invite}}" target="_blank"
-                                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                  {{ 'SECTION_SERVERLIST_TABLE_INVITE' | translate }}
-                                </a>
-                              </td>
-                            </tr>
-                          }
-                        </tbody>
-                      </table>
-                      </div>
-                    } @else {
-                      <!-- show error message -->
-                      <div class="flex items-center justify-center h-full w-full flex-col">
-                        <h4 class="text-black dark:!text-white text-center transition-colors duration-500 mb-2">
-                          {{ 'SECTION_SERVERLIST_EMPTY_TITLE' | translate }}
-                        </h4>
-                        <p class="text-gray-500 dark:!text-gray-400/90 text-center transition-colors duration-500">
-                          {{ 'SECTION_SERVERLIST_EMPTY_DESC' | translate }}
-                        </p>
-                      </div>
+                            <th scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 dark:text-white w-1/3 transition-colors duration-500">
+                              <img ngSrc="{{server.image_url}}" class="inline-block mr-2 mb-0.5 rounded-full" width="20"
+                                   height="20"
+                                   alt="Clank ~ Discord-Bot ({{server.guild_name}} Icon)"/>{{ server.guild_name }}
+                            </th>
+                            <td class="px-6 py-4">
+                              {{ Intl.NumberFormat('de-DE').format(server.member_count) }}
+                            </td>
+                            <td class="px-6 py-4">
+                              <a href="{{server.guild_invite}}" target="_blank"
+                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                {{ 'SECTION_SERVERLIST_TABLE_INVITE' | translate }}
+                              </a>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                } @else {
+                  <!-- show error message -->
+                  <div class="flex items-center justify-center h-full w-full flex-col">
+                    <h4 class="text-black dark:!text-white text-center transition-colors duration-500 mb-2">
+                      {{ 'SECTION_SERVERLIST_EMPTY_TITLE' | translate }}
+                    </h4>
+                    <p class="text-gray-500 dark:!text-gray-400/90 text-center transition-colors duration-500">
+                      {{ 'SECTION_SERVERLIST_EMPTY_DESC' | translate }}
+                    </p>
+                  </div>
 
-                    }
-                </div>
+                }
               </div>
-
             </div>
+
           </div>
         </div>
-      }
-    </section>
-  </div>
-</div>
+      </div>
+    }
+  </section>
+
+</dashboard-layout>

@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../services/data/data-holder.service";
-import {SidebarComponent} from "../../structure/sidebar/sidebar.component";
-import {HeaderComponent} from "../../structure/header/header.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -15,10 +13,11 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {RouterLink} from "@angular/router";
 import {forkJoin, Subscription} from "rxjs";
 import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
+import {DashboardLayoutComponent} from "../../structure/dashboard-layout/dashboard-layout.component";
 
 @Component({
     selector: 'app-dashboard',
-    imports: [SidebarComponent, HeaderComponent, NgClass, NgOptimizedImage, TranslatePipe, FaIconComponent, RouterLink],
+  imports: [NgClass, NgOptimizedImage, TranslatePipe, FaIconComponent, RouterLink, DashboardLayoutComponent],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
     animations: [
