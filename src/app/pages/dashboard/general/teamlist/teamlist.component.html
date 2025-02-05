@@ -3,15 +3,170 @@
     <!-- Body -->
     <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
+      <!-- Backdrop for Role Modal -->
+      <div class="fixed hidden inset-0 bg-black bg-opacity-25 z-50" aria-hidden="true" #roleBackdrop></div>
+
       <!-- Page Thumb -->
       <page-thumb [subtitle]="'PAGE_TEAMLIST_SUBTITLE' | translate" [title]="'PAGE_TEAMLIST_TITLE' | translate"
                   [color]="'red'" [desc]="'PAGE_TEAMLIST_DESC' | translate"></page-thumb>
 
-      <div class="flex-1 m-4">
-        <div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md h-full transition-colors duration-500">
-          <!-- Hier kommt später der scrollbare Inhalt rein -->
+      <div class="flex-1 my-4">
+          <div class="p-3 sm:p-5">
+            <div class="mx-auto max-w-screen-2xl max-h-full px-4 lg:!px-0">
+              <div class="bg-white dark:!bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden transition-colors duration-300">
+
+                <!-- Table Buttons -->
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                  <div class="w-full md:w-1/2">
+                    <div class="flex-1 ml-4 lg:ml-0 ">
+                      <div class="relative self-center">
+                        <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                        <input type="text" [placeholder]="'Nach Rolle/User suchen.. 🤔'"
+                               class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+                            dark:!border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-700 transition-colors duration-500" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+
+                    <!-- Add Role Button -->
+                    <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-red-700
+                                               via-red-600 to-red-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                               focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br"
+                            (click)="roleModal.classList.remove('hidden'); roleBackdrop.classList.remove('hidden')">
+                      <fa-icon [icon]="faPlus" class="me-2"></fa-icon>
+                      Rolle hinzufügen
+                    </button>
+
+                    <!-- Role Modal -->
+                    <div tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed z-50 justify-center items-center
+                                              w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal>
+                      <div class="relative p-4 w-full max-w-md max-h-full -left-16 md:left-0 xl:left-[45%] mx-auto xl:!mx-0 top-1/2 -translate-y-1/2">
+                        <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700">
+                          <!-- Modal header -->
+                          <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                            <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+                              📚 - Rolle hinzufügen
+                            </p>
+                            <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
+                                                       hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex
+                                                         justify-center items-center dark:hover:!bg-gray-600
+                                                         dark:hover:text-white"
+                                    (click)="roleModal.classList.add('hidden'); roleBackdrop.classList.add('hidden')">
+                              <fa-icon [icon]="faXmark" size="lg"></fa-icon>
+                              <span class="sr-only">Close modal</span>
+                            </button>
+                          </div>
+
+                          <!-- Modal body -->
+                          <div class="p-4 md:p-5">
+                            <form class="space-y-4" action="#">
+                                <input type="text" name="rolepick" class="bg-gray-50 border border-gray-300
+                                text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block
+                                w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400
+                                dark:text-white" placeholder="👥 - Wähle eine Discord-Rolle aus.." required />
+                              <div>
+                                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Support-Level wählen</label>
+                                <!-- TODO: 3 tabs with levels -->
+                              </div>
+
+                              <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800
+                              focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm
+                              px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
+                              dark:focus:ring-blue-800">Änderungen speichern</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <!-- Filter Button -->
+                    <div class="flex items-center space-x-3 w-full md:w-auto relative">
+                      <button type="button" (click)="filterDropdown.classList.toggle('hidden')"
+                              class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium
+                                   text-gray-900 focus:outline-none rounded-lg border border-gray-300
+                                   hover:bg-gray-900/5 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200
+                                   dark:focus:ring-gray-700 dark:text-gray-400 dark:!border-gray-600
+                                   dark:hover:text-white dark:hover:bg-gray-900/25 transition-colors duration-300">
+                        Support-Level
+                        <fa-icon [icon]="faChevronDown" class="ms-2"></fa-icon>
+                      </button>
+
+                      <!-- Filter Dropdown -->
+                      <div class="absolute top-full -left-6 mt-2 z-10 w-full md:w-48 p-3 bg-white rounded-lg shadow
+                                  hidden dark:!bg-gray-700" #filterDropdown>
+                        <ul class="space-y-2 text-sm">
+                          <!-- Build temporary list to avoid redudant code -->
+                          @for (item of [].constructor(3); track $index) {
+                            <li class="flex items-center">
+                              <input id="{{$index}}_level" type="checkbox" checked
+                                     class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600
+                                   focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700
+                                   focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                              <label for="{{$index}}_level" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                                     [innerText]="$index == 0 ? '🚑 ~ First Level' : $index == 1 ? '🚔 ~ Second Level' : '🚨 ~ Third Level'">
+                              </label>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th scope="col" class="px-4 py-3">Product name</th>
+                      <th scope="col" class="px-4 py-3">Category</th>
+                      <th scope="col" class="px-4 py-3">Brand</th>
+                      <th scope="col" class="px-4 py-3">Description</th>
+                      <th scope="col" class="px-4 py-3">Price</th>
+                      <th scope="col" class="px-4 py-3">
+                        <span class="sr-only">Actions</span>
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b dark:border-gray-700">
+                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple iMac 27&#34;</th>
+                      <td class="px-4 py-3">PC</td>
+                      <td class="px-4 py-3">Apple</td>
+                      <td class="px-4 py-3">300</td>
+                      <td class="px-4 py-3">$2999</td>
+                      <td class="px-4 py-3 flex items-center justify-end">
+                        <button id="apple-imac-27-dropdown-button" data-dropdown-toggle="apple-imac-27-dropdown" class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" type="button">
+                          <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+                        <div id="apple-imac-27-dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                          <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="apple-imac-27-dropdown-button">
+                            <li>
+                              <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
+                            </li>
+                            <li>
+                              <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                            </li>
+                          </ul>
+                          <div class="py-1">
+                            <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
 
     </section>
 
