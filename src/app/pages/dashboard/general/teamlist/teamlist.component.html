@@ -45,35 +45,65 @@
                         <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700">
                           <!-- Modal header -->
                           <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                            <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
-                              📚 - Rolle hinzufügen
-                            </p>
+                            <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">📚 - Rolle hinzufügen</p>
                             <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
                                                        hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex
                                                          justify-center items-center dark:hover:!bg-gray-600
                                                          dark:hover:text-white"
                                     (click)="roleModal.classList.add('hidden'); roleBackdrop.classList.add('hidden')">
                               <fa-icon [icon]="faXmark" size="lg"></fa-icon>
-                              <span class="sr-only">Close modal</span>
                             </button>
                           </div>
 
                           <!-- Modal body -->
                           <div class="p-4 md:p-5">
-                            <form class="space-y-4" action="#">
-                                <input type="text" name="rolepick" class="bg-gray-50 border border-gray-300
-                                text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block
-                                w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400
-                                dark:text-white" placeholder="👥 - Wähle eine Discord-Rolle aus.." required />
+                            <form class="space-y-4 flex flex-col">
+
+                              <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">Welche Rolle möchtest du hinzufügen?</label>
+                              <div class="relative">
+                                <select #rolePicker id="rolepicker"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                      focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                                      dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white appearance-none
+                                      dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-500
+                                      cursor-pointer">
+                                  <option selected="" disabled>👥 - Wähle eine Discord-Rolle aus..</option>
+                                  <option value="roleid">CREW-ADMIN</option> <!-- TODO: Fetch roles from Discord API -->
+                                </select>
+                                <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2
+                                                                     text-gray-500 dark:text-gray-300 cursor-pointer"
+                                         (click)="rolePicker.showPicker()"></fa-icon>
+                              </div>
+
+                              <hr class="mt-4 w-11/12 self-center">
                               <div>
-                                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Support-Level wählen</label>
-                                <!-- TODO: 3 tabs with levels -->
+                                <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Support-Level wählen</label>
+                                <div class="w-full">
+                                  <div class="relative right-0">
+                                    <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
+                                      @for (item of [].constructor(3); track $index) {
+                                        <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
+                                                 dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
+                                                 dark:hover:bg-gray-600/30" (click)="activeTab = $index"
+                                            [class.!bg-blue-400]="activeTab == $index"
+                                            [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
+                                          <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
+                                                    transition-all ease-in-out rounded-md cursor-pointer bg-inherit
+                                                    text-gray-900 dark:text-white duration-300"
+                                             [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
+                                             [innerText]="$index == 0 ? '🚑 Helfer' : $index == 1 ? '🚔 Moderator' : '🚨 Admin'">
+                                          </a>
+                                        </li>
+                                      }
+                                    </ul>
+                                  </div>
+                                </div>
                               </div>
 
                               <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800
                               focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm
-                              px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
-                              dark:focus:ring-blue-800">Änderungen speichern</button>
+                              px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:!bg-blue-700 transition-colors
+                              duration-100 dark:focus:ring-blue-800">Änderungen speichern</button>
                             </form>
                           </div>
                         </div>

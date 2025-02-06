@@ -29,7 +29,7 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 
 @Component({
-    selector: 'app-wishlist',
+  selector: 'app-wishlist',
   imports: [
     ReactiveFormsModule,
     NgClass,

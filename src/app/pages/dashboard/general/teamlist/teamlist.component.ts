@@ -4,30 +4,31 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faFilter, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-teamlist',
-    imports: [
-        TranslatePipe,
-        PageThumbComponent,
-        DashboardLayoutComponent,
-        FaIconComponent
-    ],
+  imports: [
+      TranslatePipe,
+      PageThumbComponent,
+      DashboardLayoutComponent,
+      FaIconComponent,
+      NgClass
+  ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'
 })
 export class TeamlistComponent {
+  protected activeTab: number = 0;
+  protected readonly faSearch: IconDefinition = faSearch;
+  protected readonly faPlus: IconDefinition = faPlus;
+  protected readonly faChevronDown: IconDefinition = faChevronDown;
+  protected readonly faXmark: IconDefinition = faXmark;
 
   constructor(protected dataService: DataHolderService) {
     this.dataService.isLoading = false;
   }
-
-  protected readonly faSearch = faSearch;
-  protected readonly faPlus = faPlus;
-  protected readonly faFilter = faFilter;
-  protected readonly faChevronDown = faChevronDown;
-  protected readonly faXmark = faXmark;
 }
