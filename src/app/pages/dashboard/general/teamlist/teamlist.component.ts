@@ -7,16 +7,17 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
-import {NgClass} from "@angular/common";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-teamlist',
   imports: [
-      TranslatePipe,
-      PageThumbComponent,
-      DashboardLayoutComponent,
-      FaIconComponent,
-      NgClass
+    TranslatePipe,
+    PageThumbComponent,
+    DashboardLayoutComponent,
+    FaIconComponent,
+    NgClass,
+    NgOptimizedImage
   ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'

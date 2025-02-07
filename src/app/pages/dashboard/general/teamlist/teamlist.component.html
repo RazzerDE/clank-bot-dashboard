@@ -20,6 +20,7 @@
                   <div class="w-full md:w-1/2">
                     <div class="flex-1 ml-4 lg:ml-0 ">
                       <div class="relative self-center">
+                        <!-- TODO: Search functionality -->
                         <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
                         <input type="text" [placeholder]="'Nach Rolle/User suchen.. 🤔'"
                                class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
@@ -104,6 +105,7 @@
                               focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm
                               px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:!bg-blue-700 transition-colors
                               duration-100 dark:focus:ring-blue-800">Änderungen speichern</button>
+                              <!-- TODO: Add role functionality -->
                             </form>
                           </div>
                         </div>
@@ -120,6 +122,7 @@
                                    dark:focus:ring-gray-700 dark:text-gray-400 dark:!border-gray-600
                                    dark:hover:text-white dark:hover:bg-gray-900/25 transition-colors duration-300">
                         Support-Level
+                        <!-- TODO: Filter by support level -->
                         <fa-icon [icon]="faChevronDown" class="ms-2"></fa-icon>
                       </button>
 
@@ -146,46 +149,75 @@
                 </div>
 
                 <!-- Table -->
-                <div class="overflow-x-auto">
-                  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th scope="col" class="px-4 py-3">Product name</th>
-                      <th scope="col" class="px-4 py-3">Category</th>
-                      <th scope="col" class="px-4 py-3">Brand</th>
-                      <th scope="col" class="px-4 py-3">Description</th>
-                      <th scope="col" class="px-4 py-3">Price</th>
-                      <th scope="col" class="px-4 py-3">
-                        <span class="sr-only">Actions</span>
-                      </th>
-                    </tr>
+                <div class="overflow-x-auto flex flex-col max-h-[calc(100vh-30rem)]">
+                  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 transition-colors
+                                duration-300">
+                    <colgroup>
+                      <col class="w-[30%]">
+                      <col class="w-[30%]">
+                      <col class="w-[15%]">
+                      <col class="w-[10%]">
+                    </colgroup>
+
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400
+                                  transition-colors duration-300 sticky top-0">
+                      <tr>
+                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300 relative">
+                          <div class="absolute right-0 h-full w-1 top-0 cursor-col-resize"></div>
+                          ✏️ ~ Name</th>
+                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300 relative">
+                          <div class="absolute right-0 h-full w-1 top-0 cursor-col-resize"></div>
+                          🦺 ~ Support-Level</th>
+                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300 relative">
+                          <div class="absolute right-0 h-full w-1 top-0 cursor-col-resize"></div>
+                          👥 ~ Mitglieder</th>
+                        <th scope="col" class="px-4 py-3">🚀 ~ Aktion</th>
+                      </tr>
                     </thead>
-                    <tbody>
-                    <tr class="border-b dark:border-gray-700">
-                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple iMac 27&#34;</th>
-                      <td class="px-4 py-3">PC</td>
-                      <td class="px-4 py-3">Apple</td>
-                      <td class="px-4 py-3">300</td>
-                      <td class="px-4 py-3">$2999</td>
+
+                    <tbody class="overflow-y-auto">
+                    <!-- TODO: Real content + color of role names based on role -->
+                    <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
+                                             transition-colors duration-300 flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-red-500 inline-block me-1.5"></div>
+                        CREW-ADMIN
+                      </th>
+                      <td class="px-4 py-3">🚑 - First Level (Wenig Rechte)</td>
+                      <td class="px-4 py-3">3.126</td>
                       <td class="px-4 py-3 flex items-center justify-end">
-                        <button id="apple-imac-27-dropdown-button" data-dropdown-toggle="apple-imac-27-dropdown" class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" type="button">
-                          <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                          </svg>
+                        <!-- TODO: Delete action -->
+                        <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-600
+                                     rounded-full focus:outline-none dark:text-red-500 bg-gray-200 hover:bg-gray-300
+                                     dark:hover:bg-gray-600 bg-opacity-40 dark:bg-gray-700 transition-colors duration-300" type="button">
+                          <fa-icon [icon]="faXmark" size="xl"></fa-icon>
                         </button>
-                        <div id="apple-imac-27-dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                          <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="apple-imac-27-dropdown-button">
-                            <li>
-                              <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
-                            </li>
-                            <li>
-                              <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
-                            </li>
-                          </ul>
-                          <div class="py-1">
-                            <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
-                          </div>
-                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- TODO: Show members of role -->
+                    <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                      <th scope="row" class="pl-11 pr-4 py-3 font-medium text-gray-900 whitespace-nowrap
+                                             transition-colors duration-300">
+                        <a href="https://discord.com/users/327176944640720906" target="_blank"
+                           class="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                          <img width="20" height="20" class="w-5 h-5 rounded-full bg-red-500 inline-block me-1.5"
+                               ngSrc="https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=128"
+                               alt="Clank ~ Discord-Bot (User-Avatar)"/>
+                          yannicde
+                        </a>
+                      </th>
+                      <td class="px-4 py-3">Besitzt diese Rolle</td>
+                      <td class="px-4 py-3"></td>
+                      <td class="px-4 py-3 flex items-center justify-end">
+                        <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-600
+                                     rounded-full focus:outline-none dark:text-red-500 bg-gray-200 hover:bg-gray-300
+                                     dark:hover:bg-gray-600 bg-opacity-40 dark:bg-gray-700 transition-colors duration-300" type="button">
+                          <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+                        </button>
                       </td>
                     </tr>
                     </tbody>
