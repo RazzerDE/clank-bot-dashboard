@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
-import {Guild} from "../types/discord/Guilds";
+import {Guild, Role} from "../types/discord/Guilds";
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +53,16 @@ export class ComService {
     return this.http.get<Guild[]>(`${config.api_url}/guilds`, { headers: this.authService.headers });
   }
 
+  /**
+   * Retrieves the team roles for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the team roles for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to fetch team roles for.
+   * @returns {Promise<Observable<Role[]>>} A promise that resolves to an observable of the list of team roles.
+   */
   async getTeamRoles(guild_id: string): Promise<Observable<any>> {
-    return this.http.get<any>(`${config.api_url}/guilds/team?guild_id=${guild_id}`, { headers: this.authService.headers });
+    return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`, { headers: this.authService.headers });
   }
 }
