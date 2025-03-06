@@ -141,12 +141,16 @@ export class SidebarComponent implements AfterViewInit {
   selectServer(guild: Guild): void {
     if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id && !window.location.href.includes("/dashboard/contact")) {
       localStorage.removeItem('active_guild');
+      localStorage.removeItem('guild_team');
+      localStorage.removeItem('guilds');
+      localStorage.removeItem('moduleStatus');
       this.dataService.active_guild = null;
 
     } else {
       localStorage.setItem('active_guild', JSON.stringify(guild));
+      localStorage.removeItem('guild_team');
+      localStorage.removeItem('moduleStatus');
       this.dataService.active_guild = guild;
-
       if (!this.server_picker) return;
 
       if (window.innerWidth > 1025) {

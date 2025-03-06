@@ -37,7 +37,13 @@ export class TeamlistComponent {
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router) {
     document.title = "Teamlist ~ Clank Discord-Bot";
     this.dataService.isLoading = true;
-    this.getTeamRoles();
+
+    this.getTeamRoles(); // first call to get the server data
+    this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+      if (value) { // only fetch data if allowed
+        this.getTeamRoles();
+      }
+    });
   }
 
 
