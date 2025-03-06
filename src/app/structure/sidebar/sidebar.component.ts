@@ -8,7 +8,7 @@ import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {TranslatePipe} from "@ngx-translate/core";
-import {DiscordComService} from "../../services/discord-com/discord-com.service";
+import {ComService} from "../../services/discord-com/com.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {Guild} from "../../services/discord-com/types/Guilds";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
@@ -91,7 +91,7 @@ export class SidebarComponent implements AfterViewInit {
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
   constructor(protected authService: AuthService, protected dataService: DataHolderService,
-              private discordService: DiscordComService, private router: Router) {
+              private discordService: ComService, private router: Router) {
     // initialize navigation pages to allow expanding/collapsing & automatically expand group if current page is in that group
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = group.pages.some(page =>

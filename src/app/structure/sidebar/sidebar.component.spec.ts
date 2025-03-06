@@ -9,7 +9,7 @@ import {DashboardComponent} from "../../pages/dashboard/dashboard.component";
 import {ElementRef} from "@angular/core";
 import {Guild} from "../../services/discord-com/types/Guilds";
 import {DataHolderService} from "../../services/data/data-holder.service";
-import {DiscordComService} from "../../services/discord-com/discord-com.service";
+import {ComService} from "../../services/discord-com/com.service";
 import {of, throwError} from "rxjs";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
@@ -17,7 +17,7 @@ describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
   let dataService: DataHolderService;
-  let discordService: DiscordComService;
+  let discordService: ComService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -25,14 +25,14 @@ describe('SidebarComponent', () => {
     providers: [{ provide: ActivatedRoute, useValue: {} }, { provide: DashboardComponent, useValue: {} },
         { provide: DashboardComponent, useValue: { getServerData: jest.fn() } },
         { provide: DataHolderService, useValue: { isLoading: false, redirectLoginError: jest.fn(), allowDataFetch: { next: jest.fn() } } },
-        { provide: DiscordComService, useValue: { getGuilds: jest.fn().mockReturnValue(Promise.resolve(of([]))) } }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+        { provide: ComService, useValue: { getGuilds: jest.fn().mockReturnValue(Promise.resolve(of([]))) } }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 })
     .compileComponents();
 
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     dataService = TestBed.inject(DataHolderService);
-    discordService = TestBed.inject(DiscordComService);
+    discordService = TestBed.inject(ComService);
     jest.spyOn(component, 'getGuilds');
 
     fixture.detectChanges();

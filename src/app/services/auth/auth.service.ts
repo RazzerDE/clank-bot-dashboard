@@ -97,7 +97,7 @@ export class AuthService {
       temp_headers = this.headers.set('Authorization', `Bearer ${access_token}`);
     }
 
-    this.http.get<DiscordUser>(`${config.discord_url}/users/@me`, { headers: temp_headers }).subscribe({
+    this.http.get<DiscordUser>(`${config.api_url}/auth/me`, { headers: temp_headers }).subscribe({
       next: (response: DiscordUser): void => {
         this.dataService.profile = response;
       },

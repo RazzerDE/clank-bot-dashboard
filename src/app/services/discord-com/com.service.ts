@@ -8,7 +8,7 @@ import {Guild} from "./types/Guilds";
 @Injectable({
   providedIn: 'root'
 })
-export class DiscordComService {
+export class ComService {
   private isInitialized: boolean = false;
   private readonly initPromise: Promise<void> = Promise.resolve();
 
@@ -40,9 +40,16 @@ export class DiscordComService {
     }
   }
 
+  /**
+   * Retrieves the list of guilds the user is a member of.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the guilds, including member counts.
+   *
+   * @returns {Promise<Observable<Guild[]>>} A promise that resolves to an observable of the list of guilds.
+   */
   async getGuilds(): Promise<Observable<Guild[]>> {
     await this.ensureInitialized();
-    return this.http.get<Guild[]>(`${config.discord_url}/users/@me/guilds?with_counts=True`,
-      { headers: this.authService.headers });
+    return this.http.get<Guild[]>(`${config.api_url}/guilds`, { headers: this.authService.headers });
   }
 }

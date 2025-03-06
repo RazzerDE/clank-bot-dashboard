@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DiscordComService } from './discord-com.service';
+import { ComService } from './com.service';
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
@@ -10,7 +10,7 @@ import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular
 import {config} from "../../../environments/config";
 
 describe('DiscordComService', () => {
-  let service: DiscordComService;
+  let service: ComService;
   let httpMock: HttpTestingController;
   let authService: AuthService;
 
@@ -25,7 +25,7 @@ describe('DiscordComService', () => {
         provideHttpClientTesting()
     ]
 });
-    service = TestBed.inject(DiscordComService);
+    service = TestBed.inject(ComService);
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
   });
