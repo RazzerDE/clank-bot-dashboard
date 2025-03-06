@@ -63,6 +63,7 @@ export class ComService {
    * @returns {Promise<Observable<Role[]>>} A promise that resolves to an observable of the list of team roles.
    */
   async getTeamRoles(guild_id: string): Promise<Observable<any>> {
+    await this.ensureInitialized();
     return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`, { headers: this.authService.headers });
   }
 }

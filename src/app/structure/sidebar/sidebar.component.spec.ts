@@ -7,11 +7,11 @@ import {TranslateModule} from "@ngx-translate/core";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {DashboardComponent} from "../../pages/dashboard/dashboard.component";
 import {ElementRef} from "@angular/core";
-import {Guild} from "../../services/discord-com/types/Guilds";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {ComService} from "../../services/discord-com/com.service";
 import {of, throwError} from "rxjs";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {Guild} from "../../services/types/discord/Guilds";
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;

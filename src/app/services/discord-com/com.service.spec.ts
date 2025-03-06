@@ -4,10 +4,10 @@ import { ComService } from './com.service';
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
-import {Guild} from "./types/Guilds";
 import {AuthService} from "../auth/auth.service";
 import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {config} from "../../../environments/config";
+import {Guild} from "../types/discord/Guilds";
 
 describe('DiscordComService', () => {
   let service: ComService;
@@ -65,7 +65,7 @@ describe('DiscordComService', () => {
       expect(guilds).toEqual(mockGuilds);
     });
 
-    const req = httpMock.expectOne(`${config.discord_url}/users/@me/guilds?with_counts=True`);
+    const req = httpMock.expectOne(`${config.api_url}/users/@me/guilds?with_counts=True`);
     expect(req.request.method).toBe('GET');
     req.flush(mockGuilds);
   });

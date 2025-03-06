@@ -9,8 +9,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {ApiService} from "../../services/api/api.service";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
-import {Guild} from "../../services/discord-com/types/Guilds";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {Guild} from "../../services/types/discord/Guilds";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
