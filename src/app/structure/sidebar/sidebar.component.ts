@@ -10,8 +10,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {TranslatePipe} from "@ngx-translate/core";
 import {ComService} from "../../services/discord-com/com.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import {Guild} from "../../services/discord-com/types/Guilds";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
+import {Guild} from "../../services/types/discord/Guilds";
 
 @Component({
     selector: 'app-sidebar',
@@ -190,8 +190,8 @@ export class SidebarComponent implements AfterViewInit {
     }
 
     this.discordService.getGuilds().then((observable) => observable.subscribe({
-      next: (Guilds: Guild[]): void => {
-        this.servers = Guilds
+      next: (guilds: Guild[]): void => {
+        this.servers = guilds
           .filter((guild: Guild): boolean =>
             // check if user has admin perms and if guild is public
             (this.authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))

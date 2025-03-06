@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
-import {Guild} from "../discord-com/types/Guilds";
 import {DiscordUser} from "../types/discord/User";
 import {Subject} from "rxjs";
+import {Guild} from "../types/discord/Guilds";
 
 @Injectable({
   providedIn: 'root'

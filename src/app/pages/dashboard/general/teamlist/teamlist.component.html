@@ -22,7 +22,7 @@
                       <div class="relative self-center">
                         <!-- TODO: Search functionality -->
                         <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                        <input type="text" [placeholder]="'Nach Rolle/User suchen.. 🤔'"
+                        <input type="text" [placeholder]="'Nach Rolle suchen.. 🤔'"
                                class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                             dark:!border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-700 transition-colors duration-500" />
                       </div>
@@ -153,9 +153,8 @@
                   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 transition-colors
                                 duration-300">
                     <colgroup>
-                      <col class="w-[30%]">
-                      <col class="w-[30%]">
-                      <col class="w-[15%]">
+                      <col class="w-[45%]">
+                      <col class="w-[45%]">
                       <col class="w-[10%]">
                     </colgroup>
 
@@ -166,54 +165,36 @@
                                                transition-colors duration-300">✏️ ~ Name</th>
                         <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
                                                transition-colors duration-300">🦺 ~ Support-Level</th>
-                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
-                                               transition-colors duration-300">👥 ~ Mitglieder</th>
                         <th scope="col" class="px-4 py-3">🚀 ~ Aktion</th>
                       </tr>
                     </thead>
 
                     <tbody class="overflow-y-auto">
-                    <!-- TODO: Real content + color of role names based on role -->
-                    <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
-                                             transition-colors duration-300 flex items-center">
-                        <div class="w-3 h-3 rounded-full bg-red-500 inline-block me-1.5"></div>
-                        CREW-ADMIN
-                      </th>
-                      <td class="px-4 py-3">🚑 - First Level (Wenig Rechte)</td>
-                      <td class="px-4 py-3">3.126</td>
-                      <td class="px-4 py-3 flex items-center justify-end">
-                        <!-- TODO: Delete action -->
-                        <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
-                                     rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
-                                     dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button">
-                          <fa-icon [icon]="faXmark" size="xl"></fa-icon>
-                        </button>
-                      </td>
-                    </tr>
+                      @if (roles.length == 0) {
+                        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                          <td class="px-4 py-3 text-center" colspan="3">😭 ~ Keine Rollen gefunden..</td>
+                        </tr>
+                      }
 
-                    <!-- TODO: Show members of role -->
-                    <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-                      <th scope="row" class="pl-11 pr-4 py-3 font-medium text-gray-900 whitespace-nowrap
-                                             transition-colors duration-300">
-                        <a href="https://discord.com/users/327176944640720906" target="_blank"
-                           class="text-gray-600 dark:text-gray-400 transition-colors duration-300">
-                          <img width="20" height="20" class="w-5 h-5 rounded-full bg-red-500 inline-block me-1.5"
-                               ngSrc="https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=128"
-                               alt="Clank ~ Discord-Bot (User-Avatar)"/>
-                          yannicde
-                        </a>
-                      </th>
-                      <td class="px-4 py-3">Besitzt diese Rolle</td>
-                      <td class="px-4 py-3"></td>
-                      <td class="px-4 py-3 flex items-center justify-end">
-                        <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
-                                     rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
-                                     dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button">
-                          <fa-icon [icon]="faXmark" size="xl"></fa-icon>
-                        </button>
-                      </td>
-                    </tr>
+                      @for (role of roles; track role.id) {
+                        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                          <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
+                                               transition-colors duration-300 flex items-center">
+                            <div class="w-3 h-3 rounded-full inline-block me-1.5"
+                                 [style.background-color]="'#' + role.color.toString(16).padStart(6, '0')"></div>
+                            {{ role.name }}
+                          </th>
+                          <td class="px-4 py-3">{{ getSupportLevel(role.support_level!) }}</td>
+                          <td class="px-4 py-3 flex items-center justify-end">
+                            <!-- TODO: Delete action -->
+                            <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
+                                       rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
+                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button">
+                              <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+                            </button>
+                          </td>
+                        </tr>
+                      }
                     </tbody>
                   </table>
                 </div>

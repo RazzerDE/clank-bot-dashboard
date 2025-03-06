@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
-import {Guild} from "./types/Guilds";
+import {Guild} from "../types/discord/Guilds";
 
 @Injectable({
   providedIn: 'root'
@@ -51,5 +51,9 @@ export class ComService {
   async getGuilds(): Promise<Observable<Guild[]>> {
     await this.ensureInitialized();
     return this.http.get<Guild[]>(`${config.api_url}/guilds`, { headers: this.authService.headers });
+  }
+
+  async getTeamRoles(guild_id: string): Promise<Observable<any>> {
+    return this.http.get<any>(`${config.api_url}/guilds/team?guild_id=${guild_id}`, { headers: this.authService.headers });
   }
 }
