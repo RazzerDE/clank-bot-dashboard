@@ -12,7 +12,7 @@
 
       <div class="flex-1 my-4">
           <div class="p-3 sm:p-5">
-            <div class="mx-auto max-w-screen-2xl max-h-full px-4 lg:!px-0">
+            <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
               <div class="bg-white dark:!bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden transition-colors duration-300">
 
                 <!-- Table Buttons -->
@@ -133,7 +133,9 @@
                           <!-- Build temporary list to avoid redudant code -->
                           @for (item of [].constructor(3); track $index) {
                             <li class="flex items-center">
-                              <input id="{{$index}}_level" type="checkbox" checked
+                              <input id="{{$index}}_level" type="checkbox"
+                                     [checked]="selectedSupportLevels.includes($index)"
+                                     (change)="toggleSupportLevel($index, $event)"
                                      class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600
                                    focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700
                                    focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
@@ -170,13 +172,13 @@
                     </thead>
 
                     <tbody class="overflow-y-auto">
-                      @if (roles.length == 0) {
+                      @if (filteredRoles.length == 0) {
                         <tr class="border-b dark:border-gray-700 transition-colors duration-300">
                           <td class="px-4 py-3 text-center" colspan="3">😭 ~ Keine Rollen gefunden..</td>
                         </tr>
                       }
 
-                      @for (role of roles; track role.id) {
+                      @for (role of filteredRoles; track role.id) {
                         <tr class="border-b dark:border-gray-700 transition-colors duration-300">
                           <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
                                                transition-colors duration-300 flex items-center">

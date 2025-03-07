@@ -33,6 +33,8 @@ export class TeamlistComponent {
   protected readonly faXmark: IconDefinition = faXmark;
 
   protected roles: Role[] = [];
+  protected filteredRoles: Role[] = [];
+  protected selectedSupportLevels: number[] = [0, 1, 2];
 
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router) {
     document.title = "Teamlist ~ Clank Discord-Bot";
@@ -65,6 +67,7 @@ export class TeamlistComponent {
     if (localStorage.getItem('guild_team') && localStorage.getItem('guild_team_timestamp') &&
       Date.now() - Number(localStorage.getItem('guild_team_timestamp')) < 60000) {
       this.roles = JSON.parse(localStorage.getItem('guild_team') as string);
+      this.filteredRoles = this.roles;
       this.dataService.isLoading = false;
       return;
     }
@@ -72,6 +75,7 @@ export class TeamlistComponent {
     this.discordService.getTeamRoles(this.dataService.active_guild!.id).then((observable) => observable.subscribe({
       next: (roles: Role[]): void => {
         this.roles = roles;
+        this.filteredRoles = roles;
         this.dataService.isLoading = false;
 
         localStorage.setItem('guild_team', JSON.stringify(this.roles));
@@ -87,17 +91,42 @@ export class TeamlistComponent {
     }));
   }
 
+  applyFilters() {
+    // Filter roles based on selected support levels
+    this.filteredRoles = this.roles.filter(role =>
+      role.support_level !== undefined &&
+      this.selectedSupportLevels.includes(role.support_level)
+    );
+  }
+
+  toggleSupportLevel(level: number, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+
+    if (checkbox.checked) {
+      // Add the level if not already in the array
+      if (!this.selectedSupportLevels.includes(level)) {
+        this.selectedSupportLevels.push(level);
+      }
+    } else {
+      // Remove the level
+      this.selectedSupportLevels = this.selectedSupportLevels.filter(l => l !== level);
+    }
+
+    // Apply filters after selection change
+    this.applyFilters();
+  }
+
   /**
    * Returns a string representation of the support level based on the provided support level number.
    *
-   * @param {number} supportLevel - The support level number (0, 1, or 2).
+   * @param {number} supportLevel - The support level number (0, 1 or 2).
    * @returns {string} - The string representation of the support level.
    */
   getSupportLevel(supportLevel: number): string {
     switch (supportLevel) {
-      case 2:
+      case 1:
         return '🚔 - Second Level (Mehr Rechte)';
-      case 3:
+      case 2:
         return '🚨 - Third Level (Admin-Rechte)';
       default:
         return '🚑 - First Level (Wenig Rechte)';
