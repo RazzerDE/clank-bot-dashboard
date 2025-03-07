@@ -106,6 +106,21 @@ export class TeamlistComponent {
   }
 
   /**
+   * Filters the roles based on the search term entered by the user.
+   *
+   * This method updates the `filteredRoles` array to include only the roles
+   * whose names contain the search term. The search is case-insensitive.
+   *
+   * @param {Event} event - The input event triggered by the search field.
+   */
+  searchRole(event: Event): void {
+    const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredRoles = this.roles.filter(role =>
+      role.name.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  /**
    * Toggles the support level selection based on the checkbox event.
    *
    * This method updates the `selectedSupportLevels` array by adding or removing
