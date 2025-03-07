@@ -91,16 +91,32 @@ export class TeamlistComponent {
     }));
   }
 
-  applyFilters() {
-    // Filter roles based on selected support levels
+  /**
+   * Filters the roles based on the selected support levels.
+   *
+   * This method updates the `filteredRoles` array to include only the roles
+   * that have a `support_level` property and whose support level is included
+   * in the `selectedSupportLevels` array.
+   */
+  applyFilters(): void {
     this.filteredRoles = this.roles.filter(role =>
       role.support_level !== undefined &&
       this.selectedSupportLevels.includes(role.support_level)
     );
   }
 
-  toggleSupportLevel(level: number, event: Event) {
-    const checkbox = event.target as HTMLInputElement;
+  /**
+   * Toggles the support level selection based on the checkbox event.
+   *
+   * This method updates the `selectedSupportLevels` array by adding or removing
+   * the specified support level based on the state of the checkbox. After updating
+   * the selection, it applies the filters to update the `filteredRoles` array.
+   *
+   * @param {number} level - The support level to toggle.
+   * @param {Event} event - The event triggered by the checkbox.
+   */
+  toggleSupportLevel(level: number, event: Event): void {
+    const checkbox: HTMLInputElement = event.target as HTMLInputElement;
 
     if (checkbox.checked) {
       // Add the level if not already in the array
