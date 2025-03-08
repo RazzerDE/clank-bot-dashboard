@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -12,6 +12,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Role} from "../../../../services/types/discord/Guilds";
 import {Router} from "@angular/router";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-teamlist',
@@ -20,12 +22,13 @@ import {Router} from "@angular/router";
     PageThumbComponent,
     DashboardLayoutComponent,
     FaIconComponent,
-    NgClass
+    NgClass,
+    AlertBoxComponent
   ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'
 })
-export class TeamlistComponent {
+export class TeamlistComponent implements OnDestroy {
   protected activeTab: number = 0;
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
@@ -35,19 +38,30 @@ export class TeamlistComponent {
   protected roles: Role[] = [];
   protected filteredRoles: Role[] = [];
   protected selectedSupportLevels: number[] = [0, 1, 2];
+  private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router) {
     document.title = "Teamlist ~ Clank Discord-Bot";
     this.dataService.isLoading = true;
 
     this.getTeamRoles(); // first call to get the server data
-    this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    const dataFetchSubscription: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.getTeamRoles();
       }
     });
+
+    this.subscriptions.push(dataFetchSubscription);
   }
 
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
 
   /**
    * Retrieves the team roles for the active guild.
@@ -72,23 +86,28 @@ export class TeamlistComponent {
       return;
     }
 
-    this.discordService.getTeamRoles(this.dataService.active_guild!.id).then((observable) => observable.subscribe({
-      next: (roles: Role[]): void => {
-        this.roles = roles;
-        this.filteredRoles = roles;
-        this.dataService.isLoading = false;
+    this.discordService.getTeamRoles(this.dataService.active_guild!.id).then((observable) => {
+      const subscription: Subscription = observable.subscribe({
+        next: (roles: Role[]): void => {
+          this.roles = roles;
+          this.filteredRoles = roles;
+          this.dataService.isLoading = false;
 
-        localStorage.setItem('guild_team', JSON.stringify(this.roles));
-        localStorage.setItem('guild_team_timestamp', Date.now().toString());
-      },
-      error: (err: HttpErrorResponse): void => {
-        if (err.status === 429) {
-          this.dataService.redirectLoginError('REQUESTS');
-        } else {
-          this.dataService.redirectLoginError('EXPIRED');
+          localStorage.setItem('guild_team', JSON.stringify(this.roles));
+          localStorage.setItem('guild_team_timestamp', Date.now().toString());
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+          } else {
+            this.dataService.redirectLoginError('EXPIRED');
+          }
         }
-      }
-    }));
+      });
+      this.subscriptions.push(subscription);
+    });
+
+
   }
 
   /**

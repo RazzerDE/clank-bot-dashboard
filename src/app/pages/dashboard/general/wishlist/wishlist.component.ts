@@ -7,12 +7,11 @@ import {
   faClock,
   faHashtag, faInbox,
   faLightbulb,
-  faSearch, faThumbsUp, faXmark,
+  faSearch, faThumbsUp,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
 import { HttpErrorResponse } from "@angular/common/http";
-import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
 import {Subscription} from "rxjs";
 import {
@@ -27,6 +26,7 @@ import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ApiService} from "../../../../services/api/api.service";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
   selector: 'app-wishlist',
@@ -38,7 +38,8 @@ import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/d
     NgOptimizedImage,
     RouterLink,
     PageThumbComponent,
-    DashboardLayoutComponent
+    DashboardLayoutComponent,
+    AlertBoxComponent
   ],
     templateUrl: './wishlist.component.html',
     styleUrl: './wishlist.component.scss',
@@ -70,13 +71,10 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
   protected readonly faInbox: IconDefinition = faInbox;
   protected readonly faThumbsUp: IconDefinition = faThumbsUp;
   protected readonly faClock: IconDefinition = faClock;
-  protected readonly faBug: IconDefinition = faBug;
-  protected readonly faXmark: IconDefinition = faXmark;
   protected isOnCooldown: CooldownFeatures[] = [];
 
   @ViewChild('Divider') protected divider!: ElementRef<HTMLDivElement>
   @ViewChild('WishlistContainer') protected wishlistContainer!: ElementRef<HTMLDivElement>
-  @ViewChild('AlertContent') protected alertContent!: ElementRef<HTMLDivElement>
 
   protected feature_list: Feature[] = feature_list;
   protected tags: Tag[] = tags;

@@ -10,6 +10,11 @@
       <page-thumb [subtitle]="'PAGE_TEAMLIST_SUBTITLE' | translate" [title]="'PAGE_TEAMLIST_TITLE' | translate"
                   [color]="'red'" [desc]="'PAGE_TEAMLIST_DESC' | translate"></page-thumb>
 
+      <!-- Alert Box -->
+      @if (this.dataService.showAlertBox) {
+        <app-alert-box></app-alert-box>
+      }
+
       <div class="flex-1 my-4">
           <div class="p-3 sm:p-5">
             <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
