@@ -78,9 +78,21 @@
               <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col transition-colors
                             duration-500">
                 <div class="p-4 pb-0">
+                  <div class="flex items-center justify-between">
                     <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
                       {{ 'SECTION_BOT_SETUP_TITLE' | translate }}
                     </span>
+
+                    <!-- Refresh cache Button -->
+                    <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                               via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2
+                                               focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                                 transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                            (click)="refreshCache()" [disabled]="disabledCacheBtn">
+                      <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
+                      {{ 'BUTTON_CACHE_REFRESH' | translate }}
+                    </button>
+                  </div>
 
                   <!-- Task List -->
                   <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv

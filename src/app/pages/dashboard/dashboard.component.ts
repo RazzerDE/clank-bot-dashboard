@@ -14,6 +14,7 @@ import {RouterLink} from "@angular/router";
 import {forkJoin, Subscription} from "rxjs";
 import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
 import {DashboardLayoutComponent} from "../../structure/dashboard-layout/dashboard-layout.component";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 
 @Component({
     selector: 'app-dashboard',
@@ -51,8 +52,10 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   protected readonly faDiscord: IconDefinition = faDiscord;
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
+  protected readonly faRefresh: IconDefinition = faRefresh;
 
-  private subscription: Subscription | undefined;
+  private subscriptions: Subscription[] = [];
+  protected disabledCacheBtn: boolean = false;
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService,
               private apiService: ApiService) {
@@ -60,11 +63,13 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
     this.dataService.hideGuildSidebar = false;
 
     this.getServerData(); // first call to get the server data
-    this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.getServerData();
       }
     });
+
+    this.subscriptions.push(sub);
   }
 
   /**
@@ -84,20 +89,33 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  /**
+   * Refreshes the cache by disabling the cache button, setting the loading state,
+   * and fetching the server data with the cache ignored. The cache button is re-enabled
+   * after 30 seconds.
+   */
+  refreshCache(): void {
+    this.disabledCacheBtn = true;
+    this.dataService.isLoading = true;
+    this.getServerData(true);
+
+    setTimeout((): void => { this.disabledCacheBtn = false; }, 30000); // 30 seconds
   }
 
   /**
    * Retrieves the server data for the server list and gets the module completion status.
    * Makes a GET request to the backend API to retrieve the server data.
+   *
+   * @param no_cache - If `true`, the cache will be ignored and the data will be fetched from the server.
    */
-  getServerData(): void {
+  getServerData(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     if (!window.location.href.endsWith('/dashboard')) { return; }
 
-    this.subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
+    const sub: Subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
                                   moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
       .subscribe({
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
@@ -124,6 +142,8 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
           this.dataService.isLoading = false;
         }
     });
+
+    this.subscriptions.push(sub);
   }
 
   /**

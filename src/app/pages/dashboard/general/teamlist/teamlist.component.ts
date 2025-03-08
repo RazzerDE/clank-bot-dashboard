@@ -14,6 +14,7 @@ import {Role} from "../../../../services/types/discord/Guilds";
 import {Router} from "@angular/router";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {Subscription} from "rxjs";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 
 @Component({
   selector: 'app-teamlist',
@@ -39,6 +40,7 @@ export class TeamlistComponent implements OnDestroy {
   protected filteredRoles: Role[] = [];
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private subscriptions: Subscription[] = [];
+  protected disabledCacheBtn: boolean = false;
 
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router,
               private translate: TranslateService) {
@@ -65,13 +67,30 @@ export class TeamlistComponent implements OnDestroy {
   }
 
   /**
+   * Refreshes the cache by fetching the team roles again.
+   *
+   * This method disables the cache button, sets the loading state, and calls the `getTeamRoles` method
+   * with the `no_cache` parameter set to `true` to fetch fresh data. The cache button is re-enabled
+   * after 30 seconds.
+   */
+  refreshCache(): void {
+    this.disabledCacheBtn = true;
+    this.dataService.isLoading = true;
+    this.getTeamRoles(true);
+
+    setTimeout((): void => { this.disabledCacheBtn = false; }, 30000); // 30 seconds
+  }
+
+  /**
    * Retrieves the team roles for the active guild.
    *
    * This method first checks if the team roles are already stored in the local storage and if the stored data is still valid.
    * If valid data is found, it uses the stored data. Otherwise, it makes an API call to fetch the team roles from the backend.
    * The fetched data is then stored in the local storage for future use.
+   *
+   * @param {boolean} no_cache - Whether to ignore the cached data and fetch fresh data from the backend.
    */
-  getTeamRoles(): void {
+  getTeamRoles(no_cache?: boolean): void {
     // redirect to dashboard if no active guild is set
     if (!this.dataService.active_guild) {
       this.router.navigateByUrl("/dashboard").then();
@@ -79,8 +98,8 @@ export class TeamlistComponent implements OnDestroy {
     }
 
     // check if guilds are already stored in local storage (one minute cache)
-    if (localStorage.getItem('guild_team') && localStorage.getItem('guild_team_timestamp') &&
-      Date.now() - Number(localStorage.getItem('guild_team_timestamp')) < 60000) {
+    if ((localStorage.getItem('guild_team') && localStorage.getItem('guild_team_timestamp') &&
+      Date.now() - Number(localStorage.getItem('guild_team_timestamp')) < 60000) && !no_cache) {
       this.roles = JSON.parse(localStorage.getItem('guild_team') as string);
       this.filteredRoles = this.roles;
       this.dataService.isLoading = false;
@@ -231,4 +250,6 @@ export class TeamlistComponent implements OnDestroy {
         return '🚑 - First Level (Wenig Rechte)';
     }
   }
+
+  protected readonly faRefresh = faRefresh;
 }

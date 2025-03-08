@@ -43,6 +43,16 @@
                       Rolle hinzufügen
                     </button>
 
+                    <!-- Refresh cache Button -->
+                    <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                               via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2
+                                               focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                                 transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                            (click)="refreshCache()" [disabled]="disabledCacheBtn">
+                      <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
+                      {{ 'BUTTON_CACHE_REFRESH' | translate }}
+                    </button>
+
                     <!-- Role Modal -->
                     <div tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed z-50 justify-center items-center
                                               w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal>
