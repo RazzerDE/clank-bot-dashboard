@@ -10,7 +10,7 @@ import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import {NgClass} from "@angular/common";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
-import {Role} from "../../../../services/types/discord/Guilds";
+import {Role, TeamList} from "../../../../services/types/discord/Guilds";
 import {Router} from "@angular/router";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {Subscription} from "rxjs";
@@ -38,6 +38,8 @@ export class TeamlistComponent implements OnDestroy {
 
   protected roles: Role[] = [];
   protected filteredRoles: Role[] = [];
+  protected discordRoles: Role[] = [];
+
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private subscriptions: Subscription[] = [];
   protected disabledCacheBtn: boolean = false;
@@ -101,6 +103,7 @@ export class TeamlistComponent implements OnDestroy {
     if ((localStorage.getItem('guild_team') && localStorage.getItem('guild_team_timestamp') &&
       Date.now() - Number(localStorage.getItem('guild_team_timestamp')) < 60000) && !no_cache) {
       this.roles = JSON.parse(localStorage.getItem('guild_team') as string);
+      this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
       this.filteredRoles = this.roles;
       this.dataService.isLoading = false;
       return;
@@ -108,12 +111,15 @@ export class TeamlistComponent implements OnDestroy {
 
     this.discordService.getTeamRoles(this.dataService.active_guild!.id).then((observable) => {
       const subscription: Subscription = observable.subscribe({
-        next: (roles: Role[]): void => {
-          this.roles = roles;
-          this.filteredRoles = roles;
+        next: (roles: TeamList): void => {
+          console.log(roles);
+          this.roles = roles.team_roles;
+          this.filteredRoles = roles.team_roles;
+          this.discordRoles = roles.other_roles;
           this.dataService.isLoading = false;
 
           localStorage.setItem('guild_team', JSON.stringify(this.roles));
+          localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('guild_team_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
@@ -124,6 +130,7 @@ export class TeamlistComponent implements OnDestroy {
           }
         }
       });
+
       this.subscriptions.push(subscription);
     });
 

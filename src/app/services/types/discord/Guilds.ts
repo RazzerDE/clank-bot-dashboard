@@ -13,6 +13,11 @@ export interface Guild {
   image_url?: string;
 }
 
+export interface TeamList {
+  team_roles: Role[];
+  other_roles: Role[];
+}
+
 export interface Role {
   id: string;
   name: string;
