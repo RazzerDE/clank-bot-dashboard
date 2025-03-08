@@ -66,4 +66,20 @@ export class ComService {
     await this.ensureInitialized();
     return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`, { headers: this.authService.headers });
   }
+
+  /**
+   * Removes a team role from a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a DELETE request to the internal API to remove the specified team role
+   * from the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to remove the team role from.
+   * @param {string} role_id - The ID of the role to be removed.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   */
+  async removeTeamRole(guild_id: string, role_id: string): Promise<Observable<any>> {
+    await this.ensureInitialized();
+    return this.http.delete(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`, { headers: this.authService.headers });
+  }
 }

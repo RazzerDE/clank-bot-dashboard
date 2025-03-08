@@ -191,10 +191,10 @@
                           </th>
                           <td class="px-4 py-3">{{ getSupportLevel(role.support_level!) }}</td>
                           <td class="px-4 py-3 flex items-center justify-end">
-                            <!-- TODO: Delete action -->
                             <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
                                        rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
-                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button">
+                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button"
+                                    (click)="removeRole(role)">
                               <fa-icon [icon]="faXmark" size="xl"></fa-icon>
                             </button>
                           </td>
