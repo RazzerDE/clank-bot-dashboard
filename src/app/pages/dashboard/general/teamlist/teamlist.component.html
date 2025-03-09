@@ -121,7 +121,7 @@
                                              focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
                                              py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
                                              transition-colors duration-100 dark:focus:ring-blue-800 text-sm px-5"
-                                      (click)="addRole(rolePicker.selectedOptions);" [disabled]="!isRolePickerValid">
+                                      (click)="addRole(rolePicker.selectedOptions.item(0)!);" [disabled]="!isRolePickerValid">
                                 Änderungen speichern
                               </button>
                             </div>

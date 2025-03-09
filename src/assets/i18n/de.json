@@ -169,8 +169,10 @@
 
   "ERROR_VOTE_SAME_TITLE": "Keine Änderung",
   "ERROR_VOTE_SAME_DESC": "Dein Vote bleibt unverändert, da du bereits dafür gestimmt hast.",
-  "ERROR_ROLE_DELETE_TITLE": "Rolle nicht eingetragen",
+  "ERROR_ROLE_DELETE_TITLE": "Rolle nicht entfernt",
   "ERROR_ROLE_DELETE_DESC": "Die Rolle <strong>{{role}}</strong> ist nicht (mehr) eingetragen als eine Team-Rolle!",
+  "ERROR_ROLE_ADD_TITLE": "Rolle ist bereits eingetragen",
+  "ERROR_ROLE_ADD_DESC": "Die Rolle <strong>{{role}}</strong> ist bereits als eine Team-Rolle mit dem <strong>{{level}}</strong> eingetragen!",
 
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
@@ -180,6 +182,8 @@
   "SUCCESS_VOTE_DESC": "Dein Vote wurde gespeichert - Danke fürs teilnehmen!",
   "SUCCESS_ROLE_DELETE": "Team-Rolle entfernt",
   "SUCCESS_ROLE_DELETE_DESC": "Die Rolle <strong>{{role}}</strong> hat nun keinen Zugriff mehr auf Clank-Team Features.",
+  "SUCCESS_ROLE_ADD": "Team-Rolle hinzugefügt",
+  "SUCCESS_ROLE_ADD_DESC": "Die Rolle <strong>{{role}}</strong> wurde mit dem <strong>{{level}}</strong> eingetragen.",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Gewinnspiele & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server-Sicherheit",

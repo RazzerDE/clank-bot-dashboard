@@ -171,6 +171,8 @@
   "ERROR_VOTE_SAME_DESC": "Your vote remains unchanged as you have already voted for this.",
   "ERROR_ROLE_DELETE_TITLE": "Role not registered",
   "ERROR_ROLE_DELETE_DESC": "The role <strong>{{role}}</strong> is not (or no longer) registered as a team role!",
+  "ERROR_ROLE_ADD_TITLE": "Role already registered",
+  "ERROR_ROLE_ADD_DESC": "The role <strong>{{role}}</strong> is already registered as a team role with the <strong>{{level}}</strong>!",
 
   "ERROR_PAGE_TITLE": "Error occured ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Back to Dashboard",
@@ -180,6 +182,8 @@
   "SUCCESS_VOTE_DESC": "Your vote has been saved - Thank you for participating!",
   "SUCCESS_ROLE_DELETE": "Team role removed",
   "SUCCESS_ROLE_DELETE_DESC": "The role <strong>{{role}}</strong> no longer has access to Clank team features.",
+  "SUCCESS_ROLE_ADD": "Team role added",
+  "SUCCESS_ROLE_ADD_DESC": "The role <strong>{{role}}</strong> has been added with the <strong>{{level}}</strong>.",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Giveaways & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server Security",

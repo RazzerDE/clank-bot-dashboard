@@ -64,7 +64,8 @@ export class ComService {
    */
   async getTeamRoles(guild_id: string): Promise<Observable<any>> {
     await this.ensureInitialized();
-    return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`, { headers: this.authService.headers });
+    return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
   }
 
   /**
@@ -80,6 +81,25 @@ export class ComService {
    */
   async removeTeamRole(guild_id: string, role_id: string): Promise<Observable<any>> {
     await this.ensureInitialized();
-    return this.http.delete(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`, { headers: this.authService.headers });
+    return this.http.delete(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Adds a team role to a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a POST request to the internal API to add the specified team role
+   * to the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to add the team role to.
+   * @param {string} role_id - The ID of the role to be added.
+   * @param {string} level - The support level of the role to be added.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   */
+  async addTeamRole(guild_id: string, role_id: string, level: string): Promise<Observable<any>> {
+    await this.ensureInitialized();
+    return this.http.post(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`, {},
+      { headers: this.authService.headers });
   }
 }

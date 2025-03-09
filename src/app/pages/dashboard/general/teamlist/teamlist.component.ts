@@ -207,8 +207,11 @@ export class TeamlistComponent implements OnDestroy {
           // Successfully removed, update shown data
           this.roles = this.roles.filter(r => r.id !== role.id);
           this.filteredRoles = this.filteredRoles.filter(r => r.id !== role.id);
-          localStorage.removeItem('guild_team');
+          // add back to role picker
+          this.discordRoles.push(role);
+          this.discordRoles.sort((a, b) => b.position - a.position);
 
+          localStorage.removeItem('guild_team');
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_DELETE'),
                                      this.translate.instant('SUCCESS_ROLE_DELETE_DESC', { role: role.name }));
@@ -235,12 +238,52 @@ export class TeamlistComponent implements OnDestroy {
     });
   }
 
-  addRole(options: HTMLCollectionOf<HTMLOptionElement>): void {
-    console.log(options);
-    // TODO:
-    // 5. rolle hinzufügen endpunkt
-    // 6. in frontend hinzufügen
-    // 7. alert bei erfolgreich/fehlschlag
+  addRole(option: HTMLOptionElement): void {
+    if (!this.dataService.active_guild) { return; }
+    const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
+    found_role.support_level = this.activeTab;
+
+    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (this.activeTab + 1).toString())
+      .then((observable) => {
+        const subscription: Subscription = observable.subscribe({
+          next: (_result: boolean): void => {
+            // Successfully added, update shown data
+            this.addRoleToTeam(found_role);
+            localStorage.removeItem('guild_team');
+
+            this.dataService.error_color = 'green';
+            this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_ADD'),
+              this.translate.instant('SUCCESS_ROLE_ADD_DESC',
+                { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
+
+            // close modal
+            this.roleModal.nativeElement.classList.add('hidden');
+            this.roleBackdrop.nativeElement.classList.add('hidden');
+          },
+          error: (err: HttpErrorResponse): void => {
+            if (err.status === 409) {
+              this.dataService.error_color = 'red';
+              this.dataService.showAlert(this.translate.instant('ERROR_ROLE_ADD_TITLE'),
+                this.translate.instant('ERROR_ROLE_ADD_DESC',
+                  { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
+
+              this.addRoleToTeam(found_role);
+            } else if (err.status === 429) {
+              this.dataService.redirectLoginError('REQUESTS');
+            } else if (err.status === 401) {
+              this.dataService.redirectLoginError('FORBIDDEN');
+            } else {
+              this.dataService.redirectLoginError('EXPIRED');
+            }
+
+            // close modal
+            this.roleModal.nativeElement.classList.add('hidden');
+            this.roleBackdrop.nativeElement.classList.add('hidden');
+          }
+        });
+
+        this.subscriptions.push(subscription);
+    });
   }
 
   /**
@@ -284,6 +327,42 @@ export class TeamlistComponent implements OnDestroy {
         return '🚨 - Third Level (Admin-Rechte)';
       default:
         return '🚑 - First Level (Wenig Rechte)';
+    }
+  }
+
+  /**
+   * Adds a role to the team.
+   *
+   * This method checks if the role already exists in the `roles` array to prevent duplicates.
+   * If the role does not exist, it adds the role to the `roles` array and updates the `filteredRoles`
+   * array based on the current filters. It also sorts the `filteredRoles` array by support level and position.
+   * Finally, it removes the role from the `discordRoles` array, indicating that the role is now part of the team.
+   *
+   * @param {Role} role - The role to be added to the team.
+   */
+  private addRoleToTeam(role: Role): void {
+    // Check if the role already exists in the roles array to prevent duplicates
+    if (!this.roles.some(r => r.id === role.id)) {
+      this.roles.push(role);
+
+      // Update filtered roles based on current set filters
+      if (role.support_level !== undefined && this.selectedSupportLevels.includes(role.support_level)) {
+        this.filteredRoles = [...this.roles].filter(r =>
+          r.support_level !== undefined &&
+          this.selectedSupportLevels.includes(r.support_level)
+        );
+
+        // Sort the filtered roles
+        this.filteredRoles.sort((a, b) => {
+          if (a.support_level !== b.support_level) {
+            return b.support_level! - a.support_level!;
+          }
+          return b.position - a.position;
+        });
+      }
+
+      // Remove from discord roles; role is now in team
+      this.discordRoles = this.discordRoles.filter(r => r.id !== role.id);
     }
   }
 
