@@ -5,10 +5,10 @@ import {TranslateModule} from "@ngx-translate/core";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {WizardStep} from "../../../services/types/Forms";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {of, throwError} from "rxjs";
 import {ElementRef} from "@angular/core";
+import {WizardStep} from "../../../../services/types/Forms";
 
 describe('ContactComponent', () => {
   let component: ContactComponent;

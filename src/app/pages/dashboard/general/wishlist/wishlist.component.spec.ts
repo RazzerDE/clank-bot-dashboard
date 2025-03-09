@@ -6,11 +6,11 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {ElementRef} from "@angular/core";
-import {Feature, FeatureVotes, Tag} from "../../../services/types/navigation/WishlistTags";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {of, throwError} from "rxjs";
-import {ApiService} from "../../../services/api/api.service";
-import {DiscordUser} from "../../../services/types/discord/User";
+import {ApiService} from "../../../../services/api/api.service";
+import {DiscordUser} from "../../../../services/types/discord/User";
+import {Feature, FeatureVotes, Tag} from "../../../../services/types/navigation/WishlistTags";
 
 describe('WishlistComponent', () => {
   let component: WishlistComponent;

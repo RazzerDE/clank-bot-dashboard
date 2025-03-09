@@ -1,4 +1,4 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
 import { provideHttpClientTesting } from "@angular/common/http/testing";
@@ -49,6 +49,18 @@ describe('DashboardComponent', () => {
     // Check if document title is updated
     expect(document.title).toBe("Dashboard ~ Clank Discord-Bot");
   });
+
+  it('should refresh cache and re-enable cache button after 30 seconds', fakeAsync(() => {
+    jest.spyOn(component, 'getServerData');
+    component.refreshCache();
+
+    expect(component['disabledCacheBtn']).toBe(true);
+    expect(component['dataService'].isLoading).toBe(true);
+    expect(component.getServerData).toHaveBeenCalledWith(true);
+
+    tick(30000); // Simulate the passage of 30 seconds
+    expect(component['disabledCacheBtn']).toBe(false);
+  }));
 
   it('should handle server data retrieval and update tasks', () => {
     const guildUsageMock: SliderItems[] = [{ image_url: '', guild_name: '', guild_invite: '', member_count: 0 }];

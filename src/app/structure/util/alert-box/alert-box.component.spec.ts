@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AlertBoxComponent } from './alert-box.component';
+import {TranslateModule} from "@ngx-translate/core";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 describe('AlertBoxComponent', () => {
   let component: AlertBoxComponent;
@@ -8,7 +10,7 @@ describe('AlertBoxComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AlertBoxComponent]
+      imports: [AlertBoxComponent, TranslateModule.forRoot(), NoopAnimationsModule],
     })
     .compileComponents();
 
