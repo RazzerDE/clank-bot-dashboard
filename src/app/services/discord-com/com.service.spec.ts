@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DiscordComService } from './discord-com.service';
+import { ComService } from './com.service';
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
-import {Guild} from "./types/Guilds";
 import {AuthService} from "../auth/auth.service";
 import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {config} from "../../../environments/config";
+import {Guild, Role} from "../types/discord/Guilds";
 
 describe('DiscordComService', () => {
-  let service: DiscordComService;
+  let service: ComService;
   let httpMock: HttpTestingController;
   let authService: AuthService;
 
@@ -25,7 +25,7 @@ describe('DiscordComService', () => {
         provideHttpClientTesting()
     ]
 });
-    service = TestBed.inject(DiscordComService);
+    service = TestBed.inject(ComService);
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -65,8 +65,54 @@ describe('DiscordComService', () => {
       expect(guilds).toEqual(mockGuilds);
     });
 
-    const req = httpMock.expectOne(`${config.discord_url}/users/@me/guilds?with_counts=True`);
+    const req = httpMock.expectOne(`${config.api_url}/guilds`);
     expect(req.request.method).toBe('GET');
     req.flush(mockGuilds);
+  });
+
+  it('should fetch team roles for a specific guild', async () => {
+    const mockRoles: Role[] = [{ id: '1', name: 'Role 1' }, { id: '2', name: 'Role 2' }] as Role[];
+    service['isInitialized'] = true;
+
+    const result = await service.getTeamRoles('guild_id');
+
+    result.subscribe(roles => {
+      expect(roles).toEqual(mockRoles);
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/team?guild_id=guild_id`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockRoles);
+  });
+
+  it('should remove a team role from a specific guild', async () => {
+    const guild_id = 'guild_id';
+    const role_id = 'role_id';
+
+    service['isInitialized'] = true;
+
+    (await service.removeTeamRole(guild_id, role_id)).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({});
+  });
+
+  it('should add a team role to a specific guild', async () => {
+    const guild_id = 'guild_id';
+    const role_id = 'role_id';
+    const level = 'level';
+
+    service['isInitialized'] = true;
+
+    (await service.addTeamRole(guild_id, role_id, level)).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`);
+    expect(req.request.method).toBe('POST');
+    req.flush({});
   });
 });

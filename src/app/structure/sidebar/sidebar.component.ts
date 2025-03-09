@@ -8,10 +8,10 @@ import {AuthService} from "../../services/auth/auth.service";
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {TranslatePipe} from "@ngx-translate/core";
-import {DiscordComService} from "../../services/discord-com/discord-com.service";
+import {ComService} from "../../services/discord-com/com.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import {Guild} from "../../services/discord-com/types/Guilds";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
+import {Guild} from "../../services/types/discord/Guilds";
 
 @Component({
     selector: 'app-sidebar',
@@ -91,10 +91,12 @@ export class SidebarComponent implements AfterViewInit {
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
   constructor(protected authService: AuthService, protected dataService: DataHolderService,
-              private discordService: DiscordComService, private router: Router) {
-    // initialize navigation pages to allow expanding/collapsing
+              private discordService: ComService, private router: Router) {
+    // initialize navigation pages to allow expanding/collapsing & automatically expand group if the third (or later) page is in that group
     this.navigation.forEach(group => {
-      this.expandedGroups[group.category] = false;
+      this.expandedGroups[group.category] = group.pages.slice(2).some(page =>
+        window.location.href.endsWith(page.redirect_url)
+      );
     });
   }
 
@@ -139,12 +141,16 @@ export class SidebarComponent implements AfterViewInit {
   selectServer(guild: Guild): void {
     if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id && !window.location.href.includes("/dashboard/contact")) {
       localStorage.removeItem('active_guild');
+      localStorage.removeItem('guild_team');
+      localStorage.removeItem('guilds');
+      localStorage.removeItem('moduleStatus');
       this.dataService.active_guild = null;
 
     } else {
       localStorage.setItem('active_guild', JSON.stringify(guild));
+      localStorage.removeItem('guild_team');
+      localStorage.removeItem('moduleStatus');
       this.dataService.active_guild = guild;
-
       if (!this.server_picker) return;
 
       if (window.innerWidth > 1025) {
@@ -188,8 +194,8 @@ export class SidebarComponent implements AfterViewInit {
     }
 
     this.discordService.getGuilds().then((observable) => observable.subscribe({
-      next: (Guilds: Guild[]): void => {
-        this.servers = Guilds
+      next: (guilds: Guild[]): void => {
+        this.servers = guilds
           .filter((guild: Guild): boolean =>
             // check if user has admin perms and if guild is public
             (this.authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))

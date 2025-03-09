@@ -1,0 +1,236 @@
+<dashboard-layout>
+
+    <!-- Body -->
+    <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+
+      <!-- Backdrop for Role Modal -->
+      <div class="fixed hidden inset-0 bg-black bg-opacity-25 z-50" aria-hidden="true" #roleBackdrop></div>
+
+      <!-- Page Thumb -->
+      <page-thumb [subtitle]="'PAGE_TEAMLIST_SUBTITLE' | translate" [title]="'PAGE_TEAMLIST_TITLE' | translate"
+                  [color]="'red'" [desc]="'PAGE_TEAMLIST_DESC' | translate"></page-thumb>
+
+      <!-- Alert Box -->
+      @if (this.dataService.showAlertBox) {
+        <app-alert-box></app-alert-box>
+      }
+
+      <div class="flex-1 my-4">
+          <div class="p-3 sm:p-5">
+            <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
+              <div class="bg-white dark:!bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden transition-colors duration-300">
+
+                <!-- Table Buttons -->
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                  <div class="w-full md:w-1/2">
+                    <div class="flex-1 ml-4 lg:ml-0 ">
+                      <div class="relative self-center">
+                        <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                        <input type="text" [placeholder]="'PLACEHOLDER_ROLE_SEARCH' | translate" (keyup)="searchRole($event)"
+                               class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+                            dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+
+                    <!-- Add Role Button -->
+                    <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-red-700
+                                               via-red-600 to-red-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                               focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br" #roleButton
+                            (click)="roleModal.classList.remove('hidden'); roleBackdrop.classList.remove('hidden')">
+                      <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_ROLE_ADD' | translate }}
+                    </button>
+
+                    <!-- Refresh cache Button -->
+                    <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                               via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2
+                                               focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                                 transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                            (click)="refreshCache()" [disabled]="disabledCacheBtn">
+                      <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
+                      {{ 'BUTTON_CACHE_REFRESH' | translate }}
+                    </button>
+
+                    <!-- Role Modal -->
+                    <div tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed z-50 justify-center items-center
+                                              w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal>
+                      <div class="relative p-4 w-full max-w-md max-h-full -left-16 md:left-0 xl:left-[45%] mx-auto xl:!mx-0 top-1/2 -translate-y-1/2" #roleModalContent>
+                        <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700">
+                          <!-- Modal header -->
+                          <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                            <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+                              {{ 'PLACEHOLDER_ROLE_MODAL_TITLE' | translate }}
+                            </p>
+                            <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
+                                                       hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex
+                                                         justify-center items-center dark:hover:!bg-gray-600
+                                                         dark:hover:text-white"
+                                    (click)="roleModal.classList.add('hidden'); roleBackdrop.classList.add('hidden')">
+                              <fa-icon [icon]="faXmark" size="lg"></fa-icon>
+                            </button>
+                          </div>
+
+                          <!-- Modal body -->
+                          <div class="p-4 md:p-5">
+                            <div class="space-y-4 flex flex-col">
+
+                              <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+                                {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
+                              </label>
+                              <div class="relative">
+                                <select #rolePicker id="rolepicker" (change)="validateRolePicker()"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                                focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                                                dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white appearance-none
+                                                dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-500
+                                                cursor-pointer">
+                                  <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
+                                  @for (role of discordRoles; track role.id) {
+                                    <option value="{{ role.id }}">{{ role.name }}</option>
+                                  }
+                                </select>
+                                <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2
+                                                                     text-gray-500 dark:text-gray-300 cursor-pointer"
+                                         (click)="rolePicker.showPicker()"></fa-icon>
+                              </div>
+
+                              <hr class="mt-4 w-11/12 self-center">
+                              <div>
+                                <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                  {{ 'PLACEHOLDER_ROLE_MODAL_LEVEL' | translate }}
+                                </label>
+                                <div class="w-full">
+                                  <div class="relative right-0">
+                                    <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
+                                      @for (item of [].constructor(3); track $index) {
+                                        <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
+                                                 dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
+                                                 dark:hover:bg-gray-600/30" (click)="activeTab = $index"
+                                            [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
+                                            [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
+                                          <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
+                                                    transition-all ease-in-out rounded-md cursor-pointer bg-inherit
+                                                    text-gray-900 dark:text-white duration-100"
+                                             [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
+                                             [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
+                                                          $index == 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
+                                                                        ('PLACEHOLDER_ROLE_MODAL_THIRD' | translate)">
+                                          </a>
+                                        </li>
+                                      }
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <button class="w-full text-white disabled:!bg-gray-500 bg-blue-700 hover:bg-blue-800
+                                             focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
+                                             py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
+                                             transition-colors duration-100 dark:focus:ring-blue-800 text-sm px-5"
+                                      (click)="addRole(rolePicker.selectedOptions.item(0)!);" [disabled]="!isRolePickerValid">
+                                {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <!-- Filter Button -->
+                    <div class="flex items-center space-x-3 w-full md:w-auto relative">
+                      <button type="button" (click)="filterDropdown.classList.toggle('hidden');" #dropdownButton
+                              class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium
+                                   text-gray-900 focus:outline-none rounded-lg border border-gray-300
+                                   hover:bg-gray-900/5 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200
+                                   dark:focus:ring-gray-700 dark:text-gray-400 dark:!border-gray-600
+                                   dark:hover:text-white dark:hover:bg-gray-900/25 transition-colors duration-300">
+                        Support-Level
+                        <fa-icon [icon]="faChevronDown" class="ms-2"></fa-icon>
+                      </button>
+
+                      <!-- Filter Dropdown -->
+                      <div class="absolute top-full -left-6 mt-2 z-10 w-full md:w-48 p-3 bg-white rounded-lg shadow
+                                  hidden dark:!bg-gray-700" #filterDropdown>
+                        <ul class="space-y-2 text-sm">
+                          <!-- Build temporary list to avoid redudant code -->
+                          @for (item of [].constructor(3); track $index) {
+                            <li class="flex items-center">
+                              <input id="{{$index}}_level" type="checkbox"
+                                     [checked]="selectedSupportLevels.includes($index)"
+                                     (change)="toggleSupportLevel($index, $event)"
+                                     class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600
+                                   focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700
+                                   focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                              <label for="{{$index}}_level" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                                     [innerText]="$index == 0 ? '🚑 ~ First Level' : $index == 1 ? '🚔 ~ Second Level' : '🚨 ~ Third Level'">
+                              </label>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto flex flex-col max-h-[calc(100vh-30rem)]">
+                  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 transition-colors
+                                duration-300">
+                    <colgroup>
+                      <col class="w-[45%]">
+                      <col class="w-[45%]">
+                      <col class="w-[10%]">
+                    </colgroup>
+
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400
+                                  transition-colors duration-300 sticky top-0">
+                      <tr>
+                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300">✏️ ~ Name</th>
+                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300">🦺 ~ Support-Level</th>
+                        <th scope="col" class="px-4 py-3">🚀 ~ {{ 'PLACEHOLDER_ACTION' | translate }}</th>
+                      </tr>
+                    </thead>
+
+                    <tbody class="overflow-y-auto">
+                      @if (filteredRoles.length == 0) {
+                        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                          <td class="px-4 py-3 text-center" colspan="3">{{ 'PLACEHOLDER_ROLE_EMPTY' | translate }}</td>
+                        </tr>
+                      }
+
+                      @for (role of filteredRoles; track role.id) {
+                        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                          <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
+                                               transition-colors duration-300 flex items-center">
+                            <div class="w-3 h-3 rounded-full inline-block me-1.5"
+                                 [style.background-color]="'#' + role.color.toString(16).padStart(6, '0')"></div>
+                            {{ role.name }}
+                          </th>
+                          <td class="px-4 py-3">{{ getSupportLevel(role.support_level!) }}</td>
+                          <td class="px-4 py-3 flex items-center justify-end">
+                            <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
+                                       rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
+                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button"
+                                    (click)="removeRole(role)">
+                              <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+                            </button>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+    </section>
+
+</dashboard-layout>

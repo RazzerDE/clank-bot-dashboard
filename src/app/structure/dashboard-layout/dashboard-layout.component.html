@@ -1,0 +1,22 @@
+<div class="flex h-screen bg-white dark:!bg-gray-900/95 transition-colors duration-500">
+
+  @if (this.dataService.showMobileSidebar) {
+    <!-- Backdrop for mobile -->
+    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
+  }
+
+  <!-- Hide sidebar on mobile devices; only show after button click -->
+  <div [ngClass]="['fixed xl:static z-[100] h-screen transition-transform duration-300',
+                    dataService.showMobileSidebar ? 'translate-x-0' : '-translate-x-full xl:translate-x-0']">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <!-- Page Content -->
+  <div class="flex w-full min-w-0 flex-auto flex-col">
+    <app-header></app-header>
+
+    <!-- Body -->
+    <ng-content></ng-content>
+
+  </div>
+</div>

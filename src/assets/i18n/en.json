@@ -2,6 +2,8 @@
   "HEADER_LANDING_ITEM_BOT_SETUP": "Bot Setup",
   "HEADER_LANDING_ITEM_DASHBOARD_MOBILE": "To Dashboard",
 
+  "BUTTON_CACHE_REFRESH": "Refresh Cache",
+
   "FOOTER_LANDING_CARD_TITLE": "🚀 ~ DISCOVER EVEN MORE!",
   "FOOTER_LANDING_CARD_DESC": "› We hope we have convinced you to give our cute Discord bot - Clank - a chance to significantly improve the experience on your Discord server.",
   "FOOTER_LANDING_CARD_BUTTON": "INVITE DISCORD BOT",
@@ -124,6 +126,10 @@
   "PAGE_WISHLIST_TITLE": "Future Features",
   "PAGE_WISHLIST_DESC": "› The features below are major new things that have been requested by our community (you) over time and will soon be integrated into the bot.",
 
+  "PAGE_TEAMLIST_SUBTITLE": "🚨 ~ SET YOUR TEAM MEMBERS",
+  "PAGE_TEAMLIST_TITLE": "Bot's Team List",
+  "PAGE_TEAMLIST_DESC": "› This feature ensures that certain roles have access to important moderation features & unlocks more ticket tool features.",
+
   "WISHLIST_TAG_FEATURES": "All Features",
   "WISHLIST_TAG_GIVEAWAYS": "Giveaways & Events",
   "WISHLIST_TAG_MODULES": "New Modules",
@@ -163,6 +169,10 @@
 
   "ERROR_VOTE_SAME_TITLE": "No Change",
   "ERROR_VOTE_SAME_DESC": "Your vote remains unchanged as you have already voted for this.",
+  "ERROR_ROLE_DELETE_TITLE": "Role not registered",
+  "ERROR_ROLE_DELETE_DESC": "The role <strong>{{role}}</strong> is not (or no longer) registered as a team role!",
+  "ERROR_ROLE_ADD_TITLE": "Role already registered",
+  "ERROR_ROLE_ADD_DESC": "The role <strong>{{role}}</strong> is already registered as a team role with the <strong>{{level}}</strong>!",
 
   "ERROR_PAGE_TITLE": "Error occured ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Back to Dashboard",
@@ -170,6 +180,10 @@
 
   "SUCCESS_VOTE_TITLE": "Successfully Voted",
   "SUCCESS_VOTE_DESC": "Your vote has been saved - Thank you for participating!",
+  "SUCCESS_ROLE_DELETE": "Team role removed",
+  "SUCCESS_ROLE_DELETE_DESC": "The role <strong>{{role}}</strong> no longer has access to Clank team features.",
+  "SUCCESS_ROLE_ADD": "Team role added",
+  "SUCCESS_ROLE_ADD_DESC": "The role <strong>{{role}}</strong> has been added with the <strong>{{level}}</strong>.",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Giveaways & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server Security",
@@ -266,5 +280,22 @@
   "PLACEHOLDER_SEARCH_EMPTY": "No results found..",
   "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Pick a server..",
   "PLACEHOLDER_PICK_SERVER_DESC": "› Click on a server in the <strong>left sidebar</strong> to continue.",
-  "PLACEHOLDER_MEMBER_STATS": "{{members}} members ({{online}} online)"
+  "PLACEHOLDER_MEMBER_STATS": "{{members}} members ({{online}} online)",
+
+  "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
+  "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
+  "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",
+  "PLACEHOLDER_ROLE_MODAL_PICK": "Which role would you like to add?",
+  "PLACEHOLDER_ROLE_MODAL_DEFAULT": "👥 - Select a Discord role..",
+  "PLACEHOLDER_ROLE_MODAL_LEVEL": "Select support level",
+  "PLACEHOLDER_ROLE_MODAL_FIRST": "🚑 Helper",
+  "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
+  "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
+  "PLACEHOLDER_ROLE_EMPTY": "😭 ~ No roles found..",
+  "PLACEHOLDER_ROLE_FIRST": "Few rights",
+  "PLACEHOLDER_ROLE_SECOND": "More rights",
+  "PLACEHOLDER_ROLE_THIRD": "Admin rights",
+
+  "PLACEHOLDER_BUTTON_SAVE": "Save changes",
+  "PLACEHOLDER_ACTION": "Action"
 }

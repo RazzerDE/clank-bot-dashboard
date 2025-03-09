@@ -27,7 +27,7 @@ export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _state: 
   }
 
   // Verify existing token
-  return http.get<DiscordUser>(`${config.discord_url}/users/@me`, { headers: authService.headers}).pipe(
+  return http.get<DiscordUser>(`${config.api_url}/auth/me`, { headers: authService.headers}).pipe(
     tap((response: DiscordUser): void => { dataService.profile = response; }), map((): boolean => true),
     catchError((error: HttpErrorResponse): Observable<boolean> => {
       localStorage.removeItem('access_token');

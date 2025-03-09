@@ -1,46 +1,46 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
-import {DataHolderService} from "../../../services/data/data-holder.service";
-import {HeaderComponent} from "../../../structure/header/header.component";
 import {ReactiveFormsModule} from "@angular/forms";
-import {SidebarComponent} from "../../../structure/sidebar/sidebar.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {
-  CooldownFeatures,
-  Feature,
-  feature_list, FeatureData,
-  FeatureVote,
-  FeatureVotes,
-  Tag,
-  tags
-} from "../../../services/types/navigation/WishlistTags";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faClock,
   faHashtag, faInbox,
   faLightbulb,
-  faSearch, faThumbsUp, faXmark,
+  faSearch, faThumbsUp,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {ApiService} from "../../../services/api/api.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
 import {RouterLink} from "@angular/router";
 import {Subscription} from "rxjs";
+import {
+  CooldownFeatures,
+  Feature,
+  feature_list,
+  FeatureData, FeatureVote, FeatureVotes,
+  Tag,
+  tags
+} from "../../../../services/types/navigation/WishlistTags";
+import {DataHolderService} from "../../../../services/data/data-holder.service";
+import {ApiService} from "../../../../services/api/api.service";
+import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
+import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
-    selector: 'app-wishlist',
-    imports: [
-        HeaderComponent,
-        ReactiveFormsModule,
-        SidebarComponent,
-        NgClass,
-        TranslatePipe,
-        FaIconComponent,
-        NgOptimizedImage,
-        RouterLink
-    ],
+  selector: 'app-wishlist',
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    TranslatePipe,
+    FaIconComponent,
+    NgOptimizedImage,
+    RouterLink,
+    PageThumbComponent,
+    DashboardLayoutComponent,
+    AlertBoxComponent
+  ],
     templateUrl: './wishlist.component.html',
     styleUrl: './wishlist.component.scss',
     animations: [
@@ -71,13 +71,10 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
   protected readonly faInbox: IconDefinition = faInbox;
   protected readonly faThumbsUp: IconDefinition = faThumbsUp;
   protected readonly faClock: IconDefinition = faClock;
-  protected readonly faBug: IconDefinition = faBug;
-  protected readonly faXmark: IconDefinition = faXmark;
   protected isOnCooldown: CooldownFeatures[] = [];
 
   @ViewChild('Divider') protected divider!: ElementRef<HTMLDivElement>
   @ViewChild('WishlistContainer') protected wishlistContainer!: ElementRef<HTMLDivElement>
-  @ViewChild('AlertContent') protected alertContent!: ElementRef<HTMLDivElement>
 
   protected feature_list: Feature[] = feature_list;
   protected tags: Tag[] = tags;

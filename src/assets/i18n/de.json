@@ -2,6 +2,8 @@
   "HEADER_LANDING_ITEM_BOT_SETUP": "Bot-Einrichtung",
   "HEADER_LANDING_ITEM_DASHBOARD_MOBILE": "Zum Dashboard",
 
+  "BUTTON_CACHE_REFRESH": "Cache aktualisieren",
+
   "FOOTER_LANDING_CARD_TITLE": "🚀 ~ ENTDECKE NOCH VIEL MEHR!",
   "FOOTER_LANDING_CARD_DESC": "› Wir hoffen, dass wir dich überzeugen konnten unserem süßen Discord-Bot - Clank - eine Chance zu geben, um die Erfahrung auf deinem Discord-Server erheblich zu verbessern.",
   "FOOTER_LANDING_CARD_BUTTON": "DISCORD-BOT EINLADEN",
@@ -124,6 +126,10 @@
   "PAGE_WISHLIST_TITLE": "Zukünftige Features",
   "PAGE_WISHLIST_DESC": "› Die unteren Features sind große neue Dinge, die sich von unserer Community (euch) gewünscht wurden im Laufe der Zeit und bald in den Bot integriert werden.",
 
+  "PAGE_TEAMLIST_SUBTITLE": "🚨 ~ LEGE DEINE TEAMMITGLIEDER FEST",
+  "PAGE_TEAMLIST_TITLE": "Teamliste des Bots",
+  "PAGE_TEAMLIST_DESC": "› Dieses Feature sorgt dafür, dass bestimmte Rollen Zugriff auf wichtige Moderationsfeatures erhalten & schaltet mehr Ticket-Tool Features frei.",
+
   "WISHLIST_TAG_FEATURES": "Alle Features",
   "WISHLIST_TAG_GIVEAWAYS": "Gewinnspiele & Events",
   "WISHLIST_TAG_MODULES": "Neue Module",
@@ -163,6 +169,10 @@
 
   "ERROR_VOTE_SAME_TITLE": "Keine Änderung",
   "ERROR_VOTE_SAME_DESC": "Dein Vote bleibt unverändert, da du bereits dafür gestimmt hast.",
+  "ERROR_ROLE_DELETE_TITLE": "Rolle nicht entfernt",
+  "ERROR_ROLE_DELETE_DESC": "Die Rolle <strong>{{role}}</strong> ist nicht (mehr) eingetragen als eine Team-Rolle!",
+  "ERROR_ROLE_ADD_TITLE": "Rolle ist bereits eingetragen",
+  "ERROR_ROLE_ADD_DESC": "Die Rolle <strong>{{role}}</strong> ist bereits als eine Team-Rolle mit dem <strong>{{level}}</strong> eingetragen!",
 
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
@@ -170,6 +180,10 @@
 
   "SUCCESS_VOTE_TITLE": "Erfolgreich abgestimmt",
   "SUCCESS_VOTE_DESC": "Dein Vote wurde gespeichert - Danke fürs teilnehmen!",
+  "SUCCESS_ROLE_DELETE": "Team-Rolle entfernt",
+  "SUCCESS_ROLE_DELETE_DESC": "Die Rolle <strong>{{role}}</strong> hat nun keinen Zugriff mehr auf Clank-Team Features.",
+  "SUCCESS_ROLE_ADD": "Team-Rolle hinzugefügt",
+  "SUCCESS_ROLE_ADD_DESC": "Die Rolle <strong>{{role}}</strong> wurde mit dem <strong>{{level}}</strong> eingetragen.",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Gewinnspiele & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server-Sicherheit",
@@ -266,5 +280,22 @@
   "PLACEHOLDER_SEARCH_EMPTY": "Keine Ergebnisse gefunden..",
   "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Wähle einen Server aus..",
   "PLACEHOLDER_PICK_SERVER_DESC": "› Klicke in der <strong>linken Seitenleiste</strong> auf einen Server, um fortzufahren.",
-  "PLACEHOLDER_MEMBER_STATS": "{{members}} Mitglieder ({{online}} online)"
+  "PLACEHOLDER_MEMBER_STATS": "{{members}} Mitglieder ({{online}} online)",
+
+  "PLACEHOLDER_ROLE_SEARCH": "Nach Rolle suchen.. 🤔",
+  "PLACEHOLDER_BUTTON_ROLE_ADD": "Rolle hinzufügen",
+  "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Rolle hinzufügen",
+  "PLACEHOLDER_ROLE_MODAL_PICK": "Welche Rolle möchtest du hinzufügen?",
+  "PLACEHOLDER_ROLE_MODAL_DEFAULT": "👥 - Wähle eine Discord-Rolle aus..",
+  "PLACEHOLDER_ROLE_MODAL_LEVEL": "Support-Level wählen",
+  "PLACEHOLDER_ROLE_MODAL_FIRST": "🚑 Helfer",
+  "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
+  "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
+  "PLACEHOLDER_ROLE_EMPTY": "😭 ~ Keine Rollen gefunden..",
+  "PLACEHOLDER_ROLE_FIRST": "Wenig Rechte",
+  "PLACEHOLDER_ROLE_SECOND": "Mehr Rechte",
+  "PLACEHOLDER_ROLE_THIRD": "Admin-Rechte",
+
+  "PLACEHOLDER_BUTTON_SAVE": "Änderungen speichern",
+  "PLACEHOLDER_ACTION": "Aktion"
 }
