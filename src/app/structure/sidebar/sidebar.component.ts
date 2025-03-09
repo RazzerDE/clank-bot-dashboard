@@ -92,9 +92,9 @@ export class SidebarComponent implements AfterViewInit {
 
   constructor(protected authService: AuthService, protected dataService: DataHolderService,
               private discordService: ComService, private router: Router) {
-    // initialize navigation pages to allow expanding/collapsing & automatically expand group if current page is in that group
+    // initialize navigation pages to allow expanding/collapsing & automatically expand group if the third (or later) page is in that group
     this.navigation.forEach(group => {
-      this.expandedGroups[group.category] = group.pages.some(page =>
+      this.expandedGroups[group.category] = group.pages.slice(2).some(page =>
         window.location.href.endsWith(page.redirect_url)
       );
     });

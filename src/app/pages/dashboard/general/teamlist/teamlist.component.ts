@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -30,11 +30,12 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
   styleUrl: './teamlist.component.scss'
 })
 export class TeamlistComponent implements OnDestroy {
-  protected activeTab: number = 0;
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faXmark: IconDefinition = faXmark;
+  protected readonly faRefresh: IconDefinition = faRefresh;
+  protected activeTab: number = 0;
 
   protected roles: Role[] = [];
   protected filteredRoles: Role[] = [];
@@ -42,7 +43,17 @@ export class TeamlistComponent implements OnDestroy {
 
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private subscriptions: Subscription[] = [];
+
   protected disabledCacheBtn: boolean = false;
+  protected isRolePickerValid: boolean = false;
+
+  @ViewChild('rolePicker') protected rolePicker!: ElementRef<HTMLSelectElement>;
+  @ViewChild('filterDropdown') protected filterDropdown!: ElementRef<HTMLDivElement>;
+  @ViewChild('dropdownButton') protected dropdownButton!: ElementRef<HTMLButtonElement>;
+  @ViewChild('roleModal') protected roleModal!: ElementRef<HTMLDivElement>;
+  @ViewChild('roleModalContent') protected modalContent!: ElementRef<HTMLDivElement>;
+  @ViewChild('roleBackdrop') protected roleBackdrop!: ElementRef<HTMLDivElement>;
+  @ViewChild('roleButton') protected roleButton!: ElementRef<HTMLButtonElement>;
 
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router,
               private translate: TranslateService) {
@@ -66,6 +77,17 @@ export class TeamlistComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  /**
+   * Validates the role picker selection.
+   *
+   * This method checks the value of the role picker element and sets the `isRolePickerValid`
+   * property to `true` if a valid role is selected, otherwise sets it to `false`.
+   */
+  validateRolePicker(): void {
+    const selectedRole: string = this.rolePicker.nativeElement.value;
+    this.isRolePickerValid = selectedRole !== '' && selectedRole !== '👥 - Wähle eine Discord-Rolle aus..';
   }
 
   /**
@@ -112,7 +134,6 @@ export class TeamlistComponent implements OnDestroy {
     this.discordService.getTeamRoles(this.dataService.active_guild!.id).then((observable) => {
       const subscription: Subscription = observable.subscribe({
         next: (roles: TeamList): void => {
-          console.log(roles);
           this.roles = roles.team_roles;
           this.filteredRoles = roles.team_roles;
           this.discordRoles = roles.other_roles;
@@ -214,6 +235,14 @@ export class TeamlistComponent implements OnDestroy {
     });
   }
 
+  addRole(options: HTMLCollectionOf<HTMLOptionElement>): void {
+    console.log(options);
+    // TODO:
+    // 5. rolle hinzufügen endpunkt
+    // 6. in frontend hinzufügen
+    // 7. alert bei erfolgreich/fehlschlag
+  }
+
   /**
    * Toggles the support level selection based on the checkbox event.
    *
@@ -258,5 +287,25 @@ export class TeamlistComponent implements OnDestroy {
     }
   }
 
-  protected readonly faRefresh = faRefresh;
+  /**
+   * Handles document click events to close some dropdown or modals if the user clicks outside of them.
+   *
+   * @param {MouseEvent} event - The click event triggered on the document.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // "support-level" filter dropdown
+    let clickedInside: boolean = this.filterDropdown.nativeElement.contains(event.target as Node) ||
+      this.dropdownButton.nativeElement.contains(event.target as Node);
+    if (!clickedInside) {
+      this.filterDropdown.nativeElement.classList.add('hidden');
+    }
+
+    // role modal
+    clickedInside = this.modalContent.nativeElement.contains(event.target as Node);
+    if (!clickedInside && document.activeElement != this.roleButton.nativeElement) {
+      this.roleModal.nativeElement.classList.add('hidden');
+      this.roleBackdrop.nativeElement.classList.add('hidden');
+    }
+  }
 }
