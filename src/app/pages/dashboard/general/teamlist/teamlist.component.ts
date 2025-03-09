@@ -322,11 +322,11 @@ export class TeamlistComponent implements OnDestroy {
   getSupportLevel(supportLevel: number): string {
     switch (supportLevel) {
       case 1:
-        return '🚔 - Second Level (Mehr Rechte)';
+        return `🚔 - Second Level (${this.translate.instant('PLACEHOLDER_ROLE_SECOND')})`;
       case 2:
-        return '🚨 - Third Level (Admin-Rechte)';
+        return `🚨 - Third Level (${this.translate.instant('PLACEHOLDER_ROLE_THIRD')})`;
       default:
-        return '🚑 - First Level (Wenig Rechte)';
+        return `🚑 - First Level (${this.translate.instant('PLACEHOLDER_ROLE_FIRST')})`;
     }
   }
 

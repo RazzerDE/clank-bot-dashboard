@@ -26,7 +26,7 @@
                     <div class="flex-1 ml-4 lg:ml-0 ">
                       <div class="relative self-center">
                         <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                        <input type="text" [placeholder]="'Nach Rolle suchen.. 🤔'" (keyup)="searchRole($event)"
+                        <input type="text" [placeholder]="'PLACEHOLDER_ROLE_SEARCH' | translate" (keyup)="searchRole($event)"
                                class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                             dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
                       </div>
@@ -39,8 +39,7 @@
                                                via-red-600 to-red-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
                                                focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br" #roleButton
                             (click)="roleModal.classList.remove('hidden'); roleBackdrop.classList.remove('hidden')">
-                      <fa-icon [icon]="faPlus" class="me-2"></fa-icon>
-                      Rolle hinzufügen
+                      <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_ROLE_ADD' | translate }}
                     </button>
 
                     <!-- Refresh cache Button -->
@@ -60,7 +59,9 @@
                         <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700">
                           <!-- Modal header -->
                           <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                            <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">📚 - Rolle hinzufügen</p>
+                            <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+                              {{ 'PLACEHOLDER_ROLE_MODAL_TITLE' | translate }}
+                            </p>
                             <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
                                                        hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex
                                                          justify-center items-center dark:hover:!bg-gray-600
@@ -74,7 +75,9 @@
                           <div class="p-4 md:p-5">
                             <div class="space-y-4 flex flex-col">
 
-                              <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">Welche Rolle möchtest du hinzufügen?</label>
+                              <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+                                {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
+                              </label>
                               <div class="relative">
                                 <select #rolePicker id="rolepicker" (change)="validateRolePicker()"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
@@ -82,7 +85,7 @@
                                                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white appearance-none
                                                 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-500
                                                 cursor-pointer">
-                                  <option selected="" disabled>👥 - Wähle eine Discord-Rolle aus..</option>
+                                  <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
                                   @for (role of discordRoles; track role.id) {
                                     <option value="{{ role.id }}">{{ role.name }}</option>
                                   }
@@ -94,7 +97,9 @@
 
                               <hr class="mt-4 w-11/12 self-center">
                               <div>
-                                <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Support-Level wählen</label>
+                                <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                  {{ 'PLACEHOLDER_ROLE_MODAL_LEVEL' | translate }}
+                                </label>
                                 <div class="w-full">
                                   <div class="relative right-0">
                                     <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
@@ -108,7 +113,9 @@
                                                     transition-all ease-in-out rounded-md cursor-pointer bg-inherit
                                                     text-gray-900 dark:text-white duration-100"
                                              [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
-                                             [innerText]="$index == 0 ? '🚑 Helfer' : $index == 1 ? '🚔 Moderator' : '🚨 Admin'">
+                                             [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
+                                                          $index == 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
+                                                                        ('PLACEHOLDER_ROLE_MODAL_THIRD' | translate)">
                                           </a>
                                         </li>
                                       }
@@ -122,7 +129,7 @@
                                              py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
                                              transition-colors duration-100 dark:focus:ring-blue-800 text-sm px-5"
                                       (click)="addRole(rolePicker.selectedOptions.item(0)!);" [disabled]="!isRolePickerValid">
-                                Änderungen speichern
+                                {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
                               </button>
                             </div>
                           </div>
@@ -184,14 +191,14 @@
                                                transition-colors duration-300">✏️ ~ Name</th>
                         <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
                                                transition-colors duration-300">🦺 ~ Support-Level</th>
-                        <th scope="col" class="px-4 py-3">🚀 ~ Aktion</th>
+                        <th scope="col" class="px-4 py-3">🚀 ~ {{ 'PLACEHOLDER_ACTION' | translate }}</th>
                       </tr>
                     </thead>
 
                     <tbody class="overflow-y-auto">
                       @if (filteredRoles.length == 0) {
                         <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-                          <td class="px-4 py-3 text-center" colspan="3">😭 ~ Keine Rollen gefunden..</td>
+                          <td class="px-4 py-3 text-center" colspan="3">{{ 'PLACEHOLDER_ROLE_EMPTY' | translate }}</td>
                         </tr>
                       }
 

@@ -280,5 +280,22 @@
   "PLACEHOLDER_SEARCH_EMPTY": "No results found..",
   "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Pick a server..",
   "PLACEHOLDER_PICK_SERVER_DESC": "› Click on a server in the <strong>left sidebar</strong> to continue.",
-  "PLACEHOLDER_MEMBER_STATS": "{{members}} members ({{online}} online)"
+  "PLACEHOLDER_MEMBER_STATS": "{{members}} members ({{online}} online)",
+
+  "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
+  "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
+  "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",
+  "PLACEHOLDER_ROLE_MODAL_PICK": "Which role would you like to add?",
+  "PLACEHOLDER_ROLE_MODAL_DEFAULT": "👥 - Select a Discord role..",
+  "PLACEHOLDER_ROLE_MODAL_LEVEL": "Select support level",
+  "PLACEHOLDER_ROLE_MODAL_FIRST": "🚑 Helper",
+  "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
+  "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
+  "PLACEHOLDER_ROLE_EMPTY": "😭 ~ No roles found..",
+  "PLACEHOLDER_ROLE_FIRST": "Few rights",
+  "PLACEHOLDER_ROLE_SECOND": "More rights",
+  "PLACEHOLDER_ROLE_THIRD": "Admin rights",
+
+  "PLACEHOLDER_BUTTON_SAVE": "Save changes",
+  "PLACEHOLDER_ACTION": "Action"
 }
