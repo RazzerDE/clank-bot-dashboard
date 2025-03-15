@@ -133,6 +133,7 @@
   "WISHLIST_TAG_FEATURES": "Alle Features",
   "WISHLIST_TAG_GIVEAWAYS": "Gewinnspiele & Events",
   "WISHLIST_TAG_MODULES": "Neue Module",
+  "WISHLIST_TAG_MISC": "Kleinere Features",
   "WISHLIST_BUTTON_IDEA": "Idee vorschlagen",
   "WISHLIST_SEARCH_PLACEHOLDER": "Nach Feature suchen.. 🔎",
   "WISHLIST_EMPTY_TITLE": "Keine Features in dieser Kategorie gefunden..",
@@ -151,6 +152,8 @@
   "WISHLIST_FEATURE_DESC_4": "› Server sollten stark personalisierte Willkommens-Nachrichten & Join-Rollen festlegen können.",
   "WISHLIST_FEATURE_NAME_5": "Musik-Funktionalität",
   "WISHLIST_FEATURE_DESC_5": "› User sollen Musik abspielen können, indem sie die YouTube-API o.ä. verwenden.",
+  "WISHLIST_FEATURE_NAME_6": "AFK-System",
+  "WISHLIST_FEATURE_DESC_6": "› User können sich als \"abwesend\" markieren, wodurch für andere Mitglieder klarer sichtbar ist, wer gerade Zeit hat.",
 
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",

@@ -1,6 +1,6 @@
 <button aria-label="Theme-Switch" class="rounded-full focus:outline-none focus:shadow-outline-red text-red-500
                                              hover:bg-gray-500 dark:hover:bg-gray-700 hover:bg-opacity-20 p-2
-                                             transition duration-300 ease-in-out animate-rotate"
+                                             transition duration-300 ease-in-out animate-rotate mt-[2px]"
         [ngClass]="{'rotate-left': !this.dataService.isDarkTheme, 'rotate-right': this.dataService.isDarkTheme}"
         (click)="this.dataService.toggleTheme()">
   @if (!this.dataService.isDarkTheme) {

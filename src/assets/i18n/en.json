@@ -133,6 +133,7 @@
   "WISHLIST_TAG_FEATURES": "All Features",
   "WISHLIST_TAG_GIVEAWAYS": "Giveaways & Events",
   "WISHLIST_TAG_MODULES": "New Modules",
+  "WISHLIST_TAG_MISC": "Small features",
   "WISHLIST_BUTTON_IDEA": "Suggest Idea",
   "WISHLIST_SEARCH_PLACEHOLDER": "Search for feature.. 🔎",
   "WISHLIST_EMPTY_TITLE": "No features found in this category..",
@@ -151,6 +152,8 @@
   "WISHLIST_FEATURE_DESC_4": "› Servers should be able to set highly personalized welcome messages & join roles.",
   "WISHLIST_FEATURE_NAME_5": "Music Functionality",
   "WISHLIST_FEATURE_DESC_5": "› Users should be able to play music using the YouTube API or similar.",
+  "WISHLIST_FEATURE_NAME_6": "AFK System",
+  "WISHLIST_FEATURE_DESC_6": "› Users can mark themselves as \"away\", making it clearer to other members who is currently available.",
 
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login expired!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Please log in again to use the dashboard.",
