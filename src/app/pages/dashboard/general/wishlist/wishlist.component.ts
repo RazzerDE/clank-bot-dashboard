@@ -83,6 +83,8 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
+    document.title = "Wishlist ~ Clank Discord-Bot";
+
     this.dataService.hideGuildSidebar = false;
     this.dataService.showAlertBox = false;
   }

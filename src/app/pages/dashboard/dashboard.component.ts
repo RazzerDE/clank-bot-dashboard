@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../services/data/data-holder.service";
-import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {ApiService} from "../../services/api/api.service";
@@ -34,7 +34,7 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
         ])
     ]
 })
-export class DashboardComponent implements AfterViewInit, OnDestroy {
+export class DashboardComponent implements OnDestroy {
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
   protected tasks: Tasks[] = tasks;
@@ -57,8 +57,8 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   protected disabledCacheBtn: boolean = false;
 
-  constructor(protected dataService: DataHolderService, private translate: TranslateService,
-              private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService) {
+    document.title = "Dashboard ~ Clank Discord-Bot";
     this.dataService.isLoading = true;
     this.dataService.hideGuildSidebar = false;
 
@@ -70,17 +70,6 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
     });
 
     this.subscriptions.push(sub);
-  }
-
-  /**
-   * Lifecycle hook that is called after the component's view has been fully initialized.
-   * Subscribes to language change events and updates the document title accordingly.
-   * Also sets the `isLoading` flag in the `DataHolderService` to `false` after the language change event.
-   */
-  ngAfterViewInit(): void {
-    this.translate.onLangChange.subscribe((): void => {
-      document.title = "Dashboard ~ Clank Discord-Bot";
-    });
   }
 
   /**
