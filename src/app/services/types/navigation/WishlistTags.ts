@@ -44,7 +44,7 @@ export let tags: Tag[] = [
   { id: 2, name: 'Support-Tool', color: '#2980b9', isActive: false },
   { id: 3, name: 'Security-System', color: '#c0392b', isActive: false },
   { id: 4, name: 'WISHLIST_TAG_GIVEAWAYS', color: '#8e44ad', isActive: false },
-  { id: 5, name: 'WISHLIST_TAG_MODULES', color: '#27ae60', isActive: false },
+  { id: 5, name: 'WISHLIST_TAG_MODULES', color: '#16a085', isActive: false },
   { id: 6, name: 'WISHLIST_TAG_MISC', color: '#2c3e50', isActive: false }
 ];
 
