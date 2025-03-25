@@ -16,6 +16,7 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
 export class ModuleSetupComponent {
   // 0 = Not started, 1 = In progress, 2 = Completed (TODO: Real data)
   protected moduleStatus: 0 | 1 | 2 = 0;
+  protected currentStep: 1 | 2 | 3 = 1; // TODO
 
   constructor(private dataService: DataHolderService) {
     document.title = 'Support Setup ~ Clank Discord-Bot';
