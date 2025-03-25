@@ -1,7 +1,35 @@
 <dashboard-layout>
+  <!--
+  TODO:
+  - translations
+  - unit-testing
+  -->
 
   <!-- Body -->
   <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+
+    <!-- Status Box -->
+    <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg dark:bg-gray-800 justify-center flex-col"
+    [ngClass]="moduleStatus == 2 ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
+                                   moduleStatus == 0 ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
+                                   'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
+      <img class="shrink-0 inline" alt="Modul Status Icon ~ Clank Discord Bot" height="64" width="64"
+           [ngSrc]="moduleStatus == 2 ? '/assets/img/icons/check2.png' :
+                    moduleStatus == 1 ? '/assets/img/icons/warning.png' : '/assets/img/icons/error.png'"
+           [ngClass]="moduleStatus == 1 ? 'w-14 h-14 mb-2' : 'w-10 h-10 mb-3'"/>
+      <h4 class="font-medium mb-2 !text-green-800 dark:!text-green-400"
+          [ngClass]="moduleStatus == 2 ? '!text-green-800 dark:!text-green-400' :
+                     moduleStatus == 0 ? '!text-red-800 dark:!text-red-400' : '' +
+                                         '!text-yellow-800 dark:!text-yellow-300'">
+        MODUL VOLLSTÄNDIG EINGERICHTET!
+      </h4>
+      Du hast alle Empfohlenen Einstellungen vorgenommen und das Support-System kann nun genutzt werden.
+    </div>
+
+    <!-- Main Content Box -->
+    <div class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 overflow-auto m-4">
+      <!-- Content goes here -->
+    </div>
 
   </section>
 
