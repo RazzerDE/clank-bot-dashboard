@@ -1,10 +1,10 @@
 <dashboard-layout>
   <!--
   TODO:
-  - translations
   - unit-testing
   - forum channel set action
 
+  - responsiveness (bei mobile zeile unter zeile statt nebeneinander)
   - seitenleiste zeigt server, wo clank nicht drauf ist
   - bessere methode für isLoading suchen.. Man sieht den Seitenaufbau
   - KRITISCH: Beim direkten aufruf der seite immer 429 ratelimit wegen discord perm check
@@ -27,9 +27,9 @@
           [ngClass]="moduleStatus == 2 ? '!text-green-800 dark:!text-green-400' :
                      moduleStatus == 0 ? '!text-red-800 dark:!text-red-400' : '' +
                                          '!text-yellow-800 dark:!text-yellow-300'">
-        {{ statusTitle }}
+        {{ 'PAGE_SETUP_MODULE_TITLE_' + moduleStatus | translate }}
       </h4>
-      {{ statusText }}
+      {{ 'PAGE_SETUP_MODULE_DESC_' + moduleStatus | translate }}
     </div>
 
     <!-- Main Content Box -->
@@ -48,7 +48,8 @@
               <span class="ml-2 w-52 transition-colors duration-500" [ngClass]="{'text-blue-600 font-medium': currentStep === $index + 1,
                     'text-green-600 dark:!text-green-800 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index].finished,
                     'text-red-600 dark:!text-red-400 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index] && !this.moduleStatusObj.subtasks[$index].finished}">
-                {{ $index == 0 ? 'Support-Forum festlegen' : $index == 1 ? 'Ticket-Themen erstellen' : 'Server-Team festlegen' }}
+                {{ $index == 0 ? ('PLACEHOLDER_TAB_FORUM' | translate) :
+                $index == 1 ? ('PLACEHOLDER_TAB_THEMES' | translate) : ('PLACEHOLDER_TAB_TEAM' | translate) }}
               </span>
             </a>
 
@@ -64,8 +65,10 @@
       <div class="mt-10 flex">
         <!-- Discord Channels Container -->
         <div class="w-1/2 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mr-6 transition-colors duration-500">
-          <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200 transition-colors duration-500">🗂️ ~ Forenkanäle auf deinem Server</h3>
-          <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-2 h-[calc(100vh-509px)] overflow-y-auto transition-colors duration-500">
+          <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200 transition-colors duration-500">
+            {{ 'PAGE_SETUP_RIGHT_TITLE' | translate }}
+          </h3>
+          <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-2 h-[calc(100vh-515px)] overflow-y-auto transition-colors duration-500">
 
             <!-- Channel Items -->
             <div class="space-y-2">
@@ -92,10 +95,8 @@
                 <div class="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-540px)]">
                   <img ngSrc="assets/img/confusion.png" class="h-16 w-16 mb-3" height="256" width="256"
                        alt="Keine Kanäle ~ Clank Discord-Bot"/>
-                  <p class="text-gray-500 dark:text-gray-400 text-xl mb-2">Keine Forenkanäle gefunden..</p>
-                  <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Erstelle einen Forum-Kanal (Anleitung
-                    <a href="https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M" class="text-blue-700 dark:text-blue-400">hier</a>)
-                    auf deinem Discord-Server oder aktualisiere die Liste.</p>
+                  <p class="text-gray-500 dark:text-gray-400 text-xl mb-2">{{ 'PLACEHOLDER_NO_FORUM_CHANNELS' | translate }}</p>
+                  <p class="text-sm text-gray-400 dark:text-gray-500 mt-1" [innerHTML]="'PLACEHOLDER_NO_FORUM_CHANNELS_DESC' | translate"></p>
                 </div>
               }
             </div>
@@ -104,27 +105,19 @@
 
         <!-- Channel Picker Information -->
         <div class="w-1/2 mt-3">
-          <h2 class="text-xl mb-2 text-gray-800 dark:text-gray-100 transition-colors duration-500">🚓 ~ SUPPORT-FORUM FESTLEGEN</h2>
-          <p class="text-gray-700 dark:text-gray-300 mb-3 transition-colors duration-500">
-            › Innerhalb des Support-Forums landen alle Tickets, welche von Usern auf deinem Discord-Server erstellt wurden
-            - dieser sollte nur sichtbar für das Server-Team sein, da diese hier sich um die Support-Anfragen kümmern werden.
-            <br /><br />
-            › Es gibt <strong>2 Möglichkeiten</strong> wie User Tickets erstellen können:
-            <span class="list-disc relative left-4">
-              <li>Sie senden dem Discord-Bot eine private Nachricht.</li>
-              <li>Sie wählen ein Support-Thema in einem Panel aus (Mehr
-                <a routerLink="/dashboard/support/panels" class="text-blue-700 dark:text-blue-400">dazu</a> hier).</li>
-            </span>
-            <br />
-            Die Erstellung von Panels und Support-Themen ist <strong>NICHT</strong> notwendig um das System zu aktivieren, aber
-            es hilft dem Server-Team erstellte Tickets besser zu kategorisieren.
+          <h2 class="text-xl mb-2 text-gray-800 dark:text-gray-100 transition-colors duration-500">
+            {{ 'PAGE_SETUP_LEFT_TITLE' | translate }}
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 mb-3 transition-colors duration-500"
+             [innerHTML]="('PAGE_SETUP_LEFT_DESC' | translate) + '<br /><br />' + ('PAGE_SETUP_LEFT_LIST' | translate)
+                          + '<br />' + ('PAGE_SETUP_LEFT_OUTRO' | translate)">
           </p>
 
           @if (this.supportForum) {
-            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg">
+            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg transition-colors duration-500">
               <div class="flex justify-between items-center">
                 <p class="text-gray-700 dark:text-gray-300 transition-colors duration-500 mb-0 p-0">
-                  <strong>✅ ~ Aktuell festgelegter Forumkanal:</strong>
+                  <strong>{{ 'PAGE_SETUP_CHANNEL_INFO' | translate }}</strong>
                   <code class="ml-2 font-medium">#{{ supportForum!.name}}</code>
                 </p>
                 <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">{{ supportForum!.id}}</span>
@@ -138,13 +131,13 @@
               <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="!selectedChannelId"
                       [ngClass]="selectedChannelId && this.selectedChannelId != this.supportForum!.id
                       ? 'text-white bg-green-600 hover:bg-green-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'">
-                {{ this.supportForum ? 'Forumkanal ändern' : 'Forumkanal festlegen' }}
+                {{ this.supportForum ? ('PLACEHOLDER_BUTTON_CHANNEL_EDIT' | translate) : ('PLACEHOLDER_BUTTON_CHANNEL_SET' | translate) }}
               </button>
             }
             <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="cacheRefreshDisabled"
                     [ngClass]="!cacheRefreshDisabled ? 'text-white bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'"
                     (click)="refreshCache()">
-              Kanal-Liste aktualisieren
+              {{ 'PLACEHOLDER_BUTTON_CHANNEL_REFRESH' | translate }}
             </button>
           </div>
         </div>
@@ -153,5 +146,4 @@
 
 
   </section>
-
 </dashboard-layout>

@@ -130,6 +130,19 @@
   "PAGE_TEAMLIST_TITLE": "Bot's Team List",
   "PAGE_TEAMLIST_DESC": "› This feature ensures that certain roles have access to important moderation features & unlocks more ticket tool features.",
 
+  "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
+  "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",
+  "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM ACTIVE - IMPROVEMENTS POSSIBLE!",
+  "PAGE_SETUP_MODULE_DESC_1": "Support tickets can be created, but there are still recommended settings to make your work easier.",
+  "PAGE_SETUP_MODULE_TITLE_2": "MODULE FULLY SET UP!",
+  "PAGE_SETUP_MODULE_DESC_2": "You have made all the recommended settings and the support system can now be used.",
+  "PAGE_SETUP_RIGHT_TITLE": "📂 ~ Forum Channels on your Server",
+  "PAGE_SETUP_CHANNEL_INFO": "✅ ~ Currently set forum channel:",
+  "PAGE_SETUP_LEFT_TITLE": "🚓 ~ SET SUPPORT FORUM",
+  "PAGE_SETUP_LEFT_DESC": "› All tickets created by users on your Discord server will be placed in the support forum - this should only be visible to the server team, as they will handle the support requests here.",
+  "PAGE_SETUP_LEFT_LIST": "› There are <strong>2 ways</strong> users can create tickets:<span class=\"list-disc relative left-4\"><li>They send a private message to the Discord bot.</li><li>They select a support topic in a panel (More <a href=\"/dashboard/support/panels\" class=\"text-blue-700 dark:text-blue-400 cursor-pointer\">about this</a> here).</li></span>",
+  "PAGE_SETUP_LEFT_OUTRO": "Creating panels and support topics is <strong>NOT</strong> necessary to activate the system, but it helps the server team to better categorize created tickets.",
+
   "WISHLIST_TAG_FEATURES": "All Features",
   "WISHLIST_TAG_GIVEAWAYS": "Giveaways & Events",
   "WISHLIST_TAG_MODULES": "New Modules",
@@ -284,6 +297,9 @@
   "PLACEHOLDER_PICK_SERVER_TITLE": "😴 ~ Pick a server..",
   "PLACEHOLDER_PICK_SERVER_DESC": "› Click on a server in the <strong>left sidebar</strong> to continue.",
   "PLACEHOLDER_MEMBER_STATS": "{{members}} members ({{online}} online)",
+  "PLACEHOLDER_TAB_FORUM": "Set Support Forum",
+  "PLACEHOLDER_TAB_THEMES": "Create Ticket Themes",
+  "PLACEHOLDER_TAB_TEAM": "Set Server Team",
 
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
@@ -298,7 +314,12 @@
   "PLACEHOLDER_ROLE_FIRST": "Few rights",
   "PLACEHOLDER_ROLE_SECOND": "More rights",
   "PLACEHOLDER_ROLE_THIRD": "Admin rights",
+  "PLACEHOLDER_NO_FORUM_CHANNELS": "No forum channels found..",
+  "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Create a forum channel (Instructions <a href=\"https://support.discord.com/hc/en-us/articles/6208479917079-Forum-Channels-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">here</a>) on your Discord server or refresh the list.",
 
   "PLACEHOLDER_BUTTON_SAVE": "Save changes",
+  "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Edit forum channel",
+  "PLACEHOLDER_BUTTON_CHANNEL_SET": "Set forum channel",
+  "PLACEHOLDER_BUTTON_CHANNEL_REFRESH": "Refresh channel list",
   "PLACEHOLDER_ACTION": "Action"
 }

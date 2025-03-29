@@ -8,6 +8,7 @@ import {ApiService} from "../../../../services/api/api.service";
 import {SubTasksCompletion, TasksCompletion, TasksCompletionList} from "../../../../services/types/Tasks";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Channel, SupportSetup} from "../../../../services/types/discord/Guilds";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-module-setup',
@@ -15,7 +16,8 @@ import {Channel, SupportSetup} from "../../../../services/types/discord/Guilds";
     DashboardLayoutComponent,
     NgOptimizedImage,
     NgClass,
-    RouterLink
+    RouterLink,
+    TranslatePipe
   ],
   templateUrl: './module-setup.component.html',
   styleUrl: './module-setup.component.scss'
@@ -30,9 +32,6 @@ export class ModuleSetupComponent implements OnDestroy {
   protected cacheRefreshDisabled: boolean = false;
   protected moduleStatusObj: TasksCompletion | undefined;
   protected supportForum: Channel | undefined;
-
-  protected statusTitle: string = 'MODUL NICHT AKTIV!';
-  protected statusText: string = 'Du hast alle Empfohlenen Einstellungen vorgenommen und das Support-System kann nun genutzt werden.';
 
   constructor(private dataService: DataHolderService, private apiService: ApiService) {
     document.title = 'Support Setup ~ Clank Discord-Bot';
@@ -152,9 +151,6 @@ export class ModuleSetupComponent implements OnDestroy {
     // all tasks finished
     if (this.moduleStatusObj.finished) {
       this.moduleStatus = 2;
-      this.statusTitle = 'MODUL VOLLSTÄNDIG EINGERICHTET!';
-      this.statusText = 'Du hast alle Empfohlenen Einstellungen vorgenommen und das Support-System kann nun genutzt werden.';
-      return;
     }
 
     // subtasks incomplete
@@ -162,12 +158,8 @@ export class ModuleSetupComponent implements OnDestroy {
       // check if support channel was set; if not, critical error
       if (this.moduleStatusObj.subtasks[0]?.finished === false) {
         this.moduleStatus = 0;
-        this.statusTitle = 'MODUL NICHT AKTIV!';
-        this.statusText = 'Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.';
       } else {
         this.moduleStatus = 1;
-        this.statusTitle = 'SYSTEM AKTIV - VERBESSERUNGEN MÖGLICH!';
-        this.statusText = 'Support-Tickets können erstellt werden, aber es sind noch Einstellungen empfohlen, die eure Arbeit erleichtern.';
       }
     }
   }
