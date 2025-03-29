@@ -3,12 +3,12 @@
   TODO:
   - translations
   - unit-testing
-  - discord channel container empty info
   - forum channel set action
 
   - seitenleiste zeigt server, wo clank nicht drauf ist
   - bessere methode für isLoading suchen.. Man sieht den Seitenaufbau
   - KRITISCH: Beim direkten aufruf der seite immer 429 ratelimit wegen discord perm check
+  - Caused by: java.sql.SQLNonTransientConnectionException: No operations allowed after connection closed. (vllt schuld an lange wartezeit bei page load?)
   -->
 
   <!-- Body -->
@@ -69,23 +69,34 @@
 
             <!-- Channel Items -->
             <div class="space-y-2">
-              @for (item of channelItems; track $index) {
-                <!-- Channel Item -->
-                <div class="flex items-center justify-between p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600
-                            cursor-pointer transition-colors duration-500"
-                     [ngClass]="{'bg-blue-200 dark:bg-blue-900': selectedChannelId === item.id}" (click)="selectChannel(item.id)">
-                <div class="flex items-center">
-                  <img ngSrc="assets/img/icons/utility/discord-forum.svg" class="mt-1 h-5 w-5" height="20" width="20"
-                       alt="Discord Forum Icon ~ Clank Discord-Bot"/>
-                  <span class="ml-2 text-gray-800 dark:text-gray-200 transition-colors duration-500">{{ item.name }}</span>
-                </div>
-                <span class="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-500">{{ item.id }}</span>
-              </div>
+              @if (channelItems.length > 0) {
+                @for (item of channelItems; track $index) {
+                  <!-- Channel Item -->
+                  <div class="flex items-center justify-between p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600
+                      cursor-pointer transition-colors duration-500"
+                       [ngClass]="{'bg-blue-200 dark:bg-blue-900': selectedChannelId === item.id}" (click)="selectChannel(item.id)">
+                    <div class="flex items-center">
+                      <img ngSrc="assets/img/icons/utility/discord-forum.svg" class="mt-1 h-5 w-5" height="20" width="20"
+                           alt="Discord Forum Icon ~ Clank Discord-Bot"/>
+                      <span class="ml-2 text-gray-800 dark:text-gray-200 transition-colors duration-500">{{ item.name }}</span>
+                    </div>
+                    <span class="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-500">{{ item.id }}</span>
+                  </div>
 
-                <!-- Divider -->
-                @if ($index < channelItems.length - 1) {
-                  <div class="h-px bg-gray-300 dark:bg-gray-500"></div>
+                  <!-- Divider -->
+                  @if ($index < channelItems.length - 1) {
+                    <div class="h-px bg-gray-300 dark:bg-gray-500"></div>
+                  }
                 }
+              } @else {
+                <div class="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-540px)]">
+                  <img ngSrc="assets/img/confusion.png" class="h-16 w-16 mb-3" height="256" width="256"
+                       alt="Keine Kanäle ~ Clank Discord-Bot"/>
+                  <p class="text-gray-500 dark:text-gray-400 text-xl mb-2">Keine Forenkanäle gefunden..</p>
+                  <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Erstelle einen Forum-Kanal (Anleitung
+                    <a href="https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M" class="text-blue-700 dark:text-blue-400">hier</a>)
+                    auf deinem Discord-Server oder aktualisiere die Liste.</p>
+                </div>
               }
             </div>
           </div>
