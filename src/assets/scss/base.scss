@@ -28,12 +28,12 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  @apply rounded;
+  @apply rounded transition-colors duration-500;
   @apply bg-gray-900 dark:bg-gray-400;
 }
 
 *::-webkit-scrollbar-track {
-  @apply rounded;
+  @apply rounded transition-colors duration-500;
   @apply bg-gray-300 dark:bg-gray-600;
 }
 

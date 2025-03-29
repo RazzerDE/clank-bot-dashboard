@@ -10,7 +10,7 @@
   <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
     <!-- Status Box -->
-    <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg dark:bg-gray-800 justify-center flex-col"
+    <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg dark:bg-gray-800 justify-center flex-col transition-colors duration-500"
     [ngClass]="moduleStatus == 2 ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
                                    moduleStatus == 0 ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
                                    'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
@@ -28,7 +28,7 @@
     </div>
 
     <!-- Main Content Box -->
-    <div class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 m-4">
+    <div class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 m-4 transition-colors duration-500">
       <div class="flex items-center mb-4 justify-between mx-12">
         @for (_ of [].constructor(3); track $index) {
           <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500">
@@ -52,22 +52,23 @@
       <!-- Wizard Content -->
       <div class="mt-12 flex">
         <!-- Discord Channels Container TODO: real data -->
-        <div class="w-1/2 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mr-6">
-          <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200">🗂️ ~ Forenkanäle auf deinem Server</h3>
-          <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-2 h-[calc(100vh-550px)] overflow-y-auto">
+        <div class="w-1/2 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mr-6 transition-colors duration-500">
+          <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200 transition-colors duration-500">🗂️ ~ Forenkanäle auf deinem Server</h3>
+          <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-2 h-[calc(100vh-550px)] overflow-y-auto transition-colors duration-500">
 
             <!-- Channel Items -->
             <div class="space-y-2">
               @for (item of channelItems; track $index) {
                 <!-- Channel Item -->
-                <div class="flex items-center justify-between p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer"
+                <div class="flex items-center justify-between p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600
+                            cursor-pointer transition-colors duration-500"
                      [ngClass]="{'bg-blue-200 dark:bg-blue-900': selectedChannelId === item.id}" (click)="selectChannel(item.id)">
                 <div class="flex items-center">
                   <img ngSrc="assets/img/icons/utility/discord-forum.svg" class="mt-1 h-5 w-5" height="20" width="20"
                        alt="Discord Forum Icon ~ Clank Discord-Bot"/>
-                  <span class="ml-2 text-gray-800 dark:text-gray-200">{{ item.name }}</span>
+                  <span class="ml-2 text-gray-800 dark:text-gray-200 transition-colors duration-500">{{ item.name }}</span>
                 </div>
-                <span class="text-xs text-gray-400 dark:text-gray-500">{{ item.id }}</span>
+                <span class="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-500">{{ item.id }}</span>
               </div>
 
                 <!-- Divider -->
@@ -79,25 +80,29 @@
           </div>
         </div>
 
-        <!-- Right Side Content -->
-        <div class="w-1/2">
-          <h2 class="text-xl mb-2 text-gray-800 dark:text-gray-100">Channel Management</h2>
-          <p class="text-gray-700 dark:text-gray-300 mb-6">
-            Manage your Discord channels from this interface. Select a channel from the left to edit its properties, or create a new channel using the options below.
+        <!-- Channel Picker Information -->
+        <div class="w-1/2 mt-3">
+          <h2 class="text-xl mb-2 text-gray-800 dark:text-gray-100 transition-colors duration-500">🚓 ~ SUPPORT-FORUM FESTLEGEN</h2>
+          <p class="text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-500">
+            › Innerhalb des Support-Forums landen alle Tickets, welche von Usern auf deinem Discord-Server erstellt wurden
+            - dieser sollte nur sichtbar für das Server-Team sein, da diese hier sich um die Support-Anfragen kümmern werden.
+            <br /><br />
+            › Es gibt <strong>2 Möglichkeiten</strong> wie User Tickets erstellen können:
+            <span class="list-disc relative left-4">
+              <li>Sie senden dem Discord-Bot eine private Nachricht.</li>
+              <li>Sie wählen ein Support-Thema in einem Panel aus (Mehr
+                <a routerLink="/dashboard/support/panels" class="text-blue-700 dark:text-blue-400">dazu</a> hier).</li>
+            </span>
+            <br />
+            Die Erstellung von Panels und Support-Themen ist <strong>NICHT</strong> notwendig um das System zu aktivieren, aber
+            es hilft dem Server-Team erstellte Tickets besser zu kategorisieren.
           </p>
 
-          <!-- Form or other content would go here -->
-          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-            <!-- Form content would go here -->
-          </div>
-
           <!-- Footer with buttons -->
-          <div class="mt-8 flex justify-end space-x-3">
-            <button class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">
-              Cancel
-            </button>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Save Changes
+          <div class="mt-8 flex justify-center space-x-3">
+            <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="!selectedChannelId"
+                    [ngClass]="selectedChannelId ? 'text-white bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'">
+              Forumkanal festlegen
             </button>
           </div>
         </div>

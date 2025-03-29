@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-module-setup',
   imports: [
     DashboardLayoutComponent,
     NgOptimizedImage,
-    NgClass
+    NgClass,
+    RouterLink
   ],
   templateUrl: './module-setup.component.html',
   styleUrl: './module-setup.component.scss'
