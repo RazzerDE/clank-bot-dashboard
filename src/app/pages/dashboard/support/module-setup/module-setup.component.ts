@@ -3,7 +3,7 @@ import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/d
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
-import {forkJoin, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {SubTasksCompletion, TasksCompletion, TasksCompletionList} from "../../../../services/types/Tasks";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -55,7 +55,19 @@ export class ModuleSetupComponent implements OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  getServerData(no_cache?: boolean): void {
+  /**
+   * Fetches the server data, either from cache or by making API calls.
+   *
+   * This method first checks if the `active_guild` is set in the `dataService`.
+   * If `no_cache` is true, it sets the loading state to true.
+   * It then checks if cached data is available and valid (within 5 minutes).
+   * If valid cached data is found, it uses the cached data to set the module status and channel items.
+   * If no valid cached data is found, it makes API calls to fetch the module status and support setup status.
+   * The fetched data is then cached and used to update the module status and channel items.
+   *
+   * @param no_cache Optional boolean to force fetching fresh data from the server.
+   */
+  private getServerData(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     if (no_cache) { this.dataService.isLoading = true; }
 
@@ -88,38 +100,33 @@ export class ModuleSetupComponent implements OnDestroy {
       }
     }
 
-    const sub: Subscription = forkJoin({moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id),
-                                        supportSetup: this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)})
+    const sub: Subscription = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
       .subscribe({
-        next: ({ moduleStatus, supportSetup }: { moduleStatus: TasksCompletionList, supportSetup: SupportSetup }): void => {
+        next: (moduleStatus: TasksCompletionList): void => {
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
           moduleStatus['task_1'].subtasks.pop(); // remove last element, it's not needed
           this.moduleStatusObj = moduleStatus['task_1'];
           this.updateStatus();
 
-          if (supportSetup.support_forum != null) {
-            this.supportForum = supportSetup.support_forum;
-            this.selectedChannelId = this.supportForum!.id;
-          }
+          // after first call was a success, we call the next
+          setTimeout((): void => {
+            const sub2: Subscription = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
+              .subscribe({
+                next: (supportSetup: SupportSetup): void => {
+                  if (supportSetup.support_forum != null) {
+                    this.supportForum = supportSetup.support_forum;
+                    this.selectedChannelId = this.supportForum!.id;
+                  }
 
-          this.channelItems = supportSetup['discord_channels'];
-          localStorage.setItem('supportSetup', JSON.stringify(supportSetup));
-          localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
-          this.dataService.isLoading = false;
-        },
-        error: (err: HttpErrorResponse): void => {
-          if (err.status === 403) {
-            this.dataService.redirectLoginError('FORBIDDEN');
-            return;
-          } else if (err.status === 429) {
-            this.dataService.redirectLoginError('REQUESTS');
-            return;
-          } else if (err.status === 0) {
-            this.dataService.redirectLoginError('OFFLINE');
-            return;
-          }
-          this.dataService.isLoading = false;
-        }
+                  this.channelItems = supportSetup['discord_channels'];
+                  localStorage.setItem('supportSetup', JSON.stringify(supportSetup));
+                  localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
+                  this.dataService.isLoading = false;
+                }, error: (error: HttpErrorResponse): void => this.dataService.handleApiError(error)
+              });
+
+            this.subscriptions.push(sub2); }, 1000);
+        }, error: (error: HttpErrorResponse): void => this.dataService.handleApiError(error)
       });
 
     this.subscriptions.push(sub);
@@ -128,7 +135,7 @@ export class ModuleSetupComponent implements OnDestroy {
   /**
    * Refreshes the cached data by fetching fresh data from the server.
    */
-  refreshCache(): void {
+  protected refreshCache(): void {
     this.cacheRefreshDisabled = true;
     this.dataService.isLoading = true;
     this.getServerData(true);
@@ -145,7 +152,7 @@ export class ModuleSetupComponent implements OnDestroy {
    * - Otherwise, if some subtasks are incomplete but the support channel is set up,
    *   sets the module status to "in progress" (1)
    */
-  updateStatus(): void {
+  private updateStatus(): void {
     if (!this.moduleStatusObj) { return; }
 
     // all tasks finished
