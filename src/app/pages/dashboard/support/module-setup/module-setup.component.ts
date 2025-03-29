@@ -18,7 +18,7 @@ import {RouterLink} from "@angular/router";
 export class ModuleSetupComponent {
   // 0 = Not started, 1 = In progress, 2 = Completed (TODO: Real data)
   protected moduleStatus: 0 | 1 | 2 = 2;
-  protected currentStep: 1 | 2 | 3 = 1; // TODO
+  protected currentStep: 1 | 2 | 3 = 1; // TODO if other steps done; make green
   protected channelItems: { id: number, name: string }[] = [
     { id: 123456789, name: 'test' },
     { id: 456789901, name: 'test' },
