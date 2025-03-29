@@ -39,3 +39,18 @@ export interface Role {
   // properties added by us
   support_level?: number;
 }
+
+export interface Channel {
+  id: string;
+  name: string;
+  type: number; // channel type
+  position: number; // position of this channel (channels with the same position are sorted by their IDs)
+  permission_overwrites: string[];
+  parent_id: string | null; // ID of the parent category
+  nsfw: boolean; // whether this channel is NSFW
+}
+
+export interface SupportSetup {
+  support_forum: Channel;
+  discord_channels: Channel[];
+}

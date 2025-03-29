@@ -144,12 +144,14 @@ export class SidebarComponent implements AfterViewInit {
       localStorage.removeItem('guild_team');
       localStorage.removeItem('guilds');
       localStorage.removeItem('moduleStatus');
+      localStorage.removeItem('supportSetup');
       this.dataService.active_guild = null;
 
     } else {
       localStorage.setItem('active_guild', JSON.stringify(guild));
       localStorage.removeItem('guild_team');
       localStorage.removeItem('moduleStatus');
+      localStorage.removeItem('supportSetup');
       this.dataService.active_guild = guild;
       if (!this.server_picker) return;
 

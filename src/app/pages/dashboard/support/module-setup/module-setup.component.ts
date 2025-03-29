@@ -7,6 +7,7 @@ import {forkJoin, Subscription} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {SubTasksCompletion, TasksCompletion, TasksCompletionList} from "../../../../services/types/Tasks";
 import {HttpErrorResponse} from "@angular/common/http";
+import {Channel, SupportSetup} from "../../../../services/types/discord/Guilds";
 
 @Component({
   selector: 'app-module-setup',
@@ -22,26 +23,13 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class ModuleSetupComponent implements OnDestroy {
   protected moduleStatus: 0 | 1 | 2 = 0; // 0 = Not started, 1 = In progress, 2 = Completed
   protected currentStep: 1 | 2 | 3 = 1;
-  protected channelItems: { id: number, name: string }[] = [
-    { id: 123456789, name: 'test' },
-    { id: 456789901, name: 'test' },
-    { id: 454565465, name: 'test' },
-    { id: 122432345, name: 'test' },
-    { id: 656745464, name: 'test' },
-    { id: 876856756, name: 'test' },
-    { id: 576784567, name: 'test' },
-    { id: 435546456, name: 'test' },
-    { id: 324435567, name: 'test' },
-    { id: 324436658, name: 'test' },
-    { id: 435767967, name: 'test' },
-    { id: 859465564, name: 'test' },
-    { id: 406587546, name: 'test' },
-  ]; // TODO: Real data; sort by id and alphabetically AND show active channel
+  protected channelItems: Channel[] = [];
 
-  protected selectedChannelId: number | null = null;
+  protected selectedChannelId: string | null = null;
   private subscriptions: Subscription[] = [];
   protected cacheRefreshDisabled: boolean = false;
   protected moduleStatusObj: TasksCompletion | undefined;
+  protected supportForum: Channel | undefined;
 
   protected statusTitle: string = 'MODUL NICHT AKTIV!';
   protected statusText: string = 'Du hast alle Empfohlenen Einstellungen vorgenommen und das Support-System kann nun genutzt werden.';
@@ -75,28 +63,50 @@ export class ModuleSetupComponent implements OnDestroy {
     // check if cache data is available
     const cachedStatus = localStorage.getItem('moduleStatus');
     const cachedTimestamp = localStorage.getItem('moduleStatusTimestamp');
-    if (!no_cache && cachedStatus && cachedTimestamp) {
+    const cachedSupportSetup = localStorage.getItem('supportSetup');
+    if (!no_cache && cachedStatus && cachedTimestamp && cachedSupportSetup) {
       const timestamp = parseInt(cachedTimestamp);
-      if (Date.now() - timestamp < 90000) { // 90 seconds
-        this.moduleStatusObj = JSON.parse(cachedStatus)['task_1'];
+      if (Date.now() - timestamp < 300000) { // 5 minutes
+        const moduleStatus: TasksCompletionList = JSON.parse(cachedStatus);
+        if (!moduleStatus) { localStorage.removeItem('moduleStatus'); return; }
+
+        // Remove last element from subtasks if it exists
+        if (moduleStatus && moduleStatus['task_1'].subtasks.length > 3) {
+          moduleStatus['task_1'].subtasks.pop();
+        }
+
+        const supportSetup: any = JSON.parse(cachedSupportSetup);
+        if (supportSetup['support_forum'] != null) {
+          this.supportForum = supportSetup['support_forum'];
+          this.selectedChannelId = this.supportForum!.id;
+        }
+
+        this.moduleStatusObj = moduleStatus['task_1'];
+        this.channelItems = supportSetup['discord_channels'];
         this.updateStatus();
         this.dataService.isLoading = false;
         return;
       }
     }
 
-    const sub: Subscription = forkJoin({moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
+    const sub: Subscription = forkJoin({moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id),
+                                        supportSetup: this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)})
       .subscribe({
-        next: ({ moduleStatus }: { moduleStatus: TasksCompletionList }): void => {
+        next: ({ moduleStatus, supportSetup }: { moduleStatus: TasksCompletionList, supportSetup: SupportSetup }): void => {
+          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
           moduleStatus['task_1'].subtasks.pop(); // remove last element, it's not needed
           this.moduleStatusObj = moduleStatus['task_1'];
           this.updateStatus();
 
-          this.dataService.isLoading = false;
+          if (supportSetup.support_forum != null) {
+            this.supportForum = supportSetup.support_forum;
+            this.selectedChannelId = this.supportForum!.id;
+          }
 
-          if (moduleStatus['task_1'].cached) { return; }
-          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
+          this.channelItems = supportSetup['discord_channels'];
+          localStorage.setItem('supportSetup', JSON.stringify(supportSetup));
           localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
+          this.dataService.isLoading = false;
         },
         error: (err: HttpErrorResponse): void => {
           if (err.status === 403) {
@@ -170,7 +180,7 @@ export class ModuleSetupComponent implements OnDestroy {
    *
    * @param id The ID of the channel to toggle selection for
    */
-  protected selectChannel(id: number): void {
+  protected selectChannel(id: string): void {
     this.selectedChannelId = this.selectedChannelId === id ? null : id;
   }
 

@@ -8,6 +8,7 @@ import {TasksCompletionList} from "../types/Tasks";
 import {AuthService} from "../auth/auth.service";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
+import {SupportSetup} from "../types/discord/Guilds";
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,21 @@ export class ApiService {
     } catch (error) { console.error('Cache reading error:', error); }
 
     return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the support setup status for a specific guild.
+   *
+   * This method sends an HTTP GET request to the /guilds/support-setup endpoint
+   * to retrieve information about the support setup configuration for the specified guild.
+   * The request includes authorization headers for user authentication.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the support setup status.
+   * @returns An Observable that emits the support setup status.
+   */
+  getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
+    return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

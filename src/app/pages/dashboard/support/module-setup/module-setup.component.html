@@ -5,6 +5,10 @@
   - unit-testing
   - discord channel container empty info
   - forum channel set action
+
+  - seitenleiste zeigt server, wo clank nicht drauf ist
+  - bessere methode für isLoading suchen.. Man sieht den Seitenaufbau
+  - KRITISCH: Beim direkten aufruf der seite immer 429 ratelimit wegen discord perm check
   -->
 
   <!-- Body -->
@@ -58,7 +62,7 @@
 
       <!-- Wizard Content -->
       <div class="mt-10 flex">
-        <!-- Discord Channels Container TODO: real data -->
+        <!-- Discord Channels Container -->
         <div class="w-1/2 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mr-6 transition-colors duration-500">
           <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200 transition-colors duration-500">🗂️ ~ Forenkanäle auf deinem Server</h3>
           <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-2 h-[calc(100vh-509px)] overflow-y-auto transition-colors duration-500">
@@ -105,24 +109,27 @@
             es hilft dem Server-Team erstellte Tickets besser zu kategorisieren.
           </p>
 
-          @if (this.moduleStatusObj && this.moduleStatusObj.subtasks[0].finished) {
+          @if (this.supportForum) {
             <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg">
               <div class="flex justify-between items-center">
                 <p class="text-gray-700 dark:text-gray-300 transition-colors duration-500 mb-0 p-0">
                   <strong>✅ ~ Aktuell festgelegter Forumkanal:</strong>
-                  <code class="ml-2 font-medium">#test</code>
+                  <code class="ml-2 font-medium">#{{ supportForum!.name}}</code>
                 </p>
-                <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">1234567890</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">{{ supportForum!.id}}</span>
               </div>
             </div>
           }
 
           <!-- Footer with buttons -->
           <div class="mt-6 flex justify-center space-x-3">
-            <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="!selectedChannelId"
-                    [ngClass]="selectedChannelId ? 'text-white bg-green-600 hover:bg-green-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'">
-              {{ this.moduleStatusObj && this.moduleStatusObj.subtasks[0].finished ? 'Forumkanal ändern' : 'Forumkanal festlegen' }}
-            </button>
+            @if (this.moduleStatusObj && this.moduleStatusObj.subtasks[0]) {
+              <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="!selectedChannelId"
+                      [ngClass]="selectedChannelId && this.selectedChannelId != this.supportForum!.id
+                      ? 'text-white bg-green-600 hover:bg-green-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'">
+                {{ this.supportForum ? 'Forumkanal ändern' : 'Forumkanal festlegen' }}
+              </button>
+            }
             <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="cacheRefreshDisabled"
                     [ngClass]="!cacheRefreshDisabled ? 'text-white bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'"
                     (click)="refreshCache()">
