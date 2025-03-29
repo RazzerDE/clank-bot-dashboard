@@ -29,11 +29,12 @@
 
 *::-webkit-scrollbar-thumb {
   @apply rounded;
-  background-color: theme('colors.gray.700');
+  background-color: theme('colors.gray.900');
 }
 
 *::-webkit-scrollbar-track {
-  @apply bg-white/10;
+  @apply rounded;
+  background-color: theme('colors.gray.600');
 }
 
 
