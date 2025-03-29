@@ -22,30 +22,35 @@
           [ngClass]="moduleStatus == 2 ? '!text-green-800 dark:!text-green-400' :
                      moduleStatus == 0 ? '!text-red-800 dark:!text-red-400' : '' +
                                          '!text-yellow-800 dark:!text-yellow-300'">
-        MODUL VOLLSTÄNDIG EINGERICHTET!
+        {{ statusTitle }}
       </h4>
-      Du hast alle Empfohlenen Einstellungen vorgenommen und das Support-System kann nun genutzt werden.
+      {{ statusText }}
     </div>
 
     <!-- Main Content Box -->
     <div class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 m-4 transition-colors duration-500">
       <div class="flex items-center mb-4 justify-between mx-12">
-        @for (_ of [].constructor(3); track $index) {
-          <a class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500"
+        @if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length == 3) {
+          @for (_ of [].constructor(3); track $index) {
+            <a class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500"
                [routerLink]="$index === 0 ? '' : $index === 1 ? '/dashboard/support/themes' : '/dashboard/teamlist/'">
-            <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
-                 [ngClass]="this.currentStep >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
-              {{ $index + 1 }}
-            </div>
-            <span class="ml-2 w-52 transition-colors duration-500"
-                  [ngClass]="this.currentStep >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
-                  {{ $index == 0 ? 'Support-Forum festlegen' : $index == 1 ? 'Ticket-Themen erstellen' : 'Server-Team festlegen' }}
-            </span>
-          </a>
+              <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
+                   [ngClass]="{'bg-blue-600 text-white': currentStep === $index + 1,
+                   'bg-green-800 text-white': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index].finished,
+                   'bg-red-600 text-white': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index] && !this.moduleStatusObj.subtasks[$index].finished}">
+                {{ $index + 1 }}
+              </div>
+              <span class="ml-2 w-52 transition-colors duration-500" [ngClass]="{'text-blue-600 font-medium': currentStep === $index + 1,
+                    'text-green-600 dark:!text-green-800 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index].finished,
+                    'text-red-600 dark:!text-red-400 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index] && !this.moduleStatusObj.subtasks[$index].finished}">
+                {{ $index == 0 ? 'Support-Forum festlegen' : $index == 1 ? 'Ticket-Themen erstellen' : 'Server-Team festlegen' }}
+              </span>
+            </a>
 
-          <!-- Divider -->
-          @if ($index < 2) {
-            <div class="w-[10%] h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+            <!-- Divider -->
+            @if ($index < 2) {
+              <div class="w-[10%] h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+            }
           }
         }
       </div>
@@ -102,8 +107,13 @@
           <!-- Footer with buttons -->
           <div class="mt-8 flex justify-center space-x-3">
             <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="!selectedChannelId"
-                    [ngClass]="selectedChannelId ? 'text-white bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'">
+                    [ngClass]="selectedChannelId ? 'text-white bg-green-600 hover:bg-green-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'">
               Forumkanal festlegen
+            </button>
+            <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="cacheRefreshDisabled"
+                    [ngClass]="!cacheRefreshDisabled ? 'text-white bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'"
+                    (click)="refreshCache()">
+              Kanal-Liste aktualisieren
             </button>
           </div>
         </div>
