@@ -142,10 +142,10 @@ export class SidebarComponent implements AfterViewInit {
     if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id && !window.location.href.includes("/dashboard/contact")) {
       localStorage.removeItem('active_guild');
       localStorage.removeItem('guild_team');
-      localStorage.removeItem('guilds');
       localStorage.removeItem('moduleStatus');
       localStorage.removeItem('supportSetup');
       this.dataService.active_guild = null;
+      this.router.navigateByUrl('/dashboard').then();
 
     } else {
       localStorage.setItem('active_guild', JSON.stringify(guild));
