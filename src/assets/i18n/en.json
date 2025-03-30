@@ -178,6 +178,8 @@
   "ERROR_LOGIN_FORBIDDEN_DESC": "› You do not have permission to manage this server.",
   "ERROR_LOGIN_REQUESTS_TITLE": "🚑 ~ Calm down!",
   "ERROR_LOGIN_REQUESTS_DESC": "› You are sending too many requests - please try again later.",
+  "ERROR_LOGIN_NO_CLANK_TITLE": "🤖 ~ Clank has no access!",
+  "ERROR_LOGIN_NO_CLANK_DESC": "› The selected server has not invited the Clank bot.",
   "ERROR_UNKNOWN_TITLE": "🤔 ~ Something went wrong..",
   "ERROR_UNKNOWN_DESC": "› An unknown error occurred - contact support!",
   "ERROR_OFFLINE_TITLE": "📡 ~ Server is offline!",

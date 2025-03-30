@@ -121,6 +121,9 @@ export class DashboardComponent implements OnDestroy {
           if (err.status === 403) {
             this.dataService.redirectLoginError('FORBIDDEN');
             return;
+          } else if (err.status === 401) {
+            this.dataService.redirectLoginError('NO_CLANK');
+            return;
           } else if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

@@ -146,6 +146,8 @@ export class TeamlistComponent implements OnDestroy {
         error: (err: HttpErrorResponse): void => {
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
+          } else if (err.status === 401) {
+            this.dataService.redirectLoginError('NO_CLANK');
           } else {
             this.dataService.redirectLoginError('EXPIRED');
           }
@@ -154,8 +156,6 @@ export class TeamlistComponent implements OnDestroy {
 
       this.subscriptions.push(subscription);
     });
-
-
   }
 
   /**

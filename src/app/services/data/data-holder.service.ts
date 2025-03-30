@@ -54,13 +54,18 @@ export class DataHolderService {
    *
    * @param {'LOGIN_INVALID' | 'LOGIN_EXPIRED' | 'LOGIN_BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE'} type - The type of error to display.
    */
-  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE'): void {
+  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE' | 'NO_CLANK'): void {
     if (type === 'UNKNOWN' || type === 'OFFLINE') {
       this.error_title = this.translate.instant(`ERROR_${type}_TITLE`);
       this.error_desc = this.translate.instant(`ERROR_${type}_DESC`);
     } else {
       this.error_title = this.translate.instant(`ERROR_LOGIN_${type}_TITLE`);
       this.error_desc = this.translate.instant(`ERROR_LOGIN_${type}_DESC`);
+    }
+
+    if (type === 'NO_CLANK') {
+      localStorage.removeItem('active_guild');
+      this.active_guild = null;
     }
 
     this.router.navigateByUrl(`/errors/simple`).then();
@@ -79,6 +84,8 @@ export class DataHolderService {
     if (err.status === 403) {
       this.redirectLoginError('FORBIDDEN');
       return;
+    } else if (err.status === 401) {
+      this.redirectLoginError('NO_CLANK');
     } else if (err.status === 429) {
       this.redirectLoginError('REQUESTS');
       return;
