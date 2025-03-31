@@ -138,6 +138,7 @@
   "PAGE_SETUP_MODULE_DESC_2": "You have made all the recommended settings and the support system can now be used.",
   "PAGE_SETUP_RIGHT_TITLE": "📂 ~ Forum Channels on your Server",
   "PAGE_SETUP_CHANNEL_INFO": "✅ ~ Currently set forum channel:",
+  "PAGE_SETUP_CHANNEL_INFO_PENDING": "🔶 ~ Will be set up soon:",
   "PAGE_SETUP_LEFT_TITLE": "🚓 ~ SET SUPPORT FORUM",
   "PAGE_SETUP_LEFT_DESC": "› All tickets created by users on your Discord server will be placed in the support forum - this should only be visible to the server team, as they will handle the support requests here.",
   "PAGE_SETUP_LEFT_LIST": "› There are <strong>2 ways</strong> users can create tickets:<span class=\"list-disc relative left-4\"><li>They send a private message to the Discord bot.</li><li>They select a support topic in a panel (More <a href=\"/dashboard/support/panels\" class=\"text-blue-700 dark:text-blue-400 cursor-pointer\">about this</a> here).</li></span>",
@@ -202,6 +203,10 @@
   "SUCCESS_ROLE_DELETE_DESC": "The role <strong>{{role}}</strong> no longer has access to Clank team features.",
   "SUCCESS_ROLE_ADD": "Team role added",
   "SUCCESS_ROLE_ADD_DESC": "The role <strong>{{role}}</strong> has been added with the <strong>{{level}}</strong>.",
+  "SUCCESS_SAVE": "Save successful",
+  "SUCCESS_FORUM_DESC": "The selected channel will be set up by our bot in the next few minutes. <strong>Make sure the bot has the necessary permissions!</strong>",
+  "ERROR_SAVE": "Save failed",
+  "ERROR_FORUM_DESC": "This channel is already waiting to be set up - wait a few minutes!",
 
   "SIDEBAR_CATEGORY_3_TITLE": "Giveaways & Events",
   "SIDEBAR_CATEGORY_4_TITLE": "Server Security",

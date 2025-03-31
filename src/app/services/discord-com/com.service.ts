@@ -102,4 +102,21 @@ export class ComService {
     return this.http.post(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`, {},
       { headers: this.authService.headers });
   }
+
+  /**
+   * Sets the support forum channel for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a POST request to the internal API to set the support forum channel
+   * for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to set the support forum channel for.
+   * @param {string} channel_id - The ID of the channel to be set as the support forum.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   */
+  async setSupportForum(guild_id: string, channel_id: string): Promise<Observable<any>> {
+    await this.ensureInitialized();
+    return this.http.post(`${config.api_url}/guilds/support-forum?guild_id=${guild_id}&channel_id=${channel_id}`, {},
+      {headers: this.authService.headers});
+  }
 }

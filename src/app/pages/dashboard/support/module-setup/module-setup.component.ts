@@ -8,7 +8,10 @@ import {ApiService} from "../../../../services/api/api.service";
 import {SubTasksCompletion, TasksCompletion, TasksCompletionList} from "../../../../services/types/Tasks";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Channel, SupportSetup} from "../../../../services/types/discord/Guilds";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {ComService} from "../../../../services/discord-com/com.service";
+import {animate, style, transition, trigger} from "@angular/animations";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
   selector: 'app-module-setup',
@@ -17,28 +20,40 @@ import {TranslatePipe} from "@ngx-translate/core";
     NgOptimizedImage,
     NgClass,
     RouterLink,
-    TranslatePipe
+    TranslatePipe,
+    AlertBoxComponent
   ],
   templateUrl: './module-setup.component.html',
-  styleUrl: './module-setup.component.scss'
+  styleUrl: './module-setup.component.scss',
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateY(-20px)', opacity: 0 }),
+        animate('300ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class ModuleSetupComponent implements OnDestroy {
   protected moduleStatus: 0 | 1 | 2 = 0; // 0 = Not started, 1 = In progress, 2 = Completed
   protected currentStep: 1 | 2 | 3 = 1;
   protected channelItems: Channel[] = [];
 
-  protected selectedChannelId: string | null = null;
+  protected selectedChannel: Channel | null = null;
   private subscriptions: Subscription[] = [];
   protected cacheRefreshDisabled: boolean = false;
   protected moduleStatusObj: TasksCompletion | undefined;
-  protected supportForum: Channel | undefined;
+  protected supportForum: { channel: Channel | null, pending: boolean } = { channel: null, pending: false };
 
-  constructor(private dataService: DataHolderService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService,
+              private discordService: ComService, private translate: TranslateService) {
     document.title = 'Support Setup ~ Clank Discord-Bot';
 
     this.getServerData(); // first call to get the server data
     const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
+        this.supportForum = { channel: null, pending: false };
+        this.selectedChannel = null;
         this.getServerData(true);
       }
     });
@@ -88,8 +103,8 @@ export class ModuleSetupComponent implements OnDestroy {
 
         const supportSetup: any = JSON.parse(cachedSupportSetup);
         if (supportSetup['support_forum'] != null) {
-          this.supportForum = supportSetup['support_forum'];
-          this.selectedChannelId = this.supportForum!.id;
+          this.supportForum = { channel: supportSetup['support_forum'], pending: supportSetup['support_forum_pending'] };
+          this.selectedChannel = this.supportForum.channel;
         }
 
         this.moduleStatusObj = moduleStatus['task_1'];
@@ -113,9 +128,10 @@ export class ModuleSetupComponent implements OnDestroy {
             const sub2: Subscription = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
               .subscribe({
                 next: (supportSetup: SupportSetup): void => {
+                  console.log('supportSetup', supportSetup);
                   if (supportSetup.support_forum != null) {
-                    this.supportForum = supportSetup.support_forum;
-                    this.selectedChannelId = this.supportForum!.id;
+                    this.supportForum = { channel: supportSetup.support_forum, pending: supportSetup.support_forum_pending };
+                    this.selectedChannel = supportSetup.support_forum;
                   }
 
                   this.channelItems = supportSetup['discord_channels'];
@@ -130,6 +146,49 @@ export class ModuleSetupComponent implements OnDestroy {
       });
 
     this.subscriptions.push(sub);
+  }
+
+  /**
+   * Sets the support forum channel for the active guild.
+   *
+   * This method sends a request to the Discord service to set the support forum channel
+   * for the active guild. If the request is successful, it updates the `supportForum` object
+   * and removes the cached support setup. It also displays a success alert.
+   * If the request fails, it handles different error statuses by displaying appropriate alerts
+   * or redirecting to the login page.
+   *
+   * @param channel The channel object to be set as the support forum.
+   */
+  protected setForumChannel(channel: Channel): void {
+    if (!this.dataService.active_guild) { return; }
+
+    this.discordService.setSupportForum(this.dataService.active_guild.id, channel.id)
+      .then((observable) => {
+        const subscription: Subscription = observable.subscribe({
+          next: (_response: null): void => {
+            this.supportForum = { channel: channel, pending: true };
+            localStorage.removeItem('supportSetup');
+
+            this.dataService.error_color = 'green';
+            this.dataService.showAlert(this.translate.instant('SUCCESS_SAVE'), this.translate.instant('SUCCESS_FORUM_DESC'));
+          },
+          error: (err: HttpErrorResponse): void => {
+            console.log(err);
+            if (err.status === 409) {
+              this.dataService.error_color = 'red';
+              this.dataService.showAlert(this.translate.instant('ERROR_SAVE'), this.translate.instant('ERROR_FORUM_DESC'));
+            } else if (err.status === 429) {
+              this.dataService.redirectLoginError('REQUESTS');
+            } else if (err.status === 403) {
+              this.dataService.redirectLoginError('FORBIDDEN');
+            } else {
+              this.dataService.redirectLoginError('EXPIRED');
+            }
+          }
+        });
+
+        this.subscriptions.push(subscription);
+      });
   }
 
   /**
@@ -177,10 +236,10 @@ export class ModuleSetupComponent implements OnDestroy {
    * If the selected channel ID matches the provided ID, it deselects the channel (sets to null).
    * Otherwise, it selects the provided channel ID.
    *
-   * @param id The ID of the channel to toggle selection for
+   * @param channel The channel object to be selected or deselected.
    */
-  protected selectChannel(id: string): void {
-    this.selectedChannelId = this.selectedChannelId === id ? null : id;
+  protected selectChannel(channel: Channel): void {
+    this.selectedChannel = this.selectedChannel === channel ? null : channel;
   }
 
 }

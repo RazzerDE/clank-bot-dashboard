@@ -52,5 +52,6 @@ export interface Channel {
 
 export interface SupportSetup {
   support_forum: Channel;
+  support_forum_pending: boolean;
   discord_channels: Channel[];
 }
