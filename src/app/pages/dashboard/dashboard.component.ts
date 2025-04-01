@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -34,10 +34,11 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
         ])
     ]
 })
-export class DashboardComponent implements OnDestroy {
+export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
   protected tasks: Tasks[] = tasks;
+  private orgTasks: Tasks[] = tasks;
   @ViewChild('dashboardContainer') protected dashboardContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('tasklistContainer') protected tasklistContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('tasklistDiv') protected tasklistDiv!: ElementRef<HTMLDivElement>;
@@ -56,6 +57,7 @@ export class DashboardComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
   protected disabledCacheBtn: boolean = false;
+  protected dataLoading: { moduleProgress: boolean, guildList: boolean } = { moduleProgress: true, guildList: true };
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService) {
     document.title = "Dashboard ~ Clank Discord-Bot";
@@ -65,6 +67,7 @@ export class DashboardComponent implements OnDestroy {
     this.getServerData(); // first call to get the server data
     const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
+        this.dataLoading = { moduleProgress: true, guildList: true };
         this.getServerData();
       }
     });
@@ -79,6 +82,22 @@ export class DashboardComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   * setTimeout is used to ensure that the loading state is updated after the view has been rendered.
+   *
+   * It's used to show a loading state for some data related things.
+   */
+  ngAfterViewChecked(): void {
+    if (tasks == this.orgTasks && !this.dataService.isLoading && this.dataLoading.moduleProgress) {
+      setTimeout((): boolean => this.dataLoading.moduleProgress = false, 0);
+    }
+
+    if (this.servers.length > 0 && this.dataLoading.guildList) {
+      setTimeout((): boolean => this.dataLoading.guildList = false, 0);
+    }
   }
 
   /**

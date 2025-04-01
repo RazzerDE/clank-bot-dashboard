@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -34,7 +34,7 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
     ])
   ]
 })
-export class ModuleSetupComponent implements OnDestroy {
+export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   protected moduleStatus: 0 | 1 | 2 = 0; // 0 = Not started, 1 = In progress, 2 = Completed
   protected currentStep: 1 | 2 | 3 = 1;
   protected channelItems: Channel[] = [];
@@ -45,6 +45,8 @@ export class ModuleSetupComponent implements OnDestroy {
   protected moduleStatusObj: TasksCompletion | undefined;
   protected supportForum: { channel: Channel | null, pending: boolean } = { channel: null, pending: false };
 
+  protected dataLoading: { statusBox: boolean, channelItems: boolean } = { statusBox: true, channelItems: true };
+
   constructor(protected dataService: DataHolderService, private apiService: ApiService,
               private discordService: ComService, private translate: TranslateService) {
     document.title = 'Support Setup ~ Clank Discord-Bot';
@@ -52,6 +54,7 @@ export class ModuleSetupComponent implements OnDestroy {
     this.getServerData(); // first call to get the server data
     const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
+        this.dataLoading = { statusBox: true, channelItems: true };
         this.supportForum = { channel: null, pending: false };
         this.selectedChannel = null;
         this.getServerData(true);
@@ -68,6 +71,22 @@ export class ModuleSetupComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   * setTimeout is used to ensure that the loading state is updated after the view has been rendered.
+   *
+   * It's used to show a loading state for some data related things.
+   */
+  ngAfterViewChecked(): void {
+    if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length == 3 && this.dataLoading.statusBox) {
+      setTimeout((): boolean => this.dataLoading.statusBox = false, 0);
+    }
+
+    if (this.channelItems.length > 0 && this.dataLoading.channelItems && this.dataLoading.channelItems) {
+      setTimeout((): boolean => this.dataLoading.channelItems = false, 0);
+    }
   }
 
   /**
@@ -173,7 +192,6 @@ export class ModuleSetupComponent implements OnDestroy {
             this.dataService.showAlert(this.translate.instant('SUCCESS_SAVE'), this.translate.instant('SUCCESS_FORUM_DESC'));
           },
           error: (err: HttpErrorResponse): void => {
-            console.log(err);
             if (err.status === 409) {
               this.dataService.error_color = 'red';
               this.dataService.showAlert(this.translate.instant('ERROR_SAVE'), this.translate.instant('ERROR_FORUM_DESC'));

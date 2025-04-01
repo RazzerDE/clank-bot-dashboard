@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -29,7 +29,7 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'
 })
-export class TeamlistComponent implements OnDestroy {
+export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
@@ -41,6 +41,7 @@ export class TeamlistComponent implements OnDestroy {
   protected filteredRoles: Role[] = [];
   protected discordRoles: Role[] = [];
 
+  protected dataLoading: boolean = true;
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private subscriptions: Subscription[] = [];
 
@@ -63,6 +64,7 @@ export class TeamlistComponent implements OnDestroy {
     this.getTeamRoles(); // first call to get the server data
     const dataFetchSubscription: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
+        this.dataLoading = true;
         this.getTeamRoles();
       }
     });
@@ -77,6 +79,18 @@ export class TeamlistComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   * setTimeout is used to ensure that the loading state is updated after the view has been rendered.
+   *
+   * It's used to show a loading state for some data related things.
+   */
+  ngAfterViewChecked(): void {
+    if (this.discordRoles && this.discordRoles.length > 0 && !this.dataService.isLoading && this.dataLoading) {
+      setTimeout((): boolean => this.dataLoading = false, 0);
+    }
   }
 
   /**
