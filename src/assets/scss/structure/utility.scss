@@ -251,3 +251,28 @@
 .hover-shape-border:hover .border-shadow {
   @apply opacity-100 visible;
 }
+
+// data loder
+.data-loader {
+  @apply w-12 h-12 inline-block relative box-border;
+  border: 3px solid #FFF;
+  border-radius: 50%;
+  animation: rotation 1s linear infinite;
+}
+.data-loader::after {
+  @apply absolute box-border left-1/2 top-1/2 w-14 h-14;
+  content: '';
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 3px solid;
+  border-color: #FF3D00 transparent;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

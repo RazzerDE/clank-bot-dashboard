@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
@@ -39,7 +39,8 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
     RouterLink,
     PageThumbComponent,
     DashboardLayoutComponent,
-    AlertBoxComponent
+    AlertBoxComponent,
+    NgStyle
   ],
     templateUrl: './wishlist.component.html',
     styleUrl: './wishlist.component.scss',
@@ -82,6 +83,8 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
+    document.title = "Wishlist ~ Clank Discord-Bot";
+
     this.dataService.hideGuildSidebar = false;
     this.dataService.showAlertBox = false;
   }

@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
 import {Subject} from "rxjs";
 import {Guild} from "../types/discord/Guilds";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +54,7 @@ export class DataHolderService {
    *
    * @param {'LOGIN_INVALID' | 'LOGIN_EXPIRED' | 'LOGIN_BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE'} type - The type of error to display.
    */
-  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE'): void {
+  redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE' | 'NO_CLANK'): void {
     if (type === 'UNKNOWN' || type === 'OFFLINE') {
       this.error_title = this.translate.instant(`ERROR_${type}_TITLE`);
       this.error_desc = this.translate.instant(`ERROR_${type}_DESC`);
@@ -62,7 +63,38 @@ export class DataHolderService {
       this.error_desc = this.translate.instant(`ERROR_LOGIN_${type}_DESC`);
     }
 
+    if (type === 'NO_CLANK') {
+      localStorage.removeItem('active_guild');
+      this.active_guild = null;
+    }
+
     this.router.navigateByUrl(`/errors/simple`).then();
+  }
+
+  /**
+   * Handles API errors by redirecting to appropriate error pages based on the status code.
+   *
+   * This method checks the status code of the HTTP error response and redirects to specific
+   * error pages for forbidden access (403), too many requests (429), and offline status (0).
+   * If the error status code does not match any of these, it simply stops the loading state.
+   *
+   * @param err The HTTP error response object
+   */
+  handleApiError(err: HttpErrorResponse): void {
+    if (err.status === 403) {
+      this.redirectLoginError('FORBIDDEN');
+      return;
+    } else if (err.status === 401) {
+      this.redirectLoginError('NO_CLANK');
+    } else if (err.status === 429) {
+      this.redirectLoginError('REQUESTS');
+      return;
+    } else if (err.status === 0) {
+      this.redirectLoginError('OFFLINE');
+      return;
+    }
+
+    this.isLoading = false;
   }
 
   /**

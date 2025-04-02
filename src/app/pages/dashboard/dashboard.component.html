@@ -97,68 +97,76 @@
                   <!-- Task List -->
                   <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv
                        [style.height.px]="welcomeContainer.clientHeight - 80">
-                    @for (task of tasks; track task.id) {
-                      <div
-                        class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
-                        <button (click)="toggleTask(task.id);"
-                                class="flex items-center w-full p-3 py-2.5 text-left hover:bg-gray-100
+                    @if (this.dataLoading.moduleProgress) {
+                      <div class="flex justify-center items-center h-full">
+                        <span class="data-loader"></span>
+                      </div>
+                    } @else {
+                      @for (task of tasks; track task.id) {
+                        <div
+                          class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
+                          <button (click)="toggleTask(task.id);"
+                                  class="flex items-center w-full p-3 py-2.5 text-left hover:bg-gray-100
                                        dark:hover:bg-slate-700/70 transition-colors">
-                          @if (task.finished) {
-                            <img ngSrc="assets/img/icons/check.png" class="w-5 h-5" height="64" width="64"
-                                 alt="Clank ~ Discord-Bot (Check Icon)"/>
-                          } @else if (isInProgress(task.subtasks)) {
-                            <img ngSrc="assets/img/icons/info.png" class="w-6 h-6 -ml-0.5" height="64" width="64"
-                                 alt="Clank ~ Discord-Bot (Info Icon)"/>
-                          } @else {
-                            <img ngSrc="assets/img/icons/deny.png" class="w-5 h-5" height="64" width="64"
-                                 alt="Clank ~ Discord-Bot (Deny Icon)"/>
-                          }
-                          <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90
+                            @if (task.finished) {
+                              <img ngSrc="assets/img/icons/check.png" class="w-5 h-5" height="64" width="64"
+                                   alt="Clank ~ Discord-Bot (Check Icon)"/>
+                            } @else if (isInProgress(task.subtasks)) {
+                              <img ngSrc="assets/img/icons/info.png" class="w-6 h-6 -ml-0.5" height="64" width="64"
+                                   alt="Clank ~ Discord-Bot (Info Icon)"/>
+                            } @else {
+                              <img ngSrc="assets/img/icons/deny.png" class="w-5 h-5" height="64" width="64"
+                                   alt="Clank ~ Discord-Bot (Deny Icon)"/>
+                            }
+                            <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90
                                          transition-colors duration-500">{{ task.title | translate }}</span>
-                          <fa-icon [icon]="faChevronRight"
-                                   [class]="'h-5 text-gray-400 transition-transform duration-300 ' +
+                            <fa-icon [icon]="faChevronRight"
+                                     [class]="'h-5 text-gray-400 transition-transform duration-300 ' +
                               (expandedTasks.includes(task.id) ? 'rotate-90' : '')"></fa-icon>
-                        </button>
+                          </button>
 
-                        <!-- Subtasks -->
-                        @if (expandedTasks.includes(task.id)) {
-                          <div class="space-y-1" [@expandCollapse]>
-                            @for (subtask of task.subtasks; track $index) {
-                              <div class="flex items-center w-full p-3 py-2 text-left border-t border-gray-300
+                          <!-- Subtasks -->
+                          @if (expandedTasks.includes(task.id)) {
+                            <div class="space-y-1" [@expandCollapse]>
+                              @for (subtask of task.subtasks; track $index) {
+                                <div class="flex items-center w-full p-3 py-2 text-left border-t border-gray-300
                                           dark:!border-gray-700 transition-colors duration-500">
-                                @if (subtask.id === 2.2) {
-                                  <img ngSrc="assets/img/icons/info.png" class="w-5 h-5 ml-[30px]" height="64" width="64"
-                                       alt="Clank ~ Discord-Bot (Info Icon)"/>
-                                } @else if (subtask.finished) {
-                                  <img ngSrc="assets/img/icons/check.png" class="w-4 h-4 ml-8" height="64" width="64"
-                                       alt="Clank ~ Discord-Bot (Check Icon)"/>
-                                } @else {
-                                  <img ngSrc="assets/img/icons/deny.png" class="w-4 h-4 ml-8" height="64" width="64"
-                                       alt="Clank ~ Discord-Bot (Deny Icon)"/>
-                                }
-                                <a [routerLink]="subtask.redirect_url">
+                                  @if (subtask.id === 2.2) {
+                                    <img ngSrc="assets/img/icons/info.png" class="w-5 h-5 ml-[30px]" height="64" width="64"
+                                         alt="Clank ~ Discord-Bot (Info Icon)"/>
+                                  } @else if (subtask.finished) {
+                                    <img ngSrc="assets/img/icons/check.png" class="w-4 h-4 ml-8" height="64" width="64"
+                                         alt="Clank ~ Discord-Bot (Check Icon)"/>
+                                  } @else {
+                                    <img ngSrc="assets/img/icons/deny.png" class="w-4 h-4 ml-8" height="64" width="64"
+                                         alt="Clank ~ Discord-Bot (Deny Icon)"/>
+                                  }
+                                  <a [routerLink]="subtask.redirect_url">
                                     <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90 text-sm
                                                  hover:text-gray-400 dark:hover:!text-gray-300 transition-colors duration-300">
                                       {{ subtask.name | translate }}
                                     </span>
-                                </a>
-                              </div>
-                            }
-                          </div>
-                        }
-                      </div>
+                                  </a>
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
                     }
                   </div>
                 </div>
 
                 <!-- Progress Bar -->
-                <div class="mt-auto h-1 w-full rounded-full transition-all duration-300"
-                     [ngClass]="{'bg-red-500': (completedTasks / totalTasks * 100) < 25,
+                @if (!this.dataLoading.moduleProgress) {
+                  <div class="mt-auto h-1 w-full rounded-full transition-all duration-300"
+                       [ngClass]="{'bg-red-500': (completedTasks / totalTasks * 100) < 25,
                                  'bg-green-500': (completedTasks / totalTasks * 100) >= 50,
                                  'bg-orange-500': (completedTasks / totalTasks * 100) >= 25 && (completedTasks / totalTasks * 100) < 50,
                                }"
-                     [style.width]="(completedTasks / totalTasks * 100) + '%'">
-                </div>
+                       [style.width]="(completedTasks / totalTasks * 100) + '%'">
+                  </div>
+                }
               </div>
 
               <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col"

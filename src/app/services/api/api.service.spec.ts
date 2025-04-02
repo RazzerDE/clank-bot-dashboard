@@ -10,6 +10,7 @@ import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
+import {SupportSetup} from "../types/discord/Guilds";
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -197,6 +198,27 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/contact/bug`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockData);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch support setup status for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: SupportSetup = {
+      support_forum: { id: '1', name: 'Support Forum' },
+      support_forum_pending: true,
+      discord_channels: [
+        { id: '2', name: 'General' },
+        { id: '3', name: 'Help' }
+      ]
+    } as SupportSetup;
+
+    service.getSupportSetupStatus(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-setup?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });

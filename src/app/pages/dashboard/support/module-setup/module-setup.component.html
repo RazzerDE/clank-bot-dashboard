@@ -1,0 +1,170 @@
+<dashboard-layout>
+  <!--
+  TODO:
+  - unit-testing
+  -->
+
+  <!-- Body -->
+  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
+    <!-- Status Box -->
+    <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg dark:bg-gray-800 justify-center flex-col transition-colors duration-500"
+      [ngClass]="moduleStatus == 2 ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
+                                     moduleStatus == 0 ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
+                                     'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
+      @if (this.dataLoading.statusBox) {
+        <div class="h-28 flex items-center">
+          <span class="data-loader"></span>
+        </div>
+      } @else {
+        <img class="shrink-0 inline" alt="Modul Status Icon ~ Clank Discord Bot" height="64" width="64"
+             [ngSrc]="moduleStatus == 2 ? '/assets/img/icons/check2.png' :
+                      moduleStatus == 1 ? '/assets/img/icons/warning.png' : '/assets/img/icons/error.png'"
+             [ngClass]="moduleStatus == 1 ? 'w-14 h-14 mb-2' : 'w-10 h-10 mb-3'"/>
+        <h4 class="font-medium mb-2 !text-green-800 dark:!text-green-400"
+            [ngClass]="moduleStatus == 2 ? '!text-green-800 dark:!text-green-400' :
+                       moduleStatus == 0 ? '!text-red-800 dark:!text-red-400' : '' +
+                                           '!text-yellow-800 dark:!text-yellow-300'">
+          {{ 'PAGE_SETUP_MODULE_TITLE_' + moduleStatus | translate }}
+        </h4>
+        {{ 'PAGE_SETUP_MODULE_DESC_' + moduleStatus | translate }}
+      }
+    </div>
+
+    <!-- Main Content Box -->
+    <div class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 m-4 mt-0 transition-colors duration-500">
+      <div class="flex flex-col md:flex-row items-center mb-4 justify-between mx-4 md:mx-12 space-y-4 md:space-y-0"
+      [class.!justify-center]="this.dataLoading.statusBox">
+        @if (this.dataLoading.statusBox) {
+          <span class="data-loader"></span>
+        } @else if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length == 3) {
+          @for (_ of [].constructor(3); track $index) {
+            <div class="flex items-center w-full md:w-auto">
+              <a class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500 w-full justify-center"
+                 [routerLink]="$index === 0 ? '' : $index === 1 ? '/dashboard/support/themes' : '/dashboard/teamlist/'">
+                <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
+                     [ngClass]="{'bg-blue-600 text-white': currentStep === $index + 1,
+               'bg-green-800 text-white': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index].finished,
+               'bg-red-600 text-white': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index] && !this.moduleStatusObj.subtasks[$index].finished}">
+                  {{ $index + 1 }}
+                </div>
+                <span class="ml-2 transition-colors duration-500" [ngClass]="{'text-blue-600 font-medium': currentStep === $index + 1,
+                'text-green-600 dark:!text-green-800 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index].finished,
+                'text-red-600 dark:!text-red-400 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index] && !this.moduleStatusObj.subtasks[$index].finished}">
+            {{ $index == 0 ? ('PLACEHOLDER_TAB_FORUM' | translate) :
+                  $index == 1 ? ('PLACEHOLDER_TAB_THEMES' | translate) : ('PLACEHOLDER_TAB_TEAM' | translate) }}
+          </span>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            @if ($index < 2) {
+              <div class="w-full h-[1px] md:w-[10%] md:h-[1px] bg-gray-300 dark:!bg-gray-700 my-2 md:my-0 md:mx-4 transition-colors duration-500 block md:hidden"></div>
+              <div class="hidden md:block w-[10%] h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+            }
+          }
+        }
+      </div>
+
+      <!-- Wizard Content -->
+      <div class="mt-10 flex flex-col md:flex-row">
+        <!-- Discord Channels Container -->
+        <div class="w-full md:w-1/2 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 md:mr-6 mb-6 md:mb-0 transition-colors duration-500">
+          <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200 transition-colors duration-500">
+            {{ 'PAGE_SETUP_RIGHT_TITLE' | translate }}
+          </h3>
+          <div class="bg-gray-200 dark:bg-gray-800 rounded-lg p-2 h-[calc(100vh-515px)] md:h-[calc(100vh-515px)] overflow-y-auto transition-colors duration-500">
+
+            <!-- Channel Items -->
+            <div class="space-y-2">
+              @if (this.dataLoading.channelItems) {
+                <div class="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-540px)]">
+                  <span class="data-loader"></span>
+                </div>
+              } @else {
+                @if (channelItems.length > 0) {
+                  @for (item of channelItems; track $index) {
+                    <!-- Channel Item -->
+                    <div class="flex items-center justify-between p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600
+                              cursor-pointer transition-colors duration-500"
+                         [ngClass]="{'bg-blue-200 dark:bg-blue-900': selectedChannel != null && selectedChannel.id === item.id}" (click)="selectChannel(item)">
+                      <div class="flex items-center">
+                        <img ngSrc="assets/img/icons/utility/discord-forum.svg" class="mt-1 h-5 w-5" height="20" width="20"
+                             alt="Discord Forum Icon ~ Clank Discord-Bot"/>
+                        <span class="ml-2 text-gray-800 dark:text-gray-200 transition-colors duration-500">{{ item.name }}</span>
+                      </div>
+                      <span class="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-500">{{ item.id }}</span>
+                    </div>
+
+                    <!-- Divider -->
+                    @if ($index < channelItems.length - 1) {
+                      <div class="h-px bg-gray-300 dark:bg-gray-500"></div>
+                    }
+                  }
+                } @else {
+                  <div class="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-540px)]">
+                    <img ngSrc="assets/img/confusion.png" class="h-16 w-16 mb-3" height="256" width="256"
+                         alt="Keine Kanäle ~ Clank Discord-Bot"/>
+                    <p class="text-gray-500 dark:text-gray-400 text-xl mb-2">{{ 'PLACEHOLDER_NO_FORUM_CHANNELS' | translate }}</p>
+                    <p class="text-sm text-gray-400 dark:text-gray-500 mt-1" [innerHTML]="'PLACEHOLDER_NO_FORUM_CHANNELS_DESC' | translate"></p>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel Picker Information -->
+        <div class="w-full md:w-1/2 mt-0 md:!mt-3">
+          <h2 class="text-xl mb-2 text-gray-800 dark:text-gray-100 transition-colors duration-500">
+            {{ 'PAGE_SETUP_LEFT_TITLE' | translate }}
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 mb-3 transition-colors duration-500"
+             [innerHTML]="('PAGE_SETUP_LEFT_DESC' | translate) + '<br /><br />' + ('PAGE_SETUP_LEFT_LIST' | translate)
+                    + '<br />' + ('PAGE_SETUP_LEFT_OUTRO' | translate)">
+          </p>
+
+          @if (this.supportForum.channel) {
+            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg transition-colors duration-500" [@slideInOut]>
+              <div class="flex justify-between items-center">
+                <p class="text-gray-700 dark:text-gray-300 transition-colors duration-500 mb-0 p-0">
+                  @if (!this.supportForum.pending) {
+                    <strong>{{ 'PAGE_SETUP_CHANNEL_INFO' | translate }}</strong>
+                  } @else {
+                    <strong>{{ 'PAGE_SETUP_CHANNEL_INFO_PENDING' | translate }}</strong>
+                  }
+                  <code class="ml-2 font-medium">#{{ supportForum.channel!.name}}</code>
+                </p>
+                <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">{{ supportForum.channel!.id}}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Footer with buttons -->
+          <div class="mt-6 flex justify-center space-x-3">
+            @if (this.moduleStatusObj && this.moduleStatusObj.subtasks[0]) {
+              <button (click)="setForumChannel(selectedChannel!)" class="px-4 py-2 rounded-lg transition-colors"
+                      [disabled]="!selectedChannel || (this.supportForum.channel && this.supportForum.channel.id === selectedChannel.id)"
+                      [ngClass]="!selectedChannel || (this.supportForum.channel && this.supportForum.channel.id === selectedChannel.id)
+                ? 'bg-gray-600 !text-gray-400 cursor-not-allowed' : 'text-white bg-green-600 hover:bg-green-700'">
+                {{ this.supportForum ? ('PLACEHOLDER_BUTTON_CHANNEL_EDIT' | translate) : ('PLACEHOLDER_BUTTON_CHANNEL_SET' | translate) }}
+              </button>
+            }
+            <button class="px-4 py-2 rounded-lg transition-colors" [disabled]="cacheRefreshDisabled"
+                    [ngClass]="!cacheRefreshDisabled ? 'text-white bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 !text-gray-400 cursor-not-allowed'"
+                    (click)="refreshCache()">
+              {{ 'PLACEHOLDER_BUTTON_CHANNEL_REFRESH' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </section>
+</dashboard-layout>
