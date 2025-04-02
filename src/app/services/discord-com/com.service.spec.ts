@@ -115,4 +115,19 @@ describe('DiscordComService', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
   });
+
+  it('should set a support forum to specific id', async () => {
+    const guild_id = '123';
+    const channel_id = '456';
+
+    service['isInitialized'] = true;
+
+    (await service.setSupportForum(guild_id, channel_id)).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/support-forum?guild_id=${guild_id}&channel_id=${channel_id}`);
+    expect(req.request.method).toBe('POST');
+    req.flush({});
+  });
 });

@@ -11,6 +11,7 @@ import {ApiService} from "../../services/api/api.service";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {Guild} from "../../services/types/discord/Guilds";
+import {tasks} from "../../services/types/Tasks";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -26,7 +27,9 @@ describe('DashboardComponent', () => {
                 },
                 queryParams: of({ code: 'test_code', state: 'test_state' }) } },
         { provide: DataHolderService, useValue: { redirectLoginError: jest.fn(), allowDataFetch: of(true) } },
-        { provide: ApiService, useValue: { getGuildUsage: jest.fn(), getModuleStatus: jest.fn() } }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+        { provide: ApiService, useValue: { getGuildUsage: jest.fn(), getModuleStatus: jest.fn() } },
+        { provide: tasks, useValue: [] },
+          provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
@@ -38,6 +41,20 @@ describe('DashboardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should disable data loder if data was already loaded", () => {
+    component['orgTasks'] = component['tasks'];
+    component['dataLoading'] = { moduleProgress: true, guildList: true };
+    component['servers'] = [{ image_url: '', guild_name: '', guild_invite: '', member_count: 0 }];
+
+    dataService.isLoading = false;
+
+    jest.useFakeTimers();
+    component.ngAfterViewChecked();
+    jest.runAllTimers();
+
+    expect(component['dataLoading']).toEqual({ moduleProgress: false, guildList: false });
   });
 
   it('should update document title and set isLoading to false on language change', () => {
@@ -107,6 +124,11 @@ describe('DashboardComponent', () => {
     component.getServerData();
 
     expect(dataService.redirectLoginError).toHaveBeenCalledWith('OFFLINE');
+
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 401 })));
+    component.getServerData();
+
+    expect(dataService.redirectLoginError).toHaveBeenCalledWith('NO_CLANK');
 
     jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
     component.getServerData();

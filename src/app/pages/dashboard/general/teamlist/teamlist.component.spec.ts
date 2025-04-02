@@ -15,7 +15,6 @@ describe('TeamlistComponent', () => {
   let component: TeamlistComponent;
   let fixture: ComponentFixture<TeamlistComponent>;
   let dataService: DataHolderService;
-  let comService: ComService;
   let router: Router;
 
   beforeEach(async () => {
@@ -34,7 +33,6 @@ describe('TeamlistComponent', () => {
     fixture = TestBed.createComponent(TeamlistComponent);
     component = fixture.componentInstance;
     dataService = TestBed.inject(DataHolderService);
-    comService = TestBed.inject(ComService);
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -137,6 +135,19 @@ describe('TeamlistComponent', () => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
     jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(throwError(() => ({ status: 429 } as HttpErrorResponse)));
+
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+
+    component.getTeamRoles(true);
+    tick();
+
+    expect(redirectLoginErrorSpy).toHaveBeenCalled();
+  }));
+
+  it('should handle error response with status 401', fakeAsync(() => {
+    dataService.active_guild = { id: '123', name: 'test' } as Guild;
+
+    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(throwError(() => ({ status: 401 } as HttpErrorResponse)));
 
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
@@ -534,6 +545,30 @@ describe('TeamlistComponent', () => {
 
     expect(roleModal.classList).toContain('hidden');
     expect(roleBackdrop.classList).toContain('hidden');
+  });
+
+  it('should set dataLoading to false after view is checked and roles are loaded', () => {
+    component['discordRoles'] = [{ id: '1', name: 'Role 1', position: 1 } as Role];
+    component['dataService'].isLoading = false;
+    component['dataLoading'] = true;
+
+    jest.useFakeTimers();
+    component.ngAfterViewChecked();
+    jest.runAllTimers();
+
+    expect(component['dataLoading']).toBe(false);
+  });
+
+  it('should not set dataLoading to false if roles are not loaded', () => {
+    component['discordRoles'] = [];
+    component['dataService'].isLoading = false;
+    component['dataLoading'] = true;
+
+    jest.useFakeTimers();
+    component.ngAfterViewChecked();
+    jest.runAllTimers();
+
+    expect(component['dataLoading']).toBe(true);
   });
 
 });
