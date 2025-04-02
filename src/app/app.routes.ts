@@ -7,6 +7,7 @@ import {ContactComponent} from "./pages/dashboard/general/contact/contact.compon
 import {WishlistComponent} from "./pages/dashboard/general/wishlist/wishlist.component";
 import {TeamlistComponent} from "./pages/dashboard/general/teamlist/teamlist.component";
 import {ModuleSetupComponent} from "./pages/dashboard/support/module-setup/module-setup.component";
+import {OpenTicketsComponent} from "./pages/dashboard/support/open-tickets/open-tickets.component";
 
 export const routes: Routes = [
   // General pages
@@ -18,6 +19,7 @@ export const routes: Routes = [
 
   // Support pages
   { path: 'dashboard/support/setup', component: ModuleSetupComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/support/tickets', component: OpenTicketsComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}
