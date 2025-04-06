@@ -42,7 +42,9 @@ export class OpenTicketsComponent implements AfterViewInit {
    * It calculates the height of the main container element.
    */
   ngAfterViewInit(): void {
-    this.calculateContainerHeight();
+    setTimeout((): void => { // avoid ExpressionChangedAfterItHasBeenCheckedError
+      this.calculateContainerHeight();
+    });
   }
 
   /**
@@ -64,6 +66,11 @@ export class OpenTicketsComponent implements AfterViewInit {
     });
   }
 
+  /**
+   * Selects a ticket and sets it as the currently selected ticket.
+   *
+   * @param {Ticket} ticket - The ticket to be selected.
+   */
   selectTicket(ticket: Ticket): void {
     this.selectedTicket = ticket;
   }

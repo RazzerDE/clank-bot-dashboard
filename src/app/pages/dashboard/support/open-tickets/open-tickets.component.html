@@ -35,10 +35,10 @@
               @if (tickets && tickets.length > 0) {
                 @for (ticket of tickets; track ticket.id) {
                   <!-- Ticket Item -->
-                  <div class="py-3 px-2 hover:bg-gray-300 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-200
-                            bg-gray-200 dark:bg-gray-900"
-                       [ngClass]="{'bg-blue-50 dark:bg-blue-900/30': selectedTicket?.id === ticket.id}"
-                       (click)="selectTicket(ticket)">
+                  <div class="py-3 px-2 hover:bg-gray-300 dark:hover:bg-gray-800 cursor-pointer transition-all
+                              duration-300 bg-gray-200 dark:bg-gray-900 relative !border-l-blue-500 dark:!border-l-blue-600"
+                       [ngClass]="{'!bg-blue-300 dark:!bg-gray-800 border-l-4':
+                                   selectedTicket?.id === ticket.id}" (click)="selectTicket(ticket)">
                     <div class="flex flex-col">
                       <!-- Ticket ID & Status -->
                       <div class="flex justify-between items-center">
