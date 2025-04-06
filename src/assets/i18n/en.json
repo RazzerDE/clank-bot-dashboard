@@ -308,6 +308,12 @@
   "PLACEHOLDER_TAB_THEMES": "Create Ticket Themes",
   "PLACEHOLDER_TAB_TEAM": "Set Server Team",
 
+  "PLACEHOLDER_TICKET_SEARCH": "Search for a ticket..",
+  "PLACEHOLDER_TICKET_CREATOR": "Created by:",
+  "PLACEHOLDER_TICKET_STATUS_0": "⏳ Open",
+  "PLACEHOLDER_TICKET_STATUS_1": "✅ Claimed",
+  "PLACEHOLDER_TICKET_STATUS_2": "🔒 Closed",
+
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",

@@ -1,18 +1,93 @@
-import { Component } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
+import {NgClass, NgOptimizedImage} from "@angular/common";
+import {TranslatePipe} from "@ngx-translate/core";
+import {Ticket} from "../../../../services/types/Tickets";
+import {DatePipe} from "../../../../pipes/date.pipe";
 
 @Component({
   selector: 'app-open-tickets',
-    imports: [DashboardLayoutComponent],
+  imports: [DashboardLayoutComponent, NgOptimizedImage, TranslatePipe, NgClass, DatePipe],
   templateUrl: './open-tickets.component.html',
   styleUrl: './open-tickets.component.scss'
 })
-export class OpenTicketsComponent {
+export class OpenTicketsComponent implements AfterViewInit {
+  protected containerHeight: number = 0;
+  @ViewChild('mainContainer') mainContainer!: ElementRef<HTMLDivElement>;
 
-  constructor(private dataService: DataHolderService) {
+  protected selectedTicket: Ticket | null = null;
+  protected tickets: Ticket[] = [
+    { id: '1', title: 'Discord Bot reagiert nicht', status: 0, creator: { id: '123', username: 'MaxMustermann' }, tag: 'Discord-Hilfe', creation_date: new Date('2025-04-01T10:30:00') },
+    { id: '2', title: 'Fehlermeldung beim Starten', status: 1, creator: { id: '456', username: 'JuliaSchmidt' }, tag: 'Bl4cklsit Bots', creation_date: new Date('2025-03-28T14:45:00') },
+    { id: '3', title: 'Berechtigungsproblem im Kanal', status: 2, creator: { id: '789', username: 'ThomasMüller' }, tag: 'Discord-Hilfe', creation_date: new Date('2025-03-25T09:15:00') },
+    { id: '4', title: 'Bot antwortet nicht auf Befehle', status: 0, creator: { id: '101', username: 'SarahWeber' }, tag: 'Bl4cklsit Bots', creation_date: new Date('2025-03-20T16:20:00') },
+    { id: '5', title: 'Musik-Feature funktioniert nicht', status: 1, creator: { id: '112', username: 'LukasHoffmann' }, tag: 'Bl4cklsit Bots', creation_date: new Date('2025-03-15T11:05:00') },
+    { id: '6', title: 'Discord-Integration fehlerhaft', status: 2, creator: { id: '131', username: 'ErikaMusterfrau' }, tag: 'Discord-Hilfe', creation_date: new Date('2025-03-10T13:40:00') },
+    { id: '7', title: 'Bot startet nicht nach Update', status: 0, creator: { id: '415', username: 'MarkusKeller' }, tag: 'Bl4cklsit Bots', creation_date: new Date('2025-03-05T08:55:00') },
+    { id: '8', title: 'Timeout bei API-Anfragen', status: 1, creator: { id: '161', username: 'AnnaSchneider' }, tag: 'Allgemeine Frage', creation_date: new Date('2025-02-28T17:30:00') },
+    { id: '9', title: 'Bot sendet keine Nachrichten', status: 2, creator: { id: '718', username: 'PeterFischer' }, tag: 'Bl4cklsit Bots', creation_date: new Date('2025-02-25T12:10:00') },
+    { id: '10', title: 'Fehler bei der Benutzeranmeldung', status: 0, creator: { id: '192', username: 'LauraMeier' }, tag: 'Account verloren', creation_date: new Date('2025-02-20T15:25:00') },
+  ] as Ticket[];
+
+  constructor(protected dataService: DataHolderService) {
     document.title = 'Open Tickets ~ Clank Discord-Bot';
     this.dataService.isLoading = false;
+
+    this.tickets = this.sortTickets();
+  }
+
+  /**
+   * Lifecycle hook that is called after the component's view has been fully initialized.
+   * It calculates the height of the main container element.
+   */
+  ngAfterViewInit(): void {
+    this.calculateContainerHeight();
+  }
+
+  /**
+   * Returns the list of tickets sorted by status and creation date.
+   *
+   * @returns {Ticket[]} A sorted array of tickets where:
+   *   1. Open tickets (status 0) appear first, followed by claimed (status 1) and closed tickets (status 2)
+   *   2. Within each status group, tickets are sorted by creation date (newest first)
+   */
+  protected sortTickets(): Ticket[] {
+    return [...this.tickets].sort((a, b) => {
+      // sort by status
+      if (a.status !== b.status) {
+        return a.status - b.status;
+      }
+
+      // sort by date after status
+      return new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime();
+    });
+  }
+
+  selectTicket(ticket: Ticket): void {
+    this.selectedTicket = ticket;
+  }
+
+  /**
+   * HostListener for window resize events.
+   * Calls the calculateContainerHeight method to adjust the container height
+   * whenever the window is resized.
+   */
+  @HostListener('window:resize')
+  onResize(): void {
+    this.calculateContainerHeight();
+  }
+
+  /**
+   * Calculates the height of the main container element and updates the containerHeight property.
+   * Is used to make the ticket list scrollable.
+   */
+  private calculateContainerHeight(): void {
+    const sectionElement: HTMLDivElement = this.mainContainer.nativeElement;
+    if (sectionElement) {
+      const sectionRect: DOMRect = sectionElement.getBoundingClientRect();
+      this.containerHeight = sectionRect.height;
+    }
   }
 
 }
