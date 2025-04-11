@@ -5,17 +5,32 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
 import {Ticket} from "../../../../services/types/Tickets";
 import {DatePipe} from "../../../../pipes/date.pipe";
+import {FormsModule} from "@angular/forms";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-open-tickets',
-  imports: [DashboardLayoutComponent, NgOptimizedImage, TranslatePipe, NgClass, DatePipe],
+  imports: [DashboardLayoutComponent, NgOptimizedImage, TranslatePipe, NgClass, DatePipe, FormsModule],
   templateUrl: './open-tickets.component.html',
-  styleUrl: './open-tickets.component.scss'
+  styleUrl: './open-tickets.component.scss',
+  animations: [
+    trigger('ticketAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
+    ])
+  ]
 })
 export class OpenTicketsComponent implements AfterViewInit {
+  @ViewChild('mainContainer') protected mainContainer!: ElementRef<HTMLDivElement>;
   protected containerHeight: number = 0;
-  @ViewChild('mainContainer') mainContainer!: ElementRef<HTMLDivElement>;
+  protected searchQuery: string = '';
 
+  protected filteredTickets: Ticket[] = [];
   protected selectedTicket: Ticket | null = null;
   protected tickets: Ticket[] = [
     { id: '1', title: 'Discord Bot reagiert nicht', status: 0, creator: { id: '123', username: 'MaxMustermann' }, tag: 'Discord-Hilfe', creation_date: new Date('2025-04-01T10:30:00') },
@@ -35,6 +50,7 @@ export class OpenTicketsComponent implements AfterViewInit {
     this.dataService.isLoading = false;
 
     this.tickets = this.sortTickets();
+    this.filteredTickets = [...this.tickets];
   }
 
   /**
@@ -63,6 +79,25 @@ export class OpenTicketsComponent implements AfterViewInit {
 
       // sort by date after status
       return new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime();
+    });
+  }
+
+  /**
+   * Searches tickets based on the entered search query.
+   * Filters tickets by tag, creator name, ID and title.
+   */
+  protected searchTickets(): void {
+    if (!this.searchQuery || this.searchQuery.trim() === '') {
+      this.filteredTickets = [...this.tickets];
+      return;
+    }
+
+    const query: string = this.searchQuery.toLowerCase().trim();
+    this.filteredTickets = this.tickets.filter(ticket => {
+      return ticket.id.toLowerCase().includes(query.replace('#', '')) ||
+        ticket.title.toLowerCase().includes(query) ||
+        ticket.creator.username.toLowerCase().includes(query) ||
+        ticket.tag.toLowerCase().includes(query);
     });
   }
 

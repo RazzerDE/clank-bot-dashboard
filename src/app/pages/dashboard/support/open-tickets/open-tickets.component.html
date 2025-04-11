@@ -21,7 +21,7 @@
           <div class="w-full md:w-1/3 border-r dark:border-gray-700 flex flex-col transition-colors duration-500">
             <!-- Search Header -->
             <div class="p-3 border-b dark:border-gray-700 transition-colors duration-500">
-                <input type="text" placeholder="{{'PLACEHOLDER_TICKET_SEARCH' | translate}} 🎟️"
+                <input type="text" placeholder="{{'PLACEHOLDER_TICKET_SEARCH' | translate}} 🎟️" [(ngModel)]="searchQuery" (keyup)="searchTickets()"
                        class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-500">
             </div>
 
@@ -29,12 +29,22 @@
             <div class="flex-1 overflow-y-auto" [style.height.px]="containerHeight">
               <!-- Ticket Items -->
               <div class="divide-y divide-gray-300 dark:divide-gray-700 transition-colors duration-500">
-                  @for (ticket of tickets; track ticket.id) {
-                    <!-- Ticket Item -->
-                    <div class="py-3 px-2 hover:bg-gray-300 dark:hover:bg-gray-800 cursor-pointer transition-all
-                                duration-300 bg-gray-200 dark:bg-gray-900 relative !border-l-blue-500 dark:!border-l-blue-600"
-                         [ngClass]="{'!bg-blue-300 dark:!bg-gray-800 border-l-4':
-                                     selectedTicket?.id === ticket.id}" (click)="selectTicket(ticket)">
+                @if (filteredTickets.length === 0) {
+                  <div class="flex flex-col items-center justify-center p-6 text-center h-full">
+                    <p class="text-gray-500 dark:text-gray-400 text-xl mb-2 transition-colors duration-500">
+                      {{ 'PLACEHOLDER_SEARCH_TICKET_EMPTY' | translate }}
+                    </p>
+                    <p class="text-sm text-gray-400 dark:text-gray-500 transition-colors duration-500">
+                      {{ 'PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC' | translate }}
+                    </p>
+                  </div>
+                }
+                @for (ticket of filteredTickets; track ticket.id) {
+                  <!-- Ticket Item -->
+                  <div class="py-3 px-2 hover:bg-gray-300 dark:hover:bg-gray-800 cursor-pointer transition-all
+                              duration-300 bg-gray-200 dark:bg-gray-900 relative !border-l-blue-500 dark:!border-l-blue-600"
+                       [ngClass]="{'!bg-blue-300 dark:!bg-gray-800 border-l-4': selectedTicket?.id === ticket.id}"
+                       (click)="selectTicket(ticket)" [@ticketAnimation]>
                       <div class="flex flex-col">
                         <!-- Ticket ID & Status -->
                         <div class="flex justify-between items-center">
@@ -69,9 +79,9 @@
                             {{ ticket.creation_date | date }}
                           </div>
                         </div>
-                      </div>
                     </div>
-                  }
+                  </div>
+                }
               </div>
             </div>
           </div>

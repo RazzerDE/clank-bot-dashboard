@@ -317,6 +317,8 @@
   "PLACEHOLDER_SELECT_TICKET_DESC": "Select a ticket from the left column.",
   "PLACEHOLDER_NO_TICKETS": "No tickets found!",
   "PLACEHOLDER_NO_TICKETS_DESC": "No tickets have been found on your server yet, wait until one is created!",
+  "PLACEHOLDER_SEARCH_TICKET_EMPTY": "No ticket found.. 😞",
+  "PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC": "Change your search and try again.",
 
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
