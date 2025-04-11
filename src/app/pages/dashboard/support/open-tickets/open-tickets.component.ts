@@ -72,7 +72,11 @@ export class OpenTicketsComponent implements AfterViewInit {
    * @param {Ticket} ticket - The ticket to be selected.
    */
   selectTicket(ticket: Ticket): void {
-    this.selectedTicket = ticket;
+    if (this.selectedTicket && this.selectedTicket.id === ticket.id) {
+      this.selectedTicket = null; // Deselect if the same ticket
+    } else {
+      this.selectedTicket = ticket;
+    }
   }
 
   /**

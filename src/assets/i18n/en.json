@@ -313,6 +313,10 @@
   "PLACEHOLDER_TICKET_STATUS_0": "⏳ Open",
   "PLACEHOLDER_TICKET_STATUS_1": "✅ Claimed",
   "PLACEHOLDER_TICKET_STATUS_2": "🔒 Closed",
+  "PLACEHOLDER_SELECT_TICKET": "No ticket selected..",
+  "PLACEHOLDER_SELECT_TICKET_DESC": "Select a ticket from the left column.",
+  "PLACEHOLDER_NO_TICKETS": "No tickets found!",
+  "PLACEHOLDER_NO_TICKETS_DESC": "No tickets have been found on your server yet, wait until one is created!",
 
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
