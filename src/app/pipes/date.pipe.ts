@@ -1,11 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'date'
+  name: 'date',
+  standalone: true
 })
 export class DatePipe implements PipeTransform {
 
-  transform(value: unknown, ...args: unknown[]): string {
+  transform(value: unknown, format?: string, lang: string = 'de'): string {
     let date: Date;
 
     if (typeof value === 'string') {
@@ -13,7 +14,23 @@ export class DatePipe implements PipeTransform {
     } else if (value instanceof Date) {
       date = value;
     } else {
-      return 'Ungültiges Datum';
+      return '';
+    }
+
+    if (format === 'long') {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = date.getHours();
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+
+      if (lang === 'de') {
+        return `am ${day}.${month}.${year} um ${hours}:${minutes} Uhr`;
+      } else {
+        const hours12 = hours % 12 || 12;
+        const amPm = hours < 12 ? 'AM' : 'PM';
+        return `on ${month}/${day}/${year} at ${hours12}:${minutes} ${amPm}`;
+      }
     }
 
     const now = new Date();
@@ -25,14 +42,29 @@ export class DatePipe implements PipeTransform {
     const days = Math.floor(hours / 24);
 
     if (days > 0) {
-      return days === 1 ? 'gestern' : `vor ${days} Tagen`;
+      if (lang === 'de') {
+        return days === 1 ? 'gestern' : `vor ${days} Tagen`;
+      } else {
+        return days === 1 ? 'yesterday' : `${days} days ago`;
+      }
     } else if (hours > 0) {
-      return hours === 1 ? 'vor 1 Stunde' : `vor ${hours} Stunden`;
+      if (lang === 'de') {
+        return hours === 1 ? 'vor 1 Stunde' : `vor ${hours} Stunden`;
+      } else {
+        return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+      }
     } else if (minutes > 0) {
-      return minutes === 1 ? 'vor 1 Minute' : `vor ${minutes} Minuten`;
+      if (lang === 'de') {
+        return minutes === 1 ? 'vor 1 Minute' : `vor ${minutes} Minuten`;
+      } else {
+        return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+      }
     } else {
-      return seconds <= 10 ? 'gerade eben' : `vor ${seconds} Sekunden`;
+      if (lang === 'de') {
+        return seconds <= 10 ? 'gerade eben' : `vor ${seconds} Sekunden`;
+      } else {
+        return seconds <= 10 ? 'just now' : `${seconds} seconds ago`;
+      }
     }
   }
-
 }

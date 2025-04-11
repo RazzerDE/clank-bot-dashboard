@@ -313,12 +313,17 @@
   "PLACEHOLDER_TICKET_STATUS_0": "⏳ Offen",
   "PLACEHOLDER_TICKET_STATUS_1": "✅ Beansprucht",
   "PLACEHOLDER_TICKET_STATUS_2": "🔒 Geschlossen",
+  "PLACEHOLDER_TICKET_BTN_CLAIM": "Beanspruchen",
+  "PLACEHOLDER_TICKET_BTN_UNCLAIM": "Freigeben",
+  "PLACEHOLDER_TICKET_BTN_CLOSE": "Schließen",
+  "PLACEHOLDER_TICKET_BTN_NOTE": "Team-Notiz",
   "PLACEHOLDER_SELECT_TICKET": "Kein Ticket ausgewählt..",
   "PLACEHOLDER_SELECT_TICKET_DESC": "Wähle in der linken Spalte ein Ticket aus.",
   "PLACEHOLDER_NO_TICKETS": "Keine Tickets gefunden!",
   "PLACEHOLDER_NO_TICKETS_DESC": "Auf deinem Server wurde noch kein Ticket gefunden, warte bis eins erstellt wurde!",
   "PLACEHOLDER_SEARCH_TICKET_EMPTY": "Kein Ticket gefunden.. 😞",
   "PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC": "Ändere deine Suche und versuche es erneut.",
+  "PLACEHOLDER_TYPE_MESSAGE": "Schreibe eine Nachricht.. ✏️",
 
   "PLACEHOLDER_ROLE_SEARCH": "Nach Rolle suchen.. 🤔",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Rolle hinzufügen",
@@ -340,5 +345,15 @@
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Forumkanal ändern",
   "PLACEHOLDER_BUTTON_CHANNEL_SET": "Forumkanal festlegen",
   "PLACEHOLDER_BUTTON_CHANNEL_REFRESH": "Kanal-Liste aktualisieren",
-  "PLACEHOLDER_ACTION": "Aktion"
+  "PLACEHOLDER_ACTION": "Aktion",
+
+  "DATE_FORMAT_LONG": "am {{day}}.{{month}}.{{year}} um {{hours}}:{{minutes}} Uhr",
+  "DATE_YESTERDAY": "gestern",
+  "DATE_DAYS_AGO": "vor {{count}} Tagen",
+  "DATE_ONE_HOUR_AGO": "vor 1 Stunde",
+  "DATE_HOURS_AGO": "vor {{count}} Stunden",
+  "DATE_ONE_MINUTE_AGO": "vor 1 Minute",
+  "DATE_MINUTES_AGO": "vor {{count}} Minuten",
+  "DATE_JUST_NOW": "gerade eben",
+  "DATE_SECONDS_AGO": "vor {{count}} Sekunden"
 }

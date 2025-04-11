@@ -2,15 +2,17 @@ import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@an
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {Ticket} from "../../../../services/types/Tickets";
 import {DatePipe} from "../../../../pipes/date.pipe";
 import {FormsModule} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {faShare} from "@fortawesome/free-solid-svg-icons/faShare";
 
 @Component({
   selector: 'app-open-tickets',
-  imports: [DashboardLayoutComponent, NgOptimizedImage, TranslatePipe, NgClass, DatePipe, FormsModule],
+  imports: [DashboardLayoutComponent, NgOptimizedImage, TranslatePipe, NgClass, DatePipe, FormsModule, FaIconComponent],
   templateUrl: './open-tickets.component.html',
   styleUrl: './open-tickets.component.scss',
   animations: [
@@ -45,7 +47,7 @@ export class OpenTicketsComponent implements AfterViewInit {
     { id: '10', title: 'Fehler bei der Benutzeranmeldung', status: 0, creator: { id: '192', username: 'LauraMeier' }, tag: 'Account verloren', creation_date: new Date('2025-02-20T15:25:00') },
   ] as Ticket[];
 
-  constructor(protected dataService: DataHolderService) {
+  constructor(protected dataService: DataHolderService, protected translate: TranslateService) {
     document.title = 'Open Tickets ~ Clank Discord-Bot';
     this.dataService.isLoading = false;
 
@@ -136,4 +138,5 @@ export class OpenTicketsComponent implements AfterViewInit {
     }
   }
 
+  protected readonly faShare = faShare;
 }
