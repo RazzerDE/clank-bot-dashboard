@@ -9,6 +9,9 @@ import {FormsModule} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faShare} from "@fortawesome/free-solid-svg-icons/faShare";
+import {faInfoCircle} from "@fortawesome/free-solid-svg-icons/faInfoCircle";
+import {faTriangleExclamation} from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
+import {faCircleCheck} from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 
 @Component({
   selector: 'app-open-tickets',
@@ -139,4 +142,7 @@ export class OpenTicketsComponent implements AfterViewInit {
   }
 
   protected readonly faShare = faShare;
+  protected readonly faInfoCircle = faInfoCircle;
+  protected readonly faTriangleExclamation = faTriangleExclamation;
+  protected readonly faCircleCheck = faCircleCheck;
 }
