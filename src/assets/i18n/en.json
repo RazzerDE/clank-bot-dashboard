@@ -308,6 +308,23 @@
   "PLACEHOLDER_TAB_THEMES": "Create Ticket Themes",
   "PLACEHOLDER_TAB_TEAM": "Set Server Team",
 
+  "PLACEHOLDER_TICKET_SEARCH": "Search for a ticket..",
+  "PLACEHOLDER_TICKET_CREATOR": "Created by:",
+  "PLACEHOLDER_TICKET_STATUS_0": "⏳ Open",
+  "PLACEHOLDER_TICKET_STATUS_1": "✅ Claimed",
+  "PLACEHOLDER_TICKET_STATUS_2": "🔒 Closed",
+  "PLACEHOLDER_TICKET_BTN_CLAIM": "Claim",
+  "PLACEHOLDER_TICKET_BTN_UNCLAIM": "Release",
+  "PLACEHOLDER_TICKET_BTN_CLOSE": "Close",
+  "PLACEHOLDER_TICKET_BTN_NOTE": "Team Note",
+  "PLACEHOLDER_SELECT_TICKET": "No ticket selected..",
+  "PLACEHOLDER_SELECT_TICKET_DESC": "Select a ticket from the left column.",
+  "PLACEHOLDER_NO_TICKETS": "No tickets found!",
+  "PLACEHOLDER_NO_TICKETS_DESC": "No tickets have been found on your server yet, wait until one is created!",
+  "PLACEHOLDER_SEARCH_TICKET_EMPTY": "No ticket found.. 😞",
+  "PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC": "Change your search and try again.",
+  "PLACEHOLDER_TYPE_MESSAGE": "Write a message.. ✏️",
+
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",
@@ -328,5 +345,15 @@
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Edit forum channel",
   "PLACEHOLDER_BUTTON_CHANNEL_SET": "Set forum channel",
   "PLACEHOLDER_BUTTON_CHANNEL_REFRESH": "Refresh channel list",
-  "PLACEHOLDER_ACTION": "Action"
+  "PLACEHOLDER_ACTION": "Action",
+
+  "DATE_FORMAT_LONG": "on {{month}}/{{day}}/{{year}} at {{hours}}:{{minutes}}",
+  "DATE_YESTERDAY": "yesterday",
+  "DATE_DAYS_AGO": "{{count}} days ago",
+  "DATE_ONE_HOUR_AGO": "1 hour ago",
+  "DATE_HOURS_AGO": "{{count}} hours ago",
+  "DATE_ONE_MINUTE_AGO": "1 minute ago",
+  "DATE_MINUTES_AGO": "{{count}} minutes ago",
+  "DATE_JUST_NOW": "just now",
+  "DATE_SECONDS_AGO": "{{count}} seconds ago"
 }

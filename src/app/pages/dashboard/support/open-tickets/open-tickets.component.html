@@ -1,0 +1,283 @@
+<dashboard-layout>
+
+  <!-- TODO:
+  1. Unit-Testing
+  3. Show open tickets (backend)
+  4. Open a ticket (backend)
+  5. responsiveness on mobile
+  9. data-loading
+  10. Light & Dark Mode
+
+  TODO: Development currently PAUSED. Need to think about how this could get loaded fast and without Ratelimits from Discord.
+  -->
+
+  <!-- Body -->
+  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-950 transition-colors duration-500">
+
+    <div #mainContainer class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg m-4 transition-colors duration-500">
+      @if (tickets && tickets.length > 0) {
+        <div class="flex flex-col md:flex-row" [style.height.px]="containerHeight">
+          <!-- Left Sidebar - Ticket List -->
+          <div class="w-full md:w-1/3 border-r dark:border-gray-700 flex flex-col transition-colors duration-500">
+            <!-- Search Header -->
+            <div class="p-3 border-b dark:border-gray-700 transition-colors duration-500">
+                <input type="text" placeholder="{{'PLACEHOLDER_TICKET_SEARCH' | translate}} 🎟️" [(ngModel)]="searchQuery" (keyup)="searchTickets()"
+                       class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-500">
+            </div>
+
+            <!-- Ticket List -->
+            <div class="flex-1 overflow-y-auto border-b rounded-lg border-transparent" [style.height.px]="containerHeight">
+              <!-- Ticket Items -->
+              <div class="divide-y divide-gray-300 dark:divide-gray-700 transition-colors duration-500">
+                @if (filteredTickets.length === 0) {
+                  <div class="flex flex-col items-center justify-center p-6 text-center h-full">
+                    <p class="text-gray-500 dark:text-gray-400 text-xl mb-2 transition-colors duration-500">
+                      {{ 'PLACEHOLDER_SEARCH_TICKET_EMPTY' | translate }}
+                    </p>
+                    <p class="text-sm text-gray-400 dark:text-gray-500 transition-colors duration-500">
+                      {{ 'PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC' | translate }}
+                    </p>
+                  </div>
+                }
+                @for (ticket of filteredTickets; track ticket.id) {
+                  <!-- Ticket Item -->
+                  <div class="py-3 px-2 hover:bg-gray-300 dark:hover:bg-gray-800 cursor-pointer transition-all
+                              duration-300 bg-gray-100 dark:bg-gray-900 relative !border-l-blue-500 dark:!border-l-blue-600"
+                       [ngClass]="{'!bg-blue-300 dark:!bg-gray-800 border-l-4': selectedTicket?.id === ticket.id}"
+                       (click)="selectTicket(ticket)" [@ticketAnimation]>
+                      <div class="flex flex-col">
+                        <!-- Ticket ID & Status -->
+                        <div class="flex justify-between items-center">
+                          <div class="flex items-center">
+                            <span class="font-medium text-sm text-gray-900 dark:text-gray-100 transition-colors duration-500">
+                              #{{ ticket.id }}
+                            </span>
+                            <span class="ml-2 px-2 py-0.5 transition-colors duration-500 text-xs rounded-full
+                                       bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                              {{ ticket.tag }}
+                            </span>
+                          </div>
+                          <span class="px-2 py-0.5 text-xs rounded-full transition-colors duration-500"
+                                [ngClass]="{'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200': ticket.status === 1,
+                                 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': ticket.status === 0,
+                                 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200': ticket.status === 2}">
+                            {{ 'PLACEHOLDER_TICKET_STATUS_' + ticket.status | translate }}
+                          </span>
+                        </div>
+
+                        <!-- Ticket Title -->
+                        <div class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate mt-1 transition-colors duration-500">
+                          {{ ticket.title }}
+                        </div>
+
+                        <!-- Creator & Time -->
+                        <div class="flex justify-between items-center mt-1">
+                          <div class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-500">
+                            👤 - {{ 'PLACEHOLDER_TICKET_CREATOR' | translate }} {{ ticket.creator.username }}
+                          </div>
+                          <div class="text-xs text-gray-500 whitespace-nowrap transition-colors duration-500">
+                            {{ ticket.creation_date | date:"short":translate.currentLang }}
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat View -->
+          <div class="w-full md:w-2/3 flex flex-col">
+            @if (!this.selectedTicket) {
+              <div class="flex flex-col items-center justify-center h-full text-center">
+                <img class="mb-4 animate-float" ngSrc="assets/img/bg/sleeping.png" height="128" width="128" alt="Sleeping BG ~ Clank Discord-Bot" />
+                <p class="text-gray-500 dark:text-gray-400 text-xl mb-2 transition-colors duration-500">
+                  {{ 'PLACEHOLDER_SELECT_TICKET' | translate }}
+                </p>
+                <p class="text-sm text-gray-400 dark:text-gray-500 transition-colors duration-500">
+                  {{ 'PLACEHOLDER_SELECT_TICKET_DESC' | translate }}
+                </p>
+              </div>
+            } @else {
+              <ng-container>
+                <!-- Chat Header -->
+                <div class="p-4 border-b dark:border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center flex-wrap">
+                    <span class="inline-block px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-md text-gray-600
+                               dark:text-gray-400 font-medium text-sm mr-2 transition-colors duration-500">#{{ this.selectedTicket.id }}</span>
+                      <span class="text-gray-500 dark:text-gray-400 mx-2">|</span>
+                      <h2 class="text-lg mb-0 font-medium text-gray-800 dark:text-gray-200 truncate transition-colors
+                               duration-500">{{ this.selectedTicket.title }}</h2>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 mt-1 flex flex-wrap items-center transition-colors duration-500">
+                      <span>{{ this.selectedTicket.creator.username }} · {{ this.selectedTicket.creation_date | date:"long":translate.currentLang }}</span>
+                      <span class="text-gray-500 dark:text-gray-400 mx-2">|</span>
+                      <span class="px-2 py-0.5 text-xs rounded-full bg-blue-200 text-blue-800
+                               dark:bg-blue-900 dark:text-blue-200 transition-colors duration-500">
+                      {{ this.selectedTicket.tag }}
+                    </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-2 flex-wrap md:flex-nowrap w-full md:w-auto">
+                    <button class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors duration-300 whitespace-nowrap flex-1 md:flex-none">
+                      🔓 › {{ 'PLACEHOLDER_TICKET_BTN_CLAIM' | translate }}
+                    </button>
+                    <button class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors duration-300 whitespace-nowrap flex-1 md:flex-none">
+                      🔒 › {{ 'PLACEHOLDER_TICKET_BTN_CLOSE' | translate }}
+                    </button>
+                    <button class="px-3 py-1.5 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm transition-colors duration-300 whitespace-nowrap flex-1 md:flex-none">
+                      📬 › {{ 'PLACEHOLDER_TICKET_BTN_NOTE' | translate }}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="flex-1 overflow-y-auto p-2 space-y-2 bg-gray-100 dark:bg-gray-700 transition-colors duration-500">
+                  <!-- Start Message with User Info -->
+                  <div class="bg-gray-200 dark:bg-gray-600 rounded-lg p-3 mb-3 shadow-sm transition-colors duration-500">
+                    <div class="flex items-center">
+                      <img src="https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=1024"
+                           class="w-12 h-12 rounded-full mr-3 self-center mb-[21px]" alt="Ticker-Creator Icon ~ Clank-Discord Bot"/>
+                      <div>
+                        <h3 class="font-medium mb-0 text-lg text-gray-800 dark:text-gray-100 transition-colors duration-500">ErikaMusterfrau</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-500">ID: 1234567890</p>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm mt-1">
+                      <div class="bg-gray-300 dark:bg-gray-700 p-2 rounded-md transition-colors duration-500">
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors duration-500">Account erstellt am:</span>
+                        <span class="block font-medium text-gray-800 dark:text-gray-200 transition-colors duration-500">21.03.2023</span>
+                      </div>
+                      <div class="bg-gray-300 dark:bg-gray-700 p-2 rounded-md transition-colors duration-500">
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors duration-500">Server-Mitglied seit:</span>
+                        <span class="block font-medium text-gray-800 dark:text-gray-200 transition-colors duration-500">21.03.2023</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BETA Reminder -->
+                  <div class="bg-orange-100 dark:bg-orange-900/40 border-l-4 border-orange-500 p-3 rounded-md my-3 transition-colors duration-500">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 mr-2">
+                        <fa-icon [icon]="faTriangleExclamation" class="text-orange-600 dark:text-orange-400 transition-colors duration-500"/>
+                      </div>
+                      <p class="text-sm text-orange-700 dark:text-orange-300 mb-0 transition-colors duration-500">
+                        Die Ticket-Darstellung im Dashboard befindet sich in einer frühen Entwicklungsversion - wir <strong>empfehlen</strong> dir, die Discord-App zu verwenden.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Thick Divider -->
+                  <div class="flex items-center justify-center py-2 mb-2">
+                    <div class="border-t-2 border-gray-400 dark:border-gray-500 flex-grow transition-colors duration-500"></div>
+                    <span class="px-3 py-1 mx-2 text-xs font-medium text-white bg-gray-500 dark:bg-gray-600
+                                 rounded-full transition-colors duration-500">Ticket geöffnet</span>
+                    <div class="border-t-2 border-gray-400 dark:border-gray-500 flex-grow transition-colors duration-500"></div>
+                  </div>
+
+<!--                  &lt;!&ndash; System Info Message &ndash;&gt;-->
+<!--                  <div class="bg-blue-100 dark:bg-blue-900/40 border-l-4 border-blue-500 p-3 rounded-md my-3 transition-colors duration-500">-->
+<!--                    <div class="flex items-center">-->
+<!--                      <div class="flex-shrink-0 mr-2">-->
+<!--                        <fa-icon [icon]="faInfoCircle" class="text-blue-600 dark:text-blue-400 transition-colors duration-500"/>-->
+<!--                      </div>-->
+<!--                      <p class="text-sm text-blue-700 dark:text-blue-300 mb-0 transition-colors duration-500">-->
+<!--                        Der User hat bereits <strong>5 Tickets</strong> erstellt.-->
+<!--                      </p>-->
+<!--                    </div>-->
+<!--                  </div>-->
+
+                  <!-- User Message -->
+                  <div class="flex mb-2 px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md transition-colors duration-500">
+                    <div class="flex-shrink-0 mr-3">
+                      <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
+                        <span class="text-white font-semibold text-sm">EM</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center mb-1">
+                        <a href="https://discord.com/users/327176944640720906">
+                          <span class="font-medium text-blue-500 dark:text-blue-300 hover:text-blue-600
+                                     dark:hover:text-blue-400 transition-colors duration-300">ErikaMusterfrau</span>
+                        </a>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 ml-2 transition-colors duration-500">heute um 12:34 Uhr</span>
+                      </div>
+                      <div class="text-gray-800 dark:text-gray-200 leading-relaxed transition-colors duration-500">
+                        <p class="break-words mb-1">
+                          Hallo Support-Team, ich habe Probleme mit der Discord-Integration. Nach dem Verbinden kann ich keine Kanäle sehen.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- System Message Divider -->
+                  <div class="flex items-center justify-center px-4 py-2">
+                    <div class="border-t border-gray-300 dark:border-gray-600 flex-grow transition-colors duration-500"></div>
+                    <span class="px-2 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-500">01. August</span>
+                    <div class="border-t border-gray-300 dark:border-gray-600 flex-grow transition-colors duration-500"></div>
+                  </div>
+
+                  <!-- Support Message -->
+                  <div class="flex mb-2 px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors duration-300">
+                    <div class="flex-shrink-0 mr-3">
+                      <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center overflow-hidden">
+                        <span class="text-white font-semibold text-sm">ST</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center">
+                        <span class="font-medium text-green-600 dark:text-green-400 transition-colors duration-500">Support-Team</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 ml-2 transition-colors duration-500">heute um 13:45 Uhr</span>
+                        <span class="ml-2 px-1.5 py-0.5 text-xs rounded-md bg-green-100 text-green-800
+                                   dark:bg-green-900 dark:text-green-300 transition-colors duration-500">Helfer</span>
+                      </div>
+                      <div class="text-gray-800 dark:text-gray-200 leading-relaxed transition-colors duration-500">
+                        <p class="break-words mb-2">
+                          Hallo Erika, danke für deine Nachricht. Könntest du mir bitte mitteilen, welche Discord-Berechtigungen du dem Bot gegeben hast?
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- System Message Divider -->
+                  <div class="flex items-center justify-center px-4">
+                    <div class="border-t border-gray-300 dark:border-gray-600 flex-grow transition-colors duration-500"></div>
+                  </div>
+
+                  <!-- Discord-Style System Message -->
+                  <div class="text-center py-2">
+                    <div class="inline-block bg-green-100 dark:bg-green-900/40 text-green-800
+                              dark:text-green-300 text-xs font-medium px-3 py-1 rounded-full transition-colors duration-500">
+                      <fa-icon [icon]="faCircleCheck" />
+                      Das Ticket wurde von ErikaMusterfrau geschlossen.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="p-4 border-t dark:border-gray-700 transition-colors duration-500">
+                  <div class="flex">
+                    <input type="text" placeholder="{{ 'PLACEHOLDER_TYPE_MESSAGE' | translate }}"
+                           class="flex-1 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-500">
+                    <button class="ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-500">
+                      <fa-icon [icon]="faShare" />
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center p-6 text-center h-full">
+          <img class="mb-4 animate-float" ngSrc="assets/img/bg/sleeping.png" height="128" width="128" alt="Sleeping BG ~ Clank Discord-Bot" />
+          <p class="text-gray-500 dark:text-gray-400 text-xl mb-2">{{ 'PLACEHOLDER_NO_TICKETS' | translate }}</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">{{ 'PLACEHOLDER_NO_TICKETS_DESC' | translate }}</p>
+        </div>
+      }
+    </div>
+
+
+  </section>
+</dashboard-layout>

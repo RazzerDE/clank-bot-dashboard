@@ -18,6 +18,7 @@ export const routes: Routes = [
 
   // Support pages
   { path: 'dashboard/support/setup', component: ModuleSetupComponent, canActivate: [AuthGuard] },
+  //{ path: 'dashboard/support/tickets', component: OpenTicketsComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}
