@@ -2,11 +2,9 @@
 
   <!-- TODO:
   1. Unit-Testing
-  2. Translations
-  3. Show open tickets
-  4. Open a ticket
+  3. Show open tickets (backend)
+  4. Open a ticket (backend)
   5. responsiveness on mobile
-  6. scrollable for open tickets and chat messages
   9. data-loading
   10. Light & Dark Mode
   -->
@@ -26,7 +24,7 @@
             </div>
 
             <!-- Ticket List -->
-            <div class="flex-1 overflow-y-auto" [style.height.px]="containerHeight">
+            <div class="flex-1 overflow-y-auto border-b rounded-lg border-transparent" [style.height.px]="containerHeight">
               <!-- Ticket Items -->
               <div class="divide-y divide-gray-300 dark:divide-gray-700 transition-colors duration-500">
                 @if (filteredTickets.length === 0) {
@@ -42,7 +40,7 @@
                 @for (ticket of filteredTickets; track ticket.id) {
                   <!-- Ticket Item -->
                   <div class="py-3 px-2 hover:bg-gray-300 dark:hover:bg-gray-800 cursor-pointer transition-all
-                              duration-300 bg-gray-200 dark:bg-gray-900 relative !border-l-blue-500 dark:!border-l-blue-600"
+                              duration-300 bg-gray-100 dark:bg-gray-900 relative !border-l-blue-500 dark:!border-l-blue-600"
                        [ngClass]="{'!bg-blue-300 dark:!bg-gray-800 border-l-4': selectedTicket?.id === ticket.id}"
                        (click)="selectTicket(ticket)" [@ticketAnimation]>
                       <div class="flex flex-col">
