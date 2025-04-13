@@ -130,6 +130,10 @@
   "PAGE_TEAMLIST_TITLE": "Teamliste des Bots",
   "PAGE_TEAMLIST_DESC": "› Dieses Feature sorgt dafür, dass bestimmte Rollen Zugriff auf wichtige Moderationsfeatures erhalten & schaltet mehr Ticket-Tool Features frei.",
 
+  "PAGE_THEMES_SUBTITLE": "📂 ~ SUPPORT-THEMEN FÜR TICKETS FESTLEGEN",
+  "PAGE_THEMES_TITLE": "Support-Themen",
+  "PAGE_THEMES_DESC": "› Auf dieser Seite siehst du alle Support-Themen welche User bei der Erstellung eines Tickets auf dem Discord-Server auswählen können. ",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODUL NICHT AKTIV!",
   "PAGE_SETUP_MODULE_DESC_0": "Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM AKTIV - VERBESSERUNGEN MÖGLICH!",
