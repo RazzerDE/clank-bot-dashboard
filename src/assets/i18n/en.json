@@ -330,7 +330,9 @@
   "PLACEHOLDER_TYPE_MESSAGE": "Write a message.. ✏️",
 
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
+  "PLACEHOLDER_THEME_SEARCH": "Search for support theme.. 📚",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
+  "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",
   "PLACEHOLDER_ROLE_MODAL_PICK": "Which role would you like to add?",
   "PLACEHOLDER_ROLE_MODAL_DEFAULT": "👥 - Select a Discord role..",
@@ -350,6 +352,7 @@
   "PLACEHOLDER_BUTTON_CHANNEL_SET": "Set forum channel",
   "PLACEHOLDER_BUTTON_CHANNEL_REFRESH": "Refresh channel list",
   "PLACEHOLDER_ACTION": "Action",
+  "PLACEHOLDER_DISCORD_PING": "🔔 ~ Mentioned Discord Roles",
 
   "DATE_FORMAT_LONG": "on {{month}}/{{day}}/{{year}} at {{hours}}:{{minutes}}",
   "DATE_YESTERDAY": "yesterday",

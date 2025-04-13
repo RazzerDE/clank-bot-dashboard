@@ -7,7 +7,131 @@
     <page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"
                 [color]="'blue'" [desc]="'PAGE_THEMES_DESC' | translate"></page-thumb>
 
+    <div class="flex-1 my-4">
+      <div class="p-3 sm:p-5">
+        <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
+          <div class="bg-white dark:!bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden transition-colors duration-300">
 
+            <!-- Table Buttons -->
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+              <div class="w-full md:w-1/2">
+                <div class="flex-1 ml-4 lg:ml-0 ">
+                  <div class="relative self-center">
+                    <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                    <input type="text" [placeholder]="'PLACEHOLDER_THEME_SEARCH' | translate"
+                           class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+                            dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
+                    <!-- TODO: Search -->
+                  </div>
+                </div>
+              </div>
+              <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+
+                <!-- Add Theme Button -->
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-green-700
+                                               via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br" #themeButton>
+                        <!-- TODO: Function -->
+                  <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_THEME_ADD' | translate }}
+                </button>
+
+                <!-- Refresh cache Button -->
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                               via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2
+                                               focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                                 transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none">
+                  <!-- TODO: Function -->
+                  <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
+                  {{ 'BUTTON_CACHE_REFRESH' | translate }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto flex flex-col max-h-[calc(100vh-30rem)]">
+              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 transition-colors
+                                duration-300">
+                <colgroup>
+                  <col class="w-[7%]">
+                  <col class="w-[25%]">
+                  <col class="w-[58%]">
+                  <col class="w-[10%]">
+                </colgroup>
+
+                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400
+                                  transition-colors duration-300 sticky top-0">
+                <tr>
+                  <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300">🖼️ ~ Icon</th>
+                  <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300">✏️ ~ Name</th>
+                  <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
+                                               transition-colors duration-300">{{ 'PLACEHOLDER_DISCORD_PING' | translate }}</th>
+                  <th scope="col" class="px-4 py-3">🚀 ~ {{ 'PLACEHOLDER_ACTION' | translate }}</th>
+                </tr>
+                </thead>
+
+                <tbody class="overflow-y-auto">
+                  @if (filteredThemes.length == 0) {
+                    <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                      <td class="px-4 py-3 text-center" colspan="3">{{ 'PLACEHOLDER_ROLE_EMPTY' | translate }}</td>
+                    </tr>
+                  }
+
+                  @if (this.dataLoading) {
+                    <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                      <td class="px-4 py-3 text-center" colspan="3">
+                        <span class="data-loader"></span>
+                      </td>
+                    </tr>
+                  } @else {
+                    @for (theme of filteredThemes; track theme.id) {
+                      <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+                        <td class="px-3 py-3 text-sm text-gray-500">
+                          {{ theme.icon }}
+                        </td>
+                        <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
+                                               transition-colors duration-300 flex items-center">
+                          {{ theme.name }}
+                        </th>
+                        <td class="px-3 py-3 text-sm text-gray-500">
+                          <div class="flex flex-wrap gap-1">
+                            @for (role of theme.roles; track role.id) {
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                          bg-opacity-10 bg-blue-500 text-blue-700 dark:bg-opacity-20 dark:bg-blue-400 dark:text-blue-200
+                                          border border-blue-200 dark:!border-blue-600 shadow-sm hover:bg-opacity-20 hover:shadow
+                                          transition-all duration-200">
+                                {{ role.name }}
+                              </span>
+                            }
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 flex items-center justify-end">
+                          <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-blue-500
+                                       rounded-full focus:outline-none dark:text-blue-500 hover:bg-gray-200
+                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button">
+                            <!-- TODO: Function -->
+                            <fa-icon [icon]="faPencil" size="lg"></fa-icon>
+                          </button>
+                          <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
+                                       rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
+                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button">
+                            <!-- TODO: Function -->
+                            <fa-icon [icon]="faXmark" size="xl"></fa-icon>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  }
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
 
 
   </section>

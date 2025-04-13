@@ -1,4 +1,5 @@
 import {DiscordUser} from "./discord/User";
+import {Role} from "./discord/Guilds";
 
 export interface Ticket {
   id: string;
@@ -7,4 +8,11 @@ export interface Ticket {
   creator: DiscordUser;
   tag: string;
   creation_date: Date;
+}
+
+export interface SupportTheme {
+  id: string;
+  name: string;
+  icon: string;
+  roles: Role[];
 }
