@@ -351,7 +351,7 @@
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Edit forum channel",
   "PLACEHOLDER_BUTTON_CHANNEL_SET": "Set forum channel",
   "PLACEHOLDER_BUTTON_CHANNEL_REFRESH": "Refresh channel list",
-  "PLACEHOLDER_ACTION": "Action",
+  "PLACEHOLDER_ACTION": "🚀 ~ Action",
   "PLACEHOLDER_DISCORD_PING": "🔔 ~ Mentioned Discord Roles",
 
   "DATE_FORMAT_LONG": "on {{month}}/{{day}}/{{year}} at {{hours}}:{{minutes}}",

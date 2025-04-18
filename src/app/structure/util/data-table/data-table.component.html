@@ -1,0 +1,91 @@
+<div class="overflow-x-auto flex flex-col max-h-[calc(100vh-30rem)]">
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 transition-colors duration-300">
+    <colgroup>
+      <!-- Reserve Width for each column -->
+      @for (column of tconfig.columns; track $index) {
+        <col class="w-[{{ column.width }}%]">
+      }
+    </colgroup>
+
+    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400
+                                  transition-colors duration-300 sticky top-0">
+    <tr>
+      <!-- Table Header -->
+      @for (column of tconfig.columns; track $index) {
+        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600 transition-colors duration-300">
+          {{ column.name | translate }}
+        </th>
+      }
+    </tr>
+    </thead>
+
+    <tbody class="overflow-y-auto">
+      <!-- Table is empty -->
+      @if (tconfig.rows.length == 0) {
+        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+          <td class="px-4 py-3 text-center" colspan="3">{{ tconfig.list_empty | translate }}</td>
+        </tr>
+      }
+
+      <!-- Table is Loading; Show Loader -->
+        @if (tconfig.dataLoading) {
+          <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+            <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">
+              <span class="data-loader"></span>
+            </td>
+          </tr>
+        } @else {
+          <!-- Row Content -->
+          @for (obj of tconfig.rows; track obj.id) {
+            <tr class="border-b dark:border-gray-700 transition-colors duration-300">
+              @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
+                <td class="px-3 py-3 text-sm text-gray-500">
+                  {{ obj.icon }}
+                </td>
+              }
+
+              <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                         duration-300" [ngClass]="tconfig.type === 'TEAMLIST' ? '' : ''">
+                <div class="flex items-center">
+                  @if (isRoleType(obj)) {
+                    <div class="w-3 h-3 rounded-full inline-block me-2.5"
+                         [style.background-color]="isRoleType(obj) ? '#' +
+                         obj.color.toString(16).padStart(6, '0') : ''"></div>
+                  }
+
+                  {{ obj.name }}
+                </div>
+              </td>
+
+              @if (tconfig.type === 'TEAMLIST' && isRoleType(obj)) {
+                <td class="px-4 py-3">{{ tconfig.actions[0](obj.support_level) }}</td>
+              } @else if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
+                <td class="px-4 py-3 w-[66%]">
+                  @for (role of obj.roles; track role.id) {
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-opacity-10
+                        bg-blue-500 text-blue-700 dark:bg-opacity-20 dark:bg-blue-400 dark:text-blue-200
+                        border border-blue-200 dark:!border-blue-600 shadow-sm hover:bg-opacity-20 hover:shadow
+                        transition-all duration-200 mr-1 mb-1 truncate">
+                        <span class="truncate">{{ role.name }}</span>
+                    </span>
+                  }
+                </td>
+              }
+
+              <!-- Action Buttons -->
+              <td class="px-4 py-3 flex items-center justify-end">
+                @for (button of tconfig.action_btn; track $index) {
+                  <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-{{button.color}}-700
+                         rounded-full focus:outline-none dark:text-{{button.color}}-700 hover:bg-gray-200
+                         dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button"
+                          (click)="button.action(obj)" [ngClass]="button.color === 'blue' ? '!text-blue-500' : ''">
+                    <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        }
+    </tbody>
+  </table>
+</div>

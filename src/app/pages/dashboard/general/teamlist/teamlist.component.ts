@@ -15,6 +15,8 @@ import {Router} from "@angular/router";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {Subscription} from "rxjs";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
+import {TableConfig} from "../../../../services/types/Config";
 
 @Component({
   selector: 'app-teamlist',
@@ -24,7 +26,8 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
     DashboardLayoutComponent,
     FaIconComponent,
     NgClass,
-    AlertBoxComponent
+    AlertBoxComponent,
+    DataTableComponent
   ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'
@@ -401,4 +404,36 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
       this.roleBackdrop.nativeElement.classList.add('hidden');
     }
   }
+
+  /**
+   * Getter for the table configuration used in the Teamlist component.
+   * This configuration defines the structure and behavior of the table displayed
+   * in the component, including columns, rows, and action buttons.
+   *
+   * @returns {TableConfig} The configuration object for the table.
+   */
+  protected get tableConfig(): TableConfig {
+    return {
+      type: "TEAMLIST",
+      list_empty: 'PLACEHOLDER_ROLE_EMPTY',
+      dataLoading: this.dataLoading,
+      rows: this.filteredRoles,
+      columns: [
+        { width: 45, name: '✏️ ~ Name' },
+        { width: 45, name: '🦺 ~ Support Level' },
+        { width: 10, name: 'PLACEHOLDER_ACTION' }
+      ],
+      action_btn: [
+        {
+          color: 'red',
+          icon: this.faXmark,
+          size: 'xl',
+          action: (role: Role): void => this.removeRole(role)
+        }
+      ],
+      actions: [
+        (support_level: number): string => this.getSupportLevel(support_level)
+      ]
+    };
+  };
 }

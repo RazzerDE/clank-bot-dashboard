@@ -155,7 +155,7 @@
                                   hidden dark:!bg-gray-700" #filterDropdown>
                         <ul class="space-y-2 text-sm">
                           <!-- Build temporary list to avoid redudant code -->
-                          @for (item of [].constructor(3); track $index) {
+                          @for (_ of [].constructor(3); track $index) {
                             <li class="flex items-center">
                               <input id="{{$index}}_level" type="checkbox"
                                      [checked]="selectedSupportLevels.includes($index)"
@@ -175,63 +175,7 @@
                 </div>
 
                 <!-- Table -->
-                <div class="overflow-x-auto flex flex-col max-h-[calc(100vh-30rem)]">
-                  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 transition-colors
-                                duration-300">
-                    <colgroup>
-                      <col class="w-[45%]">
-                      <col class="w-[45%]">
-                      <col class="w-[10%]">
-                    </colgroup>
-
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400
-                                  transition-colors duration-300 sticky top-0">
-                      <tr>
-                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
-                                               transition-colors duration-300">✏️ ~ Name</th>
-                        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600
-                                               transition-colors duration-300">🦺 ~ Support-Level</th>
-                        <th scope="col" class="px-4 py-3">🚀 ~ {{ 'PLACEHOLDER_ACTION' | translate }}</th>
-                      </tr>
-                    </thead>
-
-                    <tbody class="overflow-y-auto">
-                      @if (filteredRoles.length == 0) {
-                        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-                          <td class="px-4 py-3 text-center" colspan="3">{{ 'PLACEHOLDER_ROLE_EMPTY' | translate }}</td>
-                        </tr>
-                      }
-
-                      @if (this.dataLoading) {
-                        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-                          <td class="px-4 py-3 text-center" colspan="3">
-                            <span class="data-loader"></span>
-                          </td>
-                        </tr>
-                      } @else {
-                        @for (role of filteredRoles; track role.id) {
-                          <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-                            <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white
-                                               transition-colors duration-300 flex items-center">
-                              <div class="w-3 h-3 rounded-full inline-block me-1.5"
-                                   [style.background-color]="'#' + role.color.toString(16).padStart(6, '0')"></div>
-                              {{ role.name }}
-                            </th>
-                            <td class="px-4 py-3">{{ getSupportLevel(role.support_level!) }}</td>
-                            <td class="px-4 py-3 flex items-center justify-end">
-                              <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-red-700
-                                       rounded-full focus:outline-none dark:text-red-700 hover:bg-gray-200
-                                       dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button"
-                                      (click)="removeRole(role)">
-                                <fa-icon [icon]="faXmark" size="xl"></fa-icon>
-                              </button>
-                            </td>
-                          </tr>
-                        }
-                      }
-                    </tbody>
-                  </table>
-                </div>
+                <data-table [tconfig]="tableConfig"/>
 
               </div>
             </div>
