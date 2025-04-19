@@ -103,7 +103,7 @@
                                 <div class="w-full">
                                   <div class="relative right-0">
                                     <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
-                                      @for (item of [].constructor(3); track $index) {
+                                      @for (_ of [].constructor(3); track $index) {
                                         <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
                                                  dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
                                                  dark:hover:bg-gray-600/30" (click)="activeTab = $index"

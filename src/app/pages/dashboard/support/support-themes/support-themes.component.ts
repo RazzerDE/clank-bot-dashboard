@@ -5,7 +5,7 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {SupportTheme} from "../../../../services/types/Tickets";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
@@ -25,7 +25,7 @@ import {DataTableComponent} from "../../../../structure/util/data-table/data-tab
   styleUrl: './support-themes.component.scss'
 })
 export class SupportThemesComponent {
-  protected filteredThemes: SupportTheme[] = [
+  protected supportThemes: SupportTheme[] = [
     {
       id: '1',
       name: 'Technischer Support',
@@ -425,10 +425,26 @@ export class SupportThemesComponent {
       ]
     }
   ];
-  protected dataLoading: boolean = false;
+  protected filteredThemes: SupportTheme[] = this.supportThemes;
+  protected dataLoading: boolean = false; // TODO
 
   constructor(public dataService: DataHolderService) {
     this.dataService.isLoading = false;
+  }
+
+  /**
+   * Filters the support-themes based on the search term entered by the user.
+   *
+   * This method updates the `filteredThemes` array to include only the support-themes
+   * whose names contain the search term. The search is case-insensitive.
+   *
+   * @param {Event} event - The input event triggered by the search field.
+   */
+  searchTheme(event: Event): void {
+    const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredThemes = this.supportThemes.filter(theme =>
+      theme.name.toLowerCase().includes(searchTerm) || theme.roles.some(role => role.name.toLowerCase().includes(searchTerm))
+    );
   }
 
   /**
@@ -441,14 +457,14 @@ export class SupportThemesComponent {
   protected get tableConfig(): TableConfig {
     return {
       type: "SUPPORT_THEMES",
-      list_empty: 'PLACEHOLDER_ROLE_EMPTY',
+      list_empty: 'PLACEHOLDER_THEME_EMPTY',
       dataLoading: this.dataLoading,
       rows: this.filteredThemes,
       columns: [
-        { width: 6, name: '🎨 ~ Icon' },
-        { width: 26, name: '✏️ ~ Name' },
-        { width: 60, name: 'PLACEHOLDER_DISCORD_PING' },
-        { width: 10, name: 'PLACEHOLDER_ACTION' }
+        { width: 7, name: '🎨 ~ Icon' },
+        { width: 21, name: '✏️ ~ Name' },
+        { width: 64, name: 'PLACEHOLDER_DISCORD_PING' },
+        { width: 8, name: 'PLACEHOLDER_ACTION' }
       ],
       action_btn: [
         {
@@ -468,9 +484,9 @@ export class SupportThemesComponent {
     };
   };
 
-  protected readonly faPlus = faPlus;
-  protected readonly faSearch = faSearch;
-  protected readonly faXmark = faXmark;
-  protected readonly faRefresh = faRefresh;
-  protected readonly faPencil = faPencil;
+  protected readonly faPlus: IconDefinition = faPlus;
+  protected readonly faSearch: IconDefinition = faSearch;
+  protected readonly faXmark: IconDefinition = faXmark;
+  protected readonly faRefresh: IconDefinition = faRefresh;
+  protected readonly faPencil: IconDefinition = faPencil;
 }

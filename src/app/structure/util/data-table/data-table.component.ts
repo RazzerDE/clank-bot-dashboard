@@ -6,6 +6,7 @@ import {DataHolderService} from "../../../services/data/data-holder.service";
 import {SupportTheme} from "../../../services/types/Tickets";
 import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass} from "@angular/common";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'data-table',
@@ -15,7 +16,18 @@ import {NgClass} from "@angular/common";
     NgClass
   ],
   templateUrl: './data-table.component.html',
-  styleUrl: './data-table.component.scss'
+  styleUrl: './data-table.component.scss',
+  animations: [
+    trigger('rowAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateY(10px)' }))
+      ])
+    ])
+  ]
 })
 export class DataTableComponent {
     @Input() tconfig: TableConfig = {} as TableConfig;

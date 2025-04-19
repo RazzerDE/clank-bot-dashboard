@@ -331,6 +331,7 @@
 
   "PLACEHOLDER_ROLE_SEARCH": "Nach Rolle suchen.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Nach Support-Thema suchen.. 📚",
+  "PLACEHOLDER_THEME_EMPTY": "😢 ~ Keine Support-Themen gefunden..",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Rolle hinzufügen",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Thema hinzufügen",
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Rolle hinzufügen",
