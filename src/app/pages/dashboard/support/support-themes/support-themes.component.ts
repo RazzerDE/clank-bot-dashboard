@@ -32,6 +32,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected supportThemes: SupportTheme[] = [];
   protected filteredThemes: SupportTheme[] = this.supportThemes;
   protected dataLoading: boolean = true;
+  protected disabledCacheBtn: boolean = false;
   protected subscriptions: Subscription[] = [];
 
   constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService) {
@@ -69,6 +70,32 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     }
   }
 
+  /**
+   * Refreshes the cache by fetching the team roles again.
+   *
+   * This method disables the cache button, sets the loading state, and calls the `getTeamRoles` method
+   * with the `no_cache` parameter set to `true` to fetch fresh data. The cache button is re-enabled
+   * after 30 seconds.
+   */
+  refreshCache(): void {
+    this.disabledCacheBtn = true;
+    this.dataService.isLoading = true;
+    this.getSupportThemes(true);
+
+    setTimeout((): void => { this.disabledCacheBtn = false; }, 30000); // 30 seconds
+  }
+
+  /**
+   * Fetches the support themes for the active guild.
+   *
+   * This method retrieves the support themes from the server or local storage, depending on the cache state.
+   * If the `no_cache` parameter is set to `true`, the method bypasses the cache and fetches fresh data from the server.
+   * The fetched data is stored in local storage for subsequent use.
+   *
+   * If no active guild is set, the user is redirected to the dashboard.
+   *
+   * @param {boolean} [no_cache] - Optional parameter to bypass the cache and fetch fresh data.
+   */
   getSupportThemes(no_cache?: boolean): void {
     // redirect to dashboard if no active guild is set
     if (!this.dataService.active_guild) {
