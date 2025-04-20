@@ -5,7 +5,7 @@ import {TableConfig} from "../../../services/types/Config";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {SupportTheme} from "../../../services/types/Tickets";
 import {Role} from "../../../services/types/discord/Guilds";
-import {NgClass} from "@angular/common";
+import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
@@ -13,7 +13,9 @@ import {animate, style, transition, trigger} from "@angular/animations";
   imports: [
     FaIconComponent,
     TranslatePipe,
-    NgClass
+    NgClass,
+    NgOptimizedImage,
+    NgStyle
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
@@ -54,5 +56,45 @@ export class DataTableComponent {
    */
   isRoleType(obj: SupportTheme | Role): obj is Role {
     return (obj as Role).support_level !== undefined;
+  }
+
+  /**
+   * Generates CSS styles for a Discord role for a support-theme based on its color.
+   * Converts the role's decimal color value to a hex color string and creates a style object
+   * with background color (10% opacity), text color, and border color matching the role's color.
+   *
+   * @param role - The Discord role object containing a color property
+   * @returns An object with CSS style properties as key-value pairs
+   */
+  getRoleStyles(role: Role): { [key: string]: string } {
+    const hexColor: string = role.color.toString(16).padStart(6, '0');
+    const r: number = parseInt(hexColor.substring(0, 2), 16);
+    const g: number = parseInt(hexColor.substring(2, 4), 16);
+    const b: number = parseInt(hexColor.substring(4, 6), 16);
+
+    return {
+      'background-color': `rgba(${r}, ${g}, ${b}, 0.1)`,
+      'color': `#${hexColor}`,
+      'border-color': `#${hexColor}`,
+      'border-width': '1px'
+    };
+  }
+
+  /**
+   * Extracts the emoji ID from a Discord emoji string and returns the corresponding CDN URL.
+   * Discord emojis are formatted as `<:name:id>` for standard emojis or `<a:name:id>` for animated emojis.
+   *
+   * @param emoji - The Discord emoji string format (e.g., '<:emojiname:123456789>' or '<a:emojiname:123456789>')
+   * @returns The CDN URL for the emoji, or an empty string if the emoji format is invalid
+   */
+  getEmojibyId(emoji: string): string {
+    // Match emoji format <:name:id> or <a:name:id>
+    const match = emoji.match(/<(a?):(\w+):(\d+)>/);
+    if (!match) return '';
+
+    const isAnimated = match[1] === 'a';
+    const emojiId = match[3];
+
+    return `https://cdn.discordapp.com/emojis/${emojiId}${isAnimated ? '.gif' : '.png'}`;
   }
 }

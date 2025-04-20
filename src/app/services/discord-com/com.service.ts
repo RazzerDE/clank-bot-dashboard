@@ -4,6 +4,7 @@ import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
 import {Guild, Role} from "../types/discord/Guilds";
+import {SupportTheme} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,20 @@ export class ComService {
   async getGuilds(): Promise<Observable<Guild[]>> {
     await this.ensureInitialized();
     return this.http.get<Guild[]>(`${config.api_url}/guilds`, { headers: this.authService.headers });
+  }
+
+  /**
+   * Retrieves the list of all support-themes for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the guilds, including member counts.
+   *
+   * @returns {Promise<Observable<SupportTheme[]>>} A promise that resolves to an observable of the list of guilds.
+   */
+  async getSupportThemes(guild_id: string): Promise<Observable<SupportTheme[]>> {
+    await this.ensureInitialized();
+    return this.http.get<SupportTheme[]>(`${config.api_url}/guilds/support-themes?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
   }
 
   /**

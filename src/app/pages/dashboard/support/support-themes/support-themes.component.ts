@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe} from "@ngx-translate/core";
@@ -11,6 +11,10 @@ import {SupportTheme} from "../../../../services/types/Tickets";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
 import {TableConfig} from "../../../../services/types/Config";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
+import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
+import {ComService} from "../../../../services/discord-com/com.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-support-themes',
@@ -24,412 +28,86 @@ import {DataTableComponent} from "../../../../structure/util/data-table/data-tab
   templateUrl: './support-themes.component.html',
   styleUrl: './support-themes.component.scss'
 })
-export class SupportThemesComponent {
-  protected supportThemes: SupportTheme[] = [
-    {
-      id: '1',
-      name: 'Technischer Support',
-      icon: '🔧',
-      roles: [
-        {
-          id: '101',
-          name: 'Tech-Support Level 1',
-          color: 0x3498db, // Blau
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🛠️',
-          position: 1,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 1
-        },
-        {
-          id: '301',
-          name: 'Moderator',
-          color: 0x9b59b6, // Lila
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🛡️',
-          position: 4,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        },
-        {
-          id: '301',
-          name: 'Moderator',
-          color: 0x9b59b6, // Lila
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🛡️',
-          position: 4,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        },
-        {
-          id: '102',
-          name: 'Tech-Support Level 2',
-          color: 0x2ecc71, // Grün
-          hoist: true,
-          icon: null,
-          unicode_emoji: '👨‍💻',
-          position: 2,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 2
-        },
-        {
-          id: '103',
-          name: 'Tech-Support Level 3',
-          color: 0xe74c3c, // Rot
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🔧',
-          position: 3,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        },
-        {
-          id: '104',
-          name: 'Tech-Support Level 4',
-          color: 0x9b59b6, // Lila
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🛡️',
-          position: 4,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 4
-        },
-        {
-          id: '105',
-          name: 'Tech-Support Level 5',
-          color: 0xf1c40f, // Gelb
-          hoist: true,
-          icon: null,
-          unicode_emoji: '⚡',
-          position: 5,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 5
-        },
-        {
-          id: '106',
-          name: 'Tech-Support Level 6',
-          color: 0x1abc9c, // Türkis
-          hoist: true,
-          icon: null,
-          unicode_emoji: '📊',
-          position: 6,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 6
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: 'Allgemeine Hilfe',
-      icon: '❓',
-      roles: [
-        {
-          id: '201',
-          name: 'Helfer',
-          color: 0xe74c3c, // Rot
-          hoist: true,
-          icon: null,
-          unicode_emoji: '❓',
-          position: 3,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 1
-        }
-      ]
-    },
-    {
-      id: '3',
-      name: 'Moderation',
-      icon: '🚔',
-      roles: [
-        {
-          id: '301',
-          name: 'Moderator',
-          color: 0x9b59b6, // Lila
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🛡️',
-          position: 4,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        },
-        {
-          id: '302',
-          name: 'Admin',
-          color: 0xf1c40f, // Gelb
-          hoist: true,
-          icon: null,
-          unicode_emoji: '⚡',
-          position: 5,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 4
-        }
-      ]
-    },
-    {
-      id: '4',
-      name: 'Produktfragen',
-      icon: '📦',
-      roles: [
-        {
-          id: '401',
-          name: 'Produktberater',
-          color: 0x1abc9c, // Türkis
-          hoist: true,
-          icon: null,
-          unicode_emoji: '📊',
-          position: 6,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 2
-        }
-      ]
-    },
-    {
-      id: '5',
-      name: 'Zahlungen & Abonnements',
-      icon: '💰',
-      roles: [
-        {
-          id: '501',
-          name: 'Finanz-Support',
-          color: 0x27ae60, // Dunkelgrün
-          hoist: true,
-          icon: null,
-          unicode_emoji: '💳',
-          position: 7,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        },
-        {
-          id: '502',
-          name: 'Rechnungswesen',
-          color: 0x16a085, // Anderes Grün
-          hoist: true,
-          icon: null,
-          unicode_emoji: '📝',
-          position: 8,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 4
-        }
-      ]
-    },
-    {
-      id: '6',
-      name: 'Bug Reports',
-      icon: '🐛',
-      roles: [
-        {
-          id: '601',
-          name: 'Bug Hunter',
-          color: 0xe67e22, // Orange
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🔍',
-          position: 9,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 2
-        }
-      ]
-    },
-    {
-      id: '7',
-      name: 'Feedback & Feature-Requests',
-      icon: '💡',
-      roles: [
-        {
-          id: '701',
-          name: 'Produktmanager',
-          color: 0xd35400, // Dunkles Orange
-          hoist: true,
-          icon: null,
-          unicode_emoji: '📈',
-          position: 10,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        },
-        {
-          id: '702',
-          name: 'UX Designer',
-          color: 0x8e44ad, // Violett
-          hoist: true,
-          icon: null,
-          unicode_emoji: '🎨',
-          position: 11,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 2
-        }
-      ]
-    },
-    {
-      id: '8',
-      name: 'Community Management',
-      icon: '👥',
-      roles: [
-        {
-          id: '801',
-          name: 'Community Manager',
-          color: 0x34495e, // Dunkelblau
-          hoist: true,
-          icon: null,
-          unicode_emoji: '👋',
-          position: 12,
-          permissions: '8',
-          managed: false,
-          mentionable: true,
-          tags: {
-            bot_id: null,
-            integration_id: null,
-            premium_subscriber: null
-          },
-          flags: 0,
-          support_level: 3
-        }
-      ]
-    }
-  ];
+export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
+  protected supportThemes: SupportTheme[] = [];
   protected filteredThemes: SupportTheme[] = this.supportThemes;
-  protected dataLoading: boolean = false; // TODO
+  protected dataLoading: boolean = true;
+  protected subscriptions: Subscription[] = [];
 
-  constructor(public dataService: DataHolderService) {
-    this.dataService.isLoading = false;
+  constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService) {
+    this.dataService.isLoading = true;
+
+    this.getSupportThemes(); // first call to get the server data
+    const dataFetchSubscription: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+      if (value) { // only fetch data if allowed
+        this.dataLoading = true;
+        this.getSupportThemes();
+      }
+    });
+
+    this.subscriptions.push(dataFetchSubscription);
+  }
+
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   * setTimeout is used to ensure that the loading state is updated after the view has been rendered.
+   *
+   * It's used to show a loading state for some data related things.
+   */
+  ngAfterViewChecked(): void {
+    if (this.supportThemes && this.supportThemes.length > 0 && !this.dataService.isLoading && this.dataLoading) {
+      setTimeout((): boolean => this.dataLoading = false, 0);
+    }
+  }
+
+  getSupportThemes(no_cache?: boolean): void {
+    // redirect to dashboard if no active guild is set
+    if (!this.dataService.active_guild) {
+      this.router.navigateByUrl("/dashboard").then();
+      return;
+    }
+
+    // check if guilds are already stored in local storage (one minute cache)
+    if ((localStorage.getItem('support_themes') && localStorage.getItem('support_themes_timestamp') &&
+      Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
+      this.supportThemes = JSON.parse(localStorage.getItem('support_themes') as string);
+      this.filteredThemes = this.supportThemes;
+      this.dataService.isLoading = false;
+      return;
+    }
+
+    this.discordService.getSupportThemes(this.dataService.active_guild!.id).then((observable) => {
+      const subscription: Subscription = observable.subscribe({
+        next: (support_themes: SupportTheme[]): void => {
+          this.supportThemes = support_themes;
+          this.filteredThemes = this.supportThemes;
+          this.dataService.isLoading = false;
+
+          localStorage.setItem('support_themes', JSON.stringify(this.supportThemes));
+          localStorage.setItem('support_themes_timestamp', Date.now().toString());
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+          } else if (err.status === 401) {
+            this.dataService.redirectLoginError('NO_CLANK');
+          } else {
+            this.dataService.redirectLoginError('EXPIRED');
+          }
+        }
+      });
+
+      this.subscriptions.push(subscription);
+    });
   }
 
   /**

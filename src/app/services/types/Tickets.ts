@@ -15,4 +15,6 @@ export interface SupportTheme {
   name: string;
   icon: string;
   roles: Role[];
+  faq_answer: string | null;
+  desc: string;
 }

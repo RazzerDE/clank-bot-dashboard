@@ -41,7 +41,7 @@
             <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
               @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
                 <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
-                  {{ obj.icon }}
+                  <img [ngSrc]="getEmojibyId(obj.icon) + '?size=32'" width="20" height="20" alt="Emoji for {{ obj.name}}" />
                 </td>
               }
 
@@ -67,9 +67,8 @@
                 <td class="px-4 py-3" [width]="tconfig.columns[2].width + '%'">
                   @for (role of obj.roles; track role.id) {
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-opacity-10
-                        bg-blue-500 text-blue-700 dark:bg-opacity-20 dark:bg-blue-400 dark:text-blue-200
-                        border border-blue-200 dark:!border-blue-600 shadow-sm hover:bg-opacity-20 hover:shadow
-                        transition-all duration-200 mr-1 mb-1 truncate">
+                                  shadow-sm hover:bg-opacity-20 hover:shadow transition-all duration-200 mr-1 mb-1
+                                  truncate" [ngStyle]="getRoleStyles(role)">
                         <span class="truncate">{{ role.name }}</span>
                     </span>
                   }
