@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe} from "@ngx-translate/core";
@@ -15,6 +15,7 @@ import {Subscription} from "rxjs";
 import {Router} from "@angular/router";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 
 @Component({
   selector: 'app-support-themes',
@@ -23,7 +24,8 @@ import {HttpErrorResponse} from "@angular/common/http";
     PageThumbComponent,
     TranslatePipe,
     FaIconComponent,
-    DataTableComponent
+    DataTableComponent,
+    ModalComponent
   ],
   templateUrl: './support-themes.component.html',
   styleUrl: './support-themes.component.scss'
@@ -34,6 +36,11 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
   protected subscriptions: Subscription[] = [];
+
+  protected modalType: string = 'SUPPORT_THEME_ADD';
+  protected modalTheme: SupportTheme = {} as SupportTheme;
+
+  @ViewChild(ModalComponent) protected modal!: ModalComponent;
 
   constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService) {
     this.dataService.isLoading = true;
@@ -77,7 +84,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * with the `no_cache` parameter set to `true` to fetch fresh data. The cache button is re-enabled
    * after 30 seconds.
    */
-  refreshCache(): void {
+  protected refreshCache(): void {
     this.disabledCacheBtn = true;
     this.dataService.isLoading = true;
     this.getSupportThemes(true);
@@ -96,7 +103,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    *
    * @param {boolean} [no_cache] - Optional parameter to bypass the cache and fetch fresh data.
    */
-  getSupportThemes(no_cache?: boolean): void {
+  protected getSupportThemes(no_cache?: boolean): void {
     // redirect to dashboard if no active guild is set
     if (!this.dataService.active_guild) {
       this.router.navigateByUrl("/dashboard").then();
@@ -145,13 +152,34 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    *
    * @param {Event} event - The input event triggered by the search field.
    */
-  searchTheme(event: Event): void {
+  protected searchTheme(event: Event): void {
     const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredThemes = this.supportThemes.filter(theme =>
       theme.name.toLowerCase().includes(searchTerm) ||
       theme.desc.toLowerCase().includes(searchTerm) ||
       theme.roles.some(role => role.name.toLowerCase().includes(searchTerm))
     );
+  }
+
+  protected openFAQModal(theme: SupportTheme): void {
+    console.log(theme.faq_answer)
+    this.modalType = 'SUPPORT_THEME_FAQ';
+    this.modalTheme = theme;
+    this.modal.showModal();
+  }
+
+  /**
+   * Handles document click events to close modals if the user clicks outside of them.
+   *
+   * @param {MouseEvent} event - The click event triggered on the document.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // role modal
+    const clickedInside = this.modal.modalContent.nativeElement.contains(event.target as Node);
+    if (!clickedInside && !(document.activeElement && document.activeElement.id.startsWith('faqBtn_'))) {
+      this.modal.hideModal();
+    }
   }
 
   /**
@@ -188,7 +216,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           action: (theme: SupportTheme): void => {} // TODO
         }
       ],
-      actions: []
+      actions: [
+        (theme: SupportTheme): void => this.openFAQModal(theme),
+      ]
     };
   };
 

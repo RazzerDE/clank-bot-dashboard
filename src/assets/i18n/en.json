@@ -335,6 +335,10 @@
   "PLACEHOLDER_THEME_DESC": "💬 ~ DESCRIPTION",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
+
+  "PLACEHOLDER_FAQ_MODAL_TITLE": "🤖 - Predefined Bot Response",
+  "PLACEHOLDER_FAQ_MODAL_DESC": "❓ › The text below will be shown to all users who select <strong>this</strong> support theme when creating a ticket - this means that no ticket will be created.",
+
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",
   "PLACEHOLDER_ROLE_MODAL_PICK": "Which role would you like to add?",
   "PLACEHOLDER_ROLE_MODAL_DEFAULT": "👥 - Select a Discord role..",
@@ -342,6 +346,7 @@
   "PLACEHOLDER_ROLE_MODAL_FIRST": "🚑 Helper",
   "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
   "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
+
   "PLACEHOLDER_ROLE_EMPTY": "😭 ~ No roles found..",
   "PLACEHOLDER_ROLE_FIRST": "Few rights",
   "PLACEHOLDER_ROLE_SECOND": "More rights",

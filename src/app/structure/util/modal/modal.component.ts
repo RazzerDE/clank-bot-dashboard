@@ -6,14 +6,15 @@ import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
-import {ComService} from "../../../services/discord-com/com.service";
+import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
 
 @Component({
   selector: 'app-modal',
   imports: [
     FaIconComponent,
     TranslatePipe,
-    NgClass
+    NgClass,
+    MarkdownPipe,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss'
@@ -21,6 +22,8 @@ import {ComService} from "../../../services/discord-com/com.service";
 export class ModalComponent {
   @Input() discordRoles: Role[] = [];
   @Input() type: string = '';
+  @Input() content: string = '';
+
   @Input() action: (selectedRole: HTMLOptionElement) => void = (): void => {};
 
   protected activeTab: number = 0;
@@ -33,8 +36,7 @@ export class ModalComponent {
   @ViewChild('roleModalContent') modalContent!: ElementRef<HTMLDivElement>;
   @ViewChild('roleBackdrop') roleBackdrop!: ElementRef<HTMLDivElement>;
 
-  constructor(protected dataService: DataHolderService, protected discordService: ComService ) {
-  }
+  constructor(protected dataService: DataHolderService) {}
 
   /**
    * Validates the role picker selection.
@@ -47,11 +49,17 @@ export class ModalComponent {
     this.isRolePickerValid = selectedRole !== '' && selectedRole !== '👥 - Wähle eine Discord-Rolle aus..';
   }
 
+  /**
+   * Displays the modal by removing the `hidden` class from the modal and backdrop elements.
+   */
   showModal(): void {
     this.roleModal.nativeElement.classList.remove('hidden');
     this.roleBackdrop.nativeElement.classList.remove('hidden');
   }
 
+  /**
+   * Hides the modal by adding the `hidden` class to the modal and backdrop elements.
+   */
   hideModal(): void {
     this.roleModal.nativeElement.classList.add('hidden');
     this.roleBackdrop.nativeElement.classList.add('hidden');
