@@ -7,7 +7,6 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
-import {NgClass} from "@angular/common";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Role, TeamList} from "../../../../services/types/discord/Guilds";
@@ -17,6 +16,7 @@ import {Subscription} from "rxjs";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {TableConfig} from "../../../../services/types/Config";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 
 @Component({
   selector: 'app-teamlist',
@@ -25,9 +25,9 @@ import {TableConfig} from "../../../../services/types/Config";
     PageThumbComponent,
     DashboardLayoutComponent,
     FaIconComponent,
-    NgClass,
     AlertBoxComponent,
-    DataTableComponent
+    DataTableComponent,
+    ModalComponent
   ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'
@@ -51,12 +51,9 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected disabledCacheBtn: boolean = false;
   protected isRolePickerValid: boolean = false;
 
-  @ViewChild('rolePicker') protected rolePicker!: ElementRef<HTMLSelectElement>;
+  @ViewChild(ModalComponent) protected modalComponent!: ModalComponent;
   @ViewChild('filterDropdown') protected filterDropdown!: ElementRef<HTMLDivElement>;
   @ViewChild('dropdownButton') protected dropdownButton!: ElementRef<HTMLButtonElement>;
-  @ViewChild('roleModal') protected roleModal!: ElementRef<HTMLDivElement>;
-  @ViewChild('roleModalContent') protected modalContent!: ElementRef<HTMLDivElement>;
-  @ViewChild('roleBackdrop') protected roleBackdrop!: ElementRef<HTMLDivElement>;
   @ViewChild('roleButton') protected roleButton!: ElementRef<HTMLButtonElement>;
 
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router,
@@ -94,17 +91,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     if (this.discordRoles && this.discordRoles.length > 0 && !this.dataService.isLoading && this.dataLoading) {
       setTimeout((): boolean => this.dataLoading = false, 0);
     }
-  }
-
-  /**
-   * Validates the role picker selection.
-   *
-   * This method checks the value of the role picker element and sets the `isRolePickerValid`
-   * property to `true` if a valid role is selected, otherwise sets it to `false`.
-   */
-  validateRolePicker(): void {
-    const selectedRole: string = this.rolePicker.nativeElement.value;
-    this.isRolePickerValid = selectedRole !== '' && selectedRole !== '👥 - Wähle eine Discord-Rolle aus..';
   }
 
   /**
@@ -255,6 +241,19 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     });
   }
 
+  /**
+   * Adds a role to the team.
+   *
+   * This method is responsible for adding a selected role to the team. It validates the active guild,
+   * retrieves the selected role from the list of available Discord roles, and assigns it a support level
+   * based on the currently active tab. The role is then sent to the backend for addition.
+   *
+   * If the addition is successful, the role is added to the local team data, and the modal is closed.
+   * In case of an error, appropriate error handling is performed, including showing alerts or redirecting
+   * the user based on the error type.
+   *
+   * @param {HTMLOptionElement} option - The selected option element from the role picker.
+   */
   addRole(option: HTMLOptionElement): void {
     if (!this.dataService.active_guild) { return; }
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
@@ -274,8 +273,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
                 { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
 
             // close modal
-            this.roleModal.nativeElement.classList.add('hidden');
-            this.roleBackdrop.nativeElement.classList.add('hidden');
+            this.modalComponent.hideModal();
           },
           error: (err: HttpErrorResponse): void => {
             if (err.status === 409) {
@@ -294,8 +292,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
             }
 
             // close modal
-            this.roleModal.nativeElement.classList.add('hidden');
-            this.roleBackdrop.nativeElement.classList.add('hidden');
+            this.modalComponent.hideModal();
           }
         });
 
@@ -398,10 +395,9 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     }
 
     // role modal
-    clickedInside = this.modalContent.nativeElement.contains(event.target as Node);
+    clickedInside = this.modalComponent.modalContent.nativeElement.contains(event.target as Node);
     if (!clickedInside && document.activeElement != this.roleButton.nativeElement) {
-      this.roleModal.nativeElement.classList.add('hidden');
-      this.roleBackdrop.nativeElement.classList.add('hidden');
+      this.modalComponent.hideModal();
     }
   }
 

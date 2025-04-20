@@ -147,7 +147,6 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
             const sub2: Subscription = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
               .subscribe({
                 next: (supportSetup: SupportSetup): void => {
-                  console.log('supportSetup', supportSetup);
                   if (supportSetup.support_forum != null) {
                     this.supportForum = { channel: supportSetup.support_forum, pending: supportSetup.support_forum_pending };
                     this.selectedChannel = supportSetup.support_forum;
