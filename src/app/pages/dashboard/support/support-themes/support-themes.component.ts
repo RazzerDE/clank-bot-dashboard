@@ -148,7 +148,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   searchTheme(event: Event): void {
     const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredThemes = this.supportThemes.filter(theme =>
-      theme.name.toLowerCase().includes(searchTerm) || theme.roles.some(role => role.name.toLowerCase().includes(searchTerm))
+      theme.name.toLowerCase().includes(searchTerm) ||
+      theme.desc.toLowerCase().includes(searchTerm) ||
+      theme.roles.some(role => role.name.toLowerCase().includes(searchTerm))
     );
   }
 
