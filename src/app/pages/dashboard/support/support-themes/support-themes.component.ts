@@ -140,8 +140,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       rows: this.filteredThemes,
       columns: [
         { width: 7, name: '🎨 ~ Icon' },
-        { width: 21, name: '✏️ ~ Name' },
-        { width: 64, name: 'PLACEHOLDER_DISCORD_PING' },
+        { width: 15, name: '✏️ ~ Name' },
+        { width: 30, name: 'PLACEHOLDER_THEME_DESC' },
+        { width: 40, name: 'PLACEHOLDER_DISCORD_PING' },
         { width: 8, name: 'PLACEHOLDER_ACTION' }
       ],
       action_btn: [

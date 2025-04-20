@@ -332,6 +332,7 @@
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Search for support theme.. 📚",
   "PLACEHOLDER_THEME_EMPTY": "😢 ~ No support themes found..",
+  "PLACEHOLDER_THEME_DESC": "💬 ~ DESCRIPTION",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",

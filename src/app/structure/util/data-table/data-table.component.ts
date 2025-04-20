@@ -7,6 +7,7 @@ import {SupportTheme} from "../../../services/types/Tickets";
 import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'data-table',
@@ -33,6 +34,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 })
 export class DataTableComponent {
     @Input() tconfig: TableConfig = {} as TableConfig;
+    protected readonly faRobot: IconDefinition = faRobot;
 
     constructor(protected dataService: DataHolderService) {}
 
