@@ -1,10 +1,9 @@
 import {
   faBan, faBirthdayCake,
   faComments, faEarthEurope, faFilter, faGift,
-  faHouse, faImage, faPenToSquare,
+  faHouse, faImage,
   faScrewdriverWrench, faScroll, faServer, faShieldHalved,
   faStar, faTableColumns,
-  faTicket,
   faTruckMedical, faUserGroup, faWandMagicSparkles,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
@@ -82,7 +81,7 @@ export const nav_items: NavigationItem[] = [
     color: "green",
     description: "SIDEBAR_CATEGORY_5_DESC",
     pages: [
-      { title: "Embed-Builder", desc: "SIDEBAR_PAGE_EMBED_BUILD_DESC", icon: faPenToSquare, redirect_url: "/dashboard/misc/embed-builder" },
+      // { title: "Embed-Builder", desc: "SIDEBAR_PAGE_EMBED_BUILD_DESC", icon: faPenToSquare, redirect_url: "/dashboard/misc/embed-builder" },
       { title: "Global-Chat", desc: "SIDEBAR_PAGE_GLOBAL_CHAT_DESC", icon: faEarthEurope, redirect_url: "/dashboard/misc/global-chat" },
     ]
   },

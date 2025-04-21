@@ -144,6 +144,7 @@ export class SidebarComponent implements AfterViewInit {
       localStorage.removeItem('guild_team');
       localStorage.removeItem('moduleStatus');
       localStorage.removeItem('supportSetup');
+      localStorage.removeItem('support_themes');
       this.dataService.active_guild = null;
       this.router.navigateByUrl('/dashboard').then();
 
@@ -152,6 +153,7 @@ export class SidebarComponent implements AfterViewInit {
       localStorage.removeItem('guild_team');
       localStorage.removeItem('moduleStatus');
       localStorage.removeItem('supportSetup');
+      localStorage.removeItem('support_themes');
       this.dataService.active_guild = guild;
       if (!this.server_picker) return;
 

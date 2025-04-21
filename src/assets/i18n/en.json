@@ -207,6 +207,10 @@
   "SUCCESS_ROLE_DELETE_DESC": "The role <strong>{{role}}</strong> no longer has access to Clank team features.",
   "SUCCESS_ROLE_ADD": "Team role added",
   "SUCCESS_ROLE_ADD_DESC": "The role <strong>{{role}}</strong> has been added with the <strong>{{level}}</strong>.",
+  "SUCCESS_MENTION_SET": "Default ping roles set",
+  "SUCCESS_MENTION_SET_DESC": "The roles <strong>{{roles}}</strong> will now be mentioned in every new ticket!",
+  "SUCCESS_MENTION_RESET": "Default ping roles removed",
+  "SUCCESS_MENTION_RESET_DESC": "No roles will now be mentioned by default for all tickets.",
   "SUCCESS_SAVE": "Save successful",
   "SUCCESS_FORUM_DESC": "The selected channel will be set up by our bot in the next few minutes. <strong>Make sure the bot has the necessary permissions!</strong>",
   "ERROR_SAVE": "Save failed",
@@ -335,9 +339,14 @@
   "PLACEHOLDER_THEME_DESC": "💬 ~ DESCRIPTION",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
+  "PLACEHOLDER_BUTTON_DEFAULT_PING": "Default Mentioned-Role",
+  "PLACEHOLDER_BUTTON_RESET": "Remove default mentioned roles",
 
   "PLACEHOLDER_FAQ_MODAL_TITLE": "🤖 - Predefined Bot Response",
   "PLACEHOLDER_FAQ_MODAL_DESC": "❓ › The text below will be shown to all users who select <strong>this</strong> support theme when creating a ticket - this means that no ticket will be created.",
+
+  "PLACEHOLDER_MENTION_MODAL_TITLE": "🔔 - Default Ping Role for Tickets",
+  "PLACEHOLDER_MENTION_MODAL_PICK": "Which role(s) should be mentioned in new tickets?",
 
   "PLACEHOLDER_ROLE_MODAL_TITLE": "📚 - Add role",
   "PLACEHOLDER_ROLE_MODAL_PICK": "Which role would you like to add?",
@@ -360,6 +369,7 @@
   "PLACEHOLDER_BUTTON_CHANNEL_REFRESH": "Refresh channel list",
   "PLACEHOLDER_ACTION": "🚀 ~ Action",
   "PLACEHOLDER_DISCORD_PING": "🔔 ~ Mentioned Discord Roles",
+  "PLACEHOLDER_DEFAULT": "Default",
 
   "DATE_FORMAT_LONG": "on {{month}}/{{day}}/{{year}} at {{hours}}:{{minutes}}",
   "DATE_YESTERDAY": "yesterday",

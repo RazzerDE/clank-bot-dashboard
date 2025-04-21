@@ -1,13 +1,13 @@
 import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faBell, faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
-import {SupportTheme} from "../../../../services/types/Tickets";
+import {SupportTheme, SupportThemeResponse} from "../../../../services/types/Tickets";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
 import {TableConfig} from "../../../../services/types/Config";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
@@ -16,6 +16,8 @@ import {Router} from "@angular/router";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
+import {Role} from "../../../../services/types/discord/Guilds";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
   selector: 'app-support-themes',
@@ -25,7 +27,8 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
     TranslatePipe,
     FaIconComponent,
     DataTableComponent,
-    ModalComponent
+    ModalComponent,
+    AlertBoxComponent
   ],
   templateUrl: './support-themes.component.html',
   styleUrl: './support-themes.component.scss'
@@ -33,6 +36,9 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected supportThemes: SupportTheme[] = [];
   protected filteredThemes: SupportTheme[] = this.supportThemes;
+  protected selectedOptions: string[] = [];
+  protected modalExtra: Role[] = [];
+  protected discordRoles: Role[] = [];
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
   protected subscriptions: Subscription[] = [];
@@ -41,14 +47,22 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected modalTheme: SupportTheme = {} as SupportTheme;
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
+  protected readonly faPlus: IconDefinition = faPlus;
+  protected readonly faSearch: IconDefinition = faSearch;
+  protected readonly faXmark: IconDefinition = faXmark;
+  protected readonly faRefresh: IconDefinition = faRefresh;
+  protected readonly faPencil: IconDefinition = faPencil;
+  protected readonly faBell: IconDefinition = faBell;
 
-  constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService) {
+  constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService,
+              private translate: TranslateService) {
     this.dataService.isLoading = true;
 
     this.getSupportThemes(); // first call to get the server data
     const dataFetchSubscription: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = true;
+        this.dataService.isLoading = true;
         this.getSupportThemes();
       }
     });
@@ -111,9 +125,11 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     }
 
     // check if guilds are already stored in local storage (one minute cache)
-    if ((localStorage.getItem('support_themes') && localStorage.getItem('support_themes_timestamp') &&
+    if ((localStorage.getItem('support_themes') && localStorage.getItem('guild_roles') &&
+      localStorage.getItem('support_themes_timestamp') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.supportThemes = JSON.parse(localStorage.getItem('support_themes') as string);
+      this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
       this.filteredThemes = this.supportThemes;
       this.dataService.isLoading = false;
       return;
@@ -121,12 +137,14 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
     this.discordService.getSupportThemes(this.dataService.active_guild!.id).then((observable) => {
       const subscription: Subscription = observable.subscribe({
-        next: (support_themes: SupportTheme[]): void => {
-          this.supportThemes = support_themes;
+        next: (response: SupportThemeResponse): void => {
+          this.supportThemes = response.themes;
           this.filteredThemes = this.supportThemes;
+          this.discordRoles = response.guild_roles;
           this.dataService.isLoading = false;
 
           localStorage.setItem('support_themes', JSON.stringify(this.supportThemes));
+          localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('support_themes_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
@@ -161,11 +179,120 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     );
   }
 
+  /**
+   * Opens the FAQ modal for a specific support theme.
+   *
+   * This method sets the modal type to 'SUPPORT_THEME_FAQ' and assigns the provided
+   * support theme to the modal. It then displays the modal to the user.
+   *
+   * @param {SupportTheme} theme - The support theme for which the FAQ modal should be opened.
+   */
   protected openFAQModal(theme: SupportTheme): void {
-    console.log(theme.faq_answer)
     this.modalType = 'SUPPORT_THEME_FAQ';
     this.modalTheme = theme;
     this.modal.showModal();
+  }
+
+  /**
+   * Opens the Default Mention Changer for a specific support theme.
+   *
+   * This method sets the modal type to 'DEFAULT_MENTION' and assigns the provided
+   * support theme to the modal. It then displays the modal to the user.
+   */
+  protected openDefaultMentionModal(): void {
+    this.modalType = 'DEFAULT_MENTION';
+    this.modalExtra = this.supportThemes[0].default_roles;
+    this.modal.showModal();
+  }
+
+  protected changeDefaultMention(options: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean): void {
+    if (!this.dataService.active_guild) { return; }
+    let selectedOptions: string[] = Array.from(options).filter(option => option.selected)
+                                                         .map(option => option.value);
+    const foundRoles: Role[] = this.discordRoles.filter(role => selectedOptions.includes(role.id));
+    if (useDelete) { selectedOptions = []; }
+
+    this.discordService.changeDefaultMention(this.dataService.active_guild.id, selectedOptions)
+      .then((observable): void => {
+        const subscription: Subscription = observable.subscribe({
+          next: (_result: boolean): void => {
+            // Successfully changed, update shown data
+            this.selectedOptions = selectedOptions;
+            this.updatePingRoles(selectedOptions);
+            localStorage.removeItem('support_themes');
+
+            if (selectedOptions.length > 0) {
+              this.dataService.error_color = 'green';
+              this.dataService.showAlert(this.translate.instant('SUCCESS_MENTION_SET'),
+                this.translate.instant('SUCCESS_MENTION_SET_DESC',
+                  { roles: foundRoles.map(role => role.name).join(', ') }));
+            } else {
+              this.dataService.error_color = 'red';
+              this.dataService.showAlert(this.translate.instant('SUCCESS_MENTION_RESET'),
+                this.translate.instant('SUCCESS_MENTION_RESET_DESC'));
+            }
+
+            // close modal
+            this.modal.hideModal();
+          },
+          error: (err: HttpErrorResponse): void => {
+            if (err.status === 429) {
+              this.dataService.redirectLoginError('REQUESTS');
+            } else if (err.status === 401) {
+              this.dataService.redirectLoginError('FORBIDDEN');
+            } else {
+              this.dataService.redirectLoginError('EXPIRED');
+            }
+
+            // close modal
+            this.modal.hideModal();
+          }
+        });
+
+        this.subscriptions.push(subscription);
+      });
+  }
+
+  private updatePingRoles(selectedOptions: string[]): void {
+    this.supportThemes.forEach((theme: SupportTheme): void => {
+      if (selectedOptions.length === 0) {  // remove all default roles
+        const defaultRoleIds = this.modalExtra.map(role => role.id);
+        theme.roles = theme.roles.filter(role => !defaultRoleIds.includes(role.id));
+      } else {
+        // Identifiziere Default-Rollen anhand der modalExtra (vorherige Default-Rollen)
+        const defaultRoleIds = new Set(this.modalExtra.map(role => role.id));
+        // Entferne alle alten Default-Rollen
+        theme.roles = theme.roles.filter(role => !defaultRoleIds.has(role.id));
+
+        // Füge die neu ausgewählten Rollen hinzu
+        const existingRoleIds = new Set(theme.roles.map(role => role.id));
+        selectedOptions.forEach((roleId: string): void => {
+          if (!existingRoleIds.has(roleId)) {
+            const selectedRole: Role | undefined = this.discordRoles.find(role => role.id === roleId);
+            if (selectedRole) {
+              theme.roles.push(selectedRole);
+              existingRoleIds.add(roleId);
+            }
+          }
+        });
+      }
+
+      theme.roles.sort((a: Role, b: Role): number => b.position - a.position); // Sort roles by position
+    });
+  }
+
+  /**
+   * Checks if a given role ID is part of the default roles or selected options and returns a translated placeholder string if true.
+   *
+   * @param default_roles - An array of default `Role` objects to check against.
+   * @param role_id - The ID of the role to check.
+   * @returns A string containing the translated placeholder if the role ID is found in the default roles or selectedOptions, otherwise an empty string.
+   */
+  isDefaultMentioned(default_roles: Role[], role_id: string): string {
+    const isDefault = default_roles.some(r => r.id === role_id);
+    const isSelected = this.modalType === 'DEFAULT_MENTION' && this.selectedOptions.includes(role_id);
+
+    return (isDefault || isSelected) ? '(' + this.translate.instant("PLACEHOLDER_DEFAULT") + ')' : '';
   }
 
   /**
@@ -175,9 +302,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    // role modal
-    const clickedInside = this.modal.modalContent.nativeElement.contains(event.target as Node);
-    if (!clickedInside && !(document.activeElement && document.activeElement.id.startsWith('faqBtn_'))) {
+    const clickedInside: boolean = this.modal.modalContent.nativeElement.contains(event.target as Node);
+    if (!clickedInside && !(document.activeElement && document.activeElement.id.includes('Btn_'))) {
       this.modal.hideModal();
     }
   }
@@ -218,13 +344,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       ],
       actions: [
         (theme: SupportTheme): void => this.openFAQModal(theme),
+        (default_roles: Role[], role_id: string): string => this.isDefaultMentioned(default_roles, role_id)
       ]
     };
   };
-
-  protected readonly faPlus: IconDefinition = faPlus;
-  protected readonly faSearch: IconDefinition = faSearch;
-  protected readonly faXmark: IconDefinition = faXmark;
-  protected readonly faRefresh: IconDefinition = faRefresh;
-  protected readonly faPencil: IconDefinition = faPencil;
 }

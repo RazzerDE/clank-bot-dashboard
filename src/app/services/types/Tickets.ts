@@ -17,4 +17,12 @@ export interface SupportTheme {
   roles: Role[];
   faq_answer: string | null;
   desc: string;
+
+  // added by us
+  default_roles: Role[];
+}
+
+export interface SupportThemeResponse {
+  themes: SupportTheme[];
+  guild_roles: Role[];
 }

@@ -37,7 +37,7 @@
         </tr>
       } @else {
         <!-- Row Content -->
-        @for (obj of tconfig.rows; track obj.id) {
+        @for (obj of tconfig.rows; track $index) {
           <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
             @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
               <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
@@ -80,11 +80,11 @@
 
               <!-- Support-Theme: Mentioned Role list -->
               <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
-                @for (role of obj.roles; track role.id) {
+                @for (role of obj.roles; track $index) {
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-opacity-10
-                                shadow-sm hover:bg-opacity-20 hover:shadow transition-all duration-200 mr-1 mb-1
-                                truncate" [ngStyle]="getRoleStyles(role)">
-                      <span class="truncate">{{ role.name }}</span>
+                               shadow-sm hover:bg-opacity-20 hover:shadow transition-all duration-200 mr-1 mb-1
+                               truncate" [ngStyle]="getRoleStyles(role)">
+                      <span class="truncate">{{ role.name }} {{ tconfig.actions[1](obj.default_roles, role.id) }}</span>
                   </span>
                 }
               </td>

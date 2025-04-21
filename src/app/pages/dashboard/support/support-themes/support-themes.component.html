@@ -4,11 +4,17 @@
   <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
 
     <!-- Role Modal -->
-    <app-modal [type]="modalType" [content]="modalTheme.faq_answer!" />
+    <app-modal [type]="modalType" [content]="modalTheme.faq_answer!" [discordRoles]="discordRoles"
+               [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"
                 [color]="'blue'" [desc]="'PAGE_THEMES_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
 
     <div class="flex-1 my-4">
       <div class="p-3 sm:p-5">
@@ -37,12 +43,20 @@
                   <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_THEME_ADD' | translate }}
                 </button>
 
+                <!-- Default Ping Button -->
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-orange-700
+                                               via-orange-600 to-orange-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                               focus:ring-orange-700 focus:outline-none hover:bg-gradient-to-br"
+                        (click)="openDefaultMentionModal()" id="mentionBtn_1">
+                  <fa-icon [icon]="faBell" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_DEFAULT_PING' | translate }}
+                </button>
+
                 <!-- Refresh cache Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
                                            via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
                                              py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
                                              transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
-                                      (click)="refreshCache()">
+                                      (click)="refreshCache()" [disabled]="disabledCacheBtn">
                   <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
                   {{ 'BUTTON_CACHE_REFRESH' | translate }}
                 </button>

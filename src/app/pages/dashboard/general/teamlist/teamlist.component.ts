@@ -38,7 +38,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faXmark: IconDefinition = faXmark;
   protected readonly faRefresh: IconDefinition = faRefresh;
-  protected activeTab: number = 0;
 
   protected roles: Role[] = [];
   protected filteredRoles: Role[] = [];
@@ -252,14 +251,15 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
    * In case of an error, appropriate error handling is performed, including showing alerts or redirecting
    * the user based on the error type.
    *
-   * @param {HTMLOptionElement} option - The selected option element from the role picker.
+   * @param {HTMLCollectionOf<HTMLOptionElement>} options - The selected option element from the role picker.
    */
-  addRole(option: HTMLOptionElement): void {
+  addRole(options: HTMLCollectionOf<HTMLOptionElement>): void {
     if (!this.dataService.active_guild) { return; }
+    const option: HTMLOptionElement = options.item(0)!
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
-    found_role.support_level = this.activeTab;
+    found_role.support_level = this.modalComponent.activeTab;
 
-    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (this.activeTab + 1).toString())
+    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (this.modalComponent.activeTab + 1).toString())
       .then((observable) => {
         const subscription: Subscription = observable.subscribe({
           next: (_result: boolean): void => {
@@ -270,7 +270,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
             this.dataService.error_color = 'green';
             this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_ADD'),
               this.translate.instant('SUCCESS_ROLE_ADD_DESC',
-                { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
+                { role: option.innerText, level: this.getSupportLevel(this.modalComponent.activeTab) }));
 
             // close modal
             this.modalComponent.hideModal();
@@ -280,7 +280,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
               this.dataService.error_color = 'red';
               this.dataService.showAlert(this.translate.instant('ERROR_ROLE_ADD_TITLE'),
                 this.translate.instant('ERROR_ROLE_ADD_DESC',
-                  { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
+                  { role: option.innerText, level: this.getSupportLevel(this.modalComponent.activeTab) }));
 
               this.addRoleToTeam(found_role);
             } else if (err.status === 429) {

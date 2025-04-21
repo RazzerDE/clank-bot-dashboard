@@ -10,7 +10,13 @@
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
         <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
-          {{ type === 'TEAMLIST_ROLE_ADD' ? ('PLACEHOLDER_ROLE_MODAL_TITLE' | translate) : ('PLACEHOLDER_FAQ_MODAL_TITLE' | translate) }}
+          @if (type === 'TEAMLIST_ROLE_ADD') {
+            {{ 'PLACEHOLDER_ROLE_MODAL_TITLE' | translate }}
+          } @else if (type === 'SUPPORT_THEME_FAQ') {
+            {{ 'PLACEHOLDER_FAQ_MODAL_TITLE' | translate }}
+          } @else if (type === 'DEFAULT_MENTION') {
+            {{ 'PLACEHOLDER_MENTION_MODAL_TITLE' | translate }}
+          }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
                                                        hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex
@@ -24,64 +30,87 @@
       <div class="p-4 md:p-5">
         <div class="space-y-4 flex flex-col">
 
-          @if (type === 'TEAMLIST_ROLE_ADD') {
+          @if (type === 'TEAMLIST_ROLE_ADD' || type === 'DEFAULT_MENTION') {
 
             <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
+              @if (type === 'DEFAULT_MENTION') {
+                {{ 'PLACEHOLDER_MENTION_MODAL_PICK' | translate }}
+              } @else {
+                {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
+              }
             </label>
             <div class="relative">
-              <select #rolePicker id="rolepicker" (change)="validateRolePicker()"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                                                focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
-                                                dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white appearance-none
-                                                dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-500
-                                                cursor-pointer">
-                <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
+              <select #rolePicker id="rolepicker" (change)="validateRolePicker()" [multiple]="type === 'DEFAULT_MENTION'"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
+                             focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
+                             dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
+                             dark:focus:border-primary-500 transition-colors duration-500 cursor-pointer">
+                @if (rolePicker.type === 'select-one' ) {
+                  <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
+                }
                 @for (role of discordRoles; track role.id) {
-                  <option value="{{ role.id }}">{{ role.name }}</option>
+                  <option value="{{ role.id }}" [selected]="type === 'DEFAULT_MENTION' && isDefaultMentioned(role.id)">
+                    {{ role.name }}
+                  </option>
                 }
               </select>
-              <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2
-                                                                     text-gray-500 dark:text-gray-300 cursor-pointer"
-                       (click)="rolePicker.showPicker()"></fa-icon>
+              @if (rolePicker.type === 'select-one' ) {
+                <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500
+                                                     dark:text-gray-300 cursor-pointer"
+                         (click)="rolePicker.showPicker()"></fa-icon>
+              }
             </div>
 
-            <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
-            <div>
-              <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                {{ 'PLACEHOLDER_ROLE_MODAL_LEVEL' | translate }}
-              </label>
-              <div class="w-full">
-                <div class="relative right-0">
-                  <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
-                    @for (_ of [].constructor(3); track $index) {
-                      <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
+            @if (type === 'TEAMLIST_ROLE_ADD') {
+              <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
+              <div>
+                <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  {{ 'PLACEHOLDER_ROLE_MODAL_LEVEL' | translate }}
+                </label>
+                <div class="w-full">
+                  <div class="relative right-0">
+                    <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
+                      @for (_ of [].constructor(3); track $index) {
+                        <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
                                                  dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
                                                  dark:hover:bg-gray-600/30" (click)="activeTab = $index"
-                          [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
-                          [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
-                        <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
+                            [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
+                            [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
+                          <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
                                                     transition-all ease-in-out rounded-md cursor-pointer bg-inherit
                                                     text-gray-900 dark:text-white duration-100"
-                           [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
-                           [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
+                             [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
+                             [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
                                                           $index == 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
                                                                         ('PLACEHOLDER_ROLE_MODAL_THIRD' | translate)">
-                        </a>
-                      </li>
-                    }
-                  </ul>
+                          </a>
+                        </li>
+                      }
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
+            }
 
-            <button class="w-full text-white disabled:!bg-gray-500 bg-blue-700 hover:bg-blue-800
+            <div class="flex flex-row gap-2">
+              <button class="w-full text-white disabled:!bg-gray-500 bg-blue-700 hover:bg-blue-800
                                              focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
                                              py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
                                              transition-colors duration-100 dark:focus:ring-blue-800 text-sm px-5"
-                    (click)="action(rolePicker.selectedOptions.item(0)!);" [disabled]="!isRolePickerValid">
-              {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
-            </button>
+                      (click)="action(rolePicker.selectedOptions);" [disabled]="!isRolePickerValid">
+                {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+              </button>
+
+              @if (type === 'DEFAULT_MENTION') {
+                <button class="w-5 h-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none
+                             focus:ring-red-300 font-medium rounded-lg py-2.5 dark:bg-red-600 text-sm
+                             dark:hover:bg-red-700 transition-colors duration-100 dark:focus:ring-red-800 px-3
+                               flex items-center justify-center"
+                        (click)="action(rolePicker.selectedOptions, true);">
+                  <fa-icon [icon]="faTrashCan"></fa-icon>
+                </button>
+              }
+            </div>
 
           } @else if (type === 'SUPPORT_THEME_FAQ') {
             <p class="text-gray-400 dark:text-gray-500 text-sm mb-2" [innerHTML]="'PLACEHOLDER_FAQ_MODAL_DESC' | translate"></p>
