@@ -302,7 +302,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       theme.default_roles = selectedOptions.length === 0 ? [] :
         this.discordRoles.filter(role => selectedOptions.includes(role.id));
 
-      theme.roles.sort((a: Role, b: Role): number => b.position - a.position); // Sort roles by position
+      theme.roles.sort((a: Role, b: Role): number => a.id.localeCompare(b.id)); // Sort roles by id
     });
   }
 
