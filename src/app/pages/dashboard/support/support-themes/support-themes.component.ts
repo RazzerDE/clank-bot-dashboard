@@ -205,6 +205,17 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     this.modal.showModal();
   }
 
+  /**
+   * Changes the default mention roles for a support theme.
+   *
+   * This method updates the default mention roles for the active guild. It allows the user to select
+   * or clear roles, sends the updated roles to the server, and updates the local data accordingly.
+   * If the operation is successful, it displays a success message; otherwise, it handles errors
+   * such as rate limits or authorization issues.
+   *
+   * @param {HTMLCollectionOf<HTMLOptionElement>} options - The collection of HTML option elements representing the roles.
+   * @param {boolean} [useDelete] - Optional flag to clear all selected roles. If true, all roles are removed.
+   */
   protected changeDefaultMention(options: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     let selectedOptions: string[] = Array.from(options).filter(option => option.selected)
@@ -253,6 +264,15 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       });
   }
 
+  /**
+   * Updates the roles associated with each support theme based on the selected options.
+   *
+   * This method modifies the `roles` array of each `SupportTheme` in the `supportThemes` list.
+   * If no roles are selected, it removes all default roles. Otherwise, it replaces the old default roles
+   * with the newly selected roles and ensures no duplicates are added. The roles are then sorted by their position.
+   *
+   * @param {string[]} selectedOptions - An array of role IDs selected by the user.
+   */
   private updatePingRoles(selectedOptions: string[]): void {
     this.supportThemes.forEach((theme: SupportTheme): void => {
       if (selectedOptions.length === 0) {  // remove all default roles
