@@ -274,28 +274,33 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * @param {string[]} selectedOptions - An array of role IDs selected by the user.
    */
   private updatePingRoles(selectedOptions: string[]): void {
+    // Update the default roles for each support theme
     this.supportThemes.forEach((theme: SupportTheme): void => {
-      if (selectedOptions.length === 0) {  // remove all default roles
+      if (selectedOptions.length === 0) {  // Remove all default roles
         const defaultRoleIds = this.modalExtra.map(role => role.id);
         theme.roles = theme.roles.filter(role => !defaultRoleIds.includes(role.id));
       } else {
-        // Identifiziere Default-Rollen anhand der modalExtra (vorherige Default-Rollen)
+        // Identify previous default roles stored in modalExtra
         const defaultRoleIds = new Set(this.modalExtra.map(role => role.id));
-        // Entferne alle alten Default-Rollen
+        // Remove all old default roles
         theme.roles = theme.roles.filter(role => !defaultRoleIds.has(role.id));
 
-        // Füge die neu ausgewählten Rollen hinzu
-        const existingRoleIds = new Set(theme.roles.map(role => role.id));
+        // Add the newly selected roles
+        const newRoles: Role[] = [];
         selectedOptions.forEach((roleId: string): void => {
-          if (!existingRoleIds.has(roleId)) {
-            const selectedRole: Role | undefined = this.discordRoles.find(role => role.id === roleId);
-            if (selectedRole) {
-              theme.roles.push(selectedRole);
-              existingRoleIds.add(roleId);
-            }
+          const selectedRole: Role | undefined = this.discordRoles.find(role => role.id === roleId);
+          if (selectedRole) {
+            newRoles.push(selectedRole);
           }
         });
+
+        // Update theme roles with non-default roles plus newly selected roles
+        theme.roles = [...theme.roles, ...newRoles];
       }
+
+      // Update default_roles property for each theme to track the current default roles
+      theme.default_roles = selectedOptions.length === 0 ? [] :
+        this.discordRoles.filter(role => selectedOptions.includes(role.id));
 
       theme.roles.sort((a: Role, b: Role): number => b.position - a.position); // Sort roles by position
     });
