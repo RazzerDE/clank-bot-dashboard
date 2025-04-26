@@ -1,15 +1,15 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import {Role} from "../../../services/types/discord/Guilds";
-import {NgClass, NgOptimizedImage, NgTemplateOutlet} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
-import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons/faTrashCan";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {FormsModule} from "@angular/forms";
+import {FaqAnswerComponent} from "./templates/faq-answer/faq-answer.component";
+import {SupportThemeAddComponent} from "./templates/support-theme-add/support-theme-add.component";
+import {RolePickerComponent} from "./templates/role-picker/role-picker.component";
 
 @Component({
   selector: 'app-modal',
@@ -17,10 +17,10 @@ import {FormsModule} from "@angular/forms";
     FaIconComponent,
     TranslatePipe,
     NgClass,
-    MarkdownPipe,
-    NgTemplateOutlet,
-    NgOptimizedImage,
     FormsModule,
+    FaqAnswerComponent,
+    SupportThemeAddComponent,
+    RolePickerComponent,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
@@ -57,50 +57,16 @@ export class ModalComponent {
   @Input() extra: Role[] = [];
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
-  protected showEmojiPicker: boolean = false;
-  protected selectedEmoji: string = '🌟';
 
-  public activeTab: number = 0;
-  protected faqChecked: boolean = false;
+  faqChecked: boolean = false;
   protected isVisible: boolean = false;
-  protected isRolePickerValid: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;
-  protected readonly faChevronDown: IconDefinition = faChevronDown;
-  protected readonly faTrashCan: IconDefinition = faTrashCan;
-  private markdownPipe: MarkdownPipe = new MarkdownPipe();
 
-  @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   @ViewChild('roleModal') roleModal!: ElementRef<HTMLDivElement>;
   @ViewChild('roleModalContent') modalContent!: ElementRef<HTMLDivElement>;
   @ViewChild('roleBackdrop') roleBackdrop!: ElementRef<HTMLDivElement>;
-  @ViewChild('faqPreview') faqPreview!: ElementRef<HTMLTextAreaElement>;
 
-  constructor(protected dataService: DataHolderService, private translate: TranslateService) {}
-
-  /**
-   * Validates the role picker selection.
-   *
-   * This method checks the value of the role picker element and sets the `isRolePickerValid`
-   * property to `true` if a valid role is selected, otherwise sets it to `false`.
-   */
-  validateRolePicker(): void {
-    const selectedRole: string = this.rolePicker.nativeElement.value;
-    this.isRolePickerValid = selectedRole !== '' && selectedRole !== this.translate.instant('PLACEHOLDER_ROLE_MODAL_DEFAULT');
-  }
-
-  /**
-   * Updates the FAQ preview with the entered markdown text.
-   *
-   * @param event - The keyboard event from the textarea input
-   */
-  updateFAQPreview(event: KeyboardEvent): void {
-    const target: HTMLTextAreaElement = event.target as HTMLTextAreaElement;
-    if (!target.value) {
-      this.faqPreview.nativeElement.value = this.translate.instant('PLACEHOLDER_THEME_PREVIEW_DESC');
-    } else {
-      this.faqPreview.nativeElement.innerHTML = this.markdownPipe.transform(target.value);
-    }
-  }
+  constructor(protected dataService: DataHolderService) {}
 
   /**
    * Displays the modal by removing the `hidden` class from the modal and backdrop elements.

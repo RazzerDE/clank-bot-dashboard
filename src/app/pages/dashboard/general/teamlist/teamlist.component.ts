@@ -257,9 +257,9 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     if (!this.dataService.active_guild) { return; }
     const option: HTMLOptionElement = options.item(0)!
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
-    found_role.support_level = this.modalComponent.activeTab;
+    found_role.support_level = this.getActiveTab();
 
-    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (this.modalComponent.activeTab + 1).toString())
+    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (found_role.support_level + 1).toString())
       .then((observable) => {
         const subscription: Subscription = observable.subscribe({
           next: (_result: boolean): void => {
@@ -270,7 +270,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
             this.dataService.error_color = 'green';
             this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_ADD'),
               this.translate.instant('SUCCESS_ROLE_ADD_DESC',
-                { role: option.innerText, level: this.getSupportLevel(this.modalComponent.activeTab) }));
+                { role: option.innerText, level: this.getSupportLevel(found_role.support_level!) }));
 
             // close modal
             this.modalComponent.hideModal();
@@ -280,7 +280,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
               this.dataService.error_color = 'red';
               this.dataService.showAlert(this.translate.instant('ERROR_ROLE_ADD_TITLE'),
                 this.translate.instant('ERROR_ROLE_ADD_DESC',
-                  { role: option.innerText, level: this.getSupportLevel(this.modalComponent.activeTab) }));
+                  { role: option.innerText, level: this.getSupportLevel(found_role.support_level!) }));
 
               this.addRoleToTeam(found_role);
             } else if (err.status === 429) {
@@ -378,6 +378,23 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
       // Remove from discord roles; role is now in team
       this.discordRoles = this.discordRoles.filter(r => r.id !== role.id);
     }
+  }
+
+  /**
+   * Determines the currently active support level tab by finding the last HTML element
+   * with an ID that matches the pattern "level_active_X", where X is a number.
+   *
+   * @returns {number} The support level (0, 1, or 2) of the active tab, defaulting to 0 if no matching elements are found
+   * or if the ID doesn't contain a valid numeric suffix
+   */
+  private getActiveTab(): number {
+    const elements: NodeListOf<HTMLLIElement> = document.querySelectorAll('[id^="level_active_"]');
+    if (elements.length === 0) return 0;
+
+    const lastElement = elements[elements.length - 1];
+    const id = lastElement.id;
+    const match = id.match(/(\d+)$/);
+    return match ? Number(match[1]) : 0;
   }
 
   /**
