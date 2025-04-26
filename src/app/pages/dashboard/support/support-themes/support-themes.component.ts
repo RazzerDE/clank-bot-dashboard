@@ -45,6 +45,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
   protected modalType: string = 'SUPPORT_THEME_ADD';
   protected modalTheme: SupportTheme = {} as SupportTheme;
+  protected emojis: string[] = ['🌟', '🎮', '🎯', '🎲', '🧩', '🎭', '🎨', '🎬', '🎤', '🎧', '📱', '💻', '🔍', '💬', '❓', '❗', '📢', '🔔', '📌', '📝', '📚', '📊', '🔧', '🛠️', '⚙️', '🧰', '🔒', '🔑', '🌈', '✨'];
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faPlus: IconDefinition = faPlus;
@@ -56,6 +57,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
   constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService,
               private translate: TranslateService) {
+    document.title = 'Support-Themes ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
 
     this.getSupportThemes(); // first call to get the server data
@@ -194,7 +196,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
-   * Opens the Default Mention Changer for a specific support theme.
+   * Opens the Default Mention Changer Modal.
    *
    * This method sets the modal type to 'DEFAULT_MENTION' and assigns the provided
    * support theme to the modal. It then displays the modal to the user.
@@ -202,6 +204,17 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected openDefaultMentionModal(): void {
     this.modalType = 'DEFAULT_MENTION';
     this.modalExtra = this.supportThemes[0].default_roles;
+    this.modal.showModal();
+  }
+
+  /**
+   * Opens the Modal to add new support-themes.
+   *
+   * This method sets the modal type to 'SUPPORT_THEME_ADD'.
+   * It then displays the modal to the user.
+   */
+  protected openAddSupportThemeModal(): void {
+    this.modalType = 'SUPPORT_THEME_ADD';
     this.modal.showModal();
   }
 
@@ -327,6 +340,13 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
+    // two modals are visible; hide if clicked outside of the modal
+    if ((event.target as HTMLElement).id.includes('roleModalContent') && this.modalType === 'SUPPORT_THEME_ADD') {
+      this.modal.hideModal();
+      return;
+    }
+
+    // same, but only one modal is visible
     const clickedInside: boolean = this.modal.modalContent.nativeElement.contains(event.target as Node);
     if (!clickedInside && !(document.activeElement && document.activeElement.id.includes('Btn_'))) {
       this.modal.hideModal();

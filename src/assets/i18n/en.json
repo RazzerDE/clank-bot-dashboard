@@ -356,6 +356,23 @@
   "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
   "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
 
+  "PLACEHOLDER_THEME_MODAL_TITLE": "🚓 ~ Create Support Theme",
+  "PLACEHOLDER_THEME_MODAL_NAME": "What should the support theme be called?",
+  "PLACEHOLDER_THEME_MODAL_DESC": "What is this support theme about?",
+  "PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER": "General question, coding support, etc.",
+  "PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER": "Users will see this description in a Discord dropdown menu before creating a ticket.",
+  "PLACEHOLDER_THEME_MODAL_ROLES": "Which roles should be mentioned for this theme?",
+  "PLACEHOLDER_THEME_MODAL_BUTTON": "Create Support Theme",
+
+  "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatic Bot Response",
+  "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Use as FAQ theme",
+  "PLACEHOLDER_THEME_MODAL2_ANSWER": "How should the bot respond to the theme?",
+  "PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER": "Here you can enter a message that the bot will send to the user when they select this theme.",
+  "PLACEHOLDER_THEME_MODAL2_PREVIEW": "Preview in discord",
+  "PLACEHOLDER_THEME_PREVIEW_TITLE": "THEME-NAME",
+  "PLACEHOLDER_THEME_PREVIEW_DESC": "Write something in the <strong>text field above</strong>..",
+  "PLACEHOLDER_THEME_PREVIEW_FOOTER": "This ticket was automatically processed by the FAQ module & not forwarded.",
+
   "PLACEHOLDER_ROLE_EMPTY": "😭 ~ No roles found..",
   "PLACEHOLDER_ROLE_FIRST": "Few rights",
   "PLACEHOLDER_ROLE_SECOND": "More rights",

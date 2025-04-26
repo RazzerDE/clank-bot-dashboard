@@ -5,7 +5,7 @@
 
     <!-- Role Modal -->
     <app-modal [type]="modalType" [content]="modalTheme.faq_answer!" [discordRoles]="discordRoles"
-               [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" />
+               [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" [emojis]="emojis" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"
@@ -38,8 +38,8 @@
                 <!-- Add Theme Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-green-700
                                                via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
-                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br">
-                        <!-- TODO: Function -->
+                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br"
+                        (click)="openAddSupportThemeModal()" id="addThemeBtn_1">
                   <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_THEME_ADD' | translate }}
                 </button>
 

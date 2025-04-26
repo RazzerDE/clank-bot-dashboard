@@ -1,12 +1,18 @@
 <!-- Backdrop for Role Modal -->
-<div class="fixed hidden inset-0 bg-black bg-opacity-25 z-50" aria-hidden="true" #roleBackdrop></div>
+<div class="fixed hidden inset-0 bg-black bg-opacity-25 z-50" aria-hidden="true" #roleBackdrop
+     [@fadeAnimation]="isVisible ? 'visible' : 'hidden'"></div>
 
 <!-- Role Modal -->
-<div tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed z-50 justify-center items-center
-                                              w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal>
-  <div class="relative p-4 w-full max-w-lg max-h-full -left-16 md:left-0 xl:left-[45%] mx-auto xl:!mx-0 top-1/2 -translate-y-1/2" #roleModalContent>
-    <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700">
+<div tabindex="-1" class="hidden overflow-hidden fixed z-50 justify-center items-center
+                          w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
+     [@slideAnimation]="isVisible ? 'visible' : 'hidden'">
+  <div class="relative p-4 w-full h-full items-center" id="roleModalContent"
+       [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': type !== 'SUPPORT_THEME_ADD',
+                  'flex justify-center gap-4 xl:translate-x-36': type === 'SUPPORT_THEME_ADD'}" #roleModalContent>
 
+    <!-- First Modal (Always visible) -->
+    <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700"
+         [ngClass]="{'w-full': type !== 'SUPPORT_THEME_ADD', 'w-1/2 max-w-md': type === 'SUPPORT_THEME_ADD'}" id="ignore">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
         <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
@@ -16,6 +22,8 @@
             {{ 'PLACEHOLDER_FAQ_MODAL_TITLE' | translate }}
           } @else if (type === 'DEFAULT_MENTION') {
             {{ 'PLACEHOLDER_MENTION_MODAL_TITLE' | translate }}
+          } @else if (type === 'SUPPORT_THEME_ADD') {
+            {{ 'PLACEHOLDER_THEME_MODAL_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -29,100 +37,247 @@
       <!-- Modal body -->
       <div class="p-4 md:p-5">
         <div class="space-y-4 flex flex-col">
-
-          @if (type === 'TEAMLIST_ROLE_ADD' || type === 'DEFAULT_MENTION') {
-
-            <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              @if (type === 'DEFAULT_MENTION') {
-                {{ 'PLACEHOLDER_MENTION_MODAL_PICK' | translate }}
-              } @else {
-                {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
-              }
-            </label>
-            <div class="relative">
-              <select #rolePicker id="rolepicker" (change)="validateRolePicker()" [multiple]="type === 'DEFAULT_MENTION'"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
-                             focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
-                             dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
-                             dark:focus:border-primary-500 transition-colors duration-500 cursor-pointer">
-                @if (rolePicker.type === 'select-one' ) {
-                  <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
-                }
-                @for (role of discordRoles; track role.id) {
-                  <option value="{{ role.id }}" [selected]="type === 'DEFAULT_MENTION' && isDefaultMentioned(role.id)">
-                    {{ role.name }}
-                  </option>
-                }
-              </select>
-              @if (rolePicker.type === 'select-one' ) {
-                <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500
-                                                     dark:text-gray-300 cursor-pointer"
-                         (click)="rolePicker.showPicker()"></fa-icon>
-              }
-            </div>
-
-            @if (type === 'TEAMLIST_ROLE_ADD') {
-              <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
-              <div>
-                <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  {{ 'PLACEHOLDER_ROLE_MODAL_LEVEL' | translate }}
-                </label>
-                <div class="w-full">
-                  <div class="relative right-0">
-                    <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
-                      @for (_ of [].constructor(3); track $index) {
-                        <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
-                                                 dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
-                                                 dark:hover:bg-gray-600/30" (click)="activeTab = $index"
-                            [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
-                            [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
-                          <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
-                                                    transition-all ease-in-out rounded-md cursor-pointer bg-inherit
-                                                    text-gray-900 dark:text-white duration-100"
-                             [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
-                             [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
-                                                          $index == 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
-                                                                        ('PLACEHOLDER_ROLE_MODAL_THIRD' | translate)">
-                          </a>
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            }
-
-            <div class="flex flex-row gap-2">
-              <button class="w-full text-white disabled:!bg-gray-500 bg-blue-700 hover:bg-blue-800
-                                             focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
-                                             py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
-                                             transition-colors duration-100 dark:focus:ring-blue-800 text-sm px-5"
-                      (click)="action(rolePicker.selectedOptions);" [disabled]="!isRolePickerValid">
-                {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
-              </button>
-
-              @if (type === 'DEFAULT_MENTION') {
-                <button class="w-5 h-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none
-                             focus:ring-red-300 font-medium rounded-lg py-2.5 dark:bg-red-600 text-sm
-                             dark:hover:bg-red-700 transition-colors duration-100 dark:focus:ring-red-800 px-3
-                               flex items-center justify-center"
-                        (click)="action(rolePicker.selectedOptions, true);">
-                  <fa-icon [icon]="faTrashCan"></fa-icon>
-                </button>
-              }
-            </div>
-
-          } @else if (type === 'SUPPORT_THEME_FAQ') {
-            <p class="text-gray-400 dark:text-gray-500 text-sm mb-2" [innerHTML]="'PLACEHOLDER_FAQ_MODAL_DESC' | translate"></p>
-
-            <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
-
-            <div class="mt-4 max-w-lg text-md whitespace-pre-line text-gray-500 dark:text-gray-400"
-                 [innerHTML]="content | markdown">
-            </div>
-          }
+          <ng-container [ngTemplateOutlet]="
+            type === 'TEAMLIST_ROLE_ADD' || type === 'DEFAULT_MENTION' ? rolePickerTemplate :
+            type === 'SUPPORT_THEME_FAQ' ? faqTemplate :
+            type === 'SUPPORT_THEME_ADD' ? themeAddTemplate : null">
+          </ng-container>
         </div>
       </div>
     </div>
+
+    <!-- Second Modal (only for Bot-FAQ Answer) -->
+    @if (type === 'SUPPORT_THEME_ADD') {
+      <ng-container [ngTemplateOutlet]="themeAddSecondTemplate"></ng-container>
+    }
   </div>
 </div>
+
+<!-- Template für Role Picker (TEAMLIST_ROLE_ADD oder DEFAULT_MENTION) -->
+<ng-template #rolePickerTemplate>
+  <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+    @if (type === 'DEFAULT_MENTION') {
+      {{ 'PLACEHOLDER_MENTION_MODAL_PICK' | translate }}
+    } @else {
+      {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
+    }
+  </label>
+  <div class="relative">
+    <ng-container [ngTemplateOutlet]="selectTemplate"></ng-container>
+  </div>
+
+  <!-- Support-Level for TEAMLIST_ROLE_ADD -->
+  @if (type === 'TEAMLIST_ROLE_ADD') {
+    <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
+    <div>
+      <label for="levelpicker" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        {{ 'PLACEHOLDER_ROLE_MODAL_LEVEL' | translate }}
+      </label>
+      <div class="w-full">
+        <div class="relative right-0">
+          <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
+            @for (_ of [].constructor(3); track $index) {
+              <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
+                       dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
+                       dark:hover:bg-gray-600/30" (click)="activeTab = $index"
+                  [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
+                  [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
+                <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
+                         transition-all ease-in-out rounded-md cursor-pointer bg-inherit
+                         text-gray-900 dark:text-white duration-100"
+                   [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
+                   [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
+                                $index == 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
+                                              ('PLACEHOLDER_ROLE_MODAL_THIRD' | translate)">
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Action Buttons -->
+  <div class="flex flex-row gap-2">
+    <button class="w-full text-white disabled:!bg-gray-500 bg-blue-700 hover:bg-blue-800
+                   focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
+                   py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
+                   transition-colors duration-100 dark:focus:ring-blue-800 text-sm px-5"
+            (click)="action(rolePicker.nativeElement.selectedOptions);" [disabled]="!isRolePickerValid">
+      {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+    </button>
+
+    @if (type === 'DEFAULT_MENTION') {
+      <button class="w-5 h-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none
+                   focus:ring-red-300 font-medium rounded-lg py-2.5 dark:bg-red-600 text-sm
+                   dark:hover:bg-red-700 transition-colors duration-100 dark:focus:ring-red-800 px-3
+                     flex items-center justify-center"
+              (click)="action(rolePicker.nativeElement.selectedOptions, true);">
+        <fa-icon [icon]="faTrashCan"></fa-icon>
+      </button>
+    }
+  </div>
+</ng-template>
+
+<!-- Template for FAQ-Answer Modal -->
+<ng-template #faqTemplate>
+  <p class="text-gray-400 dark:text-gray-500 text-sm mb-2" [innerHTML]="'PLACEHOLDER_FAQ_MODAL_DESC' | translate"></p>
+  <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800 mb-2">
+  <ng-template [ngTemplateOutlet]="discordTemplate"></ng-template>
+</ng-template>
+
+<!-- Template for Create new Theme (First Modal) -->
+<ng-template #themeAddTemplate>
+  <div class="space-y-4">
+    <label for="themepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_THEME_MODAL_NAME' | translate }}
+    </label>
+    <div class="flex items-center gap-2">
+      <div (click)="this.showEmojiPicker = !this.showEmojiPicker;"
+           class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
+                  cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
+        <span class="text-gray-900 dark:text-white select-none">{{ selectedEmoji }}</span>
+        @if (showEmojiPicker) {
+          <div class="absolute bottom-full left-0 mb-2 p-2 bg-white dark:!bg-gray-700 border border-gray-300
+                    dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid grid-cols-6 gap-1">
+            @for (emoji of emojis; track $index) {
+              <span (click)="this.selectedEmoji = emoji; this.showEmojiPicker = false;"
+                    class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
+                         dark:hover:bg-gray-600 p-1 rounded">
+                {{ emoji }}
+              </span>
+            }
+          </div>
+        }
+
+      </div>
+      <input type="text" class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" maxlength="20" minlength="1"
+             [placeholder]="'PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER' | translate">
+    </div>
+
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_THEME_MODAL_DESC' | translate }}
+    </label>
+    <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+              dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white resize-none"
+              placeholder="{{ 'PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER' | translate }}"
+              rows="2" maxlength="98" minlength="1"></textarea>
+
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_THEME_MODAL_ROLES' | translate }}
+    </label>
+    <ng-container [ngTemplateOutlet]="selectTemplate"></ng-container>
+    <button class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none
+                 focus:ring-green-300 font-medium rounded-lg py-2.5 text-center dark:bg-green-600
+                 dark:hover:bg-green-700 transition-colors duration-100 dark:focus:ring-green-800 text-sm px-5">
+      {{ 'PLACEHOLDER_THEME_MODAL_BUTTON' | translate }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- Template for create new Theme (Second Modal) -->
+<ng-template #themeAddSecondTemplate>
+  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 w-1/2 max-w-md">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+      <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_THEME_MODAL2_TITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Modal body -->
+    <div class="p-4 md:p-5">
+      <div class="space-y-4 flex flex-col">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="faqChecked">
+          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer
+                    dark:bg-gray-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
+                      after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300
+                      after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
+                      peer-checked:bg-green-600 dark:peer-checked:bg-green-600 transition-colors duration-300"></div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-white">
+            {{ 'PLACEHOLDER_THEME_MODAL2_TOGGLE' | translate }}
+          </span>
+        </label>
+
+        <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
+
+        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0 transition-all duration-300"
+               [class.opacity-50]="!faqChecked">{{ 'PLACEHOLDER_THEME_MODAL2_ANSWER' | translate }}
+        </label>
+        <textarea rows="3" maxlength="255" minlength="1" [class.opacity-50]="!faqChecked"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                        focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                        dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white duration-300
+                        dark:focus:ring-primary-500 dark:focus:border-primary-500 resize-none transition-all"
+                  [disabled]="!faqChecked" (keyup)="updateFAQPreview($event)"
+                  [placeholder]="'PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER' | translate"></textarea>
+        <p class="text-gray-900 dark:text-white mb-0 transition-all duration-300" [class.opacity-50]="!faqChecked">
+          {{ 'PLACEHOLDER_THEME_MODAL2_PREVIEW' | translate }}
+        </p>
+
+        <ng-template [ngTemplateOutlet]="discordTemplate"></ng-template>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Select for Role Picker -->
+<ng-template #selectTemplate>
+  <select #rolePicker id="rolepicker" (change)="validateRolePicker()"
+          [multiple]="type === 'DEFAULT_MENTION' || type === 'SUPPORT_THEME_ADD'"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
+                   focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
+                   dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
+                   dark:focus:border-primary-500 transition-colors duration-500 cursor-pointer">
+    @if (rolePicker.type === 'select-one' ) {
+      <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
+    }
+    @for (role of discordRoles; track role.id) {
+      <option value="{{ role.id }}" [selected]="type === 'DEFAULT_MENTION' && isDefaultMentioned(role.id)">
+        {{ role.name }}
+      </option>
+    }
+  </select>
+
+  @if (rolePicker.type === 'select-one' ) {
+    <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500
+                                           dark:text-gray-300 cursor-pointer"
+             (click)="rolePicker.showPicker()"></fa-icon>
+  }
+</ng-template>
+
+<ng-template #discordTemplate>
+  <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
+                  text-gray-300 font-sans mt-2 transition-all duration-300"
+       [class.opacity-50]="!faqChecked && type != 'SUPPORT_THEME_FAQ'">
+    <div class="absolute top-0 left-0 w-1 h-full bg-[#5865f2] rounded-l"></div>
+    <div class="pl-3 w-full">
+      <div class="flex items-center font-bold text-sm text-white mb-0">
+        <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
+        <img ngSrc="assets/img/icons/faq_answer_theme.gif" alt="Clank-Icon ~ Clank Discord-Bot"
+             class="w-5 h-5 mx-2" height="40" width="40">
+        <span>~ {{ 'PLACEHOLDER_THEME_PREVIEW_TITLE' | translate }}</span>
+      </div>
+
+      <div class="mb-1.5 text-sm font-normal leading-snug whitespace-pre-wrap break-words">
+        <img ngSrc="assets/img/icons/faq_answer.png" alt="Clank-Icon ~ Clank Discord-Bot"
+             class="w-4 h-[19px] rounded-full inline-block ml-0.5 mr-1 align-middle" height="40" width="40">
+        <span class="align-middle" #faqPreview
+              [innerHTML]="type != 'SUPPORT_THEME_FAQ' ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
+        </span>
+      </div>
+
+      <!-- Footer-Bereich -->
+      <div class="flex items-center font-medium text-[10px] tracking-tight leading-3 text-gray-200 mt-2">
+        <img ngSrc="assets/img/icons/clank.png" alt="Clank-Icon ~ Clank Discord-Bot"
+             class="w-4 h-4 rounded-full mr-1.5" height="1024" width="1024">
+        <span>{{ 'PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</ng-template>

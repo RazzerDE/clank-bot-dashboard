@@ -4,10 +4,12 @@ import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import {Role} from "../../../services/types/discord/Guilds";
-import {NgClass} from "@angular/common";
+import {NgClass, NgOptimizedImage, NgTemplateOutlet} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons/faTrashCan";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-modal',
@@ -16,28 +18,62 @@ import {faTrashCan} from "@fortawesome/free-solid-svg-icons/faTrashCan";
     TranslatePipe,
     NgClass,
     MarkdownPipe,
+    NgTemplateOutlet,
+    NgOptimizedImage,
+    FormsModule,
   ],
   templateUrl: './modal.component.html',
-  styleUrl: './modal.component.scss'
+  styleUrl: './modal.component.scss',
+  animations: [
+    trigger('fadeAnimation', [
+      state('hidden', style({
+        opacity: 0
+      })),
+      state('visible', style({
+        opacity: 1
+      })),
+      transition('hidden => visible', animate('200ms ease-in')),
+      transition('visible => hidden', animate('200ms ease-out'))
+    ]),
+    trigger('slideAnimation', [
+      state('hidden', style({
+        transform: 'translateY(20px)',
+        opacity: 0
+      })),
+      state('visible', style({
+        transform: 'translateY(0)',
+        opacity: 1
+      })),
+      transition('hidden => visible', animate('300ms ease-out')),
+      transition('visible => hidden', animate('200ms ease-in'))
+    ])
+  ]
 })
 export class ModalComponent {
   @Input() discordRoles: Role[] = [];
+  @Input() emojis: string[] = [];
   @Input() type: string = '';
   @Input() content: string = '';
   @Input() extra: Role[] = [];
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
+  protected showEmojiPicker: boolean = false;
+  protected selectedEmoji: string = '🌟';
 
   public activeTab: number = 0;
+  protected faqChecked: boolean = false;
+  protected isVisible: boolean = false;
   protected isRolePickerValid: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
+  private markdownPipe: MarkdownPipe = new MarkdownPipe();
 
   @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   @ViewChild('roleModal') roleModal!: ElementRef<HTMLDivElement>;
   @ViewChild('roleModalContent') modalContent!: ElementRef<HTMLDivElement>;
   @ViewChild('roleBackdrop') roleBackdrop!: ElementRef<HTMLDivElement>;
+  @ViewChild('faqPreview') faqPreview!: ElementRef<HTMLTextAreaElement>;
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService) {}
 
@@ -53,9 +89,24 @@ export class ModalComponent {
   }
 
   /**
+   * Updates the FAQ preview with the entered markdown text.
+   *
+   * @param event - The keyboard event from the textarea input
+   */
+  updateFAQPreview(event: KeyboardEvent): void {
+    const target: HTMLTextAreaElement = event.target as HTMLTextAreaElement;
+    if (!target.value) {
+      this.faqPreview.nativeElement.value = this.translate.instant('PLACEHOLDER_THEME_PREVIEW_DESC');
+    } else {
+      this.faqPreview.nativeElement.innerHTML = this.markdownPipe.transform(target.value);
+    }
+  }
+
+  /**
    * Displays the modal by removing the `hidden` class from the modal and backdrop elements.
    */
   showModal(): void {
+    this.isVisible = true;
     this.roleModal.nativeElement.classList.remove('hidden');
     this.roleBackdrop.nativeElement.classList.remove('hidden');
   }
@@ -64,8 +115,11 @@ export class ModalComponent {
    * Hides the modal by adding the `hidden` class to the modal and backdrop elements.
    */
   hideModal(): void {
-    this.roleModal.nativeElement.classList.add('hidden');
-    this.roleBackdrop.nativeElement.classList.add('hidden');
+    this.isVisible = false;
+    setTimeout((): void => {
+      this.roleModal.nativeElement.classList.add('hidden');
+      this.roleBackdrop.nativeElement.classList.add('hidden');
+    }, 300)
   }
 
   /**

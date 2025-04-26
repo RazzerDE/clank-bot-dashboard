@@ -12,9 +12,10 @@
       <tr>
         <!-- Table Header -->
         @for (column of tconfig.columns; track $index) {
-          <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600 transition-colors duration-300"
-              [width]="tconfig.columns[$index].width + '%'">
-            {{ column.name | translate }}
+          <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600 transition-colors
+                                 duration-300 whitespace-nowrap overflow-hidden text-ellipsis"
+              [width]="tconfig.columns[$index].width + '%'" title="{{ column.name | translate }}">
+            <span class="overflow-hidden text-ellipsis block">{{ column.name | translate }}</span>
           </th>
         }
       </tr>

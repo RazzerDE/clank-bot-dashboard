@@ -356,6 +356,23 @@
   "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
   "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
 
+  "PLACEHOLDER_THEME_MODAL_TITLE": "🚓 ~ Support-Thema erstellen",
+  "PLACEHOLDER_THEME_MODAL_NAME": "Wie soll das Support-Thema heißen?",
+  "PLACEHOLDER_THEME_MODAL_DESC": "Worum geht es in diesem Support-Thema?",
+  "PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER": "Allgemeine Frage, Coding-Support, etc.",
+  "PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER": "Diese Beschreibung werden User in einem Discord Dropdown-Menü vor der Ticket-Erstellung sehen.",
+  "PLACEHOLDER_THEME_MODAL_ROLES": "Welchen Rollen sollen bei diesem Thema erwähnt werden?",
+  "PLACEHOLDER_THEME_MODAL_BUTTON": "Support-Thema erstellen",
+
+  "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",
+  "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Als FAQ-Thema verwenden",
+  "PLACEHOLDER_THEME_MODAL2_ANSWER": "Wie soll der Bot auf das Thema antworten?",
+  "PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER": "Hier kannst du eine Nachricht eingeben, die der Bot an den User sendet, wenn er dieses Thema auswählt.",
+  "PLACEHOLDER_THEME_MODAL2_PREVIEW": "Vorschau in Discord",
+  "PLACEHOLDER_THEME_PREVIEW_TITLE": "THEMA-NAME",
+  "PLACEHOLDER_THEME_PREVIEW_DESC": "Schreibe etwas in das <strong>obere Textfeld</strong>..",
+  "PLACEHOLDER_THEME_PREVIEW_FOOTER": "Dieses Ticket wurde automatisch vom FAQ-Modul bearbeitet & nicht weitergeleitet.",
+
   "PLACEHOLDER_ROLE_EMPTY": "😭 ~ Keine Rollen gefunden..",
   "PLACEHOLDER_ROLE_FIRST": "Wenig Rechte",
   "PLACEHOLDER_ROLE_SECOND": "Mehr Rechte",
