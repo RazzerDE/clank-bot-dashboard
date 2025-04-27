@@ -8,12 +8,12 @@
       <div (click)="this.showEmojiPicker = !this.showEmojiPicker;"
            class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
                 cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
-        <span class="text-gray-900 dark:text-white select-none">{{ selectedEmoji }}</span>
+        <span class="text-gray-900 dark:text-white select-none">{{ newTheme.icon }}</span>
         @if (this.showEmojiPicker) {
           <div class="absolute bottom-full left-0 mb-2 p-2 bg-white dark:!bg-gray-700 border border-gray-300
                   dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid grid-cols-6 gap-1">
             @for (emoji of emojis; track $index) {
-              <span (click)="this.selectedEmoji = emoji; this.showEmojiPicker = false;"
+              <span (click)="this.newTheme.icon = emoji; this.showEmojiPicker = false;"
                     class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
                      dark:hover:bg-gray-600 p-1 rounded">
                 {{ emoji }}
@@ -26,7 +26,7 @@
       <input type="text" class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
               focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
               dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" maxlength="20" minlength="1"
-             [placeholder]="'PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER' | translate">
+             [placeholder]="'PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER' | translate" [(ngModel)]="newTheme.name">
     </div>
 
     <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
@@ -36,21 +36,27 @@
             focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
             dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white resize-none"
               placeholder="{{ 'PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER' | translate }}"
-              rows="2" maxlength="98" minlength="1"></textarea>
+              rows="2" maxlength="98" minlength="1" [(ngModel)]="newTheme.desc"></textarea>
 
-    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-all duration-300"
+           [class.opacity-50]="this.dataService.isFAQ">
       {{ 'PLACEHOLDER_THEME_MODAL_ROLES' | translate }}
     </label>
-    <template-select [discordRoles]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned" />
-    <button class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none
-               focus:ring-green-300 font-medium rounded-lg py-2.5 text-center dark:bg-green-600
-               dark:hover:bg-green-700 transition-colors duration-100 dark:focus:ring-green-800 text-sm px-5">
+    <template-select [discordRoles]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
+                     (selectionChange)="newTheme.roles = $event"/>
+    <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isThemeInvalid(),
+                        'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': isThemeInvalid()}"
+            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
+                 font-medium rounded-lg py-2.5 text-center transition-colors duration-100
+                 dark:focus:ring-green-800 text-sm px-5"
+            [disabled]="isThemeInvalid()">
       {{ 'PLACEHOLDER_THEME_MODAL_BUTTON' | translate }}
     </button>
   </div>
 } @else {
+
   <!-- Template for create new Theme (Second Modal) -->
-  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 w-1/2 max-w-md w-full">
+  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 max-w-md w-full">
     <!-- Modal Header -->
     <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
       <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
@@ -62,7 +68,7 @@
     <div class="p-4 md:p-5">
       <div class="space-y-4 flex flex-col">
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="faqChecked">
+          <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="this.dataService.isFAQ">
           <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer
                   dark:bg-gray-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
                     after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300
@@ -76,21 +82,21 @@
         <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
 
         <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0 transition-all duration-300"
-               [class.opacity-50]="!faqChecked">{{ 'PLACEHOLDER_THEME_MODAL2_ANSWER' | translate }}
+               [class.opacity-50]="!this.dataService.isFAQ">{{ 'PLACEHOLDER_THEME_MODAL2_ANSWER' | translate }}
         </label>
 
-        <textarea rows="3" maxlength="255" minlength="1" [class.opacity-50]="!faqChecked"
+        <textarea rows="3" maxlength="255" minlength="1" [class.opacity-50]="!this.dataService.isFAQ"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                     focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
                     dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white duration-300
                     dark:focus:ring-primary-500 dark:focus:border-primary-500 resize-none transition-all"
-                  [disabled]="!faqChecked" (keyup)="updateFAQPreview($event)"
+                  [disabled]="!this.dataService.isFAQ" (keyup)="updateFAQPreview($event)" id="faq_answer"
                   [placeholder]="'PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER' | translate"></textarea>
-        <p class="text-gray-900 dark:text-white mb-0 transition-all duration-300" [class.opacity-50]="!faqChecked">
+        <p class="text-gray-900 dark:text-white mb-0 transition-all duration-300" [class.opacity-50]="!this.dataService.isFAQ">
           {{ 'PLACEHOLDER_THEME_MODAL2_PREVIEW' | translate }}
         </p>
 
-        <template-discord-markdown [faqChecked]="this.faqChecked" [type]="this.type" class="!mt-0"/>
+        <template-discord-markdown [type]="this.type" class="!mt-0"/>
       </div>
     </div>
   </div>

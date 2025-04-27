@@ -13,6 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class DataHolderService {
   isLoading: boolean = true;
   isDarkTheme: boolean = false;
+  isFAQ: boolean = false;
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
   hideGuildSidebar: boolean = false;

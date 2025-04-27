@@ -38,7 +38,7 @@
       <div class="p-4 md:p-5">
         <div class="space-y-4 flex flex-col">
           @if (type === 'SUPPORT_THEME_FAQ') {
-            <template-faq-answer [faqChecked]="this.faqChecked" [content]="this.content" [type]="this.type"/>
+            <template-faq-answer [content]="this.content" [type]="this.type"/>
           } @else if (type === 'SUPPORT_THEME_ADD') {
             <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
                                         [isDefaultMentioned]="isDefaultMentioned.bind(this)" />

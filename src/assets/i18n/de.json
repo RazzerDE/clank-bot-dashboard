@@ -361,7 +361,7 @@
   "PLACEHOLDER_THEME_MODAL_DESC": "Worum geht es in diesem Support-Thema?",
   "PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER": "Allgemeine Frage, Coding-Support, etc.",
   "PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER": "Diese Beschreibung werden User in einem Discord Dropdown-Menü vor der Ticket-Erstellung sehen.",
-  "PLACEHOLDER_THEME_MODAL_ROLES": "Welchen Rollen sollen bei diesem Thema erwähnt werden?",
+  "PLACEHOLDER_THEME_MODAL_ROLES": "Welche Rollen sollen bei diesem Thema erwähnt werden?",
   "PLACEHOLDER_THEME_MODAL_BUTTON": "Support-Thema erstellen",
 
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",

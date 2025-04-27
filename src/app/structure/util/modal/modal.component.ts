@@ -58,7 +58,6 @@ export class ModalComponent {
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
 
-  faqChecked: boolean = false;
   protected isVisible: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;
 

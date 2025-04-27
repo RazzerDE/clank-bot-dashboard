@@ -1,7 +1,7 @@
 <!-- Template for Discord Markdown Preview -->
 <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
                   text-gray-300 font-sans mt-2 transition-all duration-300"
-     [class.opacity-50]="!faqChecked && type != 'SUPPORT_THEME_FAQ'">
+     [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ'">
   <div class="absolute top-0 left-0 w-1 h-full bg-[#5865f2] rounded-l"></div>
   <div class="pl-3 w-full">
     <div class="flex items-center font-bold text-sm text-white mb-0">
