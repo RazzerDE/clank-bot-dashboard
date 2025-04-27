@@ -48,6 +48,31 @@ export class DataHolderService {
   }
 
   /**
+   * Extracts the emoji ID from a Discord emoji string and returns the corresponding CDN URL.
+   * Discord emojis are formatted as `<:name:id>` for standard emojis or `<a:name:id>` for animated emojis.
+   *
+   * @param emoji - The Discord emoji string format (e.g., '<:emojiname:123456789>' or '<a:emojiname:123456789>')
+   * @param isID - Optional boolean to indicate if the input is the ID of the emoji (default: false)
+   * @param isAnimated - Optional boolean to indicate if the emoji is animated (default: false)
+   * @returns The CDN URL for the emoji, or an empty string if the emoji format is invalid
+   */
+  getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean): string {
+    if (!emoji) { return emoji; }
+
+    if (isID) {
+      return `https://cdn.discordapp.com/emojis/${emoji}.${isAnimated ? 'gif' : 'png'}`;
+    }
+
+    // Match emoji format <:name:id> or <a:name:id>
+    const match: RegExpMatchArray | null = emoji.match(/<(a?):(\w+):(\d+)>/);
+    if (!match) return emoji;
+
+    const emojiId: string = match[3];
+    const fileType: 'gif' | 'png' = match[1] === 'a' ? 'gif' : 'png';
+    return `https://cdn.discordapp.com/emojis/${emojiId}.${fileType}`;
+  }
+
+  /**
    * Redirects the user to a simple error page with a specific error type.
    *
    * This method sets the error title and description based on the provided error type

@@ -5,20 +5,35 @@
       {{ 'PLACEHOLDER_THEME_MODAL_NAME' | translate }}
     </label>
     <div class="flex items-center gap-2">
-      <div (click)="this.showEmojiPicker = !this.showEmojiPicker;"
+      <div (click)="this.showEmojiPicker = !this.showEmojiPicker; $event.stopPropagation();"
            class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
                 cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
-        <span class="text-gray-900 dark:text-white select-none">{{ newTheme.icon }}</span>
+        @if (newTheme.icon.includes('https')) {
+          <img ngSrc="{{ newTheme.icon }}" alt="Emoji ~ Clank Discord-Bot" width="25" height="25" />
+        } @else {
+          <span class="text-gray-900 dark:text-white select-none">{{ newTheme.icon }}</span>
+        }
+
         @if (this.showEmojiPicker) {
           <div class="absolute bottom-full left-0 mb-2 p-2 bg-white dark:!bg-gray-700 border border-gray-300
-                  dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid grid-cols-6 gap-1">
+                      cursor-default dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid
+                      grid-cols-6 gap-1" (click)="$event.stopPropagation();">
             @for (emoji of emojis; track $index) {
-              <span (click)="this.newTheme.icon = emoji; this.showEmojiPicker = false;"
-                    class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
-                     dark:hover:bg-gray-600 p-1 rounded">
-                {{ emoji }}
-              </span>
-            }
+              @if (isEmojiType(emoji)) {
+                <span (click)="this.newTheme.icon = this.dataService.getEmojibyId(emoji.id, true, emoji.animated); this.showEmojiPicker = false;"
+                      class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
+                           dark:hover:bg-gray-600 p-1 rounded">
+                  <img ngSrc="{{ this.dataService.getEmojibyId(emoji.id, true)}}" alt="Emoji ~ Clank Discord-Bot"
+                       width="40" height="40" />
+                </span>
+                } @else {
+                  <span (click)="this.newTheme.icon = emoji.toString(); this.showEmojiPicker = false;"
+                        class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
+                             dark:hover:bg-gray-600 p-1 rounded">
+                    {{ emoji }}
+                  </span>
+                }
+              }
           </div>
         }
 

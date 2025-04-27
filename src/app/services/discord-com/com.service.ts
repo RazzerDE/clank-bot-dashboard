@@ -55,6 +55,21 @@ export class ComService {
   }
 
   /**
+   * Retrieves the list of emojis for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the emojis for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to fetch emojis for.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the list of emojis.
+   */
+  async getGuildEmojis(guild_id: string): Promise<Observable<any>> {
+    await this.ensureInitialized();
+    return this.http.get<any>(`${config.api_url}/guilds/emojis?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Retrieves the list of all support-themes for a specific guild.
    *
    * This method ensures that the service is initialized before making the request.
@@ -67,6 +82,7 @@ export class ComService {
     return this.http.get<SupportThemeResponse>(`${config.api_url}/guilds/support-themes?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
+
 
   /**
    * Retrieves the team roles for a specific guild.

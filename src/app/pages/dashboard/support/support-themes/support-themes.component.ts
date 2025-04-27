@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
-import {Role} from "../../../../services/types/discord/Guilds";
+import {Emoji, Role} from "../../../../services/types/discord/Guilds";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
@@ -42,10 +42,12 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
   protected subscriptions: Subscription[] = [];
+  private reloadEmojis: boolean = false;
 
   protected modalType: string = 'SUPPORT_THEME_ADD';
   protected modalTheme: SupportTheme = {} as SupportTheme;
-  protected emojis: string[] = ['🌟', '🎮', '🎯', '🎲', '🧩', '🎭', '🎨', '🎬', '🎤', '🎧', '📱', '💻', '🔍', '💬', '❓', '❗', '📢', '🔔', '📌', '📝', '📚', '📊', '🔧', '🛠️', '⚙️', '🧰', '🔒', '🔑', '🌈', '✨'];
+  protected emojis: Emoji[] | string[] = ['🌟', '🎮', '🎯', '🎲', '🧩', '🎭', '🎨', '🎬', '🎤', '🎧', '📱', '💻',
+    '🔍', '💬', '❓', '❗', '📢', '🔔', '📌', '📝', '📚', '📊', '🔧', '🛠️', '⚙️', '🧰', '🔒', '🔑', '🌈', '✨'];
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faPlus: IconDefinition = faPlus;
@@ -65,6 +67,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       if (value) { // only fetch data if allowed
         this.dataLoading = true;
         this.dataService.isLoading = true;
+        this.reloadEmojis = true;
         this.getSupportThemes();
       }
     });
@@ -103,6 +106,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected refreshCache(): void {
     this.disabledCacheBtn = true;
     this.dataService.isLoading = true;
+    this.reloadEmojis = true;
     this.getSupportThemes(true);
 
     setTimeout((): void => { this.disabledCacheBtn = false; }, 30000); // 30 seconds
@@ -132,6 +136,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.supportThemes = JSON.parse(localStorage.getItem('support_themes') as string);
       this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
+      this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
       this.filteredThemes = this.supportThemes;
       this.dataService.isLoading = false;
       return;
@@ -157,6 +162,47 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           } else {
             this.dataService.redirectLoginError('EXPIRED');
           }
+        }
+      });
+
+      this.subscriptions.push(subscription);
+    });
+  }
+
+  /**
+   * Fetches the emojis for the current guild, using a 5-minute cache.
+   *
+   * If the emojis are already cached in localStorage and the cache is still valid (less than 5 minutes old),
+   * the cached emojis are loaded. Otherwise, the emojis are fetched from the server.
+   *
+   * @param {boolean} [no_cache] - Optional flag to force bypassing the cache and fetch fresh data.
+   */
+  protected getGuildEmojis(no_cache?: boolean): void {
+    if (!this.dataService.active_guild) { return; }
+
+    // check if guilds are already stored in local storage (5 minute cache)
+    if ((localStorage.getItem('guild_emojis') && localStorage.getItem('support_themes_timestamp') &&
+      Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 300000) && !no_cache) {
+      this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
+      this.dataService.isLoading = false;
+      return;
+    }
+
+    this.discordService.getGuildEmojis(this.dataService.active_guild!.id).then((observable) => {
+      const subscription: Subscription = observable.subscribe({
+        next: (response: Emoji[]): void => {
+          this.emojis = response;
+          localStorage.setItem('guild_emojis', JSON.stringify(this.emojis));
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+          } else if (err.status === 401) {
+            this.dataService.redirectLoginError('NO_CLANK');
+          } else {
+            this.dataService.redirectLoginError('EXPIRED');
+          }
+          console.log(err);
         }
       });
 
@@ -216,6 +262,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected openAddSupportThemeModal(): void {
     this.modalType = 'SUPPORT_THEME_ADD';
     this.modal.showModal();
+    this.getGuildEmojis(this.reloadEmojis);
+    this.reloadEmojis = false;
   }
 
   /**

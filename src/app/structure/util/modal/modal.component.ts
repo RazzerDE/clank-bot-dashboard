@@ -2,7 +2,7 @@ import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {Role} from "../../../services/types/discord/Guilds";
+import {Emoji, Role} from "../../../services/types/discord/Guilds";
 import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -51,7 +51,7 @@ import {RolePickerComponent} from "./templates/role-picker/role-picker.component
 })
 export class ModalComponent {
   @Input() discordRoles: Role[] = [];
-  @Input() emojis: string[] = [];
+  @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() content: string = '';
   @Input() extra: Role[] = [];

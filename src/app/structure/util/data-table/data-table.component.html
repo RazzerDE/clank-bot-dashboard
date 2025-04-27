@@ -42,7 +42,7 @@
           <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
             @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
               <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
-                <img [ngSrc]="getEmojibyId(obj.icon) + '?size=32'" width="20" height="20" alt="Emoji for {{ obj.name}}" />
+                <img [ngSrc]="this.dataService.getEmojibyId(obj.icon) + '?size=32'" width="20" height="20" alt="Emoji for {{ obj.name}}" />
               </td>
             }
 

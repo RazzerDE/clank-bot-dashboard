@@ -50,6 +50,14 @@ export interface Channel {
   nsfw: boolean; // whether this channel is NSFW
 }
 
+export interface Emoji {
+  id: string;
+  animated: boolean;
+  available: boolean;
+  managed: boolean;
+  require_colons: boolean;
+}
+
 export interface SupportSetup {
   support_forum: Channel;
   support_forum_pending: boolean;
