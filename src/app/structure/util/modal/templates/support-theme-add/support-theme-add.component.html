@@ -8,9 +8,9 @@
       <div (click)="this.showEmojiPicker = !this.showEmojiPicker; $event.stopPropagation();"
            class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
                 cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
-        @if (newTheme.icon.includes('https')) {
+        @if (newTheme.icon.includes('https') || newTheme.icon.startsWith('<:') || newTheme.icon.startsWith('<a:')) {
           @if (newTheme.guild_id == this.dataService.active_guild!.id) {
-            <img ngSrc="{{ newTheme.icon + '?size=24' }}" alt="Emoji ~ Clank Discord-Bot" width="24" height="24" />
+            <img ngSrc="{{ dataService.getEmojibyId(newTheme.icon) + '?size=24' }}" alt="Emoji ~ Clank Discord-Bot" width="24" height="24" />
           } @else { <!-- dont show emoji from another guild -->
             <span class="text-gray-900 dark:text-white select-none">📚</span>
           }
@@ -62,14 +62,14 @@
       {{ 'PLACEHOLDER_THEME_MODAL_ROLES' | translate }}
     </label>
     <template-select [discordRoles]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
-                     (selectionChange)="newTheme.roles = $event"/>
+                     (selectionChange)="newTheme.roles = $event; this.updateThemeMentions();"/>
     <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isThemeInvalid(),
                         'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': isThemeInvalid()}"
             class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
                  font-medium rounded-lg py-2.5 text-center transition-colors duration-100
                  dark:focus:ring-green-800 text-sm px-5"
-            [disabled]="isThemeInvalid()" (click)="addSupportTheme(newTheme)">
-      {{ 'PLACEHOLDER_THEME_MODAL_BUTTON' | translate }}
+            [disabled]="isThemeInvalid()" (click)="type === 'SUPPORT_THEME_ADD' ? addSupportTheme(newTheme) : editSupportTheme(newTheme)">
+      {{ type === 'SUPPORT_THEME_ADD' ? ('PLACEHOLDER_THEME_MODAL_BUTTON' | translate) : ('PLACEHOLDER_THEME_MODAL_BUTTON_EDIT' | translate) }}
     </button>
   </div>
 } @else {

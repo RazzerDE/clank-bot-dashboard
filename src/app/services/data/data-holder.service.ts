@@ -31,6 +31,8 @@ export class DataHolderService {
   profile: DiscordUser | null = null;
   bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
                               punish_count: 110, global_verified_count: '16.000' };
+  readonly initTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
+                                    default_roles: [], pending: true, action: 'CREATE' };
   support_themes: SupportTheme[] = [];
 
   constructor(private translate: TranslateService, private router: Router) {

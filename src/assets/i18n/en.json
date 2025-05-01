@@ -201,6 +201,8 @@
   "ERROR_LOGIN_BUTTON": "Back to Dashboard",
   "ERROR_SUPPORT_BUTTON": "Support Server",
 
+  "SUCCESS_THEME_EDIT_TITLE": "Theme submitted for editing",
+  "SUCCESS_THEME_EDIT_DESC": "The theme <strong>{{name}}</strong> will be automatically edited in the next few minutes!",
   "SUCCESS_THEME_DELETION_TITLE": "Theme will be deleted soon",
   "SUCCESS_THEME_DELETION_DESC": "The theme <strong>{{name}}</strong> will be automatically deleted in the next few minutes!",
   "SUCCESS_THEME_CREATION_TITLE": "Theme added to queue",
@@ -209,6 +211,8 @@
   "ERROR_THEME_CREATION_CONFLICT_DESC": "The theme <strong>{{name}}</strong> already exists or will be created soon!",
   "ERROR_THEME_DELETION_CONFLICT": "Deletion already pending",
   "ERROR_THEME_DELETION_CONFLICT_DESC": "The theme <strong>{{name}}</strong> is already scheduled for deletion soon!",
+  "ERROR_THEME_EDIT_CONFLICT": "Theme name already taken",
+  "ERROR_THEME_EDIT_CONFLICT_DESC": "The theme name <strong>{{name}}</strong> already exists or will be assigned soon!",
   "SUCCESS_VOTE_TITLE": "Successfully Voted",
   "SUCCESS_VOTE_DESC": "Your vote has been saved - Thank you for participating!",
   "SUCCESS_ROLE_DELETE": "Team role removed",
@@ -364,6 +368,7 @@
   "PLACEHOLDER_ROLE_MODAL_SECOND": "🚔 Moderator",
   "PLACEHOLDER_ROLE_MODAL_THIRD": "🚨 Admin",
 
+  "PLACEHOLDER_THEME_EDIT_MODAL_TITLE": "📝 ~ Edit Support Theme",
   "PLACEHOLDER_THEME_MODAL_TITLE": "🚓 ~ Create Support Theme",
   "PLACEHOLDER_THEME_MODAL_NAME": "What should the support theme be called?",
   "PLACEHOLDER_THEME_MODAL_DESC": "What is this support theme about?",
@@ -371,7 +376,9 @@
   "PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER": "Users will see this description in a Discord dropdown menu before creating a ticket.",
   "PLACEHOLDER_THEME_MODAL_ROLES": "Which roles should be mentioned for this theme?",
   "PLACEHOLDER_THEME_MODAL_BUTTON": "Create Support Theme",
+  "PLACEHOLDER_THEME_MODAL_BUTTON_EDIT": "Edit Support Theme",
   "PLACEHOLDER_THEME_PENDING": "✅ - This theme will be automatically created in the next few minutes - refresh the cache!",
+  "PLACEHOLDER_THEME_UPDATE_PENDING": "🔶 - This theme will be automatically edited in the next few minutes - refresh the cache!",
   "PLACEHOLDER_THEME_FAQ": "🤖 - This theme will be automatically answered - click for more info!",
 
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatic Bot Response",

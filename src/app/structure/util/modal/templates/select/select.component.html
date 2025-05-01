@@ -1,7 +1,7 @@
 <!-- Select for Role Picker -->
 <select #rolePicker id="rolepicker" (change)="validateRolePicker()"
-        [multiple]="type === 'DEFAULT_MENTION' || type === 'SUPPORT_THEME_ADD'"
-        [disabled]="type === 'SUPPORT_THEME_ADD' && this.dataService.isFAQ"
+        [multiple]="type === 'DEFAULT_MENTION' || type.startsWith('SUPPORT_THEME_')"
+        [disabled]="type.startsWith('SUPPORT_THEME_') && this.dataService.isFAQ"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                  focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
                  dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
@@ -10,7 +10,8 @@
     <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
   }
   @for (role of discordRoles; track role.id) {
-    <option value="{{ role.id }}" [selected]="type === 'DEFAULT_MENTION' && isDefaultMentioned(role.id)">
+    <option value="{{ role.id }}" [selected]="(type === 'DEFAULT_MENTION' || type.startsWith('SUPPORT_THEME_'))
+                                              && isDefaultMentioned(role.id)">
       {{ role.name }}
     </option>
   }

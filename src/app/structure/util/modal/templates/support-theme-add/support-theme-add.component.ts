@@ -30,15 +30,13 @@ export class SupportThemeAddComponent implements OnDestroy {
   @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() discordRoles: Role[] = [];
+  @Input() newTheme: SupportTheme = this.dataService.initTheme;
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
-  protected newTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [], default_roles: [],
-                                       guild_id: this.dataService.active_guild!.id, pending: true, action: 'CREATE' };
-  private initTheme: SupportTheme = this.newTheme;
-  protected showEmojiPicker: boolean = false;
-  private subscriptions: Subscription[] = [];
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
+  protected showEmojiPicker: boolean = false;
+  private subscriptions: Subscription[] = [];
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService,
               private apiService: ApiService) {}
@@ -50,7 +48,6 @@ export class SupportThemeAddComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
-
 
   /**
    * Creates a new support theme by sending it to the API.
@@ -72,8 +69,9 @@ export class SupportThemeAddComponent implements OnDestroy {
 
           // update shown data
           this.dataService.support_themes.push(theme);
-          this.dataService.support_themes.sort((a: SupportTheme, b: SupportTheme): number => a.name.localeCompare(b.name));
-          this.newTheme = this.initTheme;
+          this.updateThemes()
+          localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
+          this.newTheme = this.dataService.initTheme;
           this.hideModal();
           },
         error: (error: HttpErrorResponse): void => {
@@ -84,7 +82,7 @@ export class SupportThemeAddComponent implements OnDestroy {
               this.translate.instant('ERROR_THEME_CREATION_CONFLICT_DESC', { name: theme.name }));
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
-            this.newTheme = this.initTheme;
+            this.newTheme = this.dataService.initTheme;
           }
 
           this.hideModal();
@@ -94,11 +92,104 @@ export class SupportThemeAddComponent implements OnDestroy {
     this.subscriptions.push(sent_theme);
   }
 
+  protected editSupportTheme(theme: SupportTheme): void {
+    const edit_theme: Subscription = this.apiService.editSupportTheme(theme, this.dataService.active_guild!.id)
+      .subscribe({
+        next: (_data: any): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_THEME_EDIT_TITLE'),
+            this.translate.instant('SUCCESS_THEME_EDIT_DESC', { name: theme.name }));
+
+          // update shown data
+          this.newTheme.pending = true;
+          this.newTheme.action = 'UPDATE';
+          this.updateThemeMentions();
+
+          const foundThemeIndex: number = this.dataService.support_themes.findIndex((t) => t.name === theme.name);
+          if (foundThemeIndex !== -1) { this.dataService.support_themes[foundThemeIndex] = {...theme}; }
+
+          this.updateThemes();
+          localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
+          this.newTheme = this.dataService.initTheme;
+          this.hideModal();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+          if (error.status === 400) { // theme name got changed and name is already taken
+            this.dataService.showAlert(this.translate.instant('ERROR_THEME_EDIT_CONFLICT'),
+              this.translate.instant('ERROR_THEME_EDIT_CONFLICT_DESC', { name: theme.name }));
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+          this.newTheme.name = this.newTheme.old_name!;
+          this.newTheme = this.dataService.initTheme;
+          this.hideModal();
+          console.log(error);
+        }
+      });
+
+    this.subscriptions.push(edit_theme);
+  }
+
+  /**
+   * Sorts the support themes in the data service.
+   *
+   * This method sorts the array of support themes by two criteria:
+   * 1. Pending status - non-pending themes are shown first
+   * 2. Alphabetical order by name
+   *
+   * The sorted array is stored back in the data service.
+   */
+  private updateThemes(): void {
+    this.dataService.support_themes.sort((a: SupportTheme, b: SupportTheme): number => {
+      if (a.pending !== b.pending) {
+        return a.pending ? 1 : -1; // first sort by pending status (show at bottom)
+      }
+      return a.name.localeCompare(b.name); // then sort by name
+    });
+  }
+
+   /**
+    * Updates the roles associated with the current theme.
+    *
+    * This method performs two main operations:
+    * 1. Converts string role IDs to Role objects if the current theme roles are stored as strings
+    * 2. Adds default roles from the first support theme if they aren't already included
+    *    in the current theme's roles to ensure consistent mentioning behavior
+    *
+    * The method prevents duplicate roles by checking role IDs before adding default roles.
+   */
+  protected updateThemeMentions(): void {
+    // Convert string role IDs to Role objects if necessary
+    if (Array.isArray(this.newTheme.roles) && typeof this.newTheme.roles[0] === 'string') {
+      const roleIds = this.newTheme.roles as unknown as string[];
+      this.newTheme.roles = this.discordRoles.filter(role => roleIds.includes(role.id));
+    }
+
+    // Add default roles from the first support theme if available
+    if (this.dataService.support_themes && this.dataService.support_themes.length > 0 &&
+      this.dataService.support_themes[0].default_roles &&
+      this.dataService.support_themes[0].default_roles.length > 0) {
+
+      const defaultRoles = this.dataService.support_themes[0].default_roles;
+
+      // Create a Set of existing role IDs to avoid duplicates
+      const existingRoleIds = new Set((this.newTheme.roles as Role[]).map(role => role.id));
+
+      // Add default roles that aren't already included
+      defaultRoles.forEach(role => {
+        if (!existingRoleIds.has(role.id)) {
+          (this.newTheme.roles as Role[]).push(role);
+        }
+      });
+    }
+  }
+
   /**
    * Hides the modal by removing the `hidden` class from the backdrop and modal elements.
    * This method makes the modal and its backdrop visible again.
    */
-  hideModal(): void {
+  private hideModal(): void {
     const backdrop: HTMLDivElement = document.getElementById('modal_backdrop') as HTMLDivElement;
     const modal: HTMLDivElement = document.getElementById('modal_container') as HTMLDivElement;
 
@@ -111,7 +202,7 @@ export class SupportThemeAddComponent implements OnDestroy {
    *
    * @param event - The keyboard event from the textarea input
    */
-  updateFAQPreview(event: KeyboardEvent): void {
+  protected updateFAQPreview(event: KeyboardEvent): void {
     const target: HTMLTextAreaElement = event.target as HTMLTextAreaElement;
     if (!target.value) {
       this.discordMarkdown.faqPreview.nativeElement.innerHTML = this.translate.instant('PLACEHOLDER_THEME_PREVIEW_DESC');
@@ -149,7 +240,15 @@ export class SupportThemeAddComponent implements OnDestroy {
 
     // FAQ theme (getElementbyId is necessary because @ViewChild and ngModel are bugged)
     const faq_answer: HTMLTextAreaElement = document.getElementById('faq_answer') as HTMLTextAreaElement;
-    if (faq_answer) { this.newTheme.faq_answer = faq_answer.value; }
+    if (faq_answer) {
+      if (this.newTheme.faq_answer && this.newTheme.faq_answer.length > 0) {
+        // use predefined theme faq answer
+        faq_answer.value = this.newTheme.faq_answer;
+        faq_answer.dispatchEvent(new Event('keyup'));
+      } else if (faq_answer.value.length > 0) {
+        this.newTheme.faq_answer = faq_answer.value;
+      }
+    }
 
     return !(this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && (this.dataService.isFAQ && this.newTheme.faq_answer!.length > 0));
   }

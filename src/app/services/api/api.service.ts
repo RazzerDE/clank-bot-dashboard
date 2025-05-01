@@ -99,6 +99,18 @@ export class ApiService {
   }
 
   /**
+   * Edits an existing support theme for a specific guild.
+   *
+   * @param theme - The support theme object to be updated.
+   * @param guild_id - The ID of the guild for which the support theme is being updated.
+   * @returns An Observable emitting the server's response.
+   */
+  editSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
+    return this.http.put(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}`, theme,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Deletes a support theme for a specific guild.
    *
    * @param theme - The support theme object to be deleted.
@@ -106,8 +118,11 @@ export class ApiService {
    * @returns An Observable emitting the server's response.
    */
   deleteSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
-    return this.http.delete(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent(theme.name)}`,
-      { headers: this.authService.headers });
+    const themeName: string = theme.old_name && theme.old_name !== theme.name ? theme.old_name : theme.name;
+    return this.http.delete(
+      `${this.API_URL}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent(themeName)}`,
+      { headers: this.authService.headers }
+    );
   }
 
   /**

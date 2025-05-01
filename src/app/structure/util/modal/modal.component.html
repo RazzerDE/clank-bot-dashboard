@@ -6,13 +6,14 @@
 <div tabindex="-1" class="hidden overflow-hidden fixed z-50 justify-center items-center
                           w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
      [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
-  <div class="relative p-4 w-full h-full items-center" id="roleModalContent"
-       [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': type !== 'SUPPORT_THEME_ADD',
-                  'flex justify-center gap-4 xl:translate-x-36': type === 'SUPPORT_THEME_ADD'}" #roleModalContent>
+  <div class="relative p-4 w-full h-full items-center" id="roleModalContent" #roleModalContent
+       [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': !(type.endsWith('ADD') || type.endsWith('EDIT')),
+                  'flex justify-center gap-4 xl:translate-x-36': (type.endsWith('ADD') || type.endsWith('EDIT'))}">
 
     <!-- First Modal (Always visible) -->
     <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700"
-         [ngClass]="{'w-full': type !== 'SUPPORT_THEME_ADD', 'w-1/2 max-w-md': type === 'SUPPORT_THEME_ADD'}" id="ignore">
+         [ngClass]="{'w-full': !(type.endsWith('ADD') || type.endsWith('EDIT')),
+                     'w-1/2 max-w-md': (type.endsWith('ADD') || type.endsWith('EDIT'))}" id="ignore">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
         <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
@@ -24,6 +25,8 @@
             {{ 'PLACEHOLDER_MENTION_MODAL_TITLE' | translate }}
           } @else if (type === 'SUPPORT_THEME_ADD') {
             {{ 'PLACEHOLDER_THEME_MODAL_TITLE' | translate }}
+          } @else if (type === 'SUPPORT_THEME_EDIT') {
+            {{ 'PLACEHOLDER_THEME_EDIT_MODAL_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -39,9 +42,9 @@
         <div class="space-y-4 flex flex-col">
           @if (type === 'SUPPORT_THEME_FAQ') {
             <template-faq-answer [content]="this.content" [type]="this.type"/>
-          } @else if (type === 'SUPPORT_THEME_ADD') {
+          } @else if ((type.endsWith('ADD') || type.endsWith('EDIT'))) {
             <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
-                                        [isDefaultMentioned]="isDefaultMentioned.bind(this)" />
+                                        [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="this.theme"/>
           } @else { <!-- Default Mention & Teamlist -->
             <template-role-picker [type]="type" [discordRoles]="discordRoles"
                                   [isDefaultMentioned]="isDefaultMentioned.bind(this)" [action]="action" />
@@ -51,7 +54,7 @@
     </div>
 
     <!-- Second Modal (only for Bot-FAQ Answer) -->
-    @if (type === 'SUPPORT_THEME_ADD') {
+    @if ((type.endsWith('ADD') || type.endsWith('EDIT'))) {
       <template-support-theme-add [showFirst]="false" />
     }
   </div>

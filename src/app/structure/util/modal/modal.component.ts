@@ -10,6 +10,7 @@ import {FormsModule} from "@angular/forms";
 import {FaqAnswerComponent} from "./templates/faq-answer/faq-answer.component";
 import {SupportThemeAddComponent} from "./templates/support-theme-add/support-theme-add.component";
 import {RolePickerComponent} from "./templates/role-picker/role-picker.component";
+import {SupportTheme} from "../../../services/types/Tickets";
 
 @Component({
   selector: 'app-modal',
@@ -55,6 +56,7 @@ export class ModalComponent {
   @Input() type: string = '';
   @Input() content: string = '';
   @Input() extra: Role[] = [];
+  @Input() theme: SupportTheme = {} as SupportTheme;
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
 
@@ -84,7 +86,7 @@ export class ModalComponent {
     setTimeout((): void => {
       this.roleModal.nativeElement.classList.add('hidden');
       this.roleBackdrop.nativeElement.classList.add('hidden');
-    }, 300)
+    }, 300);
   }
 
   /**

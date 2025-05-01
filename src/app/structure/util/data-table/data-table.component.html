@@ -55,7 +55,9 @@
                        duration-300" #mainRow
                 [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[1].width + '%' : tconfig.columns[0].width + '%'"
                 [class.!text-red-600]="isSupportType(obj) && obj.pending && obj.action == 'DELETE'"
-                [title]="isSupportType(obj) && obj.pending && obj.action === 'CREATE' ? ('PLACEHOLDER_THEME_PENDING' | translate) : ''">
+                [title]="isSupportType(obj) && obj.pending ?
+                (obj.action === 'CREATE' ? ('PLACEHOLDER_THEME_PENDING' | translate) :
+                 obj.action === 'UPDATE' ? ('PLACEHOLDER_THEME_UPDATE_PENDING' | translate) : '') : ''">
               <div class="flex items-center">
                 @if (isRoleType(obj)) {
                   <div class="w-3 h-3 rounded-full inline-block me-2.5"
@@ -114,7 +116,7 @@
                 @if (!($index === 0 && isSupportType(obj) && obj.pending === true)) {
                   <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
                    focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40
-                   transition-colors duration-300" type="button" (click)="button.action(obj)"
+                   transition-colors duration-300" type="button" (click)="button.action(obj)" id="TableBtn_{{ $index }}"
                           [ngClass]="button.color === 'blue' ? '!text-blue-500' : 'text-red-700 dark:text-red-700'">
                     <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
                   </button>

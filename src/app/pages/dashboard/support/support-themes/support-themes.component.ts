@@ -38,6 +38,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected filteredThemes: SupportTheme[] = this.dataService.support_themes;
   protected selectedOptions: string[] = [];
   protected modalExtra: Role[] = [];
+  protected editTheme: SupportTheme = this.dataService.initTheme;
   protected discordRoles: Role[] = [];
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
@@ -225,6 +226,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     if ((localStorage.getItem('guild_emojis') && localStorage.getItem('support_themes_timestamp') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 300000) && !no_cache) {
       this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
+      if (this.emojis.length === 0) {
+        this.emojis = initEmojis;
+      }
+
       this.dataService.isLoading = false;
       return;
     }
@@ -243,7 +248,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           } else {
             this.dataService.redirectLoginError('EXPIRED');
           }
-          console.log(err);
         }
       });
 
@@ -297,14 +301,29 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   /**
    * Opens the Modal to add new support-themes.
    *
-   * This method sets the modal type to 'SUPPORT_THEME_ADD'.
+   * This method sets the modal type to 'SUPPORT_THEME_*'.
    * It then displays the modal to the user.
+   *
+   * @param {string} action - The action to be performed, either 'ADD' or 'EDIT'.
+   * @param {SupportTheme} [theme] - The support theme to be edited (optional).
    */
-  protected openAddSupportThemeModal(): void {
-    this.modalType = 'SUPPORT_THEME_ADD';
+  protected openSupportThemeModal(action: 'ADD' | 'EDIT', theme?: SupportTheme): void {
+    this.modalType = `SUPPORT_THEME_${action}`;
+    if (action === 'ADD') {
+      this.getGuildEmojis(this.reloadEmojis);
+      this.reloadEmojis = false;
+      this.editTheme = this.dataService.initTheme;
+    } else {
+      theme!.guild_id = this.dataService.active_guild!.id;
+      // remove default mention roles (show only role-specific)
+      const defaultRoleIds: string[] = this.dataService.support_themes[0].default_roles?.map(role => role.id) || [];
+      this.modalExtra = theme!.roles.filter(role => !defaultRoleIds.includes(role.id));
+      theme!.old_name = theme!.name; // maybe change later by user action
+      this.editTheme = theme!;
+    }
+
+    this.dataService.isFAQ = Boolean(this.editTheme.faq_answer && this.editTheme.faq_answer.length > 0);
     this.modal.showModal();
-    this.getGuildEmojis(this.reloadEmojis);
-    this.reloadEmojis = false;
   }
 
   /**
@@ -430,7 +449,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     // two modals are visible; hide if clicked outside of the modal
-    if ((event.target as HTMLElement).id.includes('roleModalContent') && this.modalType === 'SUPPORT_THEME_ADD') {
+    if ((event.target as HTMLElement).id.includes('roleModalContent') &&
+        (this.modalType === 'SUPPORT_THEME_ADD' || this.modalType === 'SUPPORT_THEME_EDIT')) {
       this.modal.hideModal();
       return;
     }
@@ -467,7 +487,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           color: 'blue',
           icon: this.faPencil,
           size: 'lg',
-          action: (theme: SupportTheme): void => {} // TODO
+          action: (theme: SupportTheme): void => this.openSupportThemeModal('EDIT', theme)
         },
         {
           color: 'red',

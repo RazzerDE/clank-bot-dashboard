@@ -38,10 +38,8 @@ export class SelectComponent {
     const selectedRole: string = this.rolePicker.nativeElement.value;
     this.isRolePickerValid = selectedRole !== '' && selectedRole !== this.translate.instant('PLACEHOLDER_ROLE_MODAL_DEFAULT');
 
-    if (this.isRolePickerValid) { // emit if selection got changed
-      const selectEl: HTMLSelectElement = this.rolePicker.nativeElement;
-      const selectedRoles: string[] = Array.from(selectEl.selectedOptions).map(option => option.value);
-      this.selectionChange.emit(selectedRoles);
-    }
+    const selectEl: HTMLSelectElement = this.rolePicker.nativeElement;
+    const selectedRoles: string[] = Array.from(selectEl.selectedOptions).map(option => option.value);
+    this.selectionChange.emit(selectedRoles);
   }
 }

@@ -23,6 +23,7 @@ export interface SupportTheme {
   guild_id?: string;
   pending?: boolean; // change is pending
   action?: 'CREATE' | 'UPDATE' | 'DELETE'; // action to perform
+  old_name?: string; // new name for the theme (only for UPDATE)
 }
 
 export interface SupportThemeResponse {

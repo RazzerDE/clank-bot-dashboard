@@ -39,6 +39,7 @@ export class DataTableComponent implements AfterViewInit {
 
     protected rowHeight: number = 0;
     protected readonly faRobot: IconDefinition = faRobot;
+    protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;
 
     constructor(protected dataService: DataHolderService) {}
 
@@ -107,5 +108,4 @@ export class DataTableComponent implements AfterViewInit {
       };
     }
 
-  protected readonly faHourglassEnd = faHourglassEnd;
 }
