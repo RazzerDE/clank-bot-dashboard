@@ -63,30 +63,7 @@ It supports following <strong>features</strong>:
 
 ⚙️ › To run the <strong>test coverage</strong> and see the results, just open a terminal in the project root folder and run the command `jest`.
 
-## 🔨 Installation
-› Before you can start exploring our small website for learning purposes, there are a few preparations you need to make.
+## 🔨 Usage
+› You need to invite our discord-bot <a href="https://bl4cklist.de/invites/clank"><strong>Clank</strong></a> to your discord-server.
 
-💡 › You will need a <strong>own Backend RESTful-Service</strong> in order to test the API functionality.<br />
-
-Follow these steps to ensure everything runs smoothly:
-1. Clone the project and navigate with a terminal to the project root folder.
-2. Set up the configuration in `src/environments/config.ts` to your needs.
-4. Run `npm install` to install all dependencies.
-5. Run `ng build` to build the project.
-6. Upload the content of the `dist/` folder to your webserver.
-7. visit the page of your webserver - HAVE FUN!
-
-🪛 › <strong>I don't have a webserver:</strong> Thats not a problem! Just use `ng serve` instead of `ng build` and open the page `localhost:4200` in your web browser.
-
-## ❓ Configuration Example
-› You need to create the configuration file `src/environments/config.ts` in order to let the discord login & api calls work.
-
-An example of the configuration could look like this:
-```ts
-export const config = {
-  domain: 'http://localhost:4200',
-  api_url: 'http://localhost:8081',  // used for general api calls
-  redirect_url: 'http://localhost:4200/dashboard',  // used for the discord oauth2
-  client_id: 'YOUR_DISCORD_CLIENT_ID'  // used for the discord oauth2
-}
-```
+After that, you can open this dashboard here: <code>https://clank.dev</code>
