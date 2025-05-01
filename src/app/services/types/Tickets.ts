@@ -21,7 +21,8 @@ export interface SupportTheme {
   // added by us
   default_roles?: Role[];
   guild_id?: string;
-  pending?: boolean;
+  pending?: boolean; // change is pending
+  action?: 'CREATE' | 'UPDATE' | 'DELETE'; // action to perform
 }
 
 export interface SupportThemeResponse {

@@ -32,7 +32,7 @@ export class SupportThemeAddComponent implements OnDestroy {
   @Input() discordRoles: Role[] = [];
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
   protected newTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [], default_roles: [],
-                                       guild_id: this.dataService.active_guild!.id, pending: true };
+                                       guild_id: this.dataService.active_guild!.id, pending: true, action: 'CREATE' };
   private initTheme: SupportTheme = this.newTheme;
   protected showEmojiPicker: boolean = false;
   private subscriptions: Subscription[] = [];

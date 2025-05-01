@@ -18,6 +18,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 import {Emoji, initEmojis, Role} from "../../../../services/types/discord/Guilds";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
+import {ApiService} from "../../../../services/api/api.service";
 
 @Component({
   selector: 'app-support-themes',
@@ -56,7 +57,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected readonly faBell: IconDefinition = faBell;
 
   constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService,
-              private translate: TranslateService) {
+              private translate: TranslateService, private apiService: ApiService) {
     document.title = 'Support-Themes ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
 
@@ -166,6 +167,47 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
       this.subscriptions.push(subscription);
     });
+  }
+
+  /**
+   * Deletes an existing support theme by sending a deletion request to the API.
+   *
+   * This method sends the theme to be deleted to the server via the API service,
+   * handles the response or any potential errors, and updates the UI accordingly.
+   * On success, it removes the theme from the displayed themes list.
+   * On error, it displays an appropriate error message based on the error type.
+   *
+   * @param {SupportTheme} theme - The support theme object to be deleted
+   */
+  public deleteSupportTheme(theme: SupportTheme): void {
+    const del_theme: Subscription = this.apiService.deleteSupportTheme(theme, this.dataService.active_guild!.id)
+      .subscribe({
+        next: (_data: any): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_THEME_DELETION_TITLE'),
+            this.translate.instant('SUCCESS_THEME_DELETION_DESC', { name: theme.name }));
+
+          // update shown data
+          this.dataService.support_themes = this.dataService.support_themes.filter((t: SupportTheme) => t.name !== theme.name);
+          this.filteredThemes = this.filteredThemes.filter((t: SupportTheme) => t.name !== theme.name);
+
+          this.modal.hideModal();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 409) { // already pending
+            this.dataService.showAlert(this.translate.instant('ERROR_THEME_DELETION_CONFLICT'),
+              this.translate.instant('ERROR_THEME_DELETION_CONFLICT_DESC', { name: theme.name }));
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.modal.hideModal();
+        }
+      });
+
+    this.subscriptions.push(del_theme);
   }
 
   /**
@@ -431,7 +473,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           color: 'red',
           icon: this.faXmark,
           size: 'xl',
-          action: (theme: SupportTheme): void => {} // TODO
+          action: (theme: SupportTheme): void => this.deleteSupportTheme(theme)
         }
       ],
       actions: [

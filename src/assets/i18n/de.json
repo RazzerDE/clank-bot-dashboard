@@ -203,8 +203,12 @@
 
   "SUCCESS_THEME_CREATION_TITLE": "Thema zur Warteschlange hinzugefügt",
   "SUCCESS_THEME_CREATION_DESC": "Das Thema <strong>{{name}}</strong> wird in den nächsten Minuten automatisch erstellt!",
+  "SUCCESS_THEME_DELETION_TITLE": "Thema wird demnächst gelöscht",
+  "SUCCESS_THEME_DELETION_DESC": "Das Thema <strong>{{name}}</strong> wird in den nächsten Minuten automatisch gelöscht!",
   "ERROR_THEME_CREATION_CONFLICT": "Thema existiert bereits",
   "ERROR_THEME_CREATION_CONFLICT_DESC": "Das Thema <strong>{{name}}</strong> existiert bereits oder wird in Kürze erstellt!",
+  "ERROR_THEME_DELETION_CONFLICT": "Löschung bereits ausstehend",
+  "ERROR_THEME_DELETION_CONFLICT_DESC": "Das Thema <strong>{{name}}</strong> wird bereits in Kürze gelöscht!",
   "SUCCESS_VOTE_TITLE": "Erfolgreich abgestimmt",
   "SUCCESS_VOTE_DESC": "Dein Vote wurde gespeichert - Danke fürs teilnehmen!",
   "SUCCESS_ROLE_DELETE": "Team-Rolle entfernt",
@@ -367,7 +371,8 @@
   "PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER": "Diese Beschreibung werden User in einem Discord Dropdown-Menü vor der Ticket-Erstellung sehen.",
   "PLACEHOLDER_THEME_MODAL_ROLES": "Welche Rollen sollen bei diesem Thema erwähnt werden?",
   "PLACEHOLDER_THEME_MODAL_BUTTON": "Support-Thema erstellen",
-  "PLACEHOLDER_THEME_PENDING": "🔥 - Dieses Thema wird in den nächsten Minuten automatisch erstellt - aktualisiere den Cache!",
+  "PLACEHOLDER_THEME_PENDING": "✅ - Dieses Thema wird in den nächsten Minuten automatisch erstellt - aktualisiere den Cache!",
+  "PLACEHOLDER_THEME_FAQ": "🤖 - Dieses Thema wird automatisch beantwortet - klicke für mehr Infos!",
 
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Als FAQ-Thema verwenden",

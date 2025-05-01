@@ -39,11 +39,7 @@ export class ApiService {
   }
 
   /**
-   * Fetches the votes of all features.
-   *
-   * This method sends an HTTP GET request to the /progress/features endpoint
-   * to retrieve the votes of all features. The request includes authorization headers
-   * for user authentication.
+   * Fetches the votes of all bot features.
    *
    * @returns An Observable that emits the feature votes.
    */
@@ -82,10 +78,6 @@ export class ApiService {
   /**
    * Fetches the support setup status for a specific guild.
    *
-   * This method sends an HTTP GET request to the /guilds/support-setup endpoint
-   * to retrieve information about the support setup configuration for the specified guild.
-   * The request includes authorization headers for user authentication.
-   *
    * @param guild_id - The ID of the guild for which to fetch the support setup status.
    * @returns An Observable that emits the support setup status.
    */
@@ -97,10 +89,6 @@ export class ApiService {
   /**
    * Creates a new support theme for a specific guild.
    *
-   * This method sends an HTTP POST request to the `/guilds/support-theme` endpoint,
-   * including the guild ID as a query parameter and the theme data in the request body.
-   * The request uses authorization headers for authentication.
-   *
    * @param theme - The support theme object to be created.
    * @param guild_id - The ID of the guild for which the support theme is created.
    * @returns An Observable emitting the server's response.
@@ -111,11 +99,19 @@ export class ApiService {
   }
 
   /**
-   * Sends a vote for a feature.
+   * Deletes a support theme for a specific guild.
    *
-   * This method sends an HTTP POST request to the /progress/features endpoint
-   * to submit a vote for a feature. The request includes authorization headers
-   * for user authentication and the feature vote details in the request body.
+   * @param theme - The support theme object to be deleted.
+   * @param guild_id - The ID of the guild from which the support theme is deleted.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent(theme.name)}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Sends a vote for a bot feature.
    *
    * @param data - The feature vote details to be sent.
    * @returns An Observable that emits the server's response.
