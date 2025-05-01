@@ -92,6 +92,18 @@ export class SupportThemeAddComponent implements OnDestroy {
     this.subscriptions.push(sent_theme);
   }
 
+  /**
+   * Edits an existing support theme by sending the updated theme to the API.
+   *
+   * This method calls the API to update the given support theme for the active guild.
+   * On success, it updates the UI, sets the theme as pending, updates mentions,
+   * replaces the theme in the local list, sorts the themes, saves them to localStorage,
+   * resets the newTheme object, and hides the modal.
+   * On error, it handles name conflicts or unknown errors, resets the theme name,
+   * resets the newTheme object, hides the modal, and logs the error.
+   *
+   * @param theme The updated SupportTheme object to be saved.
+   */
   protected editSupportTheme(theme: SupportTheme): void {
     const edit_theme: Subscription = this.apiService.editSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
