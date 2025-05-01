@@ -42,7 +42,11 @@
           <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
             @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
               <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
-                <img [ngSrc]="this.dataService.getEmojibyId(obj.icon) + '?size=32'" width="20" height="20" alt="Emoji for {{ obj.name}}" />
+                @if (this.dataService.getEmojibyId(obj.icon).startsWith('https://')) {
+                  <img [ngSrc]="this.dataService.getEmojibyId(obj.icon) + '?size=32'" width="20" height="20" alt="Emoji for {{ obj.name}}" />
+                } @else {
+                  <span class="text-lg">{{ obj.icon }}</span>
+                }
               </td>
             }
 
@@ -59,11 +63,20 @@
 
                 {{ obj.name }}
 
-                @if (tconfig.type === 'SUPPORT_THEMES' && (isSupportType(obj) && obj.faq_answer)) {
-                  <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
+                  @if (obj.faq_answer) {
+                    <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
                                  duration-200" (click)="tconfig.actions[0](obj)" type="button" id="faqBtn_{{ $index }}">
-                    <fa-icon [icon]="faRobot"></fa-icon>
-                  </button>
+                      <fa-icon [icon]="faRobot"></fa-icon>
+                    </button>
+                  }
+                  @if (obj.pending) {
+                    <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                                 duration-200 !cursor-help" (click)="tconfig.actions[0](obj)" type="button"
+                            [title]="'PLACEHOLDER_THEME_PENDING' | translate">
+                      <fa-icon [icon]="faHourglassEnd"></fa-icon>
+                    </button>
+                  }
                 }
               </div>
             </td>
@@ -95,12 +108,14 @@
             <td class="px-4 py-3 flex items-center justify-end w-full" [height]="rowHeight + 'px'"
                 [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[4].width + '%' : tconfig.columns[2].width + '%'">
               @for (button of tconfig.action_btn; track $index) {
-                <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
-                               focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40
-                               transition-colors duration-300" type="button" (click)="button.action(obj)"
-                        [ngClass]="button.color === 'blue' ? '!text-blue-500' : 'text-red-700 dark:text-red-700'">
-                  <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
-                </button>
+                @if (!($index === 0 && isSupportType(obj) && obj.pending === true)) {
+                  <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
+                   focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40
+                   transition-colors duration-300" type="button" (click)="button.action(obj)"
+                          [ngClass]="button.color === 'blue' ? '!text-blue-500' : 'text-red-700 dark:text-red-700'">
+                    <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
+                  </button>
+                }
               }
             </td>
           </tr>

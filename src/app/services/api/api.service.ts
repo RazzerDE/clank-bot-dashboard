@@ -9,6 +9,7 @@ import {AuthService} from "../auth/auth.service";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
+import {SupportTheme} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -90,6 +91,22 @@ export class ApiService {
    */
   getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
     return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Creates a new support theme for a specific guild.
+   *
+   * This method sends an HTTP POST request to the `/guilds/support-theme` endpoint,
+   * including the guild ID as a query parameter and the theme data in the request body.
+   * The request uses authorization headers for authentication.
+   *
+   * @param theme - The support theme object to be created.
+   * @param guild_id - The ID of the guild for which the support theme is created.
+   * @returns An Observable emitting the server's response.
+   */
+  createSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
+    return this.http.post(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}`, theme,
       { headers: this.authService.headers });
   }
 

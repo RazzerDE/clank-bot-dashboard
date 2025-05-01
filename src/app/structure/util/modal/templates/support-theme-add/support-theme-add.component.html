@@ -9,7 +9,11 @@
            class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
                 cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
         @if (newTheme.icon.includes('https')) {
-          <img ngSrc="{{ newTheme.icon }}" alt="Emoji ~ Clank Discord-Bot" width="25" height="25" />
+          @if (newTheme.guild_id == this.dataService.active_guild!.id) {
+            <img ngSrc="{{ newTheme.icon + '?size=24' }}" alt="Emoji ~ Clank Discord-Bot" width="24" height="24" />
+          } @else { <!-- dont show emoji from another guild -->
+            <span class="text-gray-900 dark:text-white select-none">📚</span>
+          }
         } @else {
           <span class="text-gray-900 dark:text-white select-none">{{ newTheme.icon }}</span>
         }
@@ -20,11 +24,11 @@
                       grid-cols-6 gap-1" (click)="$event.stopPropagation();">
             @for (emoji of emojis; track $index) {
               @if (isEmojiType(emoji)) {
-                <span (click)="this.newTheme.icon = this.dataService.getEmojibyId(emoji.id, true, emoji.animated); this.showEmojiPicker = false;"
+                <span (click)="updateThemeIcon(emoji)"
                       class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
                            dark:hover:bg-gray-600 p-1 rounded">
-                  <img ngSrc="{{ this.dataService.getEmojibyId(emoji.id, true)}}" alt="Emoji ~ Clank Discord-Bot"
-                       width="40" height="40" />
+                  <img ngSrc="{{ this.dataService.getEmojibyId(emoji.id, true, emoji.animated) + '?size=40' }}"
+                       width="40" height="40" alt="Emoji ~ Clank Discord-Bot" />
                 </span>
                 } @else {
                   <span (click)="this.newTheme.icon = emoji.toString(); this.showEmojiPicker = false;"
@@ -64,7 +68,7 @@
             class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
                  font-medium rounded-lg py-2.5 text-center transition-colors duration-100
                  dark:focus:ring-green-800 text-sm px-5"
-            [disabled]="isThemeInvalid()">
+            [disabled]="isThemeInvalid()" (click)="addSupportTheme(newTheme)">
       {{ 'PLACEHOLDER_THEME_MODAL_BUTTON' | translate }}
     </button>
   </div>

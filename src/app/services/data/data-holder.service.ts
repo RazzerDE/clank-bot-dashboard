@@ -6,6 +6,7 @@ import {DiscordUser} from "../types/discord/User";
 import {Subject} from "rxjs";
 import {Guild} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SupportTheme} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class DataHolderService {
   profile: DiscordUser | null = null;
   bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
                               punish_count: 110, global_verified_count: '16.000' };
+  support_themes: SupportTheme[] = [];
 
   constructor(private translate: TranslateService, private router: Router) {
     const temp_guild: string | null = localStorage.getItem('active_guild');
@@ -58,10 +60,7 @@ export class DataHolderService {
    */
   getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean): string {
     if (!emoji) { return emoji; }
-
-    if (isID) {
-      return `https://cdn.discordapp.com/emojis/${emoji}.${isAnimated ? 'gif' : 'png'}`;
-    }
+    if (isID) { return `https://cdn.discordapp.com/emojis/${emoji}.${isAnimated ? 'gif' : 'png'}`; }
 
     // Match emoji format <:name:id> or <a:name:id>
     const match: RegExpMatchArray | null = emoji.match(/<(a?):(\w+):(\d+)>/);

@@ -1,11 +1,11 @@
 <!-- Backdrop for Role Modal -->
 <div class="fixed hidden inset-0 bg-black bg-opacity-25 z-50" aria-hidden="true" #roleBackdrop
-     [@fadeAnimation]="isVisible ? 'visible' : 'hidden'"></div>
+     [@fadeAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_backdrop"></div>
 
 <!-- Role Modal -->
 <div tabindex="-1" class="hidden overflow-hidden fixed z-50 justify-center items-center
                           w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
-     [@slideAnimation]="isVisible ? 'visible' : 'hidden'">
+     [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
   <div class="relative p-4 w-full h-full items-center" id="roleModalContent"
        [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': type !== 'SUPPORT_THEME_ADD',
                   'flex justify-center gap-4 xl:translate-x-36': type === 'SUPPORT_THEME_ADD'}" #roleModalContent>

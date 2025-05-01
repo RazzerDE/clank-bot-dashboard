@@ -8,6 +8,7 @@ import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
 
 @Component({
   selector: 'data-table',
@@ -85,6 +86,14 @@ export class DataTableComponent implements AfterViewInit {
      * @returns An object with CSS style properties as key-value pairs
      */
     getRoleStyles(role: Role): { [key: string]: string } {
+      if (!role.color) {
+        return { // default color
+          'background-color': 'rgba(115, 115, 115, 0.1)',
+          'color': '#737373',
+          'border-color': '#737373',
+          'border-width': '1px'
+        };
+      }
       const hexColor: string = role.color.toString(16).padStart(6, '0');
       const r: number = parseInt(hexColor.substring(0, 2), 16);
       const g: number = parseInt(hexColor.substring(2, 4), 16);
@@ -97,4 +106,6 @@ export class DataTableComponent implements AfterViewInit {
         'border-width': '1px'
       };
     }
+
+  protected readonly faHourglassEnd = faHourglassEnd;
 }

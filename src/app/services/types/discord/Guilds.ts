@@ -58,6 +58,9 @@ export interface Emoji {
   require_colons: boolean;
 }
 
+export const initEmojis: string[] = ['📚', '🎮', '🎯', '🎲', '🧩', '🎭', '🎨', '🎬', '🎤', '🎧', '📱', '💻',
+  '🔍', '💬', '❓', '❗', '📢', '🔔', '📌', '📝', '🌟', '📊', '🔧', '🛠️', '⚙️', '🧰', '🔒', '🔑', '🌈', '✨']
+
 export interface SupportSetup {
   support_forum: Channel;
   support_forum_pending: boolean;

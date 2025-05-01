@@ -19,7 +19,9 @@ export interface SupportTheme {
   desc: string;
 
   // added by us
-  default_roles: Role[];
+  default_roles?: Role[];
+  guild_id?: string;
+  pending?: boolean;
 }
 
 export interface SupportThemeResponse {

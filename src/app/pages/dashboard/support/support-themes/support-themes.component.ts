@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
-import {Emoji, Role} from "../../../../services/types/discord/Guilds";
+import {Emoji, initEmojis, Role} from "../../../../services/types/discord/Guilds";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
@@ -34,8 +34,7 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
   styleUrl: './support-themes.component.scss'
 })
 export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
-  protected supportThemes: SupportTheme[] = [];
-  protected filteredThemes: SupportTheme[] = this.supportThemes;
+  protected filteredThemes: SupportTheme[] = this.dataService.support_themes;
   protected selectedOptions: string[] = [];
   protected modalExtra: Role[] = [];
   protected discordRoles: Role[] = [];
@@ -46,8 +45,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
   protected modalType: string = 'SUPPORT_THEME_ADD';
   protected modalTheme: SupportTheme = {} as SupportTheme;
-  protected emojis: Emoji[] | string[] = ['🌟', '🎮', '🎯', '🎲', '🧩', '🎭', '🎨', '🎬', '🎤', '🎧', '📱', '💻',
-    '🔍', '💬', '❓', '❗', '📢', '🔔', '📌', '📝', '📚', '📊', '🔧', '🛠️', '⚙️', '🧰', '🔒', '🔑', '🌈', '✨'];
+  protected emojis: Emoji[] | string[] = initEmojis;
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faPlus: IconDefinition = faPlus;
@@ -68,7 +66,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         this.dataLoading = true;
         this.dataService.isLoading = true;
         this.reloadEmojis = true;
-        this.getSupportThemes();
+        this.getSupportThemes(true);
       }
     });
 
@@ -91,7 +89,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * It's used to show a loading state for some data related things.
    */
   ngAfterViewChecked(): void {
-    if (this.supportThemes && this.supportThemes.length > 0 && !this.dataService.isLoading && this.dataLoading) {
+    if (this.dataService.support_themes && this.dataService.support_themes.length > 0
+        && !this.dataService.isLoading && this.dataLoading) {
       setTimeout((): boolean => this.dataLoading = false, 0);
     }
   }
@@ -134,10 +133,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     if ((localStorage.getItem('support_themes') && localStorage.getItem('guild_roles') &&
       localStorage.getItem('support_themes_timestamp') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
-      this.supportThemes = JSON.parse(localStorage.getItem('support_themes') as string);
+      this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
       this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
       this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
-      this.filteredThemes = this.supportThemes;
+      this.filteredThemes = this.dataService.support_themes;
       this.dataService.isLoading = false;
       return;
     }
@@ -145,12 +144,12 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     this.discordService.getSupportThemes(this.dataService.active_guild!.id).then((observable) => {
       const subscription: Subscription = observable.subscribe({
         next: (response: SupportThemeResponse): void => {
-          this.supportThemes = response.themes;
-          this.filteredThemes = this.supportThemes;
+          this.dataService.support_themes = response.themes;
+          this.filteredThemes = this.dataService.support_themes;
           this.discordRoles = response.guild_roles;
           this.dataService.isLoading = false;
 
-          localStorage.setItem('support_themes', JSON.stringify(this.supportThemes));
+          localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('support_themes_timestamp', Date.now().toString());
         },
@@ -220,7 +219,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    */
   protected searchTheme(event: Event): void {
     const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredThemes = this.supportThemes.filter(theme =>
+    this.filteredThemes = this.dataService.support_themes.filter(theme =>
       theme.name.toLowerCase().includes(searchTerm) ||
       theme.desc.toLowerCase().includes(searchTerm) ||
       theme.roles.some(role => role.name.toLowerCase().includes(searchTerm))
@@ -249,7 +248,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    */
   protected openDefaultMentionModal(): void {
     this.modalType = 'DEFAULT_MENTION';
-    this.modalExtra = this.supportThemes[0].default_roles;
+    this.modalExtra = this.dataService.support_themes[0].default_roles!;
     this.modal.showModal();
   }
 
@@ -336,7 +335,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    */
   private updatePingRoles(selectedOptions: string[]): void {
     // Update the default roles for each support theme
-    this.supportThemes.forEach((theme: SupportTheme): void => {
+    this.dataService.support_themes.forEach((theme: SupportTheme): void => {
       if (selectedOptions.length === 0) {  // Remove all default roles
         const defaultRoleIds = this.modalExtra.map(role => role.id);
         theme.roles = theme.roles.filter(role => !defaultRoleIds.includes(role.id));
