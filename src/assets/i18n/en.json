@@ -118,7 +118,7 @@
 
   "PAGE_CONTACT_DESC_LEFT": "✏️› On this page, we show you <strong>some contact options</strong> to easily reach our <strong>development & support team</strong>. This is useful for urgent matters such as legal questions, critical bug reports, or simply to share your ideas for the dashboard or our Clank bot in general.",
   "PAGE_CONTACT_DESC_RIGHT": "⚡ › Our response time is usually <strong>very fast</strong> and takes a few days - however, we will only respond to your inquiry in most cases if <strong>further questions</strong> arise in your case, such as with a bug report where we need more information to reproduce the error.",
-  "PAGE_CONTACT_ALERT": "<strong>I have a general question:</strong> In this case, you should contact us using a more specific contact form, which you can find on our\n<strong><a class=\"text-blue-900 dark:text-blue-500\" href=\"https://bl4cklist.de/contact/\">Blacklist.de ~ Discord server website</a></strong>.",
+  "PAGE_CONTACT_ALERT": "<strong>I have a general question:</strong> In this case, you should contact us using a more specific contact form, which you can find on our\n<strong><a href=\"https://bl4cklist.de/contact/\">Blacklist.de ~ Discord server website</a></strong>.",
   "PAGE_CONTACT_THUMB_INFO": "Report a bug or idea",
   "PAGE_CONTACT_THUMB_TITLE": "~ Contact Us!",
 
