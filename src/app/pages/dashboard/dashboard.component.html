@@ -1,6 +1,6 @@
 <dashboard-layout>
 
-  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+  <section class="flex flex-auto flex-col dark:!bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 transition-colors duration-500">
 
     @if (!localStorage.getItem('active_guild')) {
       <!-- Page for Pick Server -->
@@ -17,7 +17,7 @@
     } @else {
       <div class="flex flex-col h-full w-full">
         <!-- Login Notice -->
-        <div class="bg-gray-50 dark:!bg-gray-800 transition-colors duration-500">
+        <div class="bg-gray-50 dark:!bg-gradient-to-l from-slate-800 via-gray-800 to-slate-900 transition-colors duration-500 shadow-2xl">
           <div class="ml-6 sm:ml-14 flex w-full flex-col px-6 sm:px-8">
             <div class="my-8 flex flex-auto flex-col w-11/12 sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0">
               <div class="flex flex-auto items-center animate__animated animate__fadeIn">
@@ -75,11 +75,13 @@
         <div class="w-full p-4 overflow-auto h-[calc(100vh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
           <div class="grid grid-cols-5 gap-4 h-full">
             <div class="col-span-3 grid grid-rows-2 gap-4 min-h-0">
-              <div class="bg-white dark:!bg-slate-800 rounded-lg flex flex-col transition-colors
-                            duration-500">
+
+              <!-- Setup Progress Container -->
+              <div class="bg-white dark:!bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 rounded-lg
+                          flex flex-col transition-colors duration-500 !border-gray-300 dark:!border-gray-700 border-1">
                 <div class="p-4 pb-0">
                   <div class="flex items-center justify-between">
-                    <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
+                    <span class="text-black/90 dark:!text-white/80 transition-colors duration-500 text-lg font-medium">
                       {{ 'SECTION_BOT_SETUP_TITLE' | translate }}
                     </span>
 
@@ -87,7 +89,7 @@
                     <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
                                                via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2
                                                focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
-                                                 transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                                                 transition-all duration-300 disabled:bg-gray-700 disabled:bg-none"
                             (click)="refreshCache()" [disabled]="disabledCacheBtn">
                       <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
                       {{ 'BUTTON_CACHE_REFRESH' | translate }}
@@ -169,7 +171,9 @@
                 }
               </div>
 
-              <div class="bg-white dark:!bg-slate-800 rounded-lg p-4 transition-colors duration-500 flex flex-col"
+              <!-- Welcome Container -->
+              <div class="bg-white dark:!bg-gradient-to-bl from-slate-800 via-slate-800 to-slate-900 rounded-lg
+                           p-4 transition-colors duration-500 flex flex-col !border-gray-300 dark:!border-gray-700 border-1"
                    #welcomeContainer>
                 <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">
                   {{ 'SECTION_WELCOME_DASHBOARD_TITLE' | translate }}
@@ -186,18 +190,27 @@
               </div>
             </div>
 
+            <!-- Serverlist Container -->
             <div class="col-span-2 grid grid-rows-1 grid-cols-2 gap-4 min-h-0">
-              <div class="bg-white dark:!bg-slate-800 col-span-2 rounded-lg p-4 row-span-1 transition-colors
+              <div class="bg-white dark:!bg-gradient-to-tr from-slate-800 via-slate-800 to-slate-900 col-span-2
+                            rounded-lg p-4 row-span-1 transition-colors !border-gray-300 dark:!border-gray-700 border-1
                             duration-500 flex flex-col h-[calc(100dvh-280px)]" #serverlistContainer>
-                  <span class="text-black/90 dark:!text-white/80 transition-colors duration-500">
+                  <span class="text-black/90 dark:!text-white transition-colors duration-500 text-lg font-medium">
                     {{ 'SECTION_SERVERLIST_TITLE' | translate }}
                   </span>
 
                 @if (this.servers.length > 0) {
-                  <div class="relative shadow-md sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
+                  <div class="relative shadow-2xl sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
                     <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
+                      <colgroup>
+                        <col span="1" style="width: 50%;">
+                        <col span="1" style="width: 15%;">
+                        <col span="1" style="width: 35%;">
+                      </colgroup>
+
                       <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
-                                    sticky top-0 transition-colors duration-500">
+                                    sticky top-0 transition-colors duration-500 !border-gray-300 dark:!border-gray-700/40 border-t border-l">
+
                       <tr>
                         <th scope="col" class="px-6 py-3">
                           Server-Name

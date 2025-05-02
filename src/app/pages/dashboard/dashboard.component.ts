@@ -40,7 +40,6 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected tasks: Tasks[] = tasks;
   private orgTasks: Tasks[] = tasks;
   @ViewChild('dashboardContainer') protected dashboardContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('tasklistContainer') protected tasklistContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('tasklistDiv') protected tasklistDiv!: ElementRef<HTMLDivElement>;
   @ViewChild('serverlistContainer') protected serverlistContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('serverlistDiv') protected serverlistDiv!: ElementRef<HTMLDivElement>;
