@@ -413,7 +413,8 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
     // role modal
     clickedInside = this.modalComponent.modalContent.nativeElement.contains(event.target as Node);
-    if (!clickedInside && document.activeElement != this.roleButton.nativeElement) {
+    if ((!clickedInside && document.activeElement != this.roleButton.nativeElement)
+        || (event.target as HTMLElement).id.includes('roleModalContent')) {
       this.modalComponent.hideModal();
     }
   }

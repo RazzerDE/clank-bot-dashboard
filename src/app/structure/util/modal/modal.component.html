@@ -1,17 +1,18 @@
 <!-- Backdrop for Role Modal -->
-<div class="fixed hidden inset-0 bg-black bg-opacity-25 z-50" aria-hidden="true" #roleBackdrop
+<div class="fixed hidden inset-0 bg-black/40 z-50" aria-hidden="true" #roleBackdrop
      [@fadeAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_backdrop"></div>
 
 <!-- Role Modal -->
-<div tabindex="-1" class="hidden overflow-hidden fixed z-50 justify-center items-center
-                          w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
+<div tabindex="-1" class="hidden overflow-hidden fixed z-50 justify-center items-center w-full md:inset-0
+                          h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
      [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
   <div class="relative p-4 w-full h-full items-center" id="roleModalContent" #roleModalContent
        [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': !(type.endsWith('ADD') || type.endsWith('EDIT')),
                   'flex justify-center gap-4 xl:translate-x-36': (type.endsWith('ADD') || type.endsWith('EDIT'))}">
 
     <!-- First Modal (Always visible) -->
-    <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700"
+    <div class="relative bg-white rounded-lg shadow-sm dark:shadow-xl dark:!bg-gray-700 !border-gray-400
+              dark:!border-gray-500 border-1"
          [ngClass]="{'w-full': !(type.endsWith('ADD') || type.endsWith('EDIT')),
                      'w-1/2 max-w-md': (type.endsWith('ADD') || type.endsWith('EDIT'))}" id="ignore">
       <!-- Modal Header -->
@@ -42,7 +43,7 @@
         <div class="space-y-4 flex flex-col">
           @if (type === 'SUPPORT_THEME_FAQ') {
             <template-faq-answer [content]="this.content" [type]="this.type"/>
-          } @else if ((type.endsWith('ADD') || type.endsWith('EDIT'))) {
+          } @else if ((type.endsWith('ADD') || type.endsWith('EDIT')) && !type.includes('TEAMLIST')) {
             <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
                                         [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="this.theme"/>
           } @else { <!-- Default Mention & Teamlist -->
@@ -54,7 +55,7 @@
     </div>
 
     <!-- Second Modal (only for Bot-FAQ Answer) -->
-    @if ((type.endsWith('ADD') || type.endsWith('EDIT'))) {
+    @if ((type.endsWith('ADD') || type.endsWith('EDIT')) && !type.includes('TEAMLIST')) {
       <template-support-theme-add [showFirst]="false" />
     }
   </div>

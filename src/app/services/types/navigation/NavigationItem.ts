@@ -3,7 +3,7 @@ import {
   faComments, faEarthEurope, faFilter, faGift,
   faHouse, faImage,
   faScrewdriverWrench, faScroll, faServer, faShieldHalved,
-  faStar, faTableColumns,
+  faStar,
   faTruckMedical, faUserGroup, faWandMagicSparkles,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
@@ -49,7 +49,7 @@ export const nav_items: NavigationItem[] = [
       { title: "SIDEBAR_PAGE_MODULE_SETUP", desc: "SIDEBAR_PAGE_MODULE_SETUP_DESC", icon: faScrewdriverWrench, redirect_url: "/dashboard/support/setup" },
       //{ title: "SIDEBAR_PAGE_TICKETS_OPEN", desc: "SIDEBAR_PAGE_TICKETS_OPEN_DESC", icon: faTicket, redirect_url: "/dashboard/support/tickets" },
       { title: "SIDEBAR_PAGE_SUPPORT_THEMES", desc: "SIDEBAR_PAGE_SUPPORT_THEMES_DESC", icon: faComments, redirect_url: "/dashboard/support/themes" },
-      { title: "SIDEBAR_PAGE_SUPPORT_PANELS", desc: "SIDEBAR_PAGE_SUPPORT_PANELS_DESC", icon: faTableColumns, redirect_url: "/dashboard/support/panels" },
+      // { title: "SIDEBAR_PAGE_SUPPORT_PANELS", desc: "SIDEBAR_PAGE_SUPPORT_PANELS_DESC", icon: faTableColumns, redirect_url: "/dashboard/support/panels" },
       { title: "SIDEBAR_PAGE_TEXT_SNIPPETS", desc: "SIDEBAR_PAGE_TEXT_SNIPPETS_DESC", icon: faScroll, redirect_url: "/dashboard/support/snippets" },
       { title: "SIDEBAR_PAGE_BLOCKED", desc: "SIDEBAR_PAGE_BLOCKED_DESC", icon: faBan, redirect_url: "/dashboard/support/bans" },
     ]

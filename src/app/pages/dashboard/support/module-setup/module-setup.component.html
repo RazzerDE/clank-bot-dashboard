@@ -1,7 +1,8 @@
 <dashboard-layout>
 
   <!-- Body -->
-  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+  <section class="flex flex-auto flex-col bg-gradient-to-tr from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -9,7 +10,9 @@
     }
 
     <!-- Status Box -->
-    <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg dark:bg-gray-800 justify-center flex-col transition-colors duration-500"
+    <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg bg-gradient-to-l from-slate-50
+              via-gray-50 to-blue-50 dark:from-slate-800 dark:via-gray-800 dark:to-slate-900 justify-center
+                flex-col transition-colors duration-500"
       [ngClass]="moduleStatus == 2 ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
                                      moduleStatus == 0 ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
                                      'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
@@ -33,7 +36,9 @@
     </div>
 
     <!-- Main Content Box -->
-    <div class="flex-1 bg-white dark:!bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 m-4 mt-0 transition-colors duration-500">
+    <div class="flex-1 bg-gradient-to-tr from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
+              dark:to-slate-900 rounded-lg shadow-lg p-4 md:p-6 m-4 mt-0 transition-colors duration-500
+              !border-gray-300 dark:!border-gray-700 border-1">
       <div class="flex flex-col md:flex-row items-center mb-4 justify-between mx-4 md:mx-12 space-y-4 md:space-y-0"
       [class.!justify-center]="this.dataLoading.statusBox">
         @if (this.dataLoading.statusBox) {
@@ -70,7 +75,9 @@
       <!-- Wizard Content -->
       <div class="mt-10 flex flex-col md:flex-row">
         <!-- Discord Channels Container -->
-        <div class="w-full md:w-1/2 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 md:mr-6 mb-6 md:mb-0 transition-colors duration-500">
+        <div class="w-full md:w-1/2 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-700
+                  dark:via-slate-700 dark:to-slate-800 rounded-lg p-3 md:mr-6 mb-6 md:mb-0 transition-colors
+                    duration-500 !border-gray-300 dark:!border-gray-700 border-1">
           <h3 class="text-lg mb-3 text-gray-800 dark:text-gray-200 transition-colors duration-500">
             {{ 'PAGE_SETUP_RIGHT_TITLE' | translate }}
           </h3>
@@ -126,7 +133,9 @@
           </p>
 
           @if (this.supportForum.channel) {
-            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg transition-colors duration-500" [@slideInOut]>
+            <div class="bg-gradient-to-r from-white via-slate-50 to-blue-50 dark:from-slate-700
+                      dark:via-slate-700 dark:to-slate-800 px-4 py-2 rounded-lg transition-colors duration-500
+                      !border-gray-300 dark:!border-gray-700 border-1" [@slideInOut]>
               <div class="flex justify-between items-center">
                 <p class="text-gray-700 dark:text-gray-300 transition-colors duration-500 mb-0 p-0">
                   @if (!this.supportForum.pending) {
