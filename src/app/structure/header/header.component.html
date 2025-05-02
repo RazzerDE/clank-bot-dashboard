@@ -1,6 +1,7 @@
 <!-- Header -->
-<div class="dark:!bg-gradient-to-tr from-slate-900 via-slate-900 to-slate-950 relative z-[10] flex h-16 w-full flex-0 items-center px-4 shadow
-            dark:border-b md:px-6 print:hidden dark:border-gray-700 transition-colors duration-500" #Header>
+<div class="bg-gradient-to-tr from-white via-slate-50 to-blue-50 dark:from-slate-900 dark:via-slate-900
+          dark:to-slate-950 relative z-[10] flex h-16 w-full flex-0 items-center px-4 shadow-md dark:shadow dark:border-b
+            md:px-6 print:hidden border-gray-300 dark:border-gray-700 transition-colors duration-500" #Header>
 
   <!-- Toggle Server-Picker -->
   <div [ngClass]="['w-9 h-9 hover:rounded-full flex hover:bg-gray-200 dark:hover:bg-gray-700 items-center ' +
@@ -36,8 +37,9 @@
 
 <!-- Search Input -->
 @if (showSearchInput) {
-  <div class="absolute top-0 left-0 bg-white shadow-md z-50 p-4 dark:!bg-gray-900
-            border-b border-gray-200 dark:!border-gray-700" #searchContainer [@searchAnimation]
+  <div class="absolute top-0 left-0 bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-900 dark:via-slate-900
+             dark:to-slate-950 shadow-md z-50 p-4 border-b border-gray-200 dark:!border-gray-700"
+       #searchContainer [@searchAnimation]
        [ngClass]="{'-translate-y-full': !showSearchInput, 'translate-y-0': showSearchInput}"
        [style.width.px]="Header.offsetWidth" [style.height.px]="Header.clientHeight"
        [style.top.px]="Header.offsetTop" [style.left.px]="Header.offsetLeft">
@@ -48,7 +50,7 @@
            class="absolute left-1 top-1/2 transform -translate-y-1/2 w-6 h-6" height="24" width="24" />
       <input type="text" placeholder="{{ 'PLACEHOLDER_SEARCH' | translate }} ✍️" maxlength="100"
              [(ngModel)]="searchInput" (keydown)="getFilteredResults()"
-             class="w-11/12 h-6 pl-12 sm:pl-14 leading-3 text-black dark:!text-white dark:!bg-gray-900"  />
+             class="w-11/12 h-6 pl-12 sm:pl-14 leading-3 text-black dark:!text-white bg-transparent"  />
 
       <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 dark:hover:!bg-gray-700 items-center
                 justify-center cursor-pointer select-none absolute right-1 top-1/2 transform -translate-y-1/2"
