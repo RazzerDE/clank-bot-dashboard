@@ -12,7 +12,7 @@
     <!-- Status Box -->
     <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg bg-gradient-to-l from-slate-50
               via-gray-50 to-blue-50 dark:from-slate-800 dark:via-gray-800 dark:to-slate-900 justify-center
-                flex-col transition-colors duration-500"
+                flex-col transition-colors duration-500" [class.!pt-4]="moduleStatus === 1"
       [ngClass]="moduleStatus == 2 ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
                                      moduleStatus == 0 ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
                                      'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
