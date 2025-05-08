@@ -26,6 +26,7 @@ export class SimpleErrorComponent implements AfterViewInit {
 
   protected readonly faHome: IconDefinition = faHome;
   protected readonly faDiscord: IconDefinition = faDiscord;
+  protected readonly localStorage = localStorage;
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService) {
     this.dataService.isLoading = true;
@@ -43,5 +44,4 @@ export class SimpleErrorComponent implements AfterViewInit {
 
     this.dataService.isLoading = false;
   }
-
 }
