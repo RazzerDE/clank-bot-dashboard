@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
-import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
 import {Subject} from "rxjs";
@@ -21,8 +20,8 @@ export class DataHolderService {
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
 
   // error handler related
-  error_title: string = '';
-  error_desc: string = '';
+  error_title: string = 'ERROR_UNKNOWN_TITLE';
+  error_desc: string = 'ERROR_UNKNOWN_DESC';
   error_color: 'red' | 'green' = 'red';
   showAlertBox: boolean = false;
 
@@ -35,20 +34,12 @@ export class DataHolderService {
                                     default_roles: [], pending: true, action: 'CREATE' };
   support_themes: SupportTheme[] = [];
 
-  constructor(private translate: TranslateService, private router: Router) {
+  constructor(private router: Router) {
     const temp_guild: string | null = localStorage.getItem('active_guild');
     if (temp_guild) {
       this.showSidebarLogo = true;
       this.active_guild = JSON.parse(temp_guild) as Guild;
     }
-
-    // check if translations are loaded
-    this.translate.onLangChange.subscribe((): void => {
-      if (this.error_title == '' && this.error_desc == '') {
-        this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
-        this.error_desc = this.translate.instant("ERROR_UNKNOWN_DESC");
-      }
-    });
   }
 
   /**
@@ -83,11 +74,11 @@ export class DataHolderService {
    */
   redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE' | 'NO_CLANK'): void {
     if (type === 'UNKNOWN' || type === 'OFFLINE') {
-      this.error_title = this.translate.instant(`ERROR_${type}_TITLE`);
-      this.error_desc = this.translate.instant(`ERROR_${type}_DESC`);
+      this.error_title = `ERROR_${type}_TITLE`
+      this.error_desc = `ERROR_${type}_DESC`
     } else {
-      this.error_title = this.translate.instant(`ERROR_LOGIN_${type}_TITLE`);
-      this.error_desc = this.translate.instant(`ERROR_LOGIN_${type}_DESC`);
+      this.error_title = `ERROR_LOGIN_${type}_TITLE`
+      this.error_desc = `ERROR_LOGIN_${type}_DESC`
     }
 
     if (type === 'NO_CLANK') {
