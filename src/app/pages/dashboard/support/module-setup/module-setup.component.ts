@@ -106,6 +106,8 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   private getServerData(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     if (no_cache) { this.dataService.isLoading = true; }
+    this.supportForum = { channel: null, pending: false };
+    this.selectedChannel = null;
     this.startLoading = true;
 
     // check if cache data is available
