@@ -60,6 +60,7 @@ export class SupportThemeAddComponent implements OnDestroy {
    * @param {SupportTheme} theme - The support theme object to be created
    */
   protected addSupportTheme(theme: SupportTheme): void {
+    this.newTheme.faq_answer = this.dataService.faq_answer;
     const sent_theme: Subscription = this.apiService.createSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {
@@ -105,6 +106,7 @@ export class SupportThemeAddComponent implements OnDestroy {
    * @param theme The updated SupportTheme object to be saved.
    */
   protected editSupportTheme(theme: SupportTheme): void {
+    this.newTheme.faq_answer = this.dataService.faq_answer;
     const edit_theme: Subscription = this.apiService.editSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {
@@ -136,7 +138,6 @@ export class SupportThemeAddComponent implements OnDestroy {
           this.newTheme.name = this.newTheme.old_name!;
           this.newTheme = this.dataService.initTheme;
           this.hideModal();
-          console.log(error);
         }
       });
 
@@ -250,19 +251,9 @@ export class SupportThemeAddComponent implements OnDestroy {
       return false; // Non-FAQ Theme
     }
 
-    // FAQ theme (getElementbyId is necessary because @ViewChild and ngModel are bugged)
-    const faq_answer: HTMLTextAreaElement = document.getElementById('faq_answer') as HTMLTextAreaElement;
-    if (faq_answer) {
-      if (this.newTheme.faq_answer && this.newTheme.faq_answer.length > 0) {
-        // use predefined theme faq answer
-        faq_answer.value = this.newTheme.faq_answer;
-        faq_answer.dispatchEvent(new Event('keyup'));
-      } else if (faq_answer.value.length > 0) {
-        this.newTheme.faq_answer = faq_answer.value;
-      }
-    }
-
-    return !(this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && (this.dataService.isFAQ && this.newTheme.faq_answer!.length > 0));
+    // FAQ theme with content
+    this.newTheme.faq_answer = this.dataService.faq_answer;
+    return !(this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && (this.dataService.isFAQ && this.newTheme.faq_answer && this.newTheme.faq_answer!.length > 0));
   }
 
   /**

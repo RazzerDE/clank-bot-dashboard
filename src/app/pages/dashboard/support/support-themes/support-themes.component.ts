@@ -45,6 +45,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected subscriptions: Subscription[] = [];
   private reloadEmojis: boolean = false;
 
+  private startLoading: boolean = false;
   protected modalType: string = 'SUPPORT_THEME_ADD';
   protected modalTheme: SupportTheme = {} as SupportTheme;
   protected emojis: Emoji[] | string[] = initEmojis;
@@ -91,8 +92,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * It's used to show a loading state for some data related things.
    */
   ngAfterViewChecked(): void {
-    if (this.dataService.support_themes && this.dataService.support_themes.length > 0
-        && !this.dataService.isLoading && this.dataLoading) {
+    if (!this.startLoading && !this.dataService.isLoading && this.dataLoading) {
       setTimeout((): boolean => this.dataLoading = false, 0);
     }
   }
@@ -131,6 +131,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       return;
     }
 
+    this.startLoading = true;
+
     // check if guilds are already stored in local storage (one minute cache)
     if ((localStorage.getItem('support_themes') && localStorage.getItem('guild_roles') &&
       localStorage.getItem('support_themes_timestamp') &&
@@ -140,6 +142,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
       this.filteredThemes = this.dataService.support_themes;
       this.dataService.isLoading = false;
+      this.dataLoading = false;
       return;
     }
 
@@ -150,6 +153,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           this.filteredThemes = this.dataService.support_themes;
           this.discordRoles = response.guild_roles;
           this.dataService.isLoading = false;
+          this.dataLoading = false;
 
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
@@ -191,6 +195,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           // update shown data
           this.dataService.support_themes = this.dataService.support_themes.filter((t: SupportTheme) => t.name !== theme.name);
           this.filteredThemes = this.filteredThemes.filter((t: SupportTheme) => t.name !== theme.name);
+          localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
 
           this.modal.hideModal();
         },
@@ -322,6 +327,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       this.editTheme = theme!;
     }
 
+    this.dataService.faq_answer = this.editTheme.faq_answer || '';
     this.dataService.isFAQ = Boolean(this.editTheme.faq_answer && this.editTheme.faq_answer.length > 0);
     this.modal.showModal();
   }

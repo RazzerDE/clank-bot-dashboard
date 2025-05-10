@@ -23,6 +23,7 @@ export class DataHolderService {
   error_title: string = 'ERROR_UNKNOWN_TITLE';
   error_desc: string = 'ERROR_UNKNOWN_DESC';
   error_color: 'red' | 'green' = 'red';
+  faq_answer: string = '';
   showAlertBox: boolean = false;
 
   // api related

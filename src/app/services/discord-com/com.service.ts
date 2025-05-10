@@ -147,7 +147,7 @@ export class ComService {
    */
   async changeDefaultMention(guild_id: string, role_ids: string[]): Promise<Observable<any>> {
     await this.ensureInitialized();
-    return this.http.post(`${config.api_url}/guilds/default-mention?guild_id=${guild_id}`, { role_ids },
+    return this.http.post(`${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`, { role_ids },
       { headers: this.authService.headers });
   }
 
