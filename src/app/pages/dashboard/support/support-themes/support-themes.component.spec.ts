@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SupportThemesComponent } from './support-themes.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {TranslateModule} from "@ngx-translate/core";
+import {ActivatedRoute} from "@angular/router";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 describe('SupportThemesComponent', () => {
   let component: SupportThemesComponent;
@@ -8,7 +12,10 @@ describe('SupportThemesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SupportThemesComponent]
+      imports: [SupportThemesComponent, HttpClientTestingModule, TranslateModule.forRoot(), NoopAnimationsModule],
+      providers: [
+        { provide: ActivatedRoute, useValue: { } },
+      ]
     })
     .compileComponents();
 

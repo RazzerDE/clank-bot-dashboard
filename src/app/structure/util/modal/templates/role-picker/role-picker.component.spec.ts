@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RolePickerComponent } from './role-picker.component';
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('RolePickerComponent', () => {
   let component: RolePickerComponent;
@@ -8,7 +9,7 @@ describe('RolePickerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RolePickerComponent]
+      imports: [RolePickerComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
 

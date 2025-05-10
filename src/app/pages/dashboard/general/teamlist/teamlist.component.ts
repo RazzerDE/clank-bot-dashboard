@@ -46,9 +46,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected dataLoading: boolean = true;
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private subscriptions: Subscription[] = [];
-
   protected disabledCacheBtn: boolean = false;
-  protected isRolePickerValid: boolean = false;
 
   @ViewChild(ModalComponent) protected modalComponent!: ModalComponent;
   @ViewChild('filterDropdown') protected filterDropdown!: ElementRef<HTMLDivElement>;

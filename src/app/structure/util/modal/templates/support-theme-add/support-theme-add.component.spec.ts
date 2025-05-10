@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SupportThemeAddComponent } from './support-theme-add.component';
+import {TranslateModule} from "@ngx-translate/core";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {ActivatedRoute} from "@angular/router";
 
 describe('SupportThemeAddComponent', () => {
   let component: SupportThemeAddComponent;
@@ -8,7 +11,8 @@ describe('SupportThemeAddComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SupportThemeAddComponent]
+      imports: [SupportThemeAddComponent, TranslateModule.forRoot(), HttpClientTestingModule],
+      providers: [ { provide: ActivatedRoute, useValue: {} }]
     })
     .compileComponents();
 

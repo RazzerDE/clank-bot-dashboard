@@ -156,7 +156,7 @@ describe('ApiService', () => {
   });
 
   it('should send a feature vote to the server', () => {
-    const mockData: FeatureData = { userId: "123", featureId: 123, vote: true };
+    const mockData: FeatureData = { user_id: "123", feature_id: 123, vote: true };
     const mockResponse = { success: true };
 
     service.sendFeatureVote(mockData).subscribe((response) => {

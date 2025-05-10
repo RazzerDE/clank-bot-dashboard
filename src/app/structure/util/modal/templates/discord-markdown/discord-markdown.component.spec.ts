@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DiscordMarkdownComponent } from './discord-markdown.component';
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('DiscordMarkdownComponent', () => {
   let component: DiscordMarkdownComponent;
@@ -8,7 +9,7 @@ describe('DiscordMarkdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DiscordMarkdownComponent]
+      imports: [DiscordMarkdownComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
 

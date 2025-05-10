@@ -55,7 +55,7 @@ describe('WishlistComponent', () => {
     component.sendFeatureVote(featureId, vote);
     jest.advanceTimersByTime(5502);
 
-    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ featureId, userId: "123", vote });
+    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(getFeatureVotesSpy).toHaveBeenCalled();
     expect(cooldownFeature.isLoading).toBe(false);
     expect(component['dataService'].error_color).toBe('green');
@@ -79,7 +79,7 @@ describe('WishlistComponent', () => {
 
     component.sendFeatureVote(featureId, vote);
 
-    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ featureId, userId: "123", vote });
+    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(component['dataService'].error_color).toBe('red');
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
     expect(cooldownFeature.isLoading).toBe(false);
@@ -94,9 +94,8 @@ describe('WishlistComponent', () => {
   });
 
   it('should handle 304 error when feature vote fails', () => {
-    const featureId = 1;
     const vote = true;
-    const cooldownFeature = { featureId, onCooldown: false, isLoading: false };
+    const cooldownFeature = { featureId: 1, onCooldown: false, isLoading: false };
     component['isOnCooldown'] = [cooldownFeature];
     component['dataService'].profile = { id: "123" } as DiscordUser;
 
@@ -105,10 +104,10 @@ describe('WishlistComponent', () => {
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     jest.useFakeTimers();
-    component.sendFeatureVote(featureId, vote);
+    component.sendFeatureVote(1, vote);
     jest.advanceTimersByTime(5502);
 
-    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ featureId, userId: "123", vote });
+    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(component['dataService'].error_color).toBe('red');
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_VOTE_SAME_TITLE', 'ERROR_VOTE_SAME_DESC');
     expect(cooldownFeature.isLoading).toBe(false);

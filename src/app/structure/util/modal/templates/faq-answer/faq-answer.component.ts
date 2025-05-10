@@ -1,6 +1,5 @@
 import {Component, Input, ViewChild} from '@angular/core';
 import {TranslatePipe} from "@ngx-translate/core";
-import {ModalComponent} from "../../modal.component";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 
 @Component({
@@ -17,7 +16,6 @@ export class FaqAnswerComponent {
   @Input() type: string = '';
   @Input() content: string = '';
 
-  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
   @ViewChild(DiscordMarkdownComponent) discordMarkdownComponent!: DiscordMarkdownComponent;
 
 }

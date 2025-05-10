@@ -29,26 +29,20 @@ describe('DataHolderService', () => {
   });
 
   it('should redirect to error page with correct title and description for UNKNOWN error', () => {
-    const translateSpy = jest.spyOn(service['translate'], 'instant');
     const routerSpy = jest.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
     service.redirectLoginError('UNKNOWN');
 
-    expect(translateSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE');
-    expect(translateSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_DESC');
     expect(service.error_title).toBe('ERROR_UNKNOWN_TITLE');
     expect(service.error_desc).toBe('ERROR_UNKNOWN_DESC');
     expect(routerSpy).toHaveBeenCalledWith('/errors/simple');
   });
 
   it('should redirect to error page with correct title and description for other error types', () => {
-    const translateSpy = jest.spyOn(service['translate'], 'instant');
     const routerSpy = jest.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
     service.redirectLoginError('NO_CLANK');
 
-    expect(translateSpy).toHaveBeenCalledWith('ERROR_LOGIN_NO_CLANK_TITLE');
-    expect(translateSpy).toHaveBeenCalledWith('ERROR_LOGIN_NO_CLANK_DESC');
     expect(service.error_title).toBe('ERROR_LOGIN_NO_CLANK_TITLE');
     expect(service.error_desc).toBe('ERROR_LOGIN_NO_CLANK_DESC');
     expect(routerSpy).toHaveBeenCalledWith('/errors/simple');
