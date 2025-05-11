@@ -28,6 +28,42 @@ describe('DataHolderService', () => {
     expect(service.error_title).not.toBe('');
   });
 
+  it('should return the correct CDN URL for emoji ID with isID true and isAnimated true', () => {
+    const emojiId = '123456789';
+    const result = service.getEmojibyId(emojiId, true, true);
+    expect(result).toBe('https://cdn.discordapp.com/emojis/123456789.gif');
+  });
+
+  it('should return the correct CDN URL for emoji ID with isID true and isAnimated false', () => {
+    const emojiId = '987654321';
+    const result = service.getEmojibyId(emojiId, true, false);
+    expect(result).toBe('https://cdn.discordapp.com/emojis/987654321.png');
+  });
+
+  it('should return the correct CDN URL for a static emoji string', () => {
+    const emoji = '<:smile:123456789>';
+    const result = service.getEmojibyId(emoji);
+    expect(result).toBe('https://cdn.discordapp.com/emojis/123456789.png');
+  });
+
+  it('should return the correct CDN URL for an animated emoji string', () => {
+    const emoji = '<a:wave:987654321>';
+    const result = service.getEmojibyId(emoji);
+    expect(result).toBe('https://cdn.discordapp.com/emojis/987654321.gif');
+  });
+
+  it('should return the original string if emoji format is invalid', () => {
+    const emoji = 'not-an-emoji';
+    const result = service.getEmojibyId(emoji);
+    expect(result).toBe('not-an-emoji');
+  });
+
+  it('should return the input if emoji is empty', () => {
+    const emoji = '';
+    const result = service.getEmojibyId(emoji);
+    expect(result).toBe('');
+  });
+
   it('should redirect to error page with correct title and description for UNKNOWN error', () => {
     const routerSpy = jest.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 

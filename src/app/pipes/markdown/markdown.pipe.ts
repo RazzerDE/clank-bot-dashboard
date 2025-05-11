@@ -26,9 +26,10 @@ export class MarkdownPipe implements PipeTransform {
       .replace(/^# (.*$)/gm, '<h1>$1</h1>')                 // Headline level 1 (#)
       .replace(/^#- (.*$)/gm, '<small>$1</small>')          // Smaller text (#-)
       .replace(/&lt;#\d+&gt;/g, '<code>#channel-mention</code>')  // Channel mentions
-      .replace(/&lt;@&\d+&gt;/g, '<code>@role-mention</code>')    // Role mentions
+      .replace(/&lt;@&amp;\d+&gt;/g, '<code>@role-mention</code>')    // Role mentions
       .replace(/&lt;@\d+&gt;/g, '<code>@user-mention</code>');    // User mentions
   }
+
   /**
    * Escape HTML special characters to prevent XSS attacks.
    * @param text The text to escape.

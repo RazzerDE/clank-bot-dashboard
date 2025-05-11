@@ -8,6 +8,7 @@ import {AuthService} from "../auth/auth.service";
 import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {config} from "../../../environments/config";
 import {Guild, Role} from "../types/discord/Guilds";
+import {SupportThemeResponse} from "../types/Tickets";
 
 describe('DiscordComService', () => {
   let service: ComService;
@@ -129,5 +130,61 @@ describe('DiscordComService', () => {
     const req = httpMock.expectOne(`${config.api_url}/guilds/support-forum?guild_id=${guild_id}&channel_id=${channel_id}`);
     expect(req.request.method).toBe('POST');
     req.flush({});
+  });
+
+  it('should fetch guild emojis for a specific guild', async () => {
+    const mockEmojis = [{ id: '1', name: 'smile' }, { id: '2', name: 'wink' }];
+    service['isInitialized'] = true;
+
+    const result = await service.getGuildEmojis('guild_id');
+
+    result.subscribe(emojis => {
+      expect(emojis).toEqual(mockEmojis);
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/emojis?guild_id=guild_id`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockEmojis);
+  });
+
+  it('should fetch support themes for a specific guild', async () => {
+    const mockSupportThemes: SupportThemeResponse = { themes: [{ id: '1', name: 'Theme 1' }] } as SupportThemeResponse;
+    service['isInitialized'] = true;
+
+    const result = await service.getSupportThemes('guild_id');
+
+    result.subscribe(themes => {
+      expect(themes).toEqual(mockSupportThemes);
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/support-themes?guild_id=guild_id`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockSupportThemes);
+  });
+
+  it('should change default mention roles for a specific guild', async () => {
+    const guild_id = 'guild_id';
+    const role_ids = ['role1', 'role2'];
+    service['isInitialized'] = true;
+
+    const httpPostSpy = jest.spyOn(service['http'], 'post');
+    const mockResponse = { success: true };
+    httpPostSpy.mockReturnValueOnce({
+      subscribe: (cb: any) => cb(mockResponse)
+    } as any);
+
+    const result = await service.changeDefaultMention(guild_id, role_ids);
+
+    expect(httpPostSpy).toHaveBeenCalledWith(
+      `${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`,
+      { role_ids },
+      { headers: service['authService'].headers }
+    );
+
+    result.subscribe((res: any) => {
+      expect(res).toEqual(mockResponse);
+    });
   });
 });

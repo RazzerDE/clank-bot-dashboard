@@ -28,6 +28,7 @@ export class SelectComponent {
   protected readonly faChevronDown: IconDefinition = faChevronDown;
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService) {}
+
   /**
    * Validates the role picker selection.
    *

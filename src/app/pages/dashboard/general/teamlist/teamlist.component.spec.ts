@@ -585,4 +585,72 @@ describe('TeamlistComponent', () => {
     expect(component['dataLoading']).toBe(true);
   });
 
+  it('should return 0 if no elements with id starting with "level_active_" are found', () => {
+    jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce([] as any);
+    const result = (component as any).getActiveTab();
+    expect(result).toBe(0);
+  });
+
+  it('should return the number suffix from the last element id', () => {
+    const mockElement1 = { id: 'level_active_1' } as HTMLLIElement;
+    const mockElement2 = { id: 'level_active_2' } as HTMLLIElement;
+    const mockNodeList = [mockElement1, mockElement2] as unknown as NodeListOf<HTMLLIElement>;
+    jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(mockNodeList);
+    const result = (component as any).getActiveTab();
+    expect(result).toBe(2);
+  });
+
+  it('should return 0 if the last element id does not contain a number', () => {
+    const mockElement = { id: 'level_active_' } as HTMLLIElement;
+    const mockNodeList = [mockElement] as unknown as NodeListOf<HTMLLIElement>;
+    jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(mockNodeList);
+    const result = (component as any).getActiveTab();
+    expect(result).toBe(0);
+  });
+
+  it('should hide the modal if event target id contains "roleModalContent" and not clicked inside modal or roleButton', () => {
+    const event = new MouseEvent('click', { bubbles: true });
+    const modalContent = { nativeElement: document.createElement('div') };
+    const roleButton = { nativeElement: {} };
+    const modalComponent = {modalContent, hideModal: jest.fn()};
+    const componentInstance: any = component;
+    componentInstance.modalComponent = modalComponent;
+    componentInstance.roleButton = roleButton;
+
+    const eventTarget = document.createElement('div');
+    modalContent.nativeElement.appendChild(eventTarget);
+    eventTarget.id = 'roleModalContent123';
+
+    Object.defineProperty(event, 'target', {value: eventTarget, enumerable: true});
+    componentInstance.onDocumentClick(event);
+
+    modalContent.nativeElement.removeChild(eventTarget);
+    Object.defineProperty(event, 'target', {value: eventTarget, enumerable: true});
+    componentInstance.onDocumentClick(event);
+
+    expect(modalComponent.hideModal).toHaveBeenCalled();
+
+    eventTarget.remove();
+    modalContent.nativeElement.remove();
+  });
+
+  it('should call removeRole when action is triggered', () => {
+    const component = fixture.componentInstance;
+    const spy = jest.spyOn(component, 'removeRole');
+    const testRole = { id: '123', name: 'Test', position: 1, support_level: 0 } as Role;
+
+    component['tableConfig'].action_btn[0].action(testRole);
+
+    expect(spy).toHaveBeenCalledWith(testRole);
+  });
+
+  it('should call getSupportLevel via tableConfig.actions', () => {
+    const fixture = TestBed.createComponent(TeamlistComponent);
+    const component = fixture.componentInstance;
+    const spy = jest.spyOn(component, 'getSupportLevel');
+    const actionFn = component['tableConfig'].actions[0];
+    actionFn(1);
+    expect(spy).toHaveBeenCalledWith(1);
+  });
+
 });

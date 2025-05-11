@@ -11,6 +11,7 @@ import {SliderItems} from "../types/landing-page/SliderItems";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
+import {SupportTheme} from "../types/Tickets";
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -219,6 +220,89 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-setup?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should create a support theme for a specific guild', () => {
+    const theme: SupportTheme = { name: 'TestTheme' } as SupportTheme;
+    const guild_id = 'guild123';
+    const mockResponse = { success: true };
+
+    service.createSupportTheme(theme, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(theme);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should edit a support theme for a specific guild', () => {
+    const theme: SupportTheme = { name: 'TestTheme' } as SupportTheme;
+    const guild_id = 'guild123';
+    const mockResponse = { success: true };
+
+    service.editSupportTheme(theme, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(theme);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete a support theme using old_name if present and different from name', () => {
+    const theme: SupportTheme = { name: 'TestTheme', old_name: 'OldTheme' } as SupportTheme;
+    const guild_id = 'guild123';
+    const mockResponse = { success: true };
+
+    service.deleteSupportTheme(theme, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('OldTheme')}`
+    );
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete a support theme using name if old_name is not present', () => {
+    const theme: SupportTheme = { name: 'TestTheme' } as SupportTheme;
+    const guild_id = 'guild123';
+    const mockResponse = { success: true };
+
+    service.deleteSupportTheme(theme, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('TestTheme')}`
+    );
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete a support theme using name if old_name equals name', () => {
+    const theme: SupportTheme = { name: 'TestTheme', old_name: 'TestTheme' } as SupportTheme;
+    const guild_id = 'guild123';
+    const mockResponse = { success: true };
+
+    service.deleteSupportTheme(theme, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('TestTheme')}`
+    );
+    expect(req.request.method).toBe('DELETE');
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
