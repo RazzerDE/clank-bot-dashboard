@@ -4,12 +4,12 @@ import { TeamlistComponent } from './teamlist.component';
 import {TranslateModule} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ElementRef} from "@angular/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Guild, Role, TeamList} from "../../../../services/types/discord/Guilds";
 import {of, throwError} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 describe('TeamlistComponent', () => {
   let component: TeamlistComponent;
@@ -19,14 +19,14 @@ describe('TeamlistComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TeamlistComponent, TranslateModule.forRoot(), HttpClientTestingModule],
+      imports: [TeamlistComponent, TranslateModule.forRoot(), HttpClientTestingModule, NoopAnimationsModule],
       providers: [
         { provide: ActivatedRoute, useValue: { } },
         { provide: ComService, useValue: { getTeamRoles: jest.fn().mockResolvedValue(of({ subscribe: jest.fn() })),
                                            removeTeamRole: jest.fn().mockResolvedValue(of({ subscribe: jest.fn() })),
                                            addTeamRole: jest.fn().mockResolvedValue(of({ subscribe: jest.fn() })) } },
         { provide: Router, useValue: { navigateByUrl: jest.fn().mockResolvedValue(true), events: of({}), createUrlTree: jest.fn(), serializeUrl: jest.fn() } },
-      ]
+      ],
     })
     .compileComponents();
 
@@ -45,19 +45,6 @@ describe('TeamlistComponent', () => {
     const getTeamRolesSpy = jest.spyOn(component, 'getTeamRoles');
     component['dataService'].allowDataFetch.next(true);
     expect(getTeamRolesSpy).toHaveBeenCalledTimes(1); // once in constructor and once in subscription
-  });
-
-  it('should validate the role picker selection', () => {
-    document.body.innerHTML = "<select><option value='👥 - Wähle eine Discord-Rolle aus..'></option><option value='1234567890756454'></option></select>";
-    const rolePickerElement = document.querySelector('select');
-    component['rolePicker'] = new ElementRef(rolePickerElement!);
-
-    component.validateRolePicker();
-    expect(component['isRolePickerValid']).toBe(false);
-
-    rolePickerElement!.value = '1234567890756454';
-    component.validateRolePicker();
-    expect(component['isRolePickerValid']).toBe(true);
   });
 
   it('should refresh the cache and re-enable the cache button after 30 seconds', fakeAsync(() => {
@@ -300,7 +287,14 @@ describe('TeamlistComponent', () => {
     jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(of(true));
     const addRoleToTeamSpy = jest.spyOn(component as any, 'addRoleToTeam');
 
-    component.addRole(option);
+    const mockCollection = {
+      item: () => option,
+      length: 1,
+      namedItem: () => null,
+      [Symbol.iterator]: function*() { yield option; }
+    } as HTMLCollectionOf<HTMLOptionElement>;
+
+    component.addRole(mockCollection);
     tick();
 
     expect(addRoleToTeamSpy).toHaveBeenCalledWith(role);
@@ -315,7 +309,14 @@ describe('TeamlistComponent', () => {
     jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 409 } as HttpErrorResponse)));
     const addRoleToTeamSpy = jest.spyOn(component as any, 'addRoleToTeam');
 
-    component.addRole(option);
+    const mockCollection = {
+      item: () => option,
+      length: 1,
+      namedItem: () => null,
+      [Symbol.iterator]: function*() { yield option; }
+    } as HTMLCollectionOf<HTMLOptionElement>;
+
+    component.addRole(mockCollection);
     tick();
 
     expect(addRoleToTeamSpy).toHaveBeenCalledWith(role);
@@ -330,7 +331,14 @@ describe('TeamlistComponent', () => {
     jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 429 } as HttpErrorResponse)));
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
-    component.addRole(option);
+    const mockCollection = {
+      item: () => option,
+      length: 1,
+      namedItem: () => null,
+      [Symbol.iterator]: function*() { yield option; }
+    } as HTMLCollectionOf<HTMLOptionElement>;
+
+    component.addRole(mockCollection);
     tick();
 
     expect(redirectLoginErrorSpy).toHaveBeenCalledWith('REQUESTS');
@@ -345,7 +353,14 @@ describe('TeamlistComponent', () => {
     jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 401 } as HttpErrorResponse)));
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
-    component.addRole(option);
+    const mockCollection = {
+      item: () => option,
+      length: 1,
+      namedItem: () => null,
+      [Symbol.iterator]: function*() { yield option; }
+    } as HTMLCollectionOf<HTMLOptionElement>;
+
+    component.addRole(mockCollection);
     tick();
 
     expect(redirectLoginErrorSpy).toHaveBeenCalledWith('FORBIDDEN');
@@ -360,7 +375,14 @@ describe('TeamlistComponent', () => {
     jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 500 } as HttpErrorResponse)));
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
-    component.addRole(option);
+    const mockCollection = {
+      item: () => option,
+      length: 1,
+      namedItem: () => null,
+      [Symbol.iterator]: function*() { yield option; }
+    } as HTMLCollectionOf<HTMLOptionElement>;
+
+    component.addRole(mockCollection);
     tick();
 
     expect(redirectLoginErrorSpy).toHaveBeenCalledWith('EXPIRED');
@@ -372,7 +394,14 @@ describe('TeamlistComponent', () => {
 
     const addTeamRoleSpy = jest.spyOn(component['discordService'], 'addTeamRole');
 
-    component.addRole(option);
+    const mockCollection = {
+      item: () => option,
+      length: 1,
+      namedItem: () => null,
+      [Symbol.iterator]: function*() { yield option; }
+    } as HTMLCollectionOf<HTMLOptionElement>;
+
+    component.addRole(mockCollection);
 
     expect(addTeamRoleSpy).not.toHaveBeenCalled();
   });
@@ -532,21 +561,6 @@ describe('TeamlistComponent', () => {
     expect(filterDropdown.classList).toContain('hidden');
   });
 
-  it('should hide the role modal if clicked outside', () => {
-    const event = new MouseEvent('click', { bubbles: true });
-    const modalContent = component['modalContent'].nativeElement;
-    const roleModal = component['roleModal'].nativeElement;
-    const roleBackdrop = component['roleBackdrop'].nativeElement;
-
-    jest.spyOn(modalContent, 'contains').mockReturnValue(false);
-    jest.spyOn(document, 'activeElement', 'get').mockReturnValue(null);
-
-    document.dispatchEvent(event);
-
-    expect(roleModal.classList).toContain('hidden');
-    expect(roleBackdrop.classList).toContain('hidden');
-  });
-
   it('should set dataLoading to false after view is checked and roles are loaded', () => {
     component['discordRoles'] = [{ id: '1', name: 'Role 1', position: 1 } as Role];
     component['dataService'].isLoading = false;
@@ -569,6 +583,74 @@ describe('TeamlistComponent', () => {
     jest.runAllTimers();
 
     expect(component['dataLoading']).toBe(true);
+  });
+
+  it('should return 0 if no elements with id starting with "level_active_" are found', () => {
+    jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce([] as any);
+    const result = (component as any).getActiveTab();
+    expect(result).toBe(0);
+  });
+
+  it('should return the number suffix from the last element id', () => {
+    const mockElement1 = { id: 'level_active_1' } as HTMLLIElement;
+    const mockElement2 = { id: 'level_active_2' } as HTMLLIElement;
+    const mockNodeList = [mockElement1, mockElement2] as unknown as NodeListOf<HTMLLIElement>;
+    jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(mockNodeList);
+    const result = (component as any).getActiveTab();
+    expect(result).toBe(2);
+  });
+
+  it('should return 0 if the last element id does not contain a number', () => {
+    const mockElement = { id: 'level_active_' } as HTMLLIElement;
+    const mockNodeList = [mockElement] as unknown as NodeListOf<HTMLLIElement>;
+    jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(mockNodeList);
+    const result = (component as any).getActiveTab();
+    expect(result).toBe(0);
+  });
+
+  it('should hide the modal if event target id contains "roleModalContent" and not clicked inside modal or roleButton', () => {
+    const event = new MouseEvent('click', { bubbles: true });
+    const modalContent = { nativeElement: document.createElement('div') };
+    const roleButton = { nativeElement: {} };
+    const modalComponent = {modalContent, hideModal: jest.fn()};
+    const componentInstance: any = component;
+    componentInstance.modalComponent = modalComponent;
+    componentInstance.roleButton = roleButton;
+
+    const eventTarget = document.createElement('div');
+    modalContent.nativeElement.appendChild(eventTarget);
+    eventTarget.id = 'roleModalContent123';
+
+    Object.defineProperty(event, 'target', {value: eventTarget, enumerable: true});
+    componentInstance.onDocumentClick(event);
+
+    modalContent.nativeElement.removeChild(eventTarget);
+    Object.defineProperty(event, 'target', {value: eventTarget, enumerable: true});
+    componentInstance.onDocumentClick(event);
+
+    expect(modalComponent.hideModal).toHaveBeenCalled();
+
+    eventTarget.remove();
+    modalContent.nativeElement.remove();
+  });
+
+  it('should call removeRole when action is triggered', () => {
+    const component = fixture.componentInstance;
+    const spy = jest.spyOn(component, 'removeRole');
+    const testRole = { id: '123', name: 'Test', position: 1, support_level: 0 } as Role;
+
+    component['tableConfig'].action_btn[0].action(testRole);
+
+    expect(spy).toHaveBeenCalledWith(testRole);
+  });
+
+  it('should call getSupportLevel via tableConfig.actions', () => {
+    const fixture = TestBed.createComponent(TeamlistComponent);
+    const component = fixture.componentInstance;
+    const spy = jest.spyOn(component, 'getSupportLevel');
+    const actionFn = component['tableConfig'].actions[0];
+    actionFn(1);
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
 });

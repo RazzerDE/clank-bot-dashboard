@@ -28,8 +28,8 @@ export interface FeatureVotes {
 }
 
 export interface FeatureData {
-  featureId: number;
-  userId: string;
+  feature_id: number;
+  user_id: string;
   vote: boolean;
 }
 

@@ -40,7 +40,6 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected tasks: Tasks[] = tasks;
   private orgTasks: Tasks[] = tasks;
   @ViewChild('dashboardContainer') protected dashboardContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('tasklistContainer') protected tasklistContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('tasklistDiv') protected tasklistDiv!: ElementRef<HTMLDivElement>;
   @ViewChild('serverlistContainer') protected serverlistContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('serverlistDiv') protected serverlistDiv!: ElementRef<HTMLDivElement>;
@@ -55,6 +54,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faRefresh: IconDefinition = faRefresh;
 
+  private startLoading: boolean = false;
   private subscriptions: Subscription[] = [];
   protected disabledCacheBtn: boolean = false;
   protected dataLoading: { moduleProgress: boolean, guildList: boolean } = { moduleProgress: true, guildList: true };
@@ -91,7 +91,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
    * It's used to show a loading state for some data related things.
    */
   ngAfterViewChecked(): void {
-    if (tasks == this.orgTasks && !this.dataService.isLoading && this.dataLoading.moduleProgress) {
+    if (tasks == this.orgTasks && !this.dataService.isLoading && this.dataLoading.moduleProgress && !this.startLoading) {
       setTimeout((): boolean => this.dataLoading.moduleProgress = false, 0);
     }
 
@@ -122,6 +122,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   getServerData(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     if (!window.location.href.endsWith('/dashboard')) { return; }
+    this.startLoading = true;
 
     const sub: Subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
                                   moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
@@ -131,6 +132,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
           this.servers = guildUsage;
 
           this.dataService.isLoading = false;
+          this.startLoading = false;
 
           if (moduleStatus['task_1'].cached) { return; }
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));

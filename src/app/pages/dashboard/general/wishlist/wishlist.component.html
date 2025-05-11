@@ -1,6 +1,7 @@
 <dashboard-layout>
 
-  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+  <section class="flex flex-auto flex-col bg-gradient-to-tl from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -77,8 +78,11 @@
           <!-- Items -->
           @for (feature of sortFeatureList(); track $index) {
             @if (feature.enabled) {
-              <div [@fadeInOut] class="bg-white dark:!bg-slate-800 flex min-h-[380px] flex-col overflow-hidden rounded-2xl
-                                         shadow transition-colors duration-500 hover:!bg-white/55 dark:hover:!bg-slate-800/75">
+              <div [@fadeInOut] class="bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800
+                                      dark:via-slate-800 dark:to-slate-900 hover:from-blue-50 hover:via-slate-100
+                                      hover:to-blue-100 dark:hover:from-slate-700 dark:hover:via-slate-800
+                                      dark:hover:to-slate-800 flex min-h-[380px] flex-col overflow-hidden rounded-2xl
+                                       shadow transition-colors duration-500 !border-gray-300 dark:!border-gray-700 border-1">
                 <div class="flex flex-col p-6">
                   <!-- Head -->
                   <div class="flex items-center justify-between">

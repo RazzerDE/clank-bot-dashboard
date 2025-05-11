@@ -1,16 +1,28 @@
 <dashboard-layout>
 
   <!-- Body -->
-  <section class="flex flex-auto flex-col bg-slate-200 dark:bg-gray-900/95 transition-colors duration-500">
+  <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- Role Modal -->
+    <app-modal [type]="modalType" [content]="modalTheme.faq_answer!" [discordRoles]="discordRoles"
+               [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" [emojis]="emojis" [theme]="editTheme" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"
                 [color]="'blue'" [desc]="'PAGE_THEMES_DESC' | translate"></page-thumb>
 
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
     <div class="flex-1 my-4">
       <div class="p-3 sm:p-5">
         <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
-          <div class="bg-white dark:!bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden transition-colors duration-300">
+          <div class="bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800 overflow-hidden
+                      dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
+                      transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
 
             <!-- Table Buttons -->
             <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
@@ -18,10 +30,9 @@
                 <div class="flex-1 ml-4 lg:ml-0 ">
                   <div class="relative self-center">
                     <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                    <input type="text" [placeholder]="'PLACEHOLDER_THEME_SEARCH' | translate"
+                    <input type="text" [placeholder]="'PLACEHOLDER_THEME_SEARCH' | translate" (keyup)="searchTheme($event)"
                            class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                             dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
-                    <!-- TODO: Search -->
                   </div>
                 </div>
               </div>
@@ -30,17 +41,25 @@
                 <!-- Add Theme Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-green-700
                                                via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
-                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br" #themeButton>
-                        <!-- TODO: Function -->
+                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br"
+                        (click)="openSupportThemeModal('ADD')" id="addThemeBtn_1">
                   <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_THEME_ADD' | translate }}
+                </button>
+
+                <!-- Default Ping Button -->
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-orange-700
+                                               via-orange-600 to-orange-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                               focus:ring-orange-700 focus:outline-none hover:bg-gradient-to-br"
+                        (click)="openDefaultMentionModal()" id="mentionBtn_1">
+                  <fa-icon [icon]="faBell" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_DEFAULT_PING' | translate }}
                 </button>
 
                 <!-- Refresh cache Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
-                                               via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2
-                                               focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
-                                                 transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none">
-                  <!-- TODO: Function -->
+                                           via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
+                                             py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                             transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                                      (click)="refreshCache()" [disabled]="disabledCacheBtn">
                   <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
                   {{ 'BUTTON_CACHE_REFRESH' | translate }}
                 </button>

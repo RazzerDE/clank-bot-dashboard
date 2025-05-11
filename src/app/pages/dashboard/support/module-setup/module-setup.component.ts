@@ -45,6 +45,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   protected moduleStatusObj: TasksCompletion | undefined;
   protected supportForum: { channel: Channel | null, pending: boolean } = { channel: null, pending: false };
 
+  private startLoading: boolean = false;
   protected dataLoading: { statusBox: boolean, channelItems: boolean } = { statusBox: true, channelItems: true };
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService,
@@ -56,6 +57,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
       if (value) { // only fetch data if allowed
         this.dataLoading = { statusBox: true, channelItems: true };
         this.supportForum = { channel: null, pending: false };
+        this.cacheRefreshDisabled = false;
         this.selectedChannel = null;
         this.getServerData(true);
       }
@@ -84,7 +86,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
       setTimeout((): boolean => this.dataLoading.statusBox = false, 0);
     }
 
-    if (this.channelItems.length > 0 && this.dataLoading.channelItems && this.dataLoading.channelItems) {
+    if (!this.startLoading && this.dataLoading.channelItems) {
       setTimeout((): boolean => this.dataLoading.channelItems = false, 0);
     }
   }
@@ -104,6 +106,9 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   private getServerData(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     if (no_cache) { this.dataService.isLoading = true; }
+    this.supportForum = { channel: null, pending: false };
+    this.selectedChannel = null;
+    this.startLoading = true;
 
     // check if cache data is available
     const cachedStatus = localStorage.getItem('moduleStatus');
@@ -130,6 +135,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
         this.channelItems = supportSetup['discord_channels'];
         this.updateStatus();
         this.dataService.isLoading = false;
+        this.startLoading = false;
         return;
       }
     }
@@ -147,7 +153,6 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
             const sub2: Subscription = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
               .subscribe({
                 next: (supportSetup: SupportSetup): void => {
-                  console.log('supportSetup', supportSetup);
                   if (supportSetup.support_forum != null) {
                     this.supportForum = { channel: supportSetup.support_forum, pending: supportSetup.support_forum_pending };
                     this.selectedChannel = supportSetup.support_forum;
@@ -157,6 +162,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
                   localStorage.setItem('supportSetup', JSON.stringify(supportSetup));
                   localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
                   this.dataService.isLoading = false;
+                  this.startLoading = false;
                 }, error: (error: HttpErrorResponse): void => this.dataService.handleApiError(error)
               });
 

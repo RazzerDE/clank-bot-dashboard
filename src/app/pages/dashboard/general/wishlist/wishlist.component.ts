@@ -124,7 +124,7 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
     const cooldownFeature: CooldownFeatures | undefined = this.isOnCooldown.find(c => c.featureId === feature_id);
     if (cooldownFeature) { cooldownFeature.isLoading = true; cooldownFeature.onCooldown = true; }
 
-    const data: FeatureData = { featureId: feature_id, userId: this.dataService.profile!.id, vote: vote };
+    const data: FeatureData = { feature_id: feature_id, user_id: this.dataService.profile!.id, vote: vote };
     const feature_vote: Subscription = this.apiService.sendFeatureVote(data).subscribe({
       next: (_data: any): void => {
         this.getFeatureVotes();

@@ -7,7 +7,6 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
-import {NgClass} from "@angular/common";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Role, TeamList} from "../../../../services/types/discord/Guilds";
@@ -17,6 +16,7 @@ import {Subscription} from "rxjs";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {TableConfig} from "../../../../services/types/Config";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 
 @Component({
   selector: 'app-teamlist',
@@ -25,9 +25,9 @@ import {TableConfig} from "../../../../services/types/Config";
     PageThumbComponent,
     DashboardLayoutComponent,
     FaIconComponent,
-    NgClass,
     AlertBoxComponent,
-    DataTableComponent
+    DataTableComponent,
+    ModalComponent
   ],
   templateUrl: './teamlist.component.html',
   styleUrl: './teamlist.component.scss'
@@ -38,7 +38,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faXmark: IconDefinition = faXmark;
   protected readonly faRefresh: IconDefinition = faRefresh;
-  protected activeTab: number = 0;
 
   protected roles: Role[] = [];
   protected filteredRoles: Role[] = [];
@@ -47,16 +46,11 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected dataLoading: boolean = true;
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private subscriptions: Subscription[] = [];
-
   protected disabledCacheBtn: boolean = false;
-  protected isRolePickerValid: boolean = false;
 
-  @ViewChild('rolePicker') protected rolePicker!: ElementRef<HTMLSelectElement>;
+  @ViewChild(ModalComponent) protected modalComponent!: ModalComponent;
   @ViewChild('filterDropdown') protected filterDropdown!: ElementRef<HTMLDivElement>;
   @ViewChild('dropdownButton') protected dropdownButton!: ElementRef<HTMLButtonElement>;
-  @ViewChild('roleModal') protected roleModal!: ElementRef<HTMLDivElement>;
-  @ViewChild('roleModalContent') protected modalContent!: ElementRef<HTMLDivElement>;
-  @ViewChild('roleBackdrop') protected roleBackdrop!: ElementRef<HTMLDivElement>;
   @ViewChild('roleButton') protected roleButton!: ElementRef<HTMLButtonElement>;
 
   constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router,
@@ -94,17 +88,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     if (this.discordRoles && this.discordRoles.length > 0 && !this.dataService.isLoading && this.dataLoading) {
       setTimeout((): boolean => this.dataLoading = false, 0);
     }
-  }
-
-  /**
-   * Validates the role picker selection.
-   *
-   * This method checks the value of the role picker element and sets the `isRolePickerValid`
-   * property to `true` if a valid role is selected, otherwise sets it to `false`.
-   */
-  validateRolePicker(): void {
-    const selectedRole: string = this.rolePicker.nativeElement.value;
-    this.isRolePickerValid = selectedRole !== '' && selectedRole !== '👥 - Wähle eine Discord-Rolle aus..';
   }
 
   /**
@@ -255,12 +238,26 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     });
   }
 
-  addRole(option: HTMLOptionElement): void {
+  /**
+   * Adds a role to the team.
+   *
+   * This method is responsible for adding a selected role to the team. It validates the active guild,
+   * retrieves the selected role from the list of available Discord roles, and assigns it a support level
+   * based on the currently active tab. The role is then sent to the backend for addition.
+   *
+   * If the addition is successful, the role is added to the local team data, and the modal is closed.
+   * In case of an error, appropriate error handling is performed, including showing alerts or redirecting
+   * the user based on the error type.
+   *
+   * @param {HTMLCollectionOf<HTMLOptionElement>} options - The selected option element from the role picker.
+   */
+  addRole(options: HTMLCollectionOf<HTMLOptionElement>): void {
     if (!this.dataService.active_guild) { return; }
+    const option: HTMLOptionElement = options.item(0)!
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
-    found_role.support_level = this.activeTab;
+    found_role.support_level = this.getActiveTab();
 
-    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (this.activeTab + 1).toString())
+    this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (found_role.support_level + 1).toString())
       .then((observable) => {
         const subscription: Subscription = observable.subscribe({
           next: (_result: boolean): void => {
@@ -271,18 +268,17 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
             this.dataService.error_color = 'green';
             this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_ADD'),
               this.translate.instant('SUCCESS_ROLE_ADD_DESC',
-                { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
+                { role: option.innerText, level: this.getSupportLevel(found_role.support_level!) }));
 
             // close modal
-            this.roleModal.nativeElement.classList.add('hidden');
-            this.roleBackdrop.nativeElement.classList.add('hidden');
+            this.modalComponent.hideModal();
           },
           error: (err: HttpErrorResponse): void => {
             if (err.status === 409) {
               this.dataService.error_color = 'red';
               this.dataService.showAlert(this.translate.instant('ERROR_ROLE_ADD_TITLE'),
                 this.translate.instant('ERROR_ROLE_ADD_DESC',
-                  { role: option.innerText, level: this.getSupportLevel(this.activeTab) }));
+                  { role: option.innerText, level: this.getSupportLevel(found_role.support_level!) }));
 
               this.addRoleToTeam(found_role);
             } else if (err.status === 429) {
@@ -294,8 +290,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
             }
 
             // close modal
-            this.roleModal.nativeElement.classList.add('hidden');
-            this.roleBackdrop.nativeElement.classList.add('hidden');
+            this.modalComponent.hideModal();
           }
         });
 
@@ -384,6 +379,23 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
+   * Determines the currently active support level tab by finding the last HTML element
+   * with an ID that matches the pattern "level_active_X", where X is a number.
+   *
+   * @returns {number} The support level (0, 1, or 2) of the active tab, defaulting to 0 if no matching elements are found
+   * or if the ID doesn't contain a valid numeric suffix
+   */
+  private getActiveTab(): number {
+    const elements: NodeListOf<HTMLLIElement> = document.querySelectorAll('[id^="level_active_"]');
+    if (elements.length === 0) return 0;
+
+    const lastElement = elements[elements.length - 1];
+    const id = lastElement.id;
+    const match = id.match(/(\d+)$/);
+    return match ? Number(match[1]) : 0;
+  }
+
+  /**
    * Handles document click events to close some dropdown or modals if the user clicks outside of them.
    *
    * @param {MouseEvent} event - The click event triggered on the document.
@@ -398,10 +410,10 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     }
 
     // role modal
-    clickedInside = this.modalContent.nativeElement.contains(event.target as Node);
-    if (!clickedInside && document.activeElement != this.roleButton.nativeElement) {
-      this.roleModal.nativeElement.classList.add('hidden');
-      this.roleBackdrop.nativeElement.classList.add('hidden');
+    clickedInside = this.modalComponent.modalContent.nativeElement.contains(event.target as Node);
+    if ((!clickedInside && document.activeElement != this.roleButton.nativeElement)
+        || (event.target as HTMLElement).id.includes('roleModalContent')) {
+      this.modalComponent.hideModal();
     }
   }
 

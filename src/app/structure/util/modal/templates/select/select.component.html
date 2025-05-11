@@ -1,0 +1,24 @@
+<!-- Select for Role Picker -->
+<select #rolePicker id="rolepicker" (change)="validateRolePicker()"
+        [multiple]="type === 'DEFAULT_MENTION' || type.startsWith('SUPPORT_THEME_')"
+        [disabled]="type.startsWith('SUPPORT_THEME_') && this.dataService.isFAQ"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
+                 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
+                 dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
+                 dark:focus:border-primary-500 transition-all duration-300 cursor-pointer">
+  @if (rolePicker.type === 'select-one' ) {
+    <option selected="" disabled>{{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}</option>
+  }
+  @for (role of discordRoles; track role.id) {
+    <option value="{{ role.id }}" [selected]="(type === 'DEFAULT_MENTION' || type.startsWith('SUPPORT_THEME_'))
+                                              && isDefaultMentioned(role.id)">
+      {{ role.name }}
+    </option>
+  }
+</select>
+
+@if (rolePicker.type === 'select-one' ) {
+  <fa-icon [icon]="faChevronDown" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500
+                                         dark:text-gray-300 cursor-pointer"
+           (click)="rolePicker.showPicker()"></fa-icon>
+}

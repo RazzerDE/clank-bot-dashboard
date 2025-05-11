@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
-import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
 import {Subject} from "rxjs";
 import {Guild} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SupportTheme} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +13,17 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class DataHolderService {
   isLoading: boolean = true;
   isDarkTheme: boolean = false;
+  isFAQ: boolean = false;
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
   hideGuildSidebar: boolean = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
 
   // error handler related
-  error_title: string = '';
-  error_desc: string = '';
+  error_title: string = 'ERROR_UNKNOWN_TITLE';
+  error_desc: string = 'ERROR_UNKNOWN_DESC';
   error_color: 'red' | 'green' = 'red';
+  faq_answer: string = '';
   showAlertBox: boolean = false;
 
   // api related
@@ -29,21 +31,38 @@ export class DataHolderService {
   profile: DiscordUser | null = null;
   bot_stats: GeneralStats = { user_count: '28.000', guild_count: 350, giveaway_count: 130, ticket_count: 290,
                               punish_count: 110, global_verified_count: '16.000' };
+  readonly initTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
+                                    default_roles: [], pending: true, action: 'CREATE' };
+  support_themes: SupportTheme[] = [];
 
-  constructor(private translate: TranslateService, private router: Router) {
+  constructor(private router: Router) {
     const temp_guild: string | null = localStorage.getItem('active_guild');
     if (temp_guild) {
       this.showSidebarLogo = true;
       this.active_guild = JSON.parse(temp_guild) as Guild;
     }
+  }
 
-    // check if translations are loaded
-    this.translate.onLangChange.subscribe((): void => {
-      if (this.error_title == '' && this.error_desc == '') {
-        this.error_title = this.translate.instant("ERROR_UNKNOWN_TITLE");
-        this.error_desc = this.translate.instant("ERROR_UNKNOWN_DESC");
-      }
-    });
+  /**
+   * Extracts the emoji ID from a Discord emoji string and returns the corresponding CDN URL.
+   * Discord emojis are formatted as `<:name:id>` for standard emojis or `<a:name:id>` for animated emojis.
+   *
+   * @param emoji - The Discord emoji string format (e.g., '<:emojiname:123456789>' or '<a:emojiname:123456789>')
+   * @param isID - Optional boolean to indicate if the input is the ID of the emoji (default: false)
+   * @param isAnimated - Optional boolean to indicate if the emoji is animated (default: false)
+   * @returns The CDN URL for the emoji, or an empty string if the emoji format is invalid
+   */
+  getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean): string {
+    if (!emoji) { return emoji; }
+    if (isID) { return `https://cdn.discordapp.com/emojis/${emoji}.${isAnimated ? 'gif' : 'png'}`; }
+
+    // Match emoji format <:name:id> or <a:name:id>
+    const match: RegExpMatchArray | null = emoji.match(/<(a?):(\w+):(\d+)>/);
+    if (!match) return emoji;
+
+    const emojiId: string = match[3];
+    const fileType: 'gif' | 'png' = match[1] === 'a' ? 'gif' : 'png';
+    return `https://cdn.discordapp.com/emojis/${emojiId}.${fileType}`;
   }
 
   /**
@@ -56,11 +75,11 @@ export class DataHolderService {
    */
   redirectLoginError(type: 'INVALID' | 'EXPIRED' | 'BLOCKED' | 'UNKNOWN' | 'FORBIDDEN' | 'REQUESTS' | 'OFFLINE' | 'NO_CLANK'): void {
     if (type === 'UNKNOWN' || type === 'OFFLINE') {
-      this.error_title = this.translate.instant(`ERROR_${type}_TITLE`);
-      this.error_desc = this.translate.instant(`ERROR_${type}_DESC`);
+      this.error_title = `ERROR_${type}_TITLE`
+      this.error_desc = `ERROR_${type}_DESC`
     } else {
-      this.error_title = this.translate.instant(`ERROR_LOGIN_${type}_TITLE`);
-      this.error_desc = this.translate.instant(`ERROR_LOGIN_${type}_DESC`);
+      this.error_title = `ERROR_LOGIN_${type}_TITLE`
+      this.error_desc = `ERROR_LOGIN_${type}_DESC`
     }
 
     if (type === 'NO_CLANK') {

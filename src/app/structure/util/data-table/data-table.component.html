@@ -9,83 +9,123 @@
 
     <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400
                                   transition-colors duration-300 sticky top-0">
-    <tr>
-      <!-- Table Header -->
-      @for (column of tconfig.columns; track $index) {
-        <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600 transition-colors duration-300">
-          {{ column.name | translate }}
-        </th>
-      }
-    </tr>
+      <tr>
+        <!-- Table Header -->
+        @for (column of tconfig.columns; track $index) {
+          <th scope="col" class="px-4 py-3 border-r !border-gray-300 dark:!border-gray-600 transition-colors
+                                 duration-300 whitespace-nowrap overflow-hidden text-ellipsis"
+              [width]="tconfig.columns[$index].width + '%'" title="{{ column.name | translate }}">
+            <span class="overflow-hidden text-ellipsis block">{{ column.name | translate }}</span>
+          </th>
+        }
+      </tr>
     </thead>
 
     <tbody class="overflow-y-auto">
       <!-- Table is empty -->
-      @if (tconfig.rows.length == 0) {
-        <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-          <td class="px-4 py-3 text-center" colspan="3">{{ tconfig.list_empty | translate }}</td>
+      @if (tconfig.rows.length == 0 && !tconfig.dataLoading) {
+        <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
+          <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">{{ tconfig.list_empty | translate }}</td>
         </tr>
       }
 
       <!-- Table is Loading; Show Loader -->
-        @if (tconfig.dataLoading) {
-          <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-            <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">
-              <span class="data-loader"></span>
-            </td>
-          </tr>
-        } @else {
-          <!-- Row Content -->
-          @for (obj of tconfig.rows; track obj.id) {
-            <tr class="border-b dark:border-gray-700 transition-colors duration-300">
-              @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
-                <td class="px-3 py-3 text-sm text-gray-500">
-                  {{ obj.icon }}
-                </td>
-              }
+      @if (tconfig.dataLoading) {
+        <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
+          <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">
+            <span class="data-loader"></span>
+          </td>
+        </tr>
+      } @else {
+        <!-- Row Content -->
+        @for (obj of tconfig.rows; track $index) {
+          <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
+            @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
+              <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
+                @if (this.dataService.getEmojibyId(obj.icon).startsWith('https://')) {
+                  <img [ngSrc]="this.dataService.getEmojibyId(obj.icon) + '?size=32'" width="20" height="20" alt="Emoji for {{ obj.name}}" />
+                } @else {
+                  <span class="text-lg">{{ obj.icon }}</span>
+                }
+              </td>
+            }
 
-              <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
-                         duration-300" [ngClass]="tconfig.type === 'TEAMLIST' ? '' : ''">
-                <div class="flex items-center">
-                  @if (isRoleType(obj)) {
-                    <div class="w-3 h-3 rounded-full inline-block me-2.5"
-                         [style.background-color]="isRoleType(obj) ? '#' +
-                         obj.color.toString(16).padStart(6, '0') : ''"></div>
+            <!-- Name of the Object (Support-Theme: with FAQ-Status | Teamlist: with Role Colour Dot) -->
+            <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                       duration-300" #mainRow
+                [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[1].width + '%' : tconfig.columns[0].width + '%'"
+                [class.!text-red-600]="isSupportType(obj) && obj.pending && obj.action == 'DELETE'"
+                [title]="isSupportType(obj) && obj.pending ?
+                (obj.action === 'CREATE' ? ('PLACEHOLDER_THEME_PENDING' | translate) :
+                 obj.action === 'UPDATE' ? ('PLACEHOLDER_THEME_UPDATE_PENDING' | translate) : '') : ''">
+              <div class="flex items-center">
+                @if (isRoleType(obj)) {
+                  <div class="w-3 h-3 rounded-full inline-block me-2.5"
+                       [style.background-color]="isRoleType(obj) ? '#' +
+                       obj.color.toString(16).padStart(6, '0') : ''"></div>
+                }
+
+                {{ obj.name }}
+
+                @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
+                  @if (obj.faq_answer) {
+                    <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                                 duration-200" (click)="tconfig.actions[0](obj)" type="button" id="faqBtn_{{ $index }}"
+                            [title]="'PLACEHOLDER_THEME_FAQ' | translate">
+                      <fa-icon [icon]="faRobot"></fa-icon>
+                    </button>
                   }
+                  @if (obj.pending) {
+                    <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                                 duration-200 !cursor-help" (click)="tconfig.actions[0](obj)" type="button">
+                      <fa-icon [icon]="faHourglassEnd"></fa-icon>
+                    </button>
+                  }
+                }
+              </div>
+            </td>
 
-                  {{ obj.name }}
-                </div>
+            @if (tconfig.type === 'TEAMLIST' && isRoleType(obj)) {
+              <td class="px-4 py-3" [width]="tconfig.columns[1].width + '%'">
+                {{ tconfig.actions[0](obj.support_level) }}
+              </td>
+            } @else if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
+              <td class="py-3 px-4 font-medium text-gray-400 whitespace-nowrap dark:text-gray-500 transition-colors
+                       duration-300" #mainRow
+                  [width]="tconfig.columns[2].width + '%'">
+                {{ obj.desc }}
               </td>
 
-              @if (tconfig.type === 'TEAMLIST' && isRoleType(obj)) {
-                <td class="px-4 py-3">{{ tconfig.actions[0](obj.support_level) }}</td>
-              } @else if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
-                <td class="px-4 py-3 w-[66%]">
-                  @for (role of obj.roles; track role.id) {
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-opacity-10
-                        bg-blue-500 text-blue-700 dark:bg-opacity-20 dark:bg-blue-400 dark:text-blue-200
-                        border border-blue-200 dark:!border-blue-600 shadow-sm hover:bg-opacity-20 hover:shadow
-                        transition-all duration-200 mr-1 mb-1 truncate">
-                        <span class="truncate">{{ role.name }}</span>
-                    </span>
-                  }
-                </td>
-              }
+              <!-- Support-Theme: Mentioned Role list -->
+              <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
+                @for (role of obj.roles; track $index) {
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-opacity-10
+                               shadow-sm hover:bg-opacity-20 hover:shadow transition-all duration-200 mr-1 mb-1
+                               truncate" [ngStyle]="getRoleStyles(role)">
+                      <span class="truncate">{{ role.name }} {{ tconfig.actions[1](obj.default_roles, role.id) }}</span>
+                  </span>
+                }
+              </td>
+            }
 
-              <!-- Action Buttons -->
-              <td class="px-4 py-3 flex items-center justify-end">
-                @for (button of tconfig.action_btn; track $index) {
-                  <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center text-{{button.color}}-700
-                         rounded-full focus:outline-none dark:text-{{button.color}}-700 hover:bg-gray-200
-                         dark:hover:bg-gray-700 bg-opacity-40 transition-colors duration-300" type="button"
-                          (click)="button.action(obj)" [ngClass]="button.color === 'blue' ? '!text-blue-500' : ''">
+            <!-- Action Buttons -->
+            <td class="px-4 py-3 flex items-center justify-end w-full" [height]="rowHeight + 'px'"
+                [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[4].width + '%' : tconfig.columns[2].width + '%'">
+              @for (button of tconfig.action_btn; track $index) {
+                <!-- Show all Buttons, except Edit Button for Support-Themes if Pending -->
+                @if (!($index === 0 && isSupportType(obj) && obj.pending === true)) {
+                  <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
+                   focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40
+                   transition-colors duration-300" type="button" (click)="button.action(obj)" id="TableBtn_{{ $index }}"
+                          [ngClass]="button.color === 'blue' ? '!text-blue-500' : 'text-red-700 dark:text-red-700'">
                     <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
                   </button>
                 }
-              </td>
-            </tr>
-          }
+              }
+            </td>
+          </tr>
         }
+      }
     </tbody>
   </table>
 </div>

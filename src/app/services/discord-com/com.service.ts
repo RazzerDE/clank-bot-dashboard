@@ -4,6 +4,7 @@ import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
 import {Guild, Role} from "../types/discord/Guilds";
+import {SupportThemeResponse} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,36 @@ export class ComService {
   }
 
   /**
+   * Retrieves the list of emojis for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the emojis for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to fetch emojis for.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the list of emojis.
+   */
+  async getGuildEmojis(guild_id: string): Promise<Observable<any>> {
+    await this.ensureInitialized();
+    return this.http.get<any>(`${config.api_url}/guilds/emojis?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Retrieves the list of all support-themes for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the guilds, including member counts.
+   *
+   * @returns {Promise<Observable<SupportThemeResponse>>} A promise that resolves to an observable of the list of guilds.
+   */
+  async getSupportThemes(guild_id: string): Promise<Observable<SupportThemeResponse>> {
+    await this.ensureInitialized();
+    return this.http.get<SupportThemeResponse>(`${config.api_url}/guilds/support-themes?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+
+  /**
    * Retrieves the team roles for a specific guild.
    *
    * This method ensures that the service is initialized before making the request.
@@ -100,6 +131,23 @@ export class ComService {
   async addTeamRole(guild_id: string, role_id: string, level: string): Promise<Observable<any>> {
     await this.ensureInitialized();
     return this.http.post(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`, {},
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Updates the default mention roles for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a POST request to the internal API to update the default mention roles
+   * for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to update the default mention roles for.
+   * @param {string[]} role_ids - An array of role IDs to set as the default mention roles.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   */
+  async changeDefaultMention(guild_id: string, role_ids: string[]): Promise<Observable<any>> {
+    await this.ensureInitialized();
+    return this.http.post(`${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`, { role_ids },
       { headers: this.authService.headers });
   }
 

@@ -1,0 +1,124 @@
+<!-- Template for Create new Theme (First Modal) -->
+@if (showFirst) {
+  <div class="space-y-4">
+    <label for="themepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_THEME_MODAL_NAME' | translate }}
+    </label>
+    <div class="flex items-center gap-2">
+      <div (click)="this.showEmojiPicker = !this.showEmojiPicker; $event.stopPropagation();"
+           class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
+                cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
+        @if (newTheme.icon.includes('https') || newTheme.icon.startsWith('<:') || newTheme.icon.startsWith('<a:')) {
+          @if (newTheme.guild_id == this.dataService.active_guild!.id) {
+            <img ngSrc="{{ dataService.getEmojibyId(newTheme.icon) + '?size=24' }}" alt="Emoji ~ Clank Discord-Bot" width="24" height="24" />
+          } @else { <!-- dont show emoji from another guild -->
+            <span class="text-gray-900 dark:text-white select-none">📚</span>
+          }
+        } @else {
+          <span class="text-gray-900 dark:text-white select-none">{{ newTheme.icon }}</span>
+        }
+
+        @if (this.showEmojiPicker) {
+          <div class="absolute bottom-full left-0 mb-2 p-2 bg-white dark:!bg-gray-700 border border-gray-300
+                      cursor-default dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid
+                      grid-cols-6 gap-1" (click)="$event.stopPropagation();">
+            @for (emoji of emojis; track $index) {
+              @if (isEmojiType(emoji)) {
+                <span (click)="updateThemeIcon(emoji)"
+                      class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
+                           dark:hover:bg-gray-600 p-1 rounded">
+                  <img ngSrc="{{ this.dataService.getEmojibyId(emoji.id, true, emoji.animated) + '?size=40' }}"
+                       width="40" height="40" alt="Emoji ~ Clank Discord-Bot" />
+                </span>
+                } @else {
+                  <span (click)="this.newTheme.icon = emoji.toString(); this.showEmojiPicker = false;"
+                        class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
+                             dark:hover:bg-gray-600 p-1 rounded">
+                    {{ emoji }}
+                  </span>
+                }
+              }
+          </div>
+        }
+
+      </div>
+      <input type="text" class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+              dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" maxlength="20" minlength="1"
+             [placeholder]="'PLACEHOLDER_THEME_MODAL_NAME_PLACEHOLDER' | translate" [(ngModel)]="newTheme.name">
+    </div>
+
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_THEME_MODAL_DESC' | translate }}
+    </label>
+    <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+            focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+            dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white resize-none"
+              placeholder="{{ 'PLACEHOLDER_THEME_MODAL_DESC_PLACEHOLDER' | translate }}"
+              rows="2" maxlength="98" minlength="1" [(ngModel)]="newTheme.desc"></textarea>
+
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-all duration-300"
+           [class.opacity-50]="this.dataService.isFAQ">
+      {{ 'PLACEHOLDER_THEME_MODAL_ROLES' | translate }}
+    </label>
+    <template-select [discordRoles]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
+                     (selectionChange)="newTheme.roles = $event; this.updateThemeMentions();"/>
+    <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isThemeInvalid() && type === 'SUPPORT_THEME_ADD',
+                        'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': !isThemeInvalid() && type !== 'SUPPORT_THEME_ADD',
+                        'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': isThemeInvalid()}"
+            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
+                 font-medium rounded-lg py-2.5 text-center transition-colors duration-100
+                 dark:focus:ring-green-800 text-sm px-5"
+            [disabled]="isThemeInvalid()" (click)="type === 'SUPPORT_THEME_ADD' ? addSupportTheme(newTheme) : editSupportTheme(newTheme)">
+      {{ type === 'SUPPORT_THEME_ADD' ? ('PLACEHOLDER_THEME_MODAL_BUTTON' | translate) : ('PLACEHOLDER_THEME_MODAL_BUTTON_EDIT' | translate) }}
+    </button>
+  </div>
+} @else {
+
+  <!-- Template for create new Theme (Second Modal) -->
+  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 max-w-md w-full !border-gray-400
+              dark:!border-gray-500 border-1">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+      <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_THEME_MODAL2_TITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Modal body -->
+    <div class="p-4 md:p-5">
+      <div class="space-y-4 flex flex-col">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="this.dataService.isFAQ">
+          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer
+                  dark:bg-gray-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
+                    after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300
+                    after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
+                    peer-checked:bg-green-600 dark:peer-checked:bg-green-600 transition-colors duration-300"></div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-white">
+          {{ 'PLACEHOLDER_THEME_MODAL2_TOGGLE' | translate }}
+        </span>
+        </label>
+
+        <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
+
+        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0 transition-all duration-300"
+               [class.opacity-50]="!this.dataService.isFAQ">{{ 'PLACEHOLDER_THEME_MODAL2_ANSWER' | translate }}
+        </label>
+
+        <textarea rows="3" maxlength="255" minlength="1" [class.opacity-50]="!this.dataService.isFAQ"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                    focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                    dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white duration-300
+                    dark:focus:ring-primary-500 dark:focus:border-primary-500 resize-none transition-all"
+                  [disabled]="!this.dataService.isFAQ" (keyup)="updateFAQPreview($event)" [(ngModel)]="this.dataService.faq_answer"
+                  [placeholder]="'PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER' | translate"></textarea>
+        <p class="text-gray-900 dark:text-white mb-0 transition-all duration-300" [class.opacity-50]="!this.dataService.isFAQ">
+          {{ 'PLACEHOLDER_THEME_MODAL2_PREVIEW' | translate }}
+        </p>
+
+        <template-discord-markdown [type]="this.type" class="!mt-0"/>
+      </div>
+    </div>
+  </div>
+}

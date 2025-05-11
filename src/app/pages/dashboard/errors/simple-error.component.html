@@ -7,13 +7,13 @@
     </div>
 
     <div class="text-black dark:!text-white text-center text-4xl font-extrabold leading-tight tracking-tight
-                md:text-5xl md:leading-none">{{ this.dataService.error_title }}</div>
+                md:text-5xl md:leading-none">{{ this.dataService.error_title | translate }}</div>
     <div class="text-slate-500 mt-2 text-center text-lg font-medium tracking-tight md:text-xl">
-      {{ this.dataService.error_desc }}
+      {{ this.dataService.error_desc | translate }}
     </div>
 
     <div class="flex items-center justify-between gap-x-8 mt-12">
-     <a routerLink="/dashboard">
+     <a href="/dashboard" (click)="localStorage.removeItem('active_guild'); dataService.active_guild = null;">
        <button type="button" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300
                                  font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 focus:outline-none
                                  dark:focus:ring-red-500">
