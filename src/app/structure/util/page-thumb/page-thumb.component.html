@@ -14,7 +14,9 @@
     <div class="mt-1 text-center text-4xl md:text-5xl font-extrabold !leading-tight tracking-tight
                 transition-colors duration-500 bg-gradient-to-r bg-clip-text text-transparent"
          [ngClass]="color == 'yellow' ? 'from-yellow-400 via-orange-500 to-orange-600' :
-         color == 'red' ? 'from-red-800 via-red-500 to-red-600' : 'from-blue-400 via-blue-500 to-blue-700'">
+                    color == 'red' ? 'from-red-800 via-red-500 to-red-600' :
+                    color == 'green' ? 'from-green-300 via-green-500 to-green-700' :
+                                       'from-blue-400 via-blue-500 to-blue-700'">
       {{ title }}
     </div>
     <div class="text-gray-500 mt-2 text-xl max-w-3xl text-center tracking-tight transition-colors duration-500">

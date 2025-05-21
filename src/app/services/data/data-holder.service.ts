@@ -5,7 +5,7 @@ import {DiscordUser} from "../types/discord/User";
 import {Subject} from "rxjs";
 import {Guild} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
-import {SupportTheme} from "../types/Tickets";
+import {SupportTheme, TicketSnippet} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,7 @@ export class DataHolderService {
   readonly initTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
                                     default_roles: [], pending: true, action: 'CREATE' };
   support_themes: SupportTheme[] = [];
+  selectedSnippet: TicketSnippet | null = null;
 
   constructor(private router: Router) {
     const temp_guild: string | null = localStorage.getItem('active_guild');

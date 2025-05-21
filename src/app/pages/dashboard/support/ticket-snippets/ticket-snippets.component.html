@@ -1,32 +1,136 @@
 <dashboard-layout>
-
+  <!-- TODO:
+  1. real api data
+  2. data-loader false/true
+  3. empty anzeige falls kein snippet gewählt (liste leer z.b.)
+  -->
   <!-- Body -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
-    <!-- Role Modal TODO -->
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_SNIPPETS_SUBTITLE' | translate" [title]="'PAGE_SNIPPETS_TITLE' | translate"
+                [color]="'green'" [desc]="'PAGE_SNIPPETS_DESC' | translate"></page-thumb>
 
-    <!-- Page Thumb TODO -->
+    <div class="flex-1 my-4 flex flex-col items-center">
+      <div class="p-4 py-2 sm:p-5 flex-grow flex flex-col w-full">
+        <div class="mx-auto w-full h-[calc(100vh-30rem)] px-4 lg:!px-0">
 
-    <!-- Alert Box  TODO -->
+          <!-- Table Header -->
+          <div class="bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
+                    dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
+                    transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1 p-4 mb-4">
 
-    <div class="flex-1 my-4">
-      <div class="p-3 sm:p-5">
-        <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
-          <div class="bg-gradient-to-tr from-white via-slate-50 to-blue-50 dark:from-slate-800
-                        dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
-                          transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1 overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4">
+              <div class="w-full md:w-2/6">
+                <div class="flex-1 ml-4 lg:ml-0 ">
+                  <div class="relative self-center">
+                    <!-- Search TODO -->
+                    <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                    <input type="text" [placeholder]="'PLACEHOLDER_SNIPPET_SEARCH' | translate"
+                           class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+                          dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
+                  </div>
+                </div>
+              </div>
 
-            <!-- Table Buttons TODO -->
+              <!-- Table Buttons -->
+              <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center
+                          justify-end md:space-x-3 flex-shrink-0">
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-green-700
+                                           via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                           focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br">
+                  <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_SNIPPET_ADD' | translate }}
+                  <!-- TODO -->
+                </button>
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-red-700
+                                           via-red-600 to-red-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
+                                           focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br">
+                  <fa-icon [icon]="faBullhorn" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET' | translate }}
+                  <!-- TODO -->
+                </button>
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                           via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
+                                           py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none">
+                  <!-- TODO -->
+                  <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
+                  {{ 'BUTTON_CACHE_REFRESH' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
 
-            <!-- Table TODO -->
+          <!-- Layout for Table and Details -->
+          <div class="flex flex-col lg:flex-row gap-4 h-full">
 
+            <!-- Left column (Table) -->
+            <div class="lg:w-1/3 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
+              dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
+              transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1 flex flex-col">
+              <data-table [tconfig]="tableConfig" class="h-full" (rowClick)="this.onSnippetSelect($event)" />
+            </div>
+
+            <!-- Right column (Snippet details) -->
+            <div class="lg:w-2/3 bg-gradient-to-tr from-white via-slate-50 to-blue-50 dark:from-slate-800
+              dark:via-slate-800 dark:to-slate-900 shadow-md dark:shadow-xl sm:rounded-lg
+              transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1 pl-4 flex flex-col">
+
+              @if (this.dataService.selectedSnippet) {
+                <div class="flex flex-col flex-grow overflow-y-auto">
+                  <h2 class="text-xl font-medium text-gray-800 dark:text-white mb-2 pt-2.5">
+                    📜 ~ SNIPPET VORSCHAU: <code class="ml-2 text-2xl">{{ this.dataService.selectedSnippet.name }}</code>
+                  </h2>
+
+                  <p class="text-gray-500 mt-2 tracking-tight transition-colors duration-500 mb-0">
+                    ❓ › Mithilfe von Text-Snippets kannst du blitzschnell Antworten auf häufig gestellte Fragen innerhalb
+                    von Support-Tickets beantworten, in dem du einen vordefinierten Text abrufst - kann mithilfe von dem Slashbefehl <code>/ticket snippet verwenden {{this.dataService.selectedSnippet.name}}</code> gesendet werden.
+                  </p>
+
+                  <hr class="my-6 border-gray-300 dark:border-gray-600 w-3/4 self-center" />
+
+                  <div class="flex-grow flex w-full justify-between pr-6">
+                    <div class="w-1/2">
+                      <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        🚔 ~ VORSCHAU IM SUPPORT-TICKET
+                      </h3>
+                      <p class="text-gray-500 dark:text-gray-400 mb-4">
+                        📜 › So könnte das ausgewählte Text-Snippet dem User angezeigt werden, welcher das Support-Ticket erstellt hat sofern ein Teammitglied dieses im Ticket verwendet.
+                      </p>
+                    </div>
+
+                    <div class="flex">
+                      <div class="discord-embed mb-6 h-fit">
+                        <div class="author">
+                          <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
+                          <span>Mr.Supercool ~ ADMINISTRATOR</span>
+                        </div>
+
+                        <div class="description">
+                          {{ this.dataService.selectedSnippet.desc | markdown }}
+                        </div>
+
+                        <div class="footer">
+                          @if (this.dataService.active_guild) {
+                            <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
+                            <span>{{ this.dataService.active_guild.name }}</span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              } @else {
+                <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 p-6">
+                  <fa-icon [icon]="faBullhorn" class="text-4xl mb-3"></fa-icon>
+                  <p>{{ 'PLACEHOLDER_SELECT_SNIPPET' | translate }}</p>
+                </div>
+              }
+
+            </div>
           </div>
         </div>
       </div>
-
     </div>
-
   </section>
-
 </dashboard-layout>

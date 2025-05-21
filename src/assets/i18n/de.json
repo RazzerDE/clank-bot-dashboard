@@ -134,6 +134,10 @@
   "PAGE_THEMES_TITLE": "Support-Themen",
   "PAGE_THEMES_DESC": "› Auf dieser Seite siehst du alle Support-Themen welche User bei der Erstellung eines Tickets auf dem Discord-Server auswählen können. ",
 
+  "PAGE_SNIPPETS_SUBTITLE": "📜 ~ VORGEFERTIGTE NACHRICHTEN FÜR TICKETS",
+  "PAGE_SNIPPETS_TITLE": "Ticket Text-Snippets",
+  "PAGE_SNIPPETS_DESC": "› Snippets sind vorgefertigte Nachrichten, die du in Tickets verwenden kannst, um schneller auf häufige Fragen zu antworten.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODUL NICHT AKTIV!",
   "PAGE_SETUP_MODULE_DESC_0": "Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM AKTIV - VERBESSERUNGEN MÖGLICH!",
@@ -347,10 +351,14 @@
 
   "PLACEHOLDER_ROLE_SEARCH": "Nach Rolle suchen.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Nach Support-Thema suchen.. 📚",
+  "PLACEHOLDER_SNIPPET_SEARCH": "Nach einem Text-Snippet suchen.. ✏️",
   "PLACEHOLDER_THEME_EMPTY": "😢 ~ Keine Support-Themen gefunden..",
+  "PLACEHOLDER_SNIPPET_EMPTY": "😶‍🌫️ ~ Keine Snippets gefunden..",
   "PLACEHOLDER_THEME_DESC": "💬 ~ BESCHREIBUNG",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Rolle hinzufügen",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Thema hinzufügen",
+  "PLACEHOLDER_BUTTON_SNIPPET_ADD": "Snippet hinzufügen",
+  "PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET": "Ticket-Ankündigung festlegen",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Standard Erwähnte-Rolle",
   "PLACEHOLDER_BUTTON_RESET": "Standard Ping-Rollen entfernen",
 

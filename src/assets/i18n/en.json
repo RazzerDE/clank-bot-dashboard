@@ -134,6 +134,10 @@
   "PAGE_THEMES_TITLE": "Support Themes",
   "PAGE_THEMES_DESC": "› On this page, you can see all the support themes that users can select when creating a ticket on the Discord server. ",
 
+  "PAGE_SNIPPETS_SUBTITLE": "📜 ~ PREMADE MESSAGES FOR TICKETS",
+  "PAGE_SNIPPETS_TITLE": "Ticket Text Snippets",
+  "PAGE_SNIPPETS_DESC": "› Snippets are premade messages you can use in tickets to respond faster to common questions.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM ACTIVE - IMPROVEMENTS POSSIBLE!",
@@ -347,10 +351,14 @@
 
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Search for support theme.. 📚",
+  "PLACEHOLDER_SNIPPET_SEARCH": "Search for a text snippet.. ✏️",
   "PLACEHOLDER_THEME_EMPTY": "😢 ~ No support themes found..",
+  "PLACEHOLDER_SNIPPET_EMPTY": "😶‍🌫️ ~ No text snippets found..",
   "PLACEHOLDER_THEME_DESC": "💬 ~ DESCRIPTION",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
+  "PLACEHOLDER_BUTTON_SNIPPET_ADD": "Add snippet",
+  "PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET": "Set ticket announcement",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Default Mentioned-Role",
   "PLACEHOLDER_BUTTON_RESET": "Remove default mentioned roles",
 
