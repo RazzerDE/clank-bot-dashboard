@@ -137,6 +137,10 @@
   "PAGE_SNIPPETS_SUBTITLE": "📜 ~ PREMADE MESSAGES FOR TICKETS",
   "PAGE_SNIPPETS_TITLE": "Ticket Text Snippets",
   "PAGE_SNIPPETS_DESC": "› Snippets are premade messages you can use in tickets to respond faster to common questions.",
+  "PAGE_SNIPPETS_PREVIEW": "📜 ~ SNIPPET PREVIEW:",
+  "PAGE_SNIPPETS_PREVIEW_DESC": "❓ › With the help of text snippets, you can quickly respond to frequently asked questions within support tickets by retrieving a predefined text - can be sent using the slash command <code>/ticket snippet use {{name}}</code>.",
+  "PAGE_SNIPPETS_PREVIEW_TITLE": "🚔 ~ PREVIEW IN SUPPORT TICKET",
+  "PAGE_SNIPPETS_PREVIEW_INTRO": "ℹ️ › This is how the selected text snippet could be displayed to the user who created the support ticket if a team member uses it in the ticket.",
 
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",

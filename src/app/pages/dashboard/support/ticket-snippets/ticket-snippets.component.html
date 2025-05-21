@@ -25,9 +25,8 @@
               <div class="w-full md:w-2/6">
                 <div class="flex-1 ml-4 lg:ml-0 ">
                   <div class="relative self-center">
-                    <!-- Search TODO -->
                     <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                    <input type="text" [placeholder]="'PLACEHOLDER_SNIPPET_SEARCH' | translate"
+                    <input type="text" [placeholder]="'PLACEHOLDER_SNIPPET_SEARCH' | translate" (keyup)="searchSnippet($event)"
                            class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                           dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
                   </div>
@@ -79,12 +78,11 @@
               @if (this.dataService.selectedSnippet) {
                 <div class="flex flex-col flex-grow overflow-y-auto">
                   <h2 class="text-xl font-medium text-gray-800 dark:text-white mb-2 pt-2.5">
-                    📜 ~ SNIPPET VORSCHAU: <code class="ml-2 text-2xl">{{ this.dataService.selectedSnippet.name }}</code>
+                    {{ 'PAGE_SNIPPETS_PREVIEW' | translate }} <code class="ml-2 text-2xl">{{ this.dataService.selectedSnippet.name }}</code>
                   </h2>
 
-                  <p class="text-gray-500 mt-2 tracking-tight transition-colors duration-500 mb-0">
-                    ❓ › Mithilfe von Text-Snippets kannst du blitzschnell Antworten auf häufig gestellte Fragen innerhalb
-                    von Support-Tickets beantworten, in dem du einen vordefinierten Text abrufst - kann mithilfe von dem Slashbefehl <code>/ticket snippet verwenden {{this.dataService.selectedSnippet.name}}</code> gesendet werden.
+                  <p class="text-gray-500 mt-2 tracking-tight transition-colors duration-500 mb-0"
+                     [innerHTML]="'PAGE_SNIPPETS_PREVIEW_DESC' | translate: { name: this.dataService.selectedSnippet.name }">
                   </p>
 
                   <hr class="my-6 border-gray-300 dark:border-gray-600 w-3/4 self-center" />
@@ -92,10 +90,10 @@
                   <div class="flex-grow flex w-full justify-between pr-6">
                     <div class="w-1/2">
                       <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        🚔 ~ VORSCHAU IM SUPPORT-TICKET
+                        {{ 'PAGE_SNIPPETS_PREVIEW_TITLE' | translate }}
                       </h3>
                       <p class="text-gray-500 dark:text-gray-400 mb-4">
-                        📜 › So könnte das ausgewählte Text-Snippet dem User angezeigt werden, welcher das Support-Ticket erstellt hat sofern ein Teammitglied dieses im Ticket verwendet.
+                        {{ 'PAGE_SNIPPETS_PREVIEW_INTRO' | translate }}
                       </p>
                     </div>
 

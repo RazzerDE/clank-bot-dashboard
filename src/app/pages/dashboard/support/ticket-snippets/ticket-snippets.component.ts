@@ -61,6 +61,22 @@ export class TicketSnippetsComponent {
   }
 
   /**
+   * Filters the text-snippets based on the search term entered by the user.
+   *
+   * This method updates the `filteredThemes` array to include only the snippets
+   * whose names contain the search term. The search is case-insensitive.
+   *
+   * @param {Event} event - The input event triggered by the search field.
+   */
+  protected searchSnippet(event: Event): void {
+    const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredSnippets = this.snippets.filter(theme =>
+      theme.name.toLowerCase().includes(searchTerm) ||
+      theme.desc.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  /**
    * Getter for the table configuration used in the Ticket Snippets component.
    * This configuration defines the structure and behavior of the table displayed
    * in the component, including columns, rows, and action buttons.

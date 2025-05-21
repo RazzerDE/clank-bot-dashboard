@@ -132,11 +132,15 @@
 
   "PAGE_THEMES_SUBTITLE": "📂 ~ SUPPORT-THEMEN FÜR TICKETS FESTLEGEN",
   "PAGE_THEMES_TITLE": "Support-Themen",
-  "PAGE_THEMES_DESC": "› Auf dieser Seite siehst du alle Support-Themen welche User bei der Erstellung eines Tickets auf dem Discord-Server auswählen können. ",
+  "PAGE_THEMES_DESC": "› Auf dieser Seite siehst du alle Support-Themen welche User bei der Erstellung eines Tickets auf dem Discord-Server auswählen können.",
 
   "PAGE_SNIPPETS_SUBTITLE": "📜 ~ VORGEFERTIGTE NACHRICHTEN FÜR TICKETS",
   "PAGE_SNIPPETS_TITLE": "Ticket Text-Snippets",
   "PAGE_SNIPPETS_DESC": "› Snippets sind vorgefertigte Nachrichten, die du in Tickets verwenden kannst, um schneller auf häufige Fragen zu antworten.",
+  "PAGE_SNIPPETS_PREVIEW": "📜 ~ SNIPPET VORSCHAU:",
+  "PAGE_SNIPPETS_PREVIEW_DESC": "❓ › Mithilfe von Text-Snippets kannst du blitzschnell Antworten auf häufig gestellte Fragen innerhalb von Support-Tickets beantworten, in dem du einen vordefinierten Text abrufst - kann mithilfe von dem Slashbefehl <code>/ticket snippet verwenden {{name}}</code> gesendet werden.",
+  "PAGE_SNIPPETS_PREVIEW_TITLE": "🚔 ~ VORSCHAU IM SUPPORT-TICKET",
+  "PAGE_SNIPPETS_PREVIEW_INTRO": "ℹ️ › So könnte das ausgewählte Text-Snippet dem User angezeigt werden, welcher das Support-Ticket erstellt hat sofern ein Teammitglied dieses im Ticket verwendet.",
 
   "PAGE_SETUP_MODULE_TITLE_0": "MODUL NICHT AKTIV!",
   "PAGE_SETUP_MODULE_DESC_0": "Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.",
