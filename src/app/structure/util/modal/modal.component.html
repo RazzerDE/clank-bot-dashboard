@@ -28,6 +28,10 @@
             {{ 'PLACEHOLDER_THEME_MODAL_TITLE' | translate }}
           } @else if (type === 'SUPPORT_THEME_EDIT') {
             {{ 'PLACEHOLDER_THEME_EDIT_MODAL_TITLE' | translate }}
+          } @else if (type === 'SUPPORT_SNIPPET_ADD') {
+            {{ 'PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE' | translate }}
+          } @else if (type === 'SUPPORT_SNIPPET_EDIT') {
+            {{ 'PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -44,8 +48,13 @@
           @if (type === 'SUPPORT_THEME_FAQ') {
             <template-faq-answer [content]="this.content" [type]="this.type"/>
           } @else if ((type.endsWith('ADD') || type.endsWith('EDIT')) && !type.includes('TEAMLIST')) {
-            <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
-                                        [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="this.theme"/>
+            @if (type === 'SUPPORT_THEME_ADD' || type === 'SUPPORT_THEME_EDIT') {
+              <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
+                                          [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="this.theme" />
+            } @else if (type.startsWith('SUPPORT_SNIPPET') && secondSnippetAdd) {
+              <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true"
+                                    [externalMarkdown]="secondSnippetAdd.discordMarkdown" />
+            }
           } @else { <!-- Default Mention & Teamlist -->
             <template-role-picker [type]="type" [discordRoles]="discordRoles"
                                   [isDefaultMentioned]="isDefaultMentioned.bind(this)" [action]="action" />
@@ -54,9 +63,13 @@
       </div>
     </div>
 
-    <!-- Second Modal (only for Bot-FAQ Answer) -->
+    <!-- Second Modal (only for Bot-FAQ Answer & Snippet Preview) -->
     @if ((type.endsWith('ADD') || type.endsWith('EDIT')) && !type.includes('TEAMLIST')) {
-      <template-support-theme-add [showFirst]="false" />
+      @if (!type.startsWith('SUPPORT_SNIPPET')) {
+        <template-support-theme-add [showFirst]="false" />
+      } @else {
+        <template-snippet-add #secondSnippetAdd [type]="type" [newSnippet]="obj" [showFirst]="false" />
+      }
     }
   </div>
 </div>

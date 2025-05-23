@@ -3,12 +3,17 @@
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
-    <!-- TODO: Modal for creating/editing snippets -->
-    <!-- TODO Alert-Box for success/error messages -->
+    <!-- Role Modal -->
+    <app-modal [type]="modalType" [obj]="this.newSnippet" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_SNIPPETS_SUBTITLE' | translate" [title]="'PAGE_SNIPPETS_TITLE' | translate"
                 [color]="'green'" [desc]="'PAGE_SNIPPETS_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
 
     <div class="flex-1 my-4 flex flex-col items-center">
       <div class="p-4 py-2 sm:p-5 flex-grow flex flex-col w-full">
@@ -36,9 +41,9 @@
                           justify-end md:space-x-3 flex-shrink-0">
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-green-700
                                            via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
-                                           focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br">
+                                           focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br"
+                        (click)="this.openModal('SUPPORT_SNIPPET_ADD')">
                   <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_SNIPPET_ADD' | translate }}
-                  <!-- TODO -->
                 </button>
                 <button type="button" class="flex items-center justify-center text-white focus:ring-4 font-medium
                                              rounded-lg text-sm px-4 py-2 focus:outline-none bg-gradient-to-r hover:bg-gradient-to-br"
@@ -96,7 +101,7 @@
 
                   <hr class="my-6 border-gray-300 dark:border-gray-600 w-3/4 self-center" />
 
-                  <div class="flex-grow flex w-full justify-between pr-6">
+                  <div class="flex-grow flex w-full justify-start pr-6 gap-x-6">
                     <div class="w-1/2">
                       <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
                         {{ 'PAGE_SNIPPETS_PREVIEW_TITLE' | translate }}
@@ -106,23 +111,7 @@
                       </p>
                     </div>
 
-                    <div class="flex">
-                      <div class="discord-embed mb-6 h-fit">
-                        <div class="author">
-                          <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
-                          <span>Mr.Supercool ~ ADMINISTRATOR</span>
-                        </div>
-
-                        <div class="description" [innerHTML]="this.dataService.selectedSnippet.desc | markdown"></div>
-
-                        <div class="footer">
-                          @if (this.dataService.active_guild) {
-                            <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
-                            <span>{{ this.dataService.active_guild.name }}</span>
-                          }
-                        </div>
-                      </div>
-                    </div>
+                    <template-discord-markdown [type]="'SUPPORT_SNIPPET_EDIT'" [content]="this.dataService.selectedSnippet.desc" class="!mt-0 mb-6 !ml-0"/>
                   </div>
                 </div>
               } @else {

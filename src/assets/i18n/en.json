@@ -395,6 +395,17 @@
   "PLACEHOLDER_THEME_UPDATE_PENDING": "🔶 - This theme will be automatically edited in the next few minutes - refresh the cache!",
   "PLACEHOLDER_THEME_FAQ": "🤖 - This theme will be automatically answered - click for more info!",
 
+  "PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE": "📜 ~ Create a new Snippet",
+  "PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE": "✍️ ~ Edit a Snippet",
+  "PLACEHOLDER_SNIPPET_MODAL_NAME": "What should the text snippet be called?",
+  "PLACEHOLDER_SNIPPET_MODAL_NAME_PLACEHOLDER": "become-partner, new-event, unban, etc.",
+  "PLACEHOLDER_SNIPPET_MODAL_DESC": "What is the content of the snippet?",
+  "PLACEHOLDER_SNIPPET_MODAL_DESC_PLACEHOLDER": "Here you can enter the content of the snippet that will be displayed to the user.\n\nDiscord's formatting is supported.",
+  "PLACEHOLDER_SNIPPET_MODAL_BUTTON": "Create text snippet",
+  "PLACEHOLDER_SNIPPET_MODAL_BUTTON_EDIT": "Edit text snippet",
+  "PLACEHOLDER_SNIPPET_MODAL2_TITLE": "🖼️ ~ Preview in Discord Ticket",
+  "PLACEHOLDER_SNIPPET_PREVIEW_DESC": "Write something in the <strong>left text field</strong>..",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatic Bot Response",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Use as FAQ theme",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "How should the bot respond to the theme?",

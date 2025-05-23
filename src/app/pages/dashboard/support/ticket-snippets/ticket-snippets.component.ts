@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -19,10 +19,14 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {TableConfig} from "../../../../services/types/Config";
 import {TicketAnnouncement, TicketSnippet} from "../../../../services/types/Tickets";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
+import {
+  DiscordMarkdownComponent
+} from "../../../../structure/util/modal/templates/discord-markdown/discord-markdown.component";
 
 @Component({
   selector: 'app-ticket-snippets',
@@ -33,31 +37,36 @@ import {ApiService} from "../../../../services/api/api.service";
     DataTableComponent,
     FaIconComponent,
     NgOptimizedImage,
-    MarkdownPipe,
     NgClass,
+    AlertBoxComponent,
+    ModalComponent,
+    DiscordMarkdownComponent,
   ],
   templateUrl: './ticket-snippets.component.html',
   styleUrl: './ticket-snippets.component.scss'
 })
 export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   private subscriptions: Subscription[] = [];
+  protected disabledCacheBtn: boolean = false;
   protected dataLoading: { snippets: boolean, announcement: boolean } = { snippets: true, announcement: true };
   private startLoading: boolean = false;
-  protected disabledCacheBtn: boolean = false;
+  protected modalType: string = 'SUPPORT_SNIPPET_ADD';
 
+  protected newSnippet: TicketSnippet = { name: '', desc: '' };
   protected snippets: TicketSnippet[] = [];
   protected filteredSnippets: TicketSnippet[] = this.snippets;
   protected currentAnnouncement: TicketAnnouncement | null = null;
 
+  @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faBullhorn: IconDefinition = faBullhorn;
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faPencil: IconDefinition = faPencil;
   protected readonly faXmark: IconDefinition = faXmark;
-  protected readonly faInfoCircle = faInfoCircle;
-  protected readonly faExclamationCircle = faExclamationCircle;
-  protected readonly faExclamationTriangle = faExclamationTriangle;
+  protected readonly faInfoCircle: IconDefinition = faInfoCircle;
+  protected readonly faExclamationCircle: IconDefinition = faExclamationCircle;
+  protected readonly faExclamationTriangle: IconDefinition = faExclamationTriangle;
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService) {
     document.title = 'Ticket Snippets ~ Clank Discord-Bot';
@@ -109,12 +118,22 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
    * after 15 seconds.
    */
-  refreshCache(): void {
+  protected refreshCache(): void {
     this.disabledCacheBtn = true;
     this.dataService.isLoading = true;
     this.getSnippetDetails(true);
 
     setTimeout((): void => { this.disabledCacheBtn = false; }, 15000);
+  }
+
+  /**
+   * Opens a modal dialog of the specified type.
+   *
+   * @param {string} type - The type of modal to open (e.g., 'SUPPORT_SNIPPET_ADD').
+   */
+  protected openModal(type: string): void {
+    this.modalType = type;
+    this.modal.showModal();
   }
 
   /**

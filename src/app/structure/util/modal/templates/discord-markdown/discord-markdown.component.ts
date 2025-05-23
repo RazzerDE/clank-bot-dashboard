@@ -19,6 +19,7 @@ export class DiscordMarkdownComponent {
   @Input() content: string = '';
 
   @ViewChild('faqPreview') faqPreview!: ElementRef<HTMLSpanElement>;
+  @ViewChild('ticketPreview') ticketPreview!: ElementRef<HTMLDivElement>;
 
   constructor(protected dataService: DataHolderService) {
   }

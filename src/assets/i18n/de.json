@@ -395,6 +395,17 @@
   "PLACEHOLDER_THEME_UPDATE_PENDING": "🔶 - Dieses Thema wird in den nächsten Minuten automatisch bearbeitet - aktualisiere den Cache!",
   "PLACEHOLDER_THEME_FAQ": "🤖 - Dieses Thema wird automatisch beantwortet - klicke für mehr Infos!",
 
+  "PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE": "📜 ~ Snippet erstellen",
+  "PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE": "✍️ ~ Snippet bearbeiten",
+  "PLACEHOLDER_SNIPPET_MODAL_NAME": "Wie soll das Text-Snippet heißen?",
+  "PLACEHOLDER_SNIPPET_MODAL_NAME_PLACEHOLDER": "partner-werden, gwstart, unban, etc.",
+  "PLACEHOLDER_SNIPPET_MODAL_DESC": "Wie lautet der Inhalt des Snippets?",
+  "PLACEHOLDER_SNIPPET_MODAL_DESC_PLACEHOLDER": "Hier kannst du den Inhalt des Snippets eingeben, der dem User angezeigt wird.\n\nDiscord's Formattierung wird unterstützt.",
+  "PLACEHOLDER_SNIPPET_MODAL_BUTTON": "Text-Snippet erstellen",
+  "PLACEHOLDER_SNIPPET_MODAL_BUTTON_EDIT": "Text-Snippet bearbeiten",
+  "PLACEHOLDER_SNIPPET_MODAL2_TITLE": "🖼️ ~ Vorschau im Discord-Ticket",
+  "PLACEHOLDER_SNIPPET_PREVIEW_DESC": "Schreibe etwas in das <strong>linke Textfeld</strong>..",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Als FAQ-Thema verwenden",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "Wie soll der Bot auf das Thema antworten?",
