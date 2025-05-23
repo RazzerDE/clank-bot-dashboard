@@ -1,5 +1,11 @@
 import {Role} from "./discord/Guilds";
 
+export interface TicketAnnouncement {
+  level: number;
+  description: string;
+  end_date: Date;
+}
+
 export interface TicketSnippet {
   guild_id?: string; // optional
   name: string;

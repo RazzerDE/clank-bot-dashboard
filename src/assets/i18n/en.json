@@ -358,11 +358,13 @@
   "PLACEHOLDER_SNIPPET_SEARCH": "Search for a text snippet.. ✏️",
   "PLACEHOLDER_THEME_EMPTY": "😢 ~ No support themes found..",
   "PLACEHOLDER_SNIPPET_EMPTY": "😶‍🌫️ ~ No text snippets found..",
+  "PLACEHOLDER_SNIPPET_NO_RESULTS": "No Snippets were created..",
   "PLACEHOLDER_THEME_DESC": "💬 ~ DESCRIPTION",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
   "PLACEHOLDER_BUTTON_SNIPPET_ADD": "Add snippet",
   "PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET": "Set ticket announcement",
+  "PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT": "Edit ticket announcement",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Default Mentioned-Role",
   "PLACEHOLDER_BUTTON_RESET": "Remove default mentioned roles",
 

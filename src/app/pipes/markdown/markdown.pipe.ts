@@ -12,22 +12,36 @@ export class MarkdownPipe implements PipeTransform {
       return '';
     }
 
-    // HTML-Escape: Potenziell gefährliche Zeichen escapen
+    // HTML-Escape: escape potential XSS attacks
     let safeValue: string = this.escapeHtml(value);
 
-    // Markdown-Formatierung anwenden
+    // apply discord markdown
     return safeValue
-      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')               // Bold (**)
-      .replace(/__(.*?)__/g, '<u>$1</u>')                   // Underline (__)
-      .replace(/\*(.*?)\*/g, '<i>$1</i>')                   // Italic (*)
-      .replace(/~~(.*?)~~/g, '<s>$1</s>')                   // Strikethrough (~~)
-      .replace(/^### (.*$)/gm, '<h3>$1</h3>')               // Headline level 3 (###)
-      .replace(/^## (.*$)/gm, '<h2>$1</h2>')                // Headline level 2 (##)
-      .replace(/^# (.*$)/gm, '<h1>$1</h1>')                 // Headline level 1 (#)
-      .replace(/^#- (.*$)/gm, '<small>$1</small>')          // Smaller text (#-)
-      .replace(/&lt;#\d+&gt;/g, '<code>#channel-mention</code>')  // Channel mentions
+      .replace(/\n/g, '<br />')                                       // Line break (\n\n)
+      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')                         // Bold (**)
+      .replace(/__(.*?)__/g, '<u>$1</u>')                             // Underline (__)
+      .replace(/\*(.*?)\*/g, '<i>$1</i>')                             // Italic (*)
+      .replace(/~~(.*?)~~/g, '<s>$1</s>')                             // Strikethrough (~~)
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')                         // Headline level 3 (###)
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')                          // Headline level 2 (##)
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')                           // Headline level 1 (#)
+      .replace(/^#- (.*$)/gm, '<small>$1</small>')                    // Smaller text (#-)
+      .replace(/(^|<br \/>)(\s*)&gt;/g, '$1  $2')                 // Blockquote escape (>)
+      .replace(/&lt;#\d+&gt;/g, '<code>#channel-mention</code>')      // Channel mentions
       .replace(/&lt;@&amp;\d+&gt;/g, '<code>@role-mention</code>')    // Role mentions
-      .replace(/&lt;@\d+&gt;/g, '<code>@user-mention</code>');    // User mentions
+      .replace(/&lt;@\d+&gt;/g, '<code>@user-mention</code>')         // User mentions
+
+      // (animated) discord guild emoji
+      .replace(/&lt;a:(.*?):([\d]+)&gt;/g, (match, name, id) => {
+        return this.isValidEmojiId(id) ?
+          `<img src="https://cdn.discordapp.com/emojis/${id}.gif?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
+          match;
+      })
+      .replace(/&lt;:(.*?):([\d]+)&gt;/g, (match, name, id) => {
+        return this.isValidEmojiId(id) ?
+          `<img src="https://cdn.discordapp.com/emojis/${id}.png?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
+          match;
+      });
   }
 
   /**
@@ -45,5 +59,14 @@ export class MarkdownPipe implements PipeTransform {
     };
 
     return text.replace(/[&<>"']/g, (match) => htmlEscapes[match]);
+  }
+
+  /**
+   * Validates an emoji ID to ensure it contains only digits.
+   * @param id The emoji ID to validate.
+   * @returns true if the ID is valid.
+   */
+  private isValidEmojiId(id: string): boolean {
+    return /^\d+$/.test(id) && id.length > 0 && id.length < 20;
   }
 }

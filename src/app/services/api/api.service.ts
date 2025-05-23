@@ -9,7 +9,7 @@ import {AuthService} from "../auth/auth.service";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
-import {SupportTheme} from "../types/Tickets";
+import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +83,28 @@ export class ApiService {
    */
   getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
     return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the predefined text snippets for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the ticket snippets.
+   * @returns An Observable that emits the ticket snippets.
+   */
+  getSnippets(guild_id: string): Observable<TicketSnippet[]> {
+    return this.http.get<TicketSnippet[]>(`${this.API_URL}/guilds/support-snippets?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the current ongoing ticket announcement for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the active ticket announcement.
+   * @returns An Observable that emits the announcement
+   */
+  getTicketAnnouncement(guild_id: string): Observable<TicketAnnouncement> {
+    return this.http.get<TicketAnnouncement>(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

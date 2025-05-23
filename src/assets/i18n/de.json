@@ -358,11 +358,13 @@
   "PLACEHOLDER_SNIPPET_SEARCH": "Nach einem Text-Snippet suchen.. ✏️",
   "PLACEHOLDER_THEME_EMPTY": "😢 ~ Keine Support-Themen gefunden..",
   "PLACEHOLDER_SNIPPET_EMPTY": "😶‍🌫️ ~ Keine Snippets gefunden..",
+  "PLACEHOLDER_SNIPPET_NO_RESULTS": "Keine Snippets wurden erstellt..",
   "PLACEHOLDER_THEME_DESC": "💬 ~ BESCHREIBUNG",
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Rolle hinzufügen",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Thema hinzufügen",
   "PLACEHOLDER_BUTTON_SNIPPET_ADD": "Snippet hinzufügen",
   "PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET": "Ticket-Ankündigung festlegen",
+  "PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT": "Ticket-Ankündigung bearbeiten",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Standard Erwähnte-Rolle",
   "PLACEHOLDER_BUTTON_RESET": "Standard Ping-Rollen entfernen",
 
