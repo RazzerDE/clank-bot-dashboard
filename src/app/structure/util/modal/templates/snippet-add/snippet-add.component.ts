@@ -37,6 +37,11 @@ export class SnippetAddComponent {
     // TODO
   }
 
+  /**
+   * Updates the snippet's discord preview based on the input in the text area.
+   *
+   * @param {KeyboardEvent} event - The keyboard event triggered by user input.
+   */
   protected updateSnippetPreview(event: KeyboardEvent): void {
     const target: HTMLTextAreaElement = event.target as HTMLTextAreaElement;
     const markdown: DiscordMarkdownComponent = this.discordMarkdown || this.externalMarkdown;

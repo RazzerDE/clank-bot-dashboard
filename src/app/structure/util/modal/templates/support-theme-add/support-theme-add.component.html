@@ -117,7 +117,7 @@
           {{ 'PLACEHOLDER_THEME_MODAL2_PREVIEW' | translate }}
         </p>
 
-        <template-discord-markdown [type]="this.type" class="!mt-0"/>
+        <template-discord-markdown [type]="this.type" [content]="this.dataService.faq_answer" class="!mt-0"/>
       </div>
     </div>
   </div>
