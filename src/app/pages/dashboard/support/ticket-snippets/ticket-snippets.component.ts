@@ -2,7 +2,7 @@ import {AfterViewChecked, Component, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
@@ -68,7 +68,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   protected readonly faExclamationCircle: IconDefinition = faExclamationCircle;
   protected readonly faExclamationTriangle: IconDefinition = faExclamationTriangle;
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
     document.title = 'Ticket Snippets ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSnippetDetails(); // first call to get the server data
@@ -147,7 +147,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
    * @param {boolean} [no_cache] - If true, bypasses the cache and fetches data
    *                               directly from the server.
    */
-  getSnippetDetails(no_cache?: boolean): void {
+  protected getSnippetDetails(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     this.startLoading = true;
 
@@ -212,6 +212,54 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
       });
 
     this.subscriptions.push(sub);
+  }
+
+  /**
+   * Adds a new text snippet to the server and updates the local data.
+   *
+   * This method sends a request to the server to create a new text snippet
+   * for the currently active guild. If the request is successful, the snippet
+   * is added to the local list of snippets, and the local storage is updated.
+   * If an error occurs, an appropriate error message is displayed to the user.
+   *
+   * @param {TicketSnippet} snippet - The snippet object to be added. It must include a name, a guild_id and description.
+   */
+  protected addTextSnippet(snippet: TicketSnippet): void {
+    if (!this.dataService.active_guild) { return; }
+    snippet.guild_id = this.dataService.active_guild!.id;
+
+    const sent_snippet: Subscription = this.apiService.createSnippet(snippet)
+      .subscribe({
+        next: (_data: any): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_SNIPPET_CREATION_TITLE'),
+            this.translate.instant('SUCCESS_SNIPPET_CREATION_DESC', { name: snippet.name }));
+
+          // update shown data
+          this.snippets.push(snippet);
+          // order snippets by name
+          this.snippets.sort((a: TicketSnippet, b: TicketSnippet): number => { return a.name.localeCompare(b.name); });
+          this.filteredSnippets.sort((a: TicketSnippet, b: TicketSnippet): number => { return a.name.localeCompare(b.name); });
+          this.dataService.selectedSnippet = snippet;
+          localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
+          this.newSnippet = { name: '', desc: '' }; // reset input fields
+          this.modal.hideModal();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 409) { // already exist
+            this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT'),
+              this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT_DESC', { name: snippet.name }));
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.modal.hideModal();
+        }
+      });
+
+    this.subscriptions.push(sent_snippet);
   }
 
   /**

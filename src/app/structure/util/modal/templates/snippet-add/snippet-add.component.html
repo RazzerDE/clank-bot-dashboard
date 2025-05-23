@@ -24,7 +24,7 @@
             class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
                font-medium rounded-lg py-2.5 text-center transition-colors duration-100
                dark:focus:ring-green-800 text-sm px-5"
-            [disabled]="isSnippetInvalid()" (click)="type === 'SUPPORT_SNIPPET_ADD' ? addTextSnippet(newSnippet) : editTextSnippet(newSnippet)">
+            [disabled]="isSnippetInvalid()" (click)="type === 'SUPPORT_SNIPPET_ADD' ? snippet_action(newSnippet) : editTextSnippet(newSnippet)">
       {{ type === 'SUPPORT_SNIPPET_ADD' ? ('PLACEHOLDER_SNIPPET_MODAL_BUTTON' | translate) : ('PLACEHOLDER_SNIPPET_MODAL_BUTTON_EDIT' | translate) }}
     </button>
   </div>
@@ -41,7 +41,7 @@
 
     <!-- Modal body -->
     <div class="p-4 md:p-5">
-      <template-discord-markdown [type]="this.type" class="!mt-0"/>
+      <template-discord-markdown [type]="this.type" [content]="newSnippet.desc" class="!mt-0"/>
     </div>
   </div>
 }

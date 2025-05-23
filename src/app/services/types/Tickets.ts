@@ -7,7 +7,7 @@ export interface TicketAnnouncement {
 }
 
 export interface TicketSnippet {
-  guild_id?: string; // optional
+  guild_id?: string;
   name: string;
   desc: string;
 }

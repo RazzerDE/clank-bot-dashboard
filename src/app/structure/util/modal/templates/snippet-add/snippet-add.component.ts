@@ -23,15 +23,12 @@ export class SnippetAddComponent {
   @Input() showFirst: boolean = false;
   @Input() newSnippet: TicketSnippet = {} as TicketSnippet;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined = undefined;
+  @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
 
   constructor(private translate: TranslateService) {}
-
-  protected addTextSnippet(snippet: TicketSnippet): void {
-    // TODO
-  }
 
   protected editTextSnippet(snippet: TicketSnippet): void {
     // TODO

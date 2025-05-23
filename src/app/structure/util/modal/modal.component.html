@@ -52,7 +52,7 @@
               <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
                                           [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="this.theme" />
             } @else if (type.startsWith('SUPPORT_SNIPPET') && secondSnippetAdd) {
-              <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true"
+              <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true" [snippet_action]="this.snippet_action"
                                     [externalMarkdown]="secondSnippetAdd.discordMarkdown" />
             }
           } @else { <!-- Default Mention & Teamlist -->

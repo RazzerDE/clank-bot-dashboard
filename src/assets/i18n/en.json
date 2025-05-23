@@ -221,6 +221,12 @@
   "ERROR_THEME_DELETION_CONFLICT_DESC": "The theme <strong>{{name}}</strong> is already scheduled for deletion soon!",
   "ERROR_THEME_EDIT_CONFLICT": "Theme name already taken",
   "ERROR_THEME_EDIT_CONFLICT_DESC": "The theme name <strong>{{name}}</strong> already exists or will be assigned soon!",
+
+  "SUCCESS_SNIPPET_CREATION_TITLE": "Snippet successfully created",
+  "SUCCESS_SNIPPET_CREATION_DESC": "The snippet <strong>{{name}}</strong> was successfully created!",
+  "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet already exists",
+  "ERROR_SNIPPET_CREATION_CONFLICT_DESC": "A snippet with the name <strong>{{name}}</strong> already exists!",
+
   "SUCCESS_VOTE_TITLE": "Successfully Voted",
   "SUCCESS_VOTE_DESC": "Your vote has been saved - Thank you for participating!",
   "SUCCESS_ROLE_DELETE": "Team role removed",

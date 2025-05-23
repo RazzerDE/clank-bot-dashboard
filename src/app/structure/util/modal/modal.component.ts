@@ -69,6 +69,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() theme: SupportTheme = {} as SupportTheme;
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
+  @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
 
   protected isVisible: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;

@@ -4,7 +4,7 @@
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Snippet Modal -->
-    <app-modal [type]="modalType" [obj]="this.newSnippet" />
+    <app-modal [type]="modalType" [obj]="this.newSnippet" [snippet_action]="addTextSnippet.bind(this)"/>
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_SNIPPETS_SUBTITLE' | translate" [title]="'PAGE_SNIPPETS_TITLE' | translate"

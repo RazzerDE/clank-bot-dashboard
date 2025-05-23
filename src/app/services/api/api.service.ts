@@ -98,6 +98,17 @@ export class ApiService {
   }
 
   /**
+   * Creates a new support theme for a specific guild.
+   *
+   * @param snippet - The ticket snippet object to be created.
+   * @returns An Observable emitting the server's response.
+   */
+  createSnippet(snippet: TicketSnippet): Observable<Object> {
+    return this.http.post(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the current ongoing ticket announcement for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the active ticket announcement.

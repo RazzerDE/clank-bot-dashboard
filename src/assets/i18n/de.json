@@ -221,6 +221,12 @@
   "ERROR_THEME_DELETION_CONFLICT_DESC": "Das Thema <strong>{{name}}</strong> wird bereits in Kürze gelöscht!",
   "ERROR_THEME_EDIT_CONFLICT": "Thema-Name bereits vergeben",
   "ERROR_THEME_EDIT_CONFLICT_DESC": "Der Themen-Name <strong>{{name}}</strong> existiert bereits oder wird in Kürze vergeben!",
+
+  "SUCCESS_SNIPPET_CREATION_TITLE": "Snippet erfolgreich erstellt",
+  "SUCCESS_SNIPPET_CREATION_DESC": "Das Snippet <strong>{{name}}</strong> wurde erfolgreich erstellt!",
+  "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet existiert bereits",
+  "ERROR_SNIPPET_CREATION_CONFLICT_DESC": "Ein Snippet mit dem Namen <strong>{{name}}</strong> existiert bereits!",
+
   "SUCCESS_VOTE_TITLE": "Erfolgreich abgestimmt",
   "SUCCESS_VOTE_DESC": "Dein Vote wurde gespeichert - Danke fürs teilnehmen!",
   "SUCCESS_ROLE_DELETE": "Team-Rolle entfernt",
