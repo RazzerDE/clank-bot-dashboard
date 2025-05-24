@@ -8,6 +8,7 @@ export interface TicketAnnouncement {
 
 export interface TicketSnippet {
   guild_id?: string;
+  old_name?: string; // used for updating snippets
   name: string;
   desc: string;
 }

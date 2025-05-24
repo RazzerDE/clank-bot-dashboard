@@ -24,7 +24,7 @@
             class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
                font-medium rounded-lg py-2.5 text-center transition-colors duration-100
                dark:focus:ring-green-800 text-sm px-5"
-            [disabled]="isSnippetInvalid()" (click)="type === 'SUPPORT_SNIPPET_ADD' ? snippet_action(newSnippet) : editTextSnippet(newSnippet)">
+            [disabled]="isSnippetInvalid()" (click)="type === 'SUPPORT_SNIPPET_ADD' ? snippet_action(newSnippet) : snippet_edit(newSnippet)">
       {{ type === 'SUPPORT_SNIPPET_ADD' ? ('PLACEHOLDER_SNIPPET_MODAL_BUTTON' | translate) : ('PLACEHOLDER_SNIPPET_MODAL_BUTTON_EDIT' | translate) }}
     </button>
   </div>

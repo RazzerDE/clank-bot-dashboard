@@ -24,15 +24,12 @@ export class SnippetAddComponent {
   @Input() newSnippet: TicketSnippet = {} as TicketSnippet;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined = undefined;
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
+  @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => {};
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
 
   constructor(private translate: TranslateService) {}
-
-  protected editTextSnippet(snippet: TicketSnippet): void {
-    // TODO
-  }
 
   /**
    * Updates the snippet's discord preview based on the input in the text area.

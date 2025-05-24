@@ -109,6 +109,18 @@ export class ApiService {
   }
 
   /**
+   * Updates an existing ticket snippet for a specific guild.
+   *
+   * @param snippet - The ticket snippet object to be updated. It must include the `guild_id` of the guild
+   *                  and the `old_name` of the existing snippet.
+   * @returns An Observable emitting the server's response.
+   */
+  editSnippet(snippet: TicketSnippet): Observable<Object> {
+    return this.http.put(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the current ongoing ticket announcement for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the active ticket announcement.

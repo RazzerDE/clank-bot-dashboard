@@ -127,11 +127,19 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
-   * Opens a modal dialog of the specified type.
+   * Opens a modal dialog of the specified type (and optionally pre-fills it with snippet data).
    *
    * @param {string} type - The type of modal to open (e.g., 'SUPPORT_SNIPPET_ADD').
+   * @param {TicketSnippet} [snippet] - Optional snippet data to pre-fill the modal
    */
-  protected openModal(type: string): void {
+  protected openModal(type: string, snippet?: TicketSnippet): void {
+    if (snippet) {
+      this.newSnippet = snippet;
+      this.newSnippet.old_name = snippet.name;
+    } else {
+      this.newSnippet = { name: '', desc: '' };
+    }
+
     this.modalType = type;
     this.modal.showModal();
   }
@@ -263,6 +271,64 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
+   * Edits an existing text snippet on the server and updates the local data.
+   *
+   * This method sends a request to the server to update a text snippet
+   * for the currently active guild. If the request is successful, the snippet
+   * is updated in the local list of snippets, and the local storage is refreshed.
+   * If an error occurs, an appropriate error message is displayed to the user.
+   *
+   * @param {TicketSnippet} snippet - The snippet object to be edited. It must include
+   *                                  the updated name, description, and the old name.
+   */
+  protected editTextSnippet(snippet: TicketSnippet): void {
+    if (!this.dataService.active_guild) { return; }
+    snippet.guild_id = this.dataService.active_guild!.id;
+
+    const sent_snippet: Subscription = this.apiService.editSnippet(snippet)
+      .subscribe({
+        next: (_data: any): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_SNIPPET_EDIT_TITLE'),
+            this.translate.instant('SUCCESS_SNIPPET_EDIT_DESC', { name: snippet.name }));
+
+          // update shown data (edit snippet)
+          const index: number = this.snippets.findIndex((s: TicketSnippet) => s.name === snippet.old_name);
+          if (index !== -1) { this.snippets[index] = snippet; }
+          // order snippets by name
+          this.snippets.sort((a: TicketSnippet, b: TicketSnippet): number => { return a.name.localeCompare(b.name); });
+          this.filteredSnippets.sort((a: TicketSnippet, b: TicketSnippet): number => { return a.name.localeCompare(b.name); });
+          localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
+          this.dataService.selectedSnippet = snippet;
+          this.newSnippet = { name: '', desc: '' }; // reset input fields
+          this.modal.hideModal();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 409) { // already exist
+            this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT'),
+              this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT_DESC', { name: snippet.name }));
+
+            snippet.name = snippet.old_name!;
+          } else if (error.status === 404) {
+            this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_EDIT_404'),
+              this.translate.instant('ERROR_SNIPPET_EDIT_404_DESC', { name: snippet.name }));
+
+            const index: number = this.snippets.findIndex((s: TicketSnippet) => s.name === snippet.old_name);
+            if (index !== -1) { this.snippets.splice(index, 1); }
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.modal.hideModal();
+        }
+      });
+
+    this.subscriptions.push(sent_snippet);
+  }
+
+  /**
    * Filters the text-snippets based on the search term entered by the user.
    *
    * This method updates the `filteredThemes` array to include only the snippets
@@ -323,7 +389,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           color: 'blue',
           icon: this.faPencil,
           size: 'lg',
-          action: (snippet: TicketSnippet): void => {} // TODO
+          action: (snippet: TicketSnippet): void => this.openModal('SUPPORT_SNIPPET_EDIT', snippet)
         },
         {
           color: 'red',

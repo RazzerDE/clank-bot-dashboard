@@ -7,10 +7,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class MarkdownPipe implements PipeTransform {
 
   transform(value: unknown): string {
-
-    if (typeof value != 'string') {
-      return '';
-    }
+    if (typeof value != 'string') { return ''; }
+    if (value.length === 0 || value.length > 1000) { return ''; }
 
     // HTML-Escape: escape potential XSS attacks
     let safeValue: string = this.escapeHtml(value);
@@ -30,6 +28,7 @@ export class MarkdownPipe implements PipeTransform {
       .replace(/&lt;#\d+&gt;/g, '<code>#channel-mention</code>')      // Channel mentions
       .replace(/&lt;@&amp;\d+&gt;/g, '<code>@role-mention</code>')    // Role mentions
       .replace(/&lt;@\d+&gt;/g, '<code>@user-mention</code>')         // User mentions
+      .replace(/`([^`]+)`/g, '<code>$1</code>')                       // Inline-Code (`code`)
 
       // (animated) discord guild emoji
       .replace(/&lt;a:(.*?):([\d]+)&gt;/g, (match, name, id) => {
