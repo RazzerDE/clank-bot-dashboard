@@ -54,10 +54,20 @@ export class MarkdownPipe implements PipeTransform {
       '<': '&lt;',
       '>': '&gt;',
       '"': '&quot;',
-      "'": '&#039;'
+      "'": '&#039;',
+      ':': '&#058;',
+      '=': '&#061;',
     };
 
-    return text.replace(/[&<>"']/g, (match) => htmlEscapes[match]);
+    // remove potential XSS attack vectors
+    return text.replace(/[&<>"':=]/g, (match) => htmlEscapes[match])
+      .replace(/javascript&#0*58|javascript&#x0*3a/gi, '')
+      .replace(/data:/gi, '')
+      .replace(/onerror\s*=/gi, '')
+      .replace(/onclick\s*=/gi, '')
+      .replace(/onload\s*=/gi, '')
+      .replace(/onmouseover\s*=/gi, '')
+      .replace(/onfocus\s*=/gi, '')
   }
 
   /**

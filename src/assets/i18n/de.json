@@ -180,6 +180,8 @@
   "WISHLIST_FEATURE_DESC_5": "› User sollen Musik abspielen können, indem sie die YouTube-API o.ä. verwenden.",
   "WISHLIST_FEATURE_NAME_6": "AFK-System",
   "WISHLIST_FEATURE_DESC_6": "› User können sich als \"abwesend\" markieren, wodurch für andere Mitglieder klarer sichtbar ist, wer gerade Zeit hat.",
+  "WISHLIST_FEATURE_NAME_7": "Bewerbungs-System",
+  "WISHLIST_FEATURE_DESC_7": "› Server-Mitglieder können sich als Teammitglied deines Servers bewerben & das Team kann diese verwalten.",
 
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",

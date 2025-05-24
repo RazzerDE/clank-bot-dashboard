@@ -75,4 +75,96 @@ describe('MarkdownPipe', () => {
     pipe.transform('test');
     expect(spy).toHaveBeenCalledWith('test');
   });
+
+  //                      SOME XSS-PREVENTION UNIT-TESTS
+
+  describe('XSS Prevention Tests', () => {
+    it('should handle multiple markdown formats while maintaining HTML escaping', () => {
+      const input = '**bold** and <script>alert("xss")</script>';
+      const output = '<b>bold</b> and &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;';
+      expect(pipe.transform(input)).toBe(output);
+    });
+
+    it('should escape script tags inside markdown formatting', () => {
+      expect(pipe.transform('**<script>alert("xss")</script>**'))
+        .toBe('<b>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</b>');
+    });
+
+    it('should escape javascript: URLs', () => {
+      const input = '[Click me](javascript:alert("XSS"))';
+      expect(pipe.transform(input)).not.toContain('javascript:');
+
+      // test with encoded characters
+      const inputDecimalEncoded = '[Click me](javascript&#058;alert("XSS"))';
+      expect(pipe.transform(inputDecimalEncoded)).not.toContain('javascript&#058');
+      expect(pipe.transform(inputDecimalEncoded)).not.toContain('javascript&#0058');
+
+      // test with hex encoded characters
+      const inputHexEncoded = '[Click me](javascript&#x3a;alert("XSS"))';
+      expect(pipe.transform(inputHexEncoded)).not.toContain('javascript&#x3a');
+      expect(pipe.transform(inputHexEncoded)).not.toContain('javascript&#x03a');
+    });
+
+    it('should escape event handlers', () => {
+      let input = '<div onmouseover="alert(\'XSS\')">Hover me</div>';
+      expect(pipe.transform(input)).toBe('&lt;div onmouseover&#061;&quot;alert(&#039;XSS&#039;)&quot;&gt;Hover me&lt;/div&gt;');
+
+      input = '<div onclick="alert(\'XSS\')">Click me</div>';
+      expect(pipe.transform(input)).toBe('&lt;div onclick&#061;&quot;alert(&#039;XSS&#039;)&quot;&gt;Click me&lt;/div&gt;');
+
+      input = '<img onload="alert(\'XSS\')" src="image.jpg">';
+      expect(pipe.transform(input)).toBe('&lt;img onload&#061;&quot;alert(&#039;XSS&#039;)&quot; src&#061;&quot;image.jpg&quot;&gt;');
+
+      input = '<input onfocus="alert(\'XSS\')" type="text">';
+      expect(pipe.transform(input)).toBe('&lt;input onfocus&#061;&quot;alert(&#039;XSS&#039;)&quot; type&#061;&quot;text&quot;&gt;');
+    });
+
+    it('should escape data attributes with javascript', () => {
+      const input = '<div data-custom="javascript:alert(\'XSS\')">Test</div>';
+      expect(pipe.transform(input)).toBe('&lt;div data-custom&#061;&quot;;alert(&#039;XSS&#039;)&quot;&gt;Test&lt;/div&gt;');
+    });
+
+    it('should escape base64 encoded scripts', () => {
+      const encoded = btoa('<script>alert("XSS")</script>');
+      const input = `<img src="data:image/svg+xml;base64,${encoded}">`;
+      expect(pipe.transform(input)).not.toContain('<script>');
+    });
+
+    it('should escape SVG with embedded script', () => {
+      const input = '<svg><script>alert("XSS")</script></svg>';
+      expect(pipe.transform(input)).toBe('&lt;svg&gt;&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;&lt;/svg&gt;');
+    });
+
+    it('should handle iframe injection attempts', () => {
+      const input = '<iframe src="javascript:alert(`xss`)"></iframe>';
+      expect(pipe.transform(input)).toBe('&lt;iframe src&#061;&quot;;alert(<code>xss</code>)&quot;&gt;&lt;/iframe&gt;');
+    });
+
+    it('should escape CSS-based XSS attempts', () => {
+      const input = '<div style="background-image: url(' + 'javascript:alert(\'XSS\')' + ')">Test</div>';
+      expect(pipe.transform(input)).not.toContain('javascript:alert');
+    });
+
+    it('should escape nested HTML attributes', () => {
+      const input = '<div a="<img src=x onerror=alert(\'XSS\')>">Test</div>';
+      expect(pipe.transform(input)).not.toContain('<img src');
+    });
+
+    it('should handle emoji patterns with potential XSS payloads', () => {
+      const input = '<:xss:(123" onerror="alert(\'XSS\')")>';
+      expect(pipe.transform(input)).not.toContain('onerror=');
+      expect(pipe.transform(input)).not.toContain('alert(\'XSS\')');
+    });
+
+    it('should safely handle input with maximum length', () => {
+      const longInput = '<script>'.repeat(100);
+      expect(pipe.transform(longInput)).toContain('&lt;script&gt;');
+      expect(pipe.transform(longInput)).not.toContain('<script>');
+    });
+
+    it('should handle null byte injection attempts', () => {
+      const input = 'Hello\x00<script>alert("XSS")</script>';
+      expect(pipe.transform(input)).not.toContain('<script>');
+    });
+  });
 });

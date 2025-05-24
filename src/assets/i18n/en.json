@@ -180,6 +180,8 @@
   "WISHLIST_FEATURE_DESC_5": "› Users should be able to play music using the YouTube API or similar.",
   "WISHLIST_FEATURE_NAME_6": "AFK System",
   "WISHLIST_FEATURE_DESC_6": "› Users can mark themselves as \"away\", making it clearer to other members who is currently available.",
+  "WISHLIST_FEATURE_NAME_7": "Application System",
+  "WISHLIST_FEATURE_DESC_7": "› Server members can apply to become a team member of your server & the team can manage these.",
 
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login expired!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Please log in again to use the dashboard.",
