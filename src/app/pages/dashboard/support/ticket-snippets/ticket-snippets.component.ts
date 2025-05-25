@@ -329,6 +329,65 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
+   * Deletes a ticket snippet from the server and updates the local data.
+   *
+   * This method sends a request to the server to delete a ticket snippet
+   * for the currently active guild. If the request is successful, the snippet
+   * is removed from the local list of snippets, and the local storage is updated.
+   * If an error occurs, an appropriate error message is displayed to the user.
+   *
+   * @param {TicketSnippet} snippet - The snippet object to be deleted. It must include
+   *                                  the name and guild_id of the snippet.
+   */
+  protected deleteTicketSnippet(snippet: TicketSnippet): void {
+    if (!this.dataService.active_guild) { return; }
+    snippet.guild_id = this.dataService.active_guild!.id;
+
+    const delete_snippet: Subscription = this.apiService.deleteSnippet(snippet)
+      .subscribe({
+        next: (_data: any): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_SNIPPET_DELETE_TITLE'),
+            this.translate.instant('SUCCESS_SNIPPET_DELETE_DESC', { name: snippet.name }));
+
+          // update shown data (remove snippet)
+          const index: number = this.snippets.findIndex((s: TicketSnippet) => s.name === snippet.name);
+          if (index !== -1) {
+            this.snippets.splice(index, 1);
+            this.filteredSnippets = [...this.snippets];
+
+            if (this.snippets.length > 0) {
+              this.dataService.selectedSnippet = this.snippets[0]; // pick the first snippet if available
+            } else {
+              this.dataService.selectedSnippet = null;
+            }
+          }
+
+          localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
+          this.newSnippet = { name: '', desc: '' }; // reset input fields
+          this.modal.hideModal();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 404) {
+            this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_EDIT_404'),
+              this.translate.instant('ERROR_SNIPPET_EDIT_404_DESC', { name: snippet.name }));
+
+            const index: number = this.snippets.findIndex((s: TicketSnippet) => s.name === snippet.name);
+            if (index !== -1) { this.snippets.splice(index, 1); this.filteredSnippets = [...this.snippets]; }
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.modal.hideModal();
+        }
+      });
+
+    this.subscriptions.push(delete_snippet);
+  }
+
+  /**
    * Filters the text-snippets based on the search term entered by the user.
    *
    * This method updates the `filteredThemes` array to include only the snippets
@@ -395,7 +454,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           color: 'red',
           icon: this.faXmark,
           size: 'xl',
-          action: (snippet: TicketSnippet): void => {} // TODO
+          action: (snippet: TicketSnippet): void => this.deleteTicketSnippet(snippet)
         }
       ],
       actions: []

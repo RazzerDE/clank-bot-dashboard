@@ -228,6 +228,8 @@
   "SUCCESS_SNIPPET_CREATION_DESC": "The snippet <strong>{{name}}</strong> was successfully created!",
   "SUCCESS_SNIPPET_EDIT_TITLE": "Snippet successfully edited",
   "SUCCESS_SNIPPET_EDIT_DESC": "The snippet <strong>{{name}}</strong> was successfully edited!",
+  "SUCCESS_SNIPPET_DELETE_TITLE": "Snippet successfully deleted",
+  "SUCCESS_SNIPPET_DELETE_DESC": "The snippet <strong>{{name}}</strong> was successfully deleted!",
   "ERROR_SNIPPET_EDIT_404": "Snippet not found",
   "ERROR_SNIPPET_EDIT_404_DESC": "The snippet <strong>{{name}}</strong> could not be found - please check the name!",
   "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet already exists",

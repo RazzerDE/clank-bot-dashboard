@@ -121,6 +121,18 @@ export class ApiService {
   }
 
   /**
+   * Removes an existing ticket snippet for a specific guild.
+   *
+   * @param snippet - The ticket snippet object to be removed. It must include the `guild_id` of the guild.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteSnippet(snippet: TicketSnippet): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}&name=${encodeURIComponent(snippet.name)}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the current ongoing ticket announcement for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the active ticket announcement.
