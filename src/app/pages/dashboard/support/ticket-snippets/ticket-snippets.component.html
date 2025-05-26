@@ -4,7 +4,7 @@
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Snippet Modal -->
-    <app-modal [type]="modalType" [obj]="this.newSnippet"
+    <app-modal [type]="modalType" [obj]="this.newSnippet" [announcement]="this.currentAnnouncement"
                [snippet_action]="addTextSnippet.bind(this)" [snippet_edit]="editTextSnippet.bind(this)"/>
 
     <!-- Page Thumb -->
@@ -44,20 +44,18 @@
                                            via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
                                            focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br"
                         (click)="this.openModal('SUPPORT_SNIPPET_ADD')">
-                  <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_SNIPPET_ADD' | translate }}
+                  <fa-icon [icon]="faPlus" class="me-2" />{{ 'PLACEHOLDER_BUTTON_SNIPPET_ADD' | translate }}
                 </button>
                 <button type="button" class="flex items-center justify-center text-white focus:ring-4 font-medium
                                              rounded-lg text-sm px-4 py-2 focus:outline-none bg-gradient-to-r hover:bg-gradient-to-br"
                         [ngClass]="{
-                          'from-purple-700 via-purple-600 to-purple-500 focus:ring-purple-700': !currentAnnouncement || currentAnnouncement!.level == null || currentAnnouncement!.level === 1,
-                          'from-orange-700 via-orange-600 to-orange-500 focus:ring-orange-700': currentAnnouncement?.level === 2,
-                          'from-red-700 via-red-600 to-red-500 focus:ring-red-700': currentAnnouncement?.level === 3
-                        }">
-                  <!-- TODO -->
+                          'from-purple-700 via-purple-600 to-purple-500 focus:ring-purple-700': currentAnnouncement.level == null || currentAnnouncement.level == 1,
+                          'from-orange-700 via-orange-600 to-orange-500 focus:ring-orange-700': currentAnnouncement.level == 2,
+                          'from-red-700 via-red-600 to-red-500 focus:ring-red-700': currentAnnouncement.level == 3
+                        }" (click)="this.openModal(currentAnnouncement.level == null ? 'SUPPORT_TICKET_ANNOUNCEMENT_SET' : 'SUPPORT_TICKET_ANNOUNCEMENT_EDIT')">
                   <fa-icon [icon]="!currentAnnouncement || currentAnnouncement!.level == null ? faBullhorn : currentAnnouncement.level === 1 ? faInfoCircle :
                                    currentAnnouncement.level === 2 ? faExclamationCircle : faExclamationTriangle" class="me-2"></fa-icon>
-                  {{ (!currentAnnouncement || currentAnnouncement!.level == null ?
-                      'PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET' : 'PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT') | translate }}
+                  {{ (currentAnnouncement.level == null ? 'PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET' : 'PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT') | translate }}
                 </button>
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
                                            via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3

@@ -420,13 +420,26 @@
   "PLACEHOLDER_SNIPPET_MODAL2_TITLE": "🖼️ ~ Vorschau im Discord-Ticket",
   "PLACEHOLDER_SNIPPET_PREVIEW_DESC": "Schreibe etwas in das <strong>linke Textfeld</strong>..",
 
+  "PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL2_TITLE": "🎟️ ~ Vorschau der Ticket-Ankündigung",
+  "PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL_TITLE": "📢 ~ Ticket-Ankündigung festlegen",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_DESC": "Wie lautet der Inhalt der Ankündigung?",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_DESC_PLACEHOLDER": "Unsere Bots haben aktuell eine Störung, wir wissen darüber Bescheid und arbeiten an einer Lösung!",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_DETAILS": "Lege optionale Details fest..",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_INFO": "❓ › Diese Ankündigung wird Usern immer angezeigt, bevor sie ein neues Ticket erstellen - dadurch können User wichtige Infos erhalten, ohne das Team zu kontaktieren.",
+
+  "ANNOUNCEMENT_LEVEL_LOW": "🟢 - Niedrig",
+  "ANNOUNCEMENT_LEVEL_MEDIUM": "🟡 - Mittel",
+  "ANNOUNCEMENT_LEVEL_HIGH": "🔴 - Kritisch",
+  "PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE": "WICHTIGE ANKÜNDIGUNG!",
+  "PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER": "Support-System bereitgestellt von Clank",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Als FAQ-Thema verwenden",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "Wie soll der Bot auf das Thema antworten?",
   "PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER": "Hier kannst du eine Nachricht eingeben, die der Bot an den User sendet, wenn er dieses Thema auswählt.",
   "PLACEHOLDER_THEME_MODAL2_PREVIEW": "Vorschau in Discord",
   "PLACEHOLDER_THEME_PREVIEW_TITLE": "THEMA-NAME",
-  "PLACEHOLDER_THEME_PREVIEW_DESC": "Schreibe etwas in das <strong>obere Textfeld</strong>..",
+  "PLACEHOLDER_THEME_PREVIEW_DESC": "Schreibe etwas in das <strong>leere Textfeld</strong>..",
   "PLACEHOLDER_THEME_PREVIEW_FOOTER": "Dieses Ticket wurde automatisch vom FAQ-Modul bearbeitet & nicht weitergeleitet.",
 
   "PLACEHOLDER_ROLE_EMPTY": "😭 ~ Keine Rollen gefunden..",

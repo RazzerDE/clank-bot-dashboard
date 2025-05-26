@@ -420,13 +420,26 @@
   "PLACEHOLDER_SNIPPET_MODAL2_TITLE": "🖼️ ~ Preview in Discord Ticket",
   "PLACEHOLDER_SNIPPET_PREVIEW_DESC": "Write something in the <strong>left text field</strong>..",
 
+  "PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL2_TITLE": "🎟️ ~ Ticket Announcement Preview",
+  "PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL_TITLE": "📢 ~ Set Ticket Announcement",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_DESC": "What is the content of the announcement?",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_DESC_PLACEHOLDER": "Our bots are currently experiencing an issue, we are aware of it and working on a solution!",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_DETAILS": "Set optional details..",
+  "PLACEHOLDER_ANNOUNCEMENT_MODAL_INFO": "❓ › This announcement will always be shown to users before they create a new ticket - this allows users to receive important information without contacting the team.",
+
+  "ANNOUNCEMENT_LEVEL_LOW": "🟢 - Low",
+  "ANNOUNCEMENT_LEVEL_MEDIUM": "🟡 - Medium",
+  "ANNOUNCEMENT_LEVEL_HIGH": "🔴 - Critical",
+  "PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE": "IMPORTANT ANNOUNCEMENT!",
+  "PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER": "Support system provided by Clank",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatic Bot Response",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Use as FAQ theme",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "How should the bot respond to the theme?",
   "PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER": "Here you can enter a message that the bot will send to the user when they select this theme.",
   "PLACEHOLDER_THEME_MODAL2_PREVIEW": "Preview in discord",
   "PLACEHOLDER_THEME_PREVIEW_TITLE": "THEME-NAME",
-  "PLACEHOLDER_THEME_PREVIEW_DESC": "Write something in the <strong>text field above</strong>..",
+  "PLACEHOLDER_THEME_PREVIEW_DESC": "Write something in the <strong>empty text field</strong>..",
   "PLACEHOLDER_THEME_PREVIEW_FOOTER": "This ticket was automatically processed by the FAQ module & not forwarded.",
 
   "PLACEHOLDER_ROLE_EMPTY": "😭 ~ No roles found..",

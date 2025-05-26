@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -55,7 +55,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   protected newSnippet: TicketSnippet = { name: '', desc: '' };
   protected snippets: TicketSnippet[] = [];
   protected filteredSnippets: TicketSnippet[] = this.snippets;
-  protected currentAnnouncement: TicketAnnouncement | null = null;
+  protected currentAnnouncement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faBullhorn: IconDefinition = faBullhorn;
@@ -68,7 +68,8 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   protected readonly faExclamationCircle: IconDefinition = faExclamationCircle;
   protected readonly faExclamationTriangle: IconDefinition = faExclamationTriangle;
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService,
+              private translate: TranslateService, private cdr: ChangeDetectorRef) {
     document.title = 'Ticket Snippets ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSnippetDetails(); // first call to get the server data
@@ -77,7 +78,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
         this.dataService.isLoading = true;
         this.dataLoading = { snippets: true, announcement: true };
         this.dataService.selectedSnippet = null;
-        this.currentAnnouncement = null;
+        this.currentAnnouncement = { level: null, description: null, end_date: null };
         this.getSnippetDetails(true);
       }
     });
@@ -141,6 +142,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     }
 
     this.modalType = type;
+    this.cdr.detectChanges();  // avoid RuntimeError
     this.modal.showModal();
   }
 
@@ -422,6 +424,22 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
       return;
     } else if (error.status === 0) {
       this.dataService.redirectLoginError('OFFLINE');
+      return;
+    } else {
+      this.dataService.redirectLoginError('UNKNOWN');
+    }
+  }
+
+  /**
+   * Handles document click events to close modals if the user clicks outside of them.
+   *
+   * @param {MouseEvent} event - The click event triggered on the document.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // two modals are visible; hide if clicked outside of the modal
+    if ((event.target as HTMLElement).id.includes('roleModalContent')) {
+      this.modal.hideModal();
       return;
     }
   }

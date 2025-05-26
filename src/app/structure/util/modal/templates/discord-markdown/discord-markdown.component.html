@@ -2,19 +2,22 @@
 @if (!type.startsWith('SUPPORT_SNIPPET')) {
   <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
                   text-gray-300 font-sans mt-2 transition-all duration-300"
-       [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ'">
-    <div class="absolute top-0 left-0 w-1 h-full bg-[#5865f2] rounded-l"></div>
+       [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
+    <div class="absolute top-0 left-0 w-1 h-full rounded-l"
+    [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'bg-[#f98928]' : 'bg-[#5865f2]'"></div>
     <div class="pl-3 w-full">
       <div class="flex items-center font-bold text-sm text-white mb-0">
         <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
-        <img ngSrc="assets/img/icons/faq_answer_theme.gif" alt="Clank-Icon ~ Clank Discord-Bot"
-             class="w-5 h-5 mx-2" height="40" width="40">
-        <span>~ {{ 'PLACEHOLDER_THEME_PREVIEW_TITLE' | translate }}</span>
+        <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/faq_answer_theme.gif'"
+             alt="Clank-Icon ~ Clank Discord-Bot" class="w-5 h-5" height="40" width="40"
+             [ngClass]="!type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'mx-2' : 'ml-2 mx-0.5'">
+        <span>~ {{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+          ? ('PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE' | translate) : ('PLACEHOLDER_THEME_PREVIEW_TITLE' | translate) }}</span>
       </div>
 
       <div class="mb-1.5 text-sm font-normal leading-snug whitespace-pre-wrap break-words">
         <img ngSrc="assets/img/icons/faq_answer-small.png" alt="Clank-Icon ~ Clank Discord-Bot"
-             class="w-4 h-[19px] rounded-full inline-block ml-0.5 mr-1 align-middle" height="19" width="19">
+             class="h-[19px] rounded-full inline-block ml-0.5 mr-1 mt-0.5 align-middle" height="19" width="19">
         <span class="align-middle" #faqPreview
               [innerHTML]="content.length === 0 ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
         </span>
@@ -24,7 +27,8 @@
       <div class="flex items-center font-medium text-[10px] tracking-tight leading-3 text-gray-200 mt-2">
         <img ngSrc="assets/img/icons/clank.png" alt="Clank-Icon ~ Clank Discord-Bot"
              class="w-4 h-4 rounded-full mr-1.5" height="16" width="16">
-        <span>{{ 'PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate }}</span>
+        <span>{{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ?
+          ('PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER' | translate) : ('PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate) }}</span>
       </div>
     </div>
   </div>

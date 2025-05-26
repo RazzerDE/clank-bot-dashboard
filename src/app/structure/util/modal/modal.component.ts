@@ -17,8 +17,9 @@ import {FormsModule} from "@angular/forms";
 import {FaqAnswerComponent} from "./templates/faq-answer/faq-answer.component";
 import {SupportThemeAddComponent} from "./templates/support-theme-add/support-theme-add.component";
 import {RolePickerComponent} from "./templates/role-picker/role-picker.component";
-import {SupportTheme, TicketSnippet} from "../../../services/types/Tickets";
+import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../../../services/types/Tickets";
 import {SnippetAddComponent} from "./templates/snippet-add/snippet-add.component";
+import {TicketAnnouncementComponent} from "./templates/ticket-announcement/ticket-announcement.component";
 
 @Component({
   selector: 'app-modal',
@@ -31,6 +32,7 @@ import {SnippetAddComponent} from "./templates/snippet-add/snippet-add.component
     SupportThemeAddComponent,
     RolePickerComponent,
     SnippetAddComponent,
+    TicketAnnouncementComponent,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
@@ -67,6 +69,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() extra: Role[] = [];
   @Input() obj: TicketSnippet = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
+  @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
@@ -88,7 +91,7 @@ export class ModalComponent implements AfterContentInit  {
    *
    */
   ngAfterContentInit(): void {
-      this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   /**
@@ -121,5 +124,14 @@ export class ModalComponent implements AfterContentInit  {
    */
   isDefaultMentioned(role_id: string): boolean {
     return (this.extra && this.extra.some(extraRole => extraRole.id === role_id))
+  }
+
+  /**
+   * Determines whether a second modal should be displayed.
+   *
+   * @returns `true` if a second modal should be displayed, otherwise `false`.
+   */
+  protected showSecondModal(): boolean {
+    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) && !this.type.includes('TEAMLIST')
   }
 }

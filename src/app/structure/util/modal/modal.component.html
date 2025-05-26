@@ -7,14 +7,13 @@
                           h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
      [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
   <div class="relative p-4 w-full h-full items-center" id="roleModalContent" #roleModalContent
-       [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': !(type.endsWith('ADD') || type.endsWith('EDIT')),
-                  'flex justify-center gap-4 xl:translate-x-36': (type.endsWith('ADD') || type.endsWith('EDIT'))}">
+       [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': !showSecondModal(),
+                  'flex justify-center gap-4 xl:translate-x-36': showSecondModal()}">
 
     <!-- First Modal (Always visible) -->
     <div class="relative bg-white rounded-lg shadow-sm dark:shadow-xl dark:!bg-gray-700 !border-gray-400
               dark:!border-gray-500 border-1"
-         [ngClass]="{'w-full': !(type.endsWith('ADD') || type.endsWith('EDIT')),
-                     'w-1/2 max-w-md': (type.endsWith('ADD') || type.endsWith('EDIT'))}" id="ignore">
+         [ngClass]="{'w-full': !showSecondModal(), 'w-1/2 max-w-md': showSecondModal()}" id="ignore">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
         <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
@@ -32,6 +31,8 @@
             {{ 'PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE' | translate }}
           } @else if (type === 'SUPPORT_SNIPPET_EDIT') {
             {{ 'PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE' | translate }}
+          } @else if (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
+            {{ 'PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -45,31 +46,41 @@
       <!-- Modal body -->
       <div class="p-4 md:p-5">
         <div class="space-y-4 flex flex-col">
-          @if (type === 'SUPPORT_THEME_FAQ') {
-            <template-faq-answer [content]="this.content" [type]="this.type"/>
-          } @else if ((type.endsWith('ADD') || type.endsWith('EDIT')) && !type.includes('TEAMLIST')) {
-            @if (type === 'SUPPORT_THEME_ADD' || type === 'SUPPORT_THEME_EDIT') {
-              <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
-                                          [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="this.theme" />
-            } @else if (type.startsWith('SUPPORT_SNIPPET') && secondSnippetAdd) {
-              <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true" [snippet_action]="this.snippet_action"
-                                    [externalMarkdown]="secondSnippetAdd.discordMarkdown" [snippet_edit]="this.snippet_edit" />
+          @switch (true) {
+            @case (type === 'SUPPORT_THEME_FAQ') {
+              <template-faq-answer [content]="content" [type]="type" />
             }
-          } @else { <!-- Default Mention & Teamlist -->
-            <template-role-picker [type]="type" [discordRoles]="discordRoles"
-                                  [isDefaultMentioned]="isDefaultMentioned.bind(this)" [action]="action" />
+            @case (type.startsWith('SUPPORT_THEME')) {
+              <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
+                                          [isDefaultMentioned]="isDefaultMentioned" [newTheme]="theme" />
+            }
+            @case (type.startsWith('SUPPORT_SNIPPET')) {
+              <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true" [snippet_action]="snippet_action"
+                                    [externalMarkdown]="secondSnippetAdd?.discordMarkdown" [snippet_edit]="snippet_edit" />
+            }
+            @case (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
+              <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true" />
+            }
+            @default { <!-- Default Mention & Teamlist -->
+              <template-role-picker [type]="type" [discordRoles]="discordRoles" [isDefaultMentioned]="isDefaultMentioned"
+                                    [action]="action" />
+            }
           }
         </div>
       </div>
     </div>
 
-    <!-- Second Modal (only for Bot-FAQ Answer & Snippet Preview) -->
-    @if ((type.endsWith('ADD') || type.endsWith('EDIT')) && !type.includes('TEAMLIST')) {
-      @if (!type.startsWith('SUPPORT_SNIPPET')) {
-        <template-support-theme-add [showFirst]="false" />
-      } @else {
+    <!-- Second Modal -->
+    @if (showSecondModal()) {
+
+      @if (type.startsWith('SUPPORT_SNIPPET')) {
         <template-snippet-add #secondSnippetAdd [type]="type" [newSnippet]="obj" [showFirst]="false" />
+      } @else if (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
+        <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="false" />
+      } @else if (type.startsWith('SUPPORT_THEME')) {
+        <template-support-theme-add [showFirst]="false" />
       }
+
     }
   </div>
 </div>

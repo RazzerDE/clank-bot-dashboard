@@ -22,7 +22,7 @@ export class SnippetAddComponent {
   @Input() type: string = '';
   @Input() showFirst: boolean = false;
   @Input() newSnippet: TicketSnippet = {} as TicketSnippet;
-  @Input() externalMarkdown: DiscordMarkdownComponent | undefined = undefined;
+  @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
   @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => {};
 
