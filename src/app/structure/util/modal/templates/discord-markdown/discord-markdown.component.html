@@ -19,7 +19,7 @@
         <img ngSrc="assets/img/icons/faq_answer-small.png" alt="Clank-Icon ~ Clank Discord-Bot"
              class="h-[19px] rounded-full inline-block ml-0.5 mr-1 mt-0.5 align-middle" height="19" width="19">
         <span class="align-middle" #faqPreview
-              [innerHTML]="content.length === 0 ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
+              [innerHTML]="!content || (content && content.length === 0) ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
         </span>
       </div>
 

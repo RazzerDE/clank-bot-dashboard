@@ -7,6 +7,7 @@ import {DatePipe, NgClass} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faTrashCan} from "@fortawesome/free-solid-svg-icons/faTrashCan";
 
 @Component({
   selector: 'template-ticket-announcement',
@@ -38,4 +39,5 @@ export class TicketAnnouncementComponent {
     return this.activeAnnounce.level == null || this.activeAnnounce.description == null;
   }
 
+  protected readonly faTrashCan = faTrashCan;
 }
