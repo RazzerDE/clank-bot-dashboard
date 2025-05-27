@@ -31,12 +31,12 @@ export class MarkdownPipe implements PipeTransform {
       .replace(/`([^`]+)`/g, '<code>$1</code>')                       // Inline-Code (`code`)
 
       // (animated) discord guild emoji
-      .replace(/&lt;a:(.*?):([\d]+)&gt;/g, (match, name, id) => {
+      .replace(/&lt;a&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
         return this.isValidEmojiId(id) ?
           `<img src="https://cdn.discordapp.com/emojis/${id}.gif?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
           match;
       })
-      .replace(/&lt;:(.*?):([\d]+)&gt;/g, (match, name, id) => {
+      .replace(/&lt;&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
         return this.isValidEmojiId(id) ?
           `<img src="https://cdn.discordapp.com/emojis/${id}.png?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
           match;

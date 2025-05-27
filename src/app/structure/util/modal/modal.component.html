@@ -52,7 +52,7 @@
             }
             @case (type.startsWith('SUPPORT_THEME')) {
               <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
-                                          [isDefaultMentioned]="isDefaultMentioned" [newTheme]="theme" />
+                                          [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="theme" />
             }
             @case (type.startsWith('SUPPORT_SNIPPET')) {
               <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true" [snippet_action]="snippet_action"
@@ -62,8 +62,8 @@
               <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true" />
             }
             @default { <!-- Default Mention & Teamlist -->
-              <template-role-picker [type]="type" [discordRoles]="discordRoles" [isDefaultMentioned]="isDefaultMentioned"
-                                    [action]="action" />
+              <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"
+                                    [isDefaultMentioned]="isDefaultMentioned.bind(this)" />
             }
           }
         </div>
