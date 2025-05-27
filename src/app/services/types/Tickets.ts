@@ -3,7 +3,7 @@ import {Role} from "./discord/Guilds";
 export interface TicketAnnouncement {
   level: number | null;
   description: string | null;
-  end_date: number | null; // unix timestamp
+  end_date: number | string | null; // unix timestamp
 }
 
 export interface TicketSnippet {

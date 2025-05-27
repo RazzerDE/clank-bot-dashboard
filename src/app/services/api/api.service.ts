@@ -144,6 +144,29 @@ export class ApiService {
   }
 
   /**
+   * Sets a new ticket announcement for a specific guild.
+   *
+   * @param announcement - The `TicketAnnouncement` object containing the announcement details.
+   * @param guild_id - The ID of the guild for which the announcement is being set.
+   * @returns An Observable emitting the server's response.
+   */
+  setAnnouncement(announcement: TicketAnnouncement, guild_id: string): Observable<Object> {
+    return this.http.post(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`, announcement,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Deletes the current ongoing ticket announcement for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which the ticket announcement is to be deleted.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteAnnouncement(guild_id: string): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Creates a new support theme for a specific guild.
    *
    * @param theme - The support theme object to be created.

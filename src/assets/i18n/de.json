@@ -235,6 +235,13 @@
   "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet existiert bereits",
   "ERROR_SNIPPET_CREATION_CONFLICT_DESC": "Ein Snippet mit dem Namen <strong>{{name}}</strong> existiert bereits!",
 
+  "SUCCESS_ANNOUNCEMENT_SET_TITLE": "Ticket-Ankündigung festgelegt",
+  "SUCCESS_ANNOUNCEMENT_SET_DESC": "Die Ankündigung wird nun vor der Ticket-Erstellung angezeigt und endet <strong>{{date}}</strong>.",
+  "SUCCESS_ANNOUNCEMENT_DELETE_TITLE": "Ticket-Ankündigung entfernt",
+  "SUCCESS_ANNOUNCEMENT_DELETE_DESC": "Die Ankündigung wurde entfernt und wird nun nicht mehr vor der Ticket-Erstellung angezeigt.",
+  "ERROR_ANNOUNCEMENT_NOT_FOUND_TITLE": "Ticket-Ankündigung nicht gefunden",
+  "ERROR_ANNOUNCEMENT_NOT_FOUND_DESC": "Die Ankündigung konnte nicht gefunden werden - wurde sie bereits entfernt?",
+
   "SUCCESS_VOTE_TITLE": "Erfolgreich abgestimmt",
   "SUCCESS_VOTE_DESC": "Dein Vote wurde gespeichert - Danke fürs teilnehmen!",
   "SUCCESS_ROLE_DELETE": "Team-Rolle entfernt",
@@ -457,6 +464,7 @@
   "PLACEHOLDER_ACTION": "🚀 ~ Aktion",
   "PLACEHOLDER_DISCORD_PING": "🔔 ~ Erwähnte Discord-Rollen",
   "PLACEHOLDER_DEFAULT": "Standard",
+  "PLACEHOLDER_NEVER": "Nie",
 
   "DATE_FORMAT_LONG": "am {{day}}.{{month}}.{{year}} um {{hours}}:{{minutes}} Uhr",
   "DATE_YESTERDAY": "gestern",
