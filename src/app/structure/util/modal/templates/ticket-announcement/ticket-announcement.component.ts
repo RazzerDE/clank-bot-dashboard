@@ -180,7 +180,7 @@ export class TicketAnnouncementComponent implements OnDestroy {
     } else {
       const formattedDate: string = date.toLocaleDateString('en-US', {day: '2-digit', month: '2-digit', year: 'numeric'});
 
-      const hours: number = date.getHours() % 12 || 12;
+      const hours: number = date.getHours() % 12;
       const period: 'PM' | 'AM' = date.getHours() >= 12 ? 'PM' : 'AM';
       return `${formattedDate}, ${hours}:${date.getMinutes().toString().padStart(2, '0')} ${period}`;
     }

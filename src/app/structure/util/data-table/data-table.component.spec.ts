@@ -100,4 +100,13 @@ describe('DataTableComponent', () => {
 
     expect(component['rowHeight']).toBe(42)
   });
+
+  it('should emit the clicked row through rowClick event', () => {
+    const row = { name: 'Test Row' } as any;
+    const rowClickSpy = jest.spyOn(component.rowClick, 'emit');
+
+    component.onRowClick(row);
+
+    expect(rowClickSpy).toHaveBeenCalledWith(row);
+  });
 });

@@ -31,6 +31,23 @@ describe('ModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should call snippet_action with the correct snippet', () => {
+    const mockSnippet = { name: 'Test Snippet', desc: 'Test Description' } as any;
+    const snippetActionSpy = jest.spyOn(component, 'snippet_action');
+    component.snippet_action(mockSnippet);
+
+    expect(snippetActionSpy).toHaveBeenCalledWith(mockSnippet);
+  });
+
+  it('should call snippet_edit with the correct snippet', () => {
+    const mockSnippet = { name: 'Edit Snippet', desc: 'Edit Description' } as any;
+    const snippetEditSpy = jest.spyOn(component, 'snippet_edit');
+
+    component.snippet_edit(mockSnippet);
+
+    expect(snippetEditSpy).toHaveBeenCalledWith(mockSnippet);
+  });
+
   it('should call action with default implementation', () => {
     const option = document.createElement('option');
     const collection = {

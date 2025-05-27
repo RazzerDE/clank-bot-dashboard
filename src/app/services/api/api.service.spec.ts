@@ -11,7 +11,8 @@ import {SliderItems} from "../types/landing-page/SliderItems";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
-import {SupportTheme} from "../types/Tickets";
+import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
+import {GeneralStats} from "../types/Statistics";
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -39,16 +40,44 @@ describe('ApiService', () => {
     expect(service).toBeTruthy();
   });
 
-  it("should fetch guild usage statistics", () => {
-    const mockResponse: SliderItems[] = [];
+  it('should fetch general statistics about the clank bot', () => {
+    const mockResponse: GeneralStats = {
+      user_count: 1000,
+      guild_count: 500,
+      giveaway_count: 200,
+      ticket_count: 300,
+      punish_count: 150,
+      global_verified_count: 50
+    };
 
-    service.getGuildUsage(0).subscribe((response) => {
+    service.getGeneralStats().subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(`${service['API_URL']}/stats/guilds_usage`);
+    const req = httpMock.expectOne(`${service['API_URL']}/stats/general`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
+  });
+
+  it("should fetch guild usage statistics", () => {
+    const mockResponse: SliderItems[] = [];
+
+    service.getGuildUsage(10).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/stats/guilds_usage?limit=10`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+
+    // test without limit
+    service.getGuildUsage(0).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    })
+
+    const reqWithoutLimit = httpMock.expectOne(`${service['API_URL']}/stats/guilds_usage`);
+    expect(reqWithoutLimit.request.method).toBe('GET');
+    reqWithoutLimit.flush(mockResponse);
   });
 
   it('should fetch feature votes successfully', () => {
@@ -220,6 +249,121 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-setup?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch ticket snippets for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: TicketSnippet[] = [
+      { guild_id, name: 'Snippet1', desc: 'Description1' },
+      { guild_id, name: 'Snippet2', desc: 'Description2' }
+    ];
+
+    service.getSnippets(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-snippets?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should create a new ticket snippet for a specific guild', () => {
+    const snippet: TicketSnippet = { guild_id: '12345', name: 'Snippet1', desc: 'Description1' };
+    const mockResponse = { success: true };
+
+    service.createSnippet(snippet).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-snippets?guild_id=${snippet.guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(snippet);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should edit an existing ticket snippet for a specific guild', () => {
+    const snippet: TicketSnippet = { guild_id: '12345', name: 'Snippet1', old_name: 'OldSnippet', desc: 'Updated Description' };
+    const mockResponse = { success: true };
+
+    service.editSnippet(snippet).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-snippets?guild_id=${snippet.guild_id}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(snippet);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete an existing ticket snippet for a specific guild', () => {
+    const snippet: TicketSnippet = { guild_id: '12345', name: 'Snippet1', desc: 'Description1' };
+    const mockResponse = { success: true };
+
+    service.deleteSnippet(snippet).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${service['API_URL']}/guilds/support-snippets?guild_id=${snippet.guild_id}&name=${encodeURIComponent(snippet.name)}`
+    );
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch the current ticket announcement for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: TicketAnnouncement = {
+      level: 1,
+      description: 'Test Announcement',
+      end_date: '2023-12-31'
+    };
+
+    service.getTicketAnnouncement(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-announcement?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should set a new ticket announcement for a specific guild', () => {
+    const guild_id = '12345';
+    const announcement: TicketAnnouncement = {
+      level: 2,
+      description: 'New Announcement',
+      end_date: '2024-01-01'
+    };
+    const mockResponse = { success: true };
+
+    service.setAnnouncement(announcement, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-announcement?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(announcement);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete the current ticket announcement for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse = { success: true };
+
+    service.deleteAnnouncement(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-announcement?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('DELETE');
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });

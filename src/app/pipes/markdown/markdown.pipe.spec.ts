@@ -7,6 +7,15 @@ describe('MarkdownPipe', () => {
     pipe = new MarkdownPipe();
   });
 
+  it('should return an empty string if the input is an empty string', () => {
+    expect(pipe.transform('')).toBe('');
+  });
+
+  it('should return an empty string if the input exceeds 1000 characters', () => {
+    const longString = 'a'.repeat(1001);
+    expect(pipe.transform(longString)).toBe('');
+  });
+
   it('should return empty string for non-string input', () => {
     expect(pipe.transform(null)).toBe('');
     expect(pipe.transform(undefined)).toBe('');
@@ -74,6 +83,55 @@ describe('MarkdownPipe', () => {
     const spy = jest.spyOn(pipe as any, 'escapeHtml');
     pipe.transform('test');
     expect(spy).toHaveBeenCalledWith('test');
+  });
+
+  it('should return the original match for invalid animated emoji ID', () => {
+    const input = '<a:emojiName:1>';
+    const output = '&lt;a&#058;emojiName&#058;1&gt;';
+    jest.spyOn(pipe as any, 'isValidEmojiId').mockReturnValue(false);
+
+    expect(pipe.transform(input)).toBe(output);
+  });
+
+  it('should return the original match for invalid static emoji ID', () => {
+    const input = '<:emojiName:1>';
+    const output = '&lt;&#058;emojiName&#058;1&gt;';
+    jest.spyOn(pipe as any, 'isValidEmojiId').mockReturnValue(false);
+
+    expect(pipe.transform(input)).toBe(output);
+  });
+
+  it('should call isValidEmojiId for animated emoji', () => {
+    const spy = jest.spyOn(pipe as any, 'isValidEmojiId');
+    pipe.transform('<a:emojiName:123456>');
+    expect(spy).toHaveBeenCalledWith('123456');
+  });
+
+  it('should call isValidEmojiId for static emoji', () => {
+    const spy = jest.spyOn(pipe as any, 'isValidEmojiId');
+    pipe.transform('<:emojiName:123456>');
+    expect(spy).toHaveBeenCalledWith('123456');
+  });
+
+
+  it('should return true for valid emoji ID', () => {
+    expect(pipe['isValidEmojiId']('123456')).toBe(true);
+  });
+
+  it('should return false for emoji ID with non-digit characters', () => {
+    expect(pipe['isValidEmojiId']('123abc')).toBe(false);
+  });
+
+  it('should return false for an empty emoji ID', () => {
+    expect(pipe['isValidEmojiId']('')).toBe(false);
+  });
+
+  it('should return false for emoji ID longer than 19 characters', () => {
+    expect(pipe['isValidEmojiId']('12345678901234567890')).toBe(false);
+  });
+
+  it('should return true for emoji ID with 19 characters', () => {
+    expect(pipe['isValidEmojiId']('1234567890123456789')).toBe(true);
   });
 
   //                      SOME XSS-PREVENTION UNIT-TESTS

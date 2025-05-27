@@ -138,6 +138,17 @@ describe('AuthService', () => {
     expect(redirectSpy).toHaveBeenCalledWith('EXPIRED');
   });
 
+  it('should remove access_token and redirect to REQUESTS if endpoint is ratelimited', () => {
+    const mockErrorResponse = new HttpErrorResponse({ status: 429 });
+    httpClientSpy.mockReturnValue(throwError(() => mockErrorResponse));
+    const redirectSpy = jest.spyOn(dataService, 'redirectLoginError');
+
+    (service as any).isValidToken();
+
+    expect(localStorage.getItem('access_token')).toBeNull();
+    expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+  });
+
   it('should remove access_token and redirect to UNKNOWN if an unknown error occurs', () => {
     const mockErrorResponse = new HttpErrorResponse({ status: 500 });
     httpClientSpy.mockReturnValue(throwError(() => mockErrorResponse));
