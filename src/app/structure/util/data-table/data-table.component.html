@@ -31,15 +31,27 @@
 
       <!-- Table is Loading; Show Loader -->
       @if (tconfig.dataLoading) {
-        <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
+        <tr class="dark:border-gray-700 transition-colors duration-300" [@rowAnimation]
+            [class.border-b]="tconfig.type !== 'SUPPORT_SNIPPETS'">
           <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">
-            <span class="data-loader"></span>
+            @if (tconfig.type === 'SUPPORT_SNIPPETS') {  <!-- use div for snippets because it shows custom layout -->
+              <div [ngClass]="{'h-[calc(100vh-36rem)]': tconfig.type === 'SUPPORT_SNIPPETS'}"
+                   class="flex items-center justify-center">
+                <span class="data-loader"></span>
+              </div>
+            } @else {
+              <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">
+                <span class="data-loader"></span>
+              </td>
+            }
           </td>
         </tr>
       } @else {
         <!-- Row Content -->
         @for (obj of tconfig.rows; track $index) {
-          <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
+        <tr class="border-b dark:border-gray-700 transition-colors duration-200" [@rowAnimation] (click)="onRowClick(obj)"
+            [ngClass]="{'cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-900/80': this.rowClick.observers.length > 0,
+                        '!bg-blue-200 dark:!bg-blue-950': obj === this.dataService.selectedSnippet && tconfig.type === 'SUPPORT_SNIPPETS'}">
             @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
               <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
                 @if (this.dataService.getEmojibyId(obj.icon).startsWith('https://')) {
@@ -110,7 +122,7 @@
 
             <!-- Action Buttons -->
             <td class="px-4 py-3 flex items-center justify-end w-full" [height]="rowHeight + 'px'"
-                [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[4].width + '%' : tconfig.columns[2].width + '%'">
+                [width]="tconfig.columns[tconfig.columns.length - 1].width + '%'">
               @for (button of tconfig.action_btn; track $index) {
                 <!-- Show all Buttons, except Edit Button for Support-Themes if Pending -->
                 @if (!($index === 0 && isSupportType(obj) && obj.pending === true)) {

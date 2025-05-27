@@ -61,4 +61,6 @@ export let feature_list: Feature[] = [
     dislikes: 0, enabled: true, created_at: '18.01.2025', desc: 'WISHLIST_FEATURE_DESC_5' },
   { id: 6, name: 'WISHLIST_FEATURE_NAME_6', icon_url: 'assets/img/icons/utility/sleep.png', tag_id: 6, votes: 0,
     dislikes: 0, enabled: true, created_at: '18.01.2025', desc: 'WISHLIST_FEATURE_DESC_6' },
+  { id: 7, name: 'WISHLIST_FEATURE_NAME_7', icon_url: 'assets/img/icons/utility/police.png', tag_id: 6, votes: 0,
+    dislikes: 0, enabled: true, created_at: '18.01.2025', desc: 'WISHLIST_FEATURE_DESC_7' },
 ]

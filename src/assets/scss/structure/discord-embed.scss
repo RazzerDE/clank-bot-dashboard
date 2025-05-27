@@ -1,0 +1,52 @@
+.discord-embed {
+  @apply font-sans text-[#dcddde] w-[520px] max-w-full bg-[#36393f] rounded border-l-[3px] border-l-[#ed4245] p-[8px_16px_16px_12px];
+  font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Author section */
+.discord-embed .author {
+  @apply flex items-center mb-2;
+}
+
+.discord-embed .author img {
+  @apply w-6 h-6 rounded-full mr-2;
+}
+
+.discord-embed .author span {
+  @apply text-white font-semibold text-sm leading-[1.375];
+}
+
+/* Description section */
+.discord-embed .description {
+  @apply text-sm leading-[1.375] mt-2 mb-2.5;
+}
+
+.discord-embed b {
+  @apply font-bold;
+}
+
+.discord-embed i {
+  @apply italic;
+}
+
+/* List styles */
+.discord-embed ul {
+  @apply my-2 pl-5 list-disc;
+}
+
+.discord-embed li {
+  @apply mb-1.5;
+}
+
+/* Footer section */
+.discord-embed .footer {
+  @apply flex items-center mt-2 text-xs;
+}
+
+.discord-embed .footer img {
+  @apply w-5 h-5 rounded-full mr-2;
+}
+
+.discord-embed .footer span {
+  @apply font-medium;
+}

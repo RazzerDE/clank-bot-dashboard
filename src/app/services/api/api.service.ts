@@ -9,7 +9,7 @@ import {AuthService} from "../auth/auth.service";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
-import {SupportTheme} from "../types/Tickets";
+import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +83,86 @@ export class ApiService {
    */
   getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
     return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the predefined text snippets for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the ticket snippets.
+   * @returns An Observable that emits the ticket snippets.
+   */
+  getSnippets(guild_id: string): Observable<TicketSnippet[]> {
+    return this.http.get<TicketSnippet[]>(`${this.API_URL}/guilds/support-snippets?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Creates a new support theme for a specific guild.
+   *
+   * @param snippet - The ticket snippet object to be created.
+   * @returns An Observable emitting the server's response.
+   */
+  createSnippet(snippet: TicketSnippet): Observable<Object> {
+    return this.http.post(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Updates an existing ticket snippet for a specific guild.
+   *
+   * @param snippet - The ticket snippet object to be updated. It must include the `guild_id` of the guild
+   *                  and the `old_name` of the existing snippet.
+   * @returns An Observable emitting the server's response.
+   */
+  editSnippet(snippet: TicketSnippet): Observable<Object> {
+    return this.http.put(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Removes an existing ticket snippet for a specific guild.
+   *
+   * @param snippet - The ticket snippet object to be removed. It must include the `guild_id` of the guild.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteSnippet(snippet: TicketSnippet): Observable<Object> {
+    return this.http.delete(
+      `${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}&name=${encodeURIComponent(snippet.name)}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the current ongoing ticket announcement for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the active ticket announcement.
+   * @returns An Observable that emits the announcement
+   */
+  getTicketAnnouncement(guild_id: string): Observable<TicketAnnouncement> {
+    return this.http.get<TicketAnnouncement>(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Sets a new ticket announcement for a specific guild.
+   *
+   * @param announcement - The `TicketAnnouncement` object containing the announcement details.
+   * @param guild_id - The ID of the guild for which the announcement is being set.
+   * @returns An Observable emitting the server's response.
+   */
+  setAnnouncement(announcement: TicketAnnouncement, guild_id: string): Observable<Object> {
+    return this.http.post(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`, announcement,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Deletes the current ongoing ticket announcement for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which the ticket announcement is to be deleted.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteAnnouncement(guild_id: string): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

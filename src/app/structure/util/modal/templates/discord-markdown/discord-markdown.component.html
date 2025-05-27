@@ -1,29 +1,54 @@
-<!-- Template for Discord Markdown Preview -->
-<div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
+<!-- Template for Discord FAQ-Answer Preview -->
+@if (!type.startsWith('SUPPORT_SNIPPET')) {
+  <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
                   text-gray-300 font-sans mt-2 transition-all duration-300"
-     [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ'">
-  <div class="absolute top-0 left-0 w-1 h-full bg-[#5865f2] rounded-l"></div>
-  <div class="pl-3 w-full">
-    <div class="flex items-center font-bold text-sm text-white mb-0">
-      <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
-      <img ngSrc="assets/img/icons/faq_answer_theme.gif" alt="Clank-Icon ~ Clank Discord-Bot"
-           class="w-5 h-5 mx-2" height="40" width="40">
-      <span>~ {{ 'PLACEHOLDER_THEME_PREVIEW_TITLE' | translate }}</span>
-    </div>
+       [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
+    <div class="absolute top-0 left-0 w-1 h-full rounded-l"
+    [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'bg-[#f98928]' : 'bg-[#5865f2]'"></div>
+    <div class="pl-3 w-full">
+      <div class="flex items-center font-bold text-sm text-white mb-0">
+        <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
+        <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/faq_answer_theme.gif'"
+             alt="Clank-Icon ~ Clank Discord-Bot" class="w-5 h-5" height="40" width="40"
+             [ngClass]="!type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'mx-2' : 'ml-2 mx-0.5'">
+        <span>~ {{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+          ? ('PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE' | translate) : ('PLACEHOLDER_THEME_PREVIEW_TITLE' | translate) }}</span>
+      </div>
 
-    <div class="mb-1.5 text-sm font-normal leading-snug whitespace-pre-wrap break-words">
-      <img ngSrc="assets/img/icons/faq_answer-small.png" alt="Clank-Icon ~ Clank Discord-Bot"
-           class="w-4 h-[19px] rounded-full inline-block ml-0.5 mr-1 align-middle" height="19" width="19">
+      <div class="mb-1.5 text-sm font-normal leading-snug whitespace-pre-wrap break-words">
+        <img ngSrc="assets/img/icons/faq_answer-small.png" alt="Clank-Icon ~ Clank Discord-Bot"
+             class="h-[19px] rounded-full inline-block ml-0.5 mr-1 mt-0.5 align-middle" height="19" width="19">
         <span class="align-middle" #faqPreview
-              [innerHTML]="type != 'SUPPORT_THEME_FAQ' ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
+              [innerHTML]="!content || (content && content.length === 0) ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
         </span>
-    </div>
+      </div>
 
-    <!-- Footer-Bereich -->
-    <div class="flex items-center font-medium text-[10px] tracking-tight leading-3 text-gray-200 mt-2">
-      <img ngSrc="assets/img/icons/clank.png" alt="Clank-Icon ~ Clank Discord-Bot"
-           class="w-4 h-4 rounded-full mr-1.5" height="16" width="16">
-      <span>{{ 'PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate }}</span>
+      <!-- Footer-Area -->
+      <div class="flex items-center font-medium text-[10px] tracking-tight leading-3 text-gray-200 mt-2">
+        <img ngSrc="assets/img/icons/clank.png" alt="Clank-Icon ~ Clank Discord-Bot"
+             class="w-4 h-4 rounded-full mr-1.5" height="16" width="16">
+        <span>{{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ?
+          ('PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER' | translate) : ('PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate) }}</span>
+      </div>
     </div>
   </div>
-</div>
+} @else {
+  <!-- Template for Discord Snippet Preview -->
+  <div class="discord-embed mb-0 h-fit">
+    <div class="author">
+      <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
+      <span>Mr.Supercool ~ ADMINISTRATOR</span>
+    </div>
+
+    <div class="description" #ticketPreview
+         [innerHTML]="this.content.length === 0 ? ('PLACEHOLDER_SNIPPET_PREVIEW_DESC' | translate) : this.content | markdown"></div>
+
+    <div class="footer">
+      @if (this.dataService.active_guild) {
+        <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
+        <span>{{ this.dataService.active_guild.name }}</span>
+      }
+    </div>
+  </div>
+}
+

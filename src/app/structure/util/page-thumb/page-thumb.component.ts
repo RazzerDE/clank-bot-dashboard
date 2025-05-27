@@ -14,6 +14,6 @@ export class PageThumbComponent {
   @Input() title: string = '';
   @Input() desc: string = '';
 
-  @Input() color: 'red' | 'yellow' | 'blue' = 'yellow';
+  @Input() color: 'red' | 'yellow' | 'blue' | 'green' = 'yellow';
 
 }

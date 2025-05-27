@@ -1,0 +1,47 @@
+<!-- Template for Create new Snippet (First Modal) -->
+@if (showFirst) {
+  <div class="space-y-4">
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_SNIPPET_MODAL_NAME' | translate }}
+    </label>
+    <input type="text" class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+          focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+          dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" maxlength="49" minlength="1"
+           [placeholder]="'PLACEHOLDER_SNIPPET_MODAL_NAME_PLACEHOLDER' | translate" [(ngModel)]="newSnippet.name">
+
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_SNIPPET_MODAL_DESC' | translate }}
+    </label>
+    <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                     focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                     dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white min-h-28 max-h-96"
+              placeholder="{{ 'PLACEHOLDER_SNIPPET_MODAL_DESC_PLACEHOLDER' | translate }}"
+              rows="2" maxlength="999" minlength="1" [(ngModel)]="newSnippet.desc" (keyup)="updateSnippetPreview($event)"></textarea>
+
+    <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isSnippetInvalid() && type === 'SUPPORT_SNIPPET_ADD',
+                      'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': !isSnippetInvalid() && type !== 'SUPPORT_SNIPPET_ADD',
+                      'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': isSnippetInvalid()}"
+            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300
+               font-medium rounded-lg py-2.5 text-center transition-colors duration-100
+               dark:focus:ring-green-800 text-sm px-5"
+            [disabled]="isSnippetInvalid()" (click)="type === 'SUPPORT_SNIPPET_ADD' ? snippet_action(newSnippet) : snippet_edit(newSnippet)">
+      {{ type === 'SUPPORT_SNIPPET_ADD' ? ('PLACEHOLDER_SNIPPET_MODAL_BUTTON' | translate) : ('PLACEHOLDER_SNIPPET_MODAL_BUTTON_EDIT' | translate) }}
+    </button>
+  </div>
+} @else {
+  <!-- Template for create new Snippet (Second Modal) -->
+  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 max-w-md w-full !border-gray-400
+              dark:!border-gray-500 border-1">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+      <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_SNIPPET_MODAL2_TITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Modal body -->
+    <div class="p-4 md:p-5">
+      <template-discord-markdown [type]="this.type" [content]="newSnippet.desc" class="!mt-0"/>
+    </div>
+  </div>
+}

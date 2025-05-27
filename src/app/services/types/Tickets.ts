@@ -1,13 +1,16 @@
-import {DiscordUser} from "./discord/User";
 import {Role} from "./discord/Guilds";
 
-export interface Ticket {
-  id: string;
-  title: string;
-  status: 0 | 1 | 2; // 0: open, 1: claimed, 2: closed
-  creator: DiscordUser;
-  tag: string;
-  creation_date: Date;
+export interface TicketAnnouncement {
+  level: number | null;
+  description: string | null;
+  end_date: number | string | null; // unix timestamp
+}
+
+export interface TicketSnippet {
+  guild_id?: string;
+  old_name?: string; // used for updating snippets
+  name: string;
+  desc: string;
 }
 
 export interface SupportTheme {

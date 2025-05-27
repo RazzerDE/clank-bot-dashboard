@@ -116,6 +116,31 @@ describe('WishlistComponent', () => {
     showAlertSpy.mockRestore();
   });
 
+  it('should handle 429 error when feature vote fails', () => {
+    const vote = true;
+    const cooldownFeature = { featureId: 1, onCooldown: false, isLoading: false };
+    component['isOnCooldown'] = [cooldownFeature];
+    component['dataService'].profile = { id: "123" } as DiscordUser;
+
+    const errorResponse = new HttpErrorResponse({ status: 429, statusText: 'Too many requests' });
+    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(throwError(() => errorResponse));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+
+    jest.useFakeTimers();
+    component.sendFeatureVote(1, vote);
+    jest.advanceTimersByTime(5502);
+
+    expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
+    expect(component['dataService'].error_color).toBe('red');
+    expect(showAlertSpy).not.toHaveBeenCalled();
+    expect(redirectLoginErrorSpy).toHaveBeenCalledWith('REQUESTS');
+
+    sendFeatureVoteSpy.mockRestore();
+    showAlertSpy.mockRestore();
+    redirectLoginErrorSpy.mockRestore();
+  });
+
   it('should retrieve feature votes and update feature list', () => {
     const featureVotesMock = {
       featureVotes: [
@@ -154,6 +179,25 @@ describe('WishlistComponent', () => {
 
     getFeatureVotesSpy.mockRestore();
     showAlertSpy.mockRestore();
+  });
+
+  it('should handle ratelimit error when retrieving feature votes', () => {
+    const errorResponse = new HttpErrorResponse({ status: 429, statusText: 'Too many requests' });
+
+    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(throwError(() => errorResponse));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+
+    component.getFeatureVotes();
+
+    expect(component['dataService'].error_color).toBe('red');
+    expect(showAlertSpy).not.toHaveBeenCalledWith();
+    expect(component['dataService'].isLoading).toBe(false);
+    expect(redirectLoginErrorSpy).toHaveBeenCalledWith('REQUESTS');
+
+    getFeatureVotesSpy.mockRestore();
+    showAlertSpy.mockRestore();
+    redirectLoginErrorSpy.mockRestore();
   });
 
   it('should filter features based on tag ID', () => {

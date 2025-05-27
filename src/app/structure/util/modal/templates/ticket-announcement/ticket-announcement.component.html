@@ -1,0 +1,82 @@
+<!-- Template for Editing the Announcement -->
+@if (showFirst) {
+  <div class="space-y-4">
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_ANNOUNCEMENT_MODAL_DESC' | translate }}
+    </label>
+    <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                     focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                     dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white min-h-28 max-h-96"
+              placeholder="{{ 'PLACEHOLDER_ANNOUNCEMENT_MODAL_DESC_PLACEHOLDER' | translate }}"
+              rows="2" maxlength="999" minlength="1" [(ngModel)]="activeAnnounce.description"></textarea>
+
+    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_ANNOUNCEMENT_MODAL_DETAILS' | translate }}
+    </label>
+    <div class="flex gap-2">
+      <!-- Dropdown for Announcement Level -->
+      <div class="w-1/2">
+        <div class="relative">
+          <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
+                         focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500 cursor-pointer
+                         dark:placeholder-gray-400 dark:text-white pr-10 appearance-none" [(ngModel)]="activeAnnounce.level">
+            <option disabled [value]="null">{{ 'ANNOUNCEMENT_LEVEL_PLACEHOLDER' | translate }}</option>
+            <option [value]="1">{{ 'ANNOUNCEMENT_LEVEL_LOW' | translate }}</option>
+            <option [value]="2">{{ 'ANNOUNCEMENT_LEVEL_MEDIUM' | translate }}</option>
+            <option [value]="3">{{ 'ANNOUNCEMENT_LEVEL_HIGH' | translate }}</option>
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+            <fa-icon [icon]="faChevronDown" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Datepicker -->
+      <div class="w-1/2">
+        <input type="datetime-local" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                          focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:text-white
+                                          dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400
+                                          appearance-none [&::-webkit-calendar-picker-indicator]:dark:invert
+                                          [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+               [ngModel]="activeAnnounce.end_date | date:'yyyy-MM-ddTHH:mm'" (ngModelChange)="activeAnnounce.end_date = $event">
+      </div>
+    </div>
+
+    <div class="flex gap-2 w-full">
+      <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isAnnounceInvalid() && type === 'SUPPORT_TICKET_ANNOUNCEMENT_SET',
+                    'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': !isAnnounceInvalid() && type !== 'SUPPORT_TICKET_ANNOUNCEMENT_SET',
+                    'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': isAnnounceInvalid()}"
+              class="flex-grow text-white focus:ring-4 focus:outline-none focus:ring-green-300
+                     font-medium rounded-lg py-2.5 text-center transition-colors duration-100
+                   dark:focus:ring-green-800 text-sm px-5" [disabled]="isAnnounceInvalid()" (click)="submitAnnouncement()">
+        {{ type === 'SUPPORT_TICKET_ANNOUNCEMENT_SET' ? ('PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET' | translate) : ('PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT' | translate) }}
+      </button>
+      @if (type === 'SUPPORT_TICKET_ANNOUNCEMENT_EDIT') {
+        <button class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white rounded-lg
+                       p-2.5 flex items-center justify-center focus:ring-4 focus:outline-none focus:ring-red-300
+                       dark:focus:ring-red-800" (click)="deleteAnnouncement()">
+          <fa-icon [icon]="faTrashCan"></fa-icon>
+        </button>
+      }
+    </div>
+  </div>
+} @else {
+  <!-- Template for Announcement preview (Second Modal) -->
+  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 max-w-md w-full !border-gray-400
+              dark:!border-gray-500 border-1">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+      <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL2_TITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Modal body -->
+    <div class="p-4 md:p-5">
+      <p class="text-gray-400 dark:text-gray-500 text-sm mb-2" [innerHTML]="'PLACEHOLDER_ANNOUNCEMENT_MODAL_INFO' | translate"></p>
+      <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800 mb-4">
+
+      <template-discord-markdown [type]="this.type" class="!mt-0" [content]="activeAnnounce.description!" [no_overlay]="true" />
+    </div>
+  </div>
+}

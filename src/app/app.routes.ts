@@ -8,6 +8,7 @@ import {WishlistComponent} from "./pages/dashboard/general/wishlist/wishlist.com
 import {TeamlistComponent} from "./pages/dashboard/general/teamlist/teamlist.component";
 import {ModuleSetupComponent} from "./pages/dashboard/support/module-setup/module-setup.component";
 import {SupportThemesComponent} from "./pages/dashboard/support/support-themes/support-themes.component";
+import {TicketSnippetsComponent} from "./pages/dashboard/support/ticket-snippets/ticket-snippets.component";
 
 export const routes: Routes = [
   // General pages
@@ -19,8 +20,8 @@ export const routes: Routes = [
 
   // Support pages
   { path: 'dashboard/support/setup', component: ModuleSetupComponent, canActivate: [AuthGuard] },
-  //{ path: 'dashboard/support/tickets', component: OpenTicketsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/support/themes', component: SupportThemesComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/support/snippets', component: TicketSnippetsComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}
