@@ -15,28 +15,28 @@ export class MarkdownPipe implements PipeTransform {
 
     // apply discord markdown
     return safeValue
-      .replace(/\n/g, '<br />')                                       // Line break (\n\n)
-      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')                         // Bold (**)
-      .replace(/__(.*?)__/g, '<u>$1</u>')                             // Underline (__)
-      .replace(/\*(.*?)\*/g, '<i>$1</i>')                             // Italic (*)
-      .replace(/~~(.*?)~~/g, '<s>$1</s>')                             // Strikethrough (~~)
-      .replace(/^### (.*$)/gm, '<h3>$1</h3>')                         // Headline level 3 (###)
-      .replace(/^## (.*$)/gm, '<h2>$1</h2>')                          // Headline level 2 (##)
-      .replace(/^# (.*$)/gm, '<h1>$1</h1>')                           // Headline level 1 (#)
-      .replace(/^#- (.*$)/gm, '<small>$1</small>')                    // Smaller text (#-)
-      .replace(/(^|<br \/>)(\s*)&gt;/g, '$1  $2')                 // Blockquote escape (>)
-      .replace(/&lt;#\d+&gt;/g, '<code>#channel-mention</code>')      // Channel mentions
-      .replace(/&lt;@&amp;\d+&gt;/g, '<code>@role-mention</code>')    // Role mentions
-      .replace(/&lt;@\d+&gt;/g, '<code>@user-mention</code>')         // User mentions
-      .replace(/`([^`]+)`/g, '<code>$1</code>')                       // Inline-Code (`code`)
+      .replaceAll(/\n/g, '<br />')                                       // Line break (\n\n)
+      .replaceAll(/\*\*(.*?)\*\*/g, '<b>$1</b>')                         // Bold (**)
+      .replaceAll(/__(.*?)__/g, '<u>$1</u>')                             // Underline (__)
+      .replaceAll(/\*(.*?)\*/g, '<i>$1</i>')                             // Italic (*)
+      .replaceAll(/~~(.*?)~~/g, '<s>$1</s>')                             // Strikethrough (~~)
+      .replaceAll(/^### (.*$)/gm, '<h3>$1</h3>')                         // Headline level 3 (###)
+      .replaceAll(/^## (.*$)/gm, '<h2>$1</h2>')                          // Headline level 2 (##)
+      .replaceAll(/^# (.*$)/gm, '<h1>$1</h1>')                           // Headline level 1 (#)
+      .replaceAll(/^#- (.*$)/gm, '<small>$1</small>')                    // Smaller text (#-)
+      .replaceAll(/(^|<br \/>)(\s*)&gt;/g, '$1  $2')                 // Blockquote escape (>)
+      .replaceAll(/&lt;#\d+&gt;/g, '<code>#channel-mention</code>')      // Channel mentions
+      .replaceAll(/&lt;@&amp;\d+&gt;/g, '<code>@role-mention</code>')    // Role mentions
+      .replaceAll(/&lt;@\d+&gt;/g, '<code>@user-mention</code>')         // User mentions
+      .replaceAll(/`([^`]+)`/g, '<code>$1</code>')                       // Inline-Code (`code`)
 
       // (animated) discord guild emoji
-      .replace(/&lt;a&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
+      .replaceAll(/&lt;a&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
         return this.isValidEmojiId(id) ?
           `<img src="https://cdn.discordapp.com/emojis/${id}.gif?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
           match;
       })
-      .replace(/&lt;&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
+      .replaceAll(/&lt;&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
         return this.isValidEmojiId(id) ?
           `<img src="https://cdn.discordapp.com/emojis/${id}.png?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
           match;
@@ -60,14 +60,14 @@ export class MarkdownPipe implements PipeTransform {
     };
 
     // remove potential XSS attack vectors
-    return text.replace(/[&<>"':=]/g, (match) => htmlEscapes[match])
-      .replace(/javascript&#0*58|javascript&#x0*3a/gi, '')
-      .replace(/data:/gi, '')
-      .replace(/onerror\s*=/gi, '')
-      .replace(/onclick\s*=/gi, '')
-      .replace(/onload\s*=/gi, '')
-      .replace(/onmouseover\s*=/gi, '')
-      .replace(/onfocus\s*=/gi, '')
+    return text.replaceAll(/[&<>"':=]/g, (match) => htmlEscapes[match])
+      .replaceAll(/javascript&#0*58|javascript&#x0*3a/gi, '')
+      .replaceAll(/data:/gi, '')
+      .replaceAll(/onerror\s*=/gi, '')
+      .replaceAll(/onclick\s*=/gi, '')
+      .replaceAll(/onload\s*=/gi, '')
+      .replaceAll(/onmouseover\s*=/gi, '')
+      .replaceAll(/onfocus\s*=/gi, '')
   }
 
   /**
