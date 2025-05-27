@@ -70,6 +70,7 @@ export class MarkdownPipe implements PipeTransform {
       disallowedTagsMode: 'escape', // Escape disallowed tags instead of removing them
     }).replaceAll(/javascript&#0*58|javascript&#x0*3a|javascript:/gi, '')
       .replaceAll(/data:/gi, '')
+      .replaceAll(/vbscript:/gi, '')
       .replaceAll(/onerror\s*=/gi, '')
       .replaceAll(/onclick\s*=/gi, '')
       .replaceAll(/onload\s*=/gi, '')
