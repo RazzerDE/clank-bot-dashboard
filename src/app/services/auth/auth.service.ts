@@ -106,6 +106,8 @@ export class AuthService {
 
         if (error.status === 401) {
           this.dataService.redirectLoginError('EXPIRED');
+        } else if (error.status == 429) {
+          this.dataService.redirectLoginError('REQUESTS');
         } else {
           this.dataService.redirectLoginError('UNKNOWN');
         }

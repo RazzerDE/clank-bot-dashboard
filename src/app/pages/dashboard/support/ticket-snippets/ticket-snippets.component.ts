@@ -260,7 +260,10 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
 
           if (error.status === 409) { // already exist
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT'),
-              this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT_DESC', { name: snippet.name }));
+              this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT_DESC', {name: snippet.name}));
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
           }
@@ -315,10 +318,15 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
             snippet.name = snippet.old_name!;
           } else if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_EDIT_404'),
-              this.translate.instant('ERROR_SNIPPET_EDIT_404_DESC', { name: snippet.name }));
+              this.translate.instant('ERROR_SNIPPET_EDIT_404_DESC', {name: snippet.name}));
 
             const index: number = this.snippets.findIndex((s: TicketSnippet) => s.name === snippet.old_name);
-            if (index !== -1) { this.snippets.splice(index, 1); }
+            if (index !== -1) {
+              this.snippets.splice(index, 1);
+            }
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
           }
@@ -374,10 +382,15 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
 
           if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_EDIT_404'),
-              this.translate.instant('ERROR_SNIPPET_EDIT_404_DESC', { name: snippet.name }));
+              this.translate.instant('ERROR_SNIPPET_EDIT_404_DESC', {name: snippet.name}));
 
             const index: number = this.snippets.findIndex((s: TicketSnippet) => s.name === snippet.name);
-            if (index !== -1) { this.snippets.splice(index, 1); this.filteredSnippets = [...this.snippets]; }
+            if (index !== -1) {
+              this.snippets.splice(index, 1);
+              this.filteredSnippets = [...this.snippets];
+            }
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
           }

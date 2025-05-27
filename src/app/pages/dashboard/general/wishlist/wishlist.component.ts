@@ -140,6 +140,9 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
 
         if (error.status === 304) { // not modified
           this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
+        } else if (error.status == 429) {
+          this.dataService.redirectLoginError('REQUESTS');
+          return;
         } else {
           this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
         }
@@ -180,9 +183,14 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
         }
         this.dataService.isLoading = false;
       },
-      error: (_error: HttpErrorResponse): void => {
+      error: (error: HttpErrorResponse): void => {
         this.dataService.error_color = 'red';
-        this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
+
+        if (error.status == 429) {
+          this.dataService.redirectLoginError('REQUESTS');
+        } else {
+          this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
+        }
         this.dataService.isLoading = false;
       }
     });

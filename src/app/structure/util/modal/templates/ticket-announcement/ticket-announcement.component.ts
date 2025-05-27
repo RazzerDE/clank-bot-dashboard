@@ -117,6 +117,7 @@ export class TicketAnnouncementComponent implements OnDestroy {
           this.dataService.error_color = 'red';
           if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
+            return;
           } else if (error.status == 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_ANNOUNCEMENT_NOT_FOUND_TITLE'),
               this.translate.instant('ERROR_ANNOUNCEMENT_NOT_FOUND_DESC'));

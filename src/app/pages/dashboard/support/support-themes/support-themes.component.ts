@@ -204,7 +204,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
           if (error.status === 409) { // already pending
             this.dataService.showAlert(this.translate.instant('ERROR_THEME_DELETION_CONFLICT'),
-              this.translate.instant('ERROR_THEME_DELETION_CONFLICT_DESC', { name: theme.name }));
+              this.translate.instant('ERROR_THEME_DELETION_CONFLICT_DESC', {name: theme.name}));
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
           }
