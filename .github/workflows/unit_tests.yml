@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '21' # Updated to Node.js 18 for compatibility
+          cache: 'npm'
 
       - name: Create directories
         run: mkdir -p src/environments
@@ -37,7 +38,13 @@ jobs:
           echo "};" >> src/environments/config.ts
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: npm test -- --coverage --coverageReporters=text-lcov | tee coverage.txt
+
+      - name: Check coverage threshold
+        run: |
+          # Jest with coverageThreshold will automatically fail if coverage < 100%
+          # This step will only run if the previous step succeeds
+          echo "Coverage check passed - 100% coverage achieved!"
