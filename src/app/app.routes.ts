@@ -9,6 +9,7 @@ import {TeamlistComponent} from "./pages/dashboard/general/teamlist/teamlist.com
 import {ModuleSetupComponent} from "./pages/dashboard/support/module-setup/module-setup.component";
 import {SupportThemesComponent} from "./pages/dashboard/support/support-themes/support-themes.component";
 import {TicketSnippetsComponent} from "./pages/dashboard/support/ticket-snippets/ticket-snippets.component";
+import {BlockedUsersComponent} from "./pages/dashboard/support/blocked-users/blocked-users.component";
 
 export const routes: Routes = [
   // General pages
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: 'dashboard/support/setup', component: ModuleSetupComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/support/themes', component: SupportThemesComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/support/snippets', component: TicketSnippetsComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/support/blocked-users', component: BlockedUsersComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}

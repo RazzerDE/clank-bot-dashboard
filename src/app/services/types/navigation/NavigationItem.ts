@@ -51,7 +51,7 @@ export const nav_items: NavigationItem[] = [
       { title: "SIDEBAR_PAGE_SUPPORT_THEMES", desc: "SIDEBAR_PAGE_SUPPORT_THEMES_DESC", icon: faComments, redirect_url: "/dashboard/support/themes" },
       // { title: "SIDEBAR_PAGE_SUPPORT_PANELS", desc: "SIDEBAR_PAGE_SUPPORT_PANELS_DESC", icon: faTableColumns, redirect_url: "/dashboard/support/panels" },
       { title: "SIDEBAR_PAGE_TEXT_SNIPPETS", desc: "SIDEBAR_PAGE_TEXT_SNIPPETS_DESC", icon: faScroll, redirect_url: "/dashboard/support/snippets" },
-      { title: "SIDEBAR_PAGE_BLOCKED", desc: "SIDEBAR_PAGE_BLOCKED_DESC", icon: faBan, redirect_url: "/dashboard/support/bans" },
+      { title: "SIDEBAR_PAGE_BLOCKED", desc: "SIDEBAR_PAGE_BLOCKED_DESC", icon: faBan, redirect_url: "/dashboard/support/blocked-users" },
     ]
   },
   {

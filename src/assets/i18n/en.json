@@ -142,6 +142,10 @@
   "PAGE_SNIPPETS_PREVIEW_TITLE": "🚔 ~ PREVIEW IN SUPPORT TICKET",
   "PAGE_SNIPPETS_PREVIEW_INTRO": "ℹ️ › This is how the selected text snippet could be displayed to the user who created the support ticket if a team member uses it in the ticket.",
 
+  "PAGE_BLOCKED_SUBTITLE": "📛 ~ BLOCKED USERS FOR TICKETS",
+  "PAGE_BLOCKED_TITLE": "Blocked Server Members",
+  "PAGE_BLOCKED_DESC": "› On this page, you can see all users who are currently unable to create tickets on your Discord server - this can be useful to prevent spam.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM ACTIVE - IMPROVEMENTS POSSIBLE!",
@@ -377,6 +381,7 @@
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Search for support theme.. 📚",
   "PLACEHOLDER_SNIPPET_SEARCH": "Search for a text snippet.. ✏️",
+  "PLACEHOLDER_USER_SEARCH": "Search for a user.. 👤",
   "PLACEHOLDER_THEME_EMPTY": "😢 ~ No support themes found..",
   "PLACEHOLDER_SNIPPET_EMPTY": "😶‍🌫️ ~ No text snippets found..",
   "PLACEHOLDER_SNIPPET_NO_RESULTS": "No Snippets were created..",
@@ -384,6 +389,7 @@
   "PLACEHOLDER_BUTTON_ROLE_ADD": "Add role",
   "PLACEHOLDER_BUTTON_THEME_ADD": "Add theme",
   "PLACEHOLDER_BUTTON_SNIPPET_ADD": "Add snippet",
+  "PLACEHOLDER_BUTTON_USER_ADD": "Add Discord User",
   "PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET": "Set ticket announcement",
   "PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT": "Edit ticket announcement",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Default Mentioned-Role",
