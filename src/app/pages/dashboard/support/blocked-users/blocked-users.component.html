@@ -7,14 +7,13 @@
     5. remove user
     6. real users from database (get all ids from guild; otherwise return user_id)
     7. tap on user; fetch it
-    8. show table (user avatar, username (or id if no username; show user_id on hover if username), staff, reason, end_date, actions)
     9. search-function
     10. cache refresh
     11. table empty state
     12. server-switch data-load
   -->
   <!-- Body -->
-  <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
+  <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- User Modal TODO -->
@@ -25,21 +24,21 @@
     <page-thumb [subtitle]="'PAGE_BLOCKED_SUBTITLE' | translate" [title]="'PAGE_BLOCKED_TITLE' | translate"
                 [color]="'red-bright'" [desc]="'PAGE_BLOCKED_DESC' | translate"></page-thumb>
 
-    <!-- Alert Box TODO -->
-<!--    @if (this.dataService.showAlertBox) {-->
-<!--      <app-alert-box></app-alert-box>-->
-<!--    }-->
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
 
-    <div class="flex-1 my-4 flex flex-col items-center">
-      <div class="p-4 py-2 sm:p-5 flex-grow flex flex-col w-full">
-        <div class="mx-auto w-full h-[calc(100vh-30rem)] px-4 lg:!px-0">
+    <div class="flex-1 my-4">
+      <div class="p-3 sm:p-5">
+        <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
 
           <!-- Table Header -->
-          <div class="bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800
-                    dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
-                    transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1 p-4 mb-4">
+          <div class="bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800 overflow-hidden
+                      dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
+                      transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
 
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
               <div class="w-full md:w-2/6">
                 <div class="flex-1 ml-4 lg:ml-0 ">
                   <div class="relative self-center">
@@ -71,6 +70,9 @@
                 </button>
               </div>
             </div>
+
+            <!-- Table -->
+            <data-table [tconfig]="tableConfig" />
           </div>
 
         </div>

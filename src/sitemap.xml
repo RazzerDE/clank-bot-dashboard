@@ -21,15 +21,7 @@
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/support/tickets</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
     <loc>https://clank.dev/support/themes</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/support/panels</loc>
     <priority>0.70</priority>
   </url>
   <url>
@@ -37,7 +29,7 @@
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/support/bans</loc>
+    <loc>https://clank.dev/support/blocked-users</loc>
     <priority>0.70</priority>
   </url>
   <url>
