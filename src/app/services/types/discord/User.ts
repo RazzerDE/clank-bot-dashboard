@@ -17,10 +17,12 @@ export interface DiscordUser {
 
 export interface BlockedUser {
   guild_id?: string;            // Only used for adding a blocked user, not for listing
-  user: DiscordUser | null;     // can be null if user is not on the guild
-  staff: DiscordUser | null;    // can be null if staff is not on the guild
   user_id: string;
+  user_name: string;
+  user_avatar: string | null;
   staff_id: string;
+  staff_name: string;
+  staff_avatar: string | null;
   reason: string;
   end_date: number | null;      // null if no end date is set (else timestamp)
 }

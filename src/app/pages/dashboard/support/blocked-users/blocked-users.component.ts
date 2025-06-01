@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -10,7 +10,10 @@ import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {TableConfig} from "../../../../services/types/Config";
-import {BlockedUser, DiscordUser} from "../../../../services/types/discord/User";
+import {BlockedUser} from "../../../../services/types/discord/User";
+import {Subscription} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ApiService} from "../../../../services/api/api.service";
 
 @Component({
   selector: 'app-blocked-users',
@@ -25,179 +28,140 @@ import {BlockedUser, DiscordUser} from "../../../../services/types/discord/User"
   templateUrl: './blocked-users.component.html',
   styleUrl: './blocked-users.component.scss'
 })
-export class BlockedUsersComponent {
+export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faRefresh: IconDefinition = faRefresh;
-  protected dataLoading: boolean = false;
+  protected disabledCacheBtn: boolean = false;
+  protected dataLoading: boolean = true;
 
-  protected user_list: BlockedUser[] = [
-    {
-      user: { id: '123456789012345678', username: 'Benutzer1', avatar: 'assets/img/placeholder-user.gif', discriminator: '1234' } as DiscordUser,
-      staff: { id: '987654321098765432', username: 'Moderator1', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0001' } as DiscordUser,
-      user_id: '123456789012345678',
-      staff_id: '987654321098765432',
-      reason: 'Spam in mehreren Kanälen',
-      end_date: Date.now() + 86400000 // 1 Tag in der Zukunft
-    },
-    {
-      user: { id: '234567890123456789', username: 'Benutzer2', avatar: 'assets/img/placeholder-user.gif', discriminator: '2345' } as DiscordUser,
-      staff: { id: '876543210987654321', username: 'Admin1', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0002' } as DiscordUser,
-      user_id: '234567890123456789',
-      staff_id: '876543210987654321',
-      reason: 'Beleidigung anderer Nutzer',
-      end_date: Date.now() + 259200000 // 3 Tage in der Zukunft
-    },
-    {
-      user: { id: '345678901234567890', username: 'Benutzer3', avatar: 'assets/img/placeholder-user.gif', discriminator: '3456' } as DiscordUser,
-      staff: { id: '765432109876543210', username: 'Moderator2', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0003' } as DiscordUser,
-      user_id: '345678901234567890',
-      staff_id: '765432109876543210',
-      reason: 'Regelverstoß: NSFW-Inhalte',
-      end_date: Date.now() + 604800000 // 7 Tage in der Zukunft
-    },
-    {
-      user: { id: '456789012345678901', username: 'Benutzer4', avatar: 'assets/img/placeholder-user.gif', discriminator: '4567' } as DiscordUser,
-      staff: { id: '654321098765432109', username: 'Admin2', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0004' } as DiscordUser,
-      user_id: '456789012345678901',
-      staff_id: '654321098765432109',
-      reason: 'Wiederholtes Spamming nach Warnung',
-      end_date: Date.now() + 1209600000 // 14 Tage in der Zukunft
-    },
-    {
-      user: { id: '567890123456789012', username: 'Benutzer5', avatar: 'assets/img/placeholder-user.gif', discriminator: '5678' } as DiscordUser,
-      staff: { id: '543210987654321098', username: 'Moderator3', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0005' } as DiscordUser,
-      user_id: '567890123456789012',
-      staff_id: '543210987654321098',
-      reason: 'Werbung für externe Dienste',
-      end_date: Date.now() + 2592000000 // 30 Tage in der Zukunft
-    },
-    {
-      user: { id: '678901234567890123', username: 'Benutzer6', avatar: 'assets/img/placeholder-user.gif', discriminator: '6789' } as DiscordUser,
-      staff: { id: '432109876543210987', username: 'Admin3', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0006' } as DiscordUser,
-      user_id: '678901234567890123',
-      staff_id: '432109876543210987',
-      reason: 'Verstoß gegen Community-Richtlinien',
-      end_date: Date.now() + 5184000000 // 60 Tage in der Zukunft
-    },
-    {
-      user: null, // Benutzer nicht mehr auf dem Server
-      staff: { id: '321098765432109876', username: 'Moderator4', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0007' } as DiscordUser,
-      user_id: '789012345678901234',
-      staff_id: '321098765432109876',
-      reason: 'Doxxing und Belästigung',
-      end_date: Date.now() + 7776000000 // 90 Tage in der Zukunft
-    },
-    {
-      user: { id: '890123456789012345', username: 'Benutzer8', avatar: 'assets/img/placeholder-user.gif', discriminator: '8901' } as DiscordUser,
-      staff: null, // Mitarbeiter nicht mehr auf dem Server
-      user_id: '890123456789012345',
-      staff_id: '210987654321098765',
-      reason: 'Bot-Missbrauch',
-      end_date: Date.now() + 15552000000 // 180 Tage in der Zukunft
-    },
-    {
-      user: { id: '901234567890123456', username: 'Benutzer9', avatar: 'assets/img/placeholder-user.gif', discriminator: '9012' } as DiscordUser,
-      staff: { id: '109876543210987654', username: 'Admin4', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0009' } as DiscordUser,
-      user_id: '901234567890123456',
-      staff_id: '109876543210987654',
-      reason: 'Umgehung früherer Sperren',
-      end_date: Date.now() + 31536000000 // 365 Tage in der Zukunft
-    },
-    {
-      user: { id: '012345678901234567', username: 'Benutzer10', avatar: 'assets/img/placeholder-user.gif', discriminator: '0123' } as DiscordUser,
-      staff: { id: '098765432109876543', username: 'Moderator5', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0010' } as DiscordUser,
-      user_id: '012345678901234567',
-      staff_id: '098765432109876543',
-      reason: 'Phishing-Links',
-      end_date: -1 // Permanente Sperre
-    },
-    {
-      user: { id: '112233445566778899', username: 'Benutzer11', avatar: 'assets/img/placeholder-user.gif', discriminator: '1122' } as DiscordUser,
-      staff: { id: '998877665544332211', username: 'Admin5', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0011' } as DiscordUser,
-      user_id: '112233445566778899',
-      staff_id: '998877665544332211',
-      reason: 'Verbreitung von Malware',
-      end_date: -1 // Permanente Sperre
-    },
-    {
-      user: null, // Benutzer nicht mehr auf dem Server
-      staff: { id: '223344556677889900', username: 'Moderator6', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0012' } as DiscordUser,
-      user_id: '223344556677889900',
-      staff_id: '887766554433221100',
-      reason: 'Hassrede',
-      end_date: Date.now() + 43200000 // 12 Stunden in der Zukunft
-    },
-    {
-      user: { id: '334455667788990011', username: 'Benutzer13', avatar: 'assets/img/placeholder-user.gif', discriminator: '3344' } as DiscordUser,
-      staff: { id: '776655443322110099', username: 'Admin6', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0013' } as DiscordUser,
-      user_id: '334455667788990011',
-      staff_id: '776655443322110099',
-      reason: 'Wiederholter Verstoß gegen Kanalrichtlinien',
-      end_date: Date.now() + 172800000 // 2 Tage in der Zukunft
-    },
-    {
-      user: { id: '445566778899001122', username: 'Benutzer14', avatar: 'assets/img/placeholder-user.gif', discriminator: '4455' } as DiscordUser,
-      staff: null, // Mitarbeiter nicht mehr auf dem Server
-      user_id: '445566778899001122',
-      staff_id: '665544332211009988',
-      reason: 'Angriffe auf Server-Mitglieder',
-      end_date: Date.now() + 432000000 // 5 Tage in der Zukunft
-    },
-    {
-      user: { id: '556677889900112233', username: 'Benutzer15', avatar: 'assets/img/placeholder-user.gif', discriminator: '5566' } as DiscordUser,
-      staff: { id: '554433221100998877', username: 'Moderator7', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0015' } as DiscordUser,
-      user_id: '556677889900112233',
-      staff_id: '554433221100998877',
-      reason: 'Ständige Störung von Diskussionen',
-      end_date: Date.now() + 864000000 // 10 Tage in der Zukunft
-    },
-    {
-      user: { id: '667788990011223344', username: 'Benutzer16', avatar: 'assets/img/placeholder-user.gif', discriminator: '6677' } as DiscordUser,
-      staff: { id: '443322110099887766', username: 'Admin7', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0016'} as DiscordUser,
-      user_id: '667788990011223344',
-      staff_id: '443322110099887766',
-      reason: 'Missbrauch von Befehlen',
-      end_date: Date.now() + 1728000000 // 20 Tage in der Zukunft
-    },
-    {
-      user: { id: '778899001122334455', username: 'Benutzer17', avatar: 'assets/img/placeholder-user.gif', discriminator: '7788' } as DiscordUser,
-      staff: { id: '332211009988776655', username: 'Moderator8', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0017' } as DiscordUser,
-      user_id: '778899001122334455',
-      staff_id: '332211009988776655',
-      reason: 'Betrug anderer Mitglieder',
-      end_date: Date.now() + 3456000000 // 40 Tage in der Zukunft
-    },
-    {
-      user: { id: '889900112233445566', username: 'Benutzer18', avatar: 'assets/img/icons/utility/wave.png', discriminator: '8899' } as DiscordUser,
-      staff: { id: '221100998877665544', username: 'Admin8', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0018' } as DiscordUser,
-      user_id: '889900112233445566',
-      staff_id: '221100998877665544',
-      reason: 'Manipulation von Abstimmungen',
-      end_date: Date.now() + 10368000000 // 120 Tage in der Zukunft
-    },
-    {
-      user: null, // Benutzer nicht mehr auf dem Server
-      staff: { id: '110099887766554433', username: 'Moderator9', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0019' } as DiscordUser,
-      user_id: '990011223344556677',
-      staff_id: '110099887766554433',
-      reason: 'Nicht autorisierte Werbung',
-      end_date: Date.now() + 21600000 // 6 Stunden in der Zukunft
-    },
-    {
-      user: { id: '001122334455667788', username: 'Benutzer20', avatar: 'assets/img/placeholder-user.gif', discriminator: '0011' } as DiscordUser,
-      staff: { id: '009988776655443322', username: 'Admin9', avatar: 'https://cdn.discordapp.com/embed/avatars/0.png', discriminator: '0020' } as DiscordUser,
-      user_id: '001122334455667788',
-      staff_id: '009988776655443322',
-      reason: 'Verstoß gegen Nutzungsbedingungen',
-      end_date: null
-    }
-  ];
+  protected user_list: BlockedUser[] = [];
   protected filteredUsers: BlockedUser[] = [...this.user_list];
+  protected startLoading: boolean = false;
+  private subscriptions: Subscription[] = [];
 
-  constructor(protected dataService: DataHolderService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService) {
     document.title = 'Blocked Users ~ Clank Discord-Bot';
-    this.dataService.isLoading = false;
+    this.dataService.isLoading = true;
+
+    this.getBlockedUsers(); // first call to get the server data
+    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+      if (value) { // only fetch data if allowed
+        this.dataService.isLoading = true;
+        this.dataLoading = true;
+        this.user_list = [];
+        this.getBlockedUsers(true);
+      }
+    });
+
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   *
+   * This method ensures that the data-loading indicators for blocked users
+   * are properly updated. If the data is not ready yet, it sets a timeout to update
+   * the loading state asynchronously, allowing the UI to display a data-loader.
+   */
+  ngAfterViewChecked(): void {
+    if (!this.dataService.isLoading && !this.startLoading && this.dataLoading) {
+      setTimeout((): boolean => this.dataLoading = false, 0);
+    }
+  }
+
+  /**
+   * Fetches the list of blocked users for the active guild.
+   *
+   * This method retrieves the blocked users either from local storage (if cached and valid)
+   * or by making an API call to the server. The data is cached in local storage for 30 seconds
+   * to reduce unnecessary API calls. If the `no_cache` parameter is set to `true`, the cache
+   * is bypassed, and fresh data is fetched from the server.
+   *
+   * @param {boolean} [no_cache] - Optional parameter to bypass the cache and fetch fresh data.
+   *                                Defaults to `false`.
+   */
+  protected getBlockedUsers(no_cache?: boolean): void {
+    if (!this.dataService.active_guild) { return; }
+    this.startLoading = true;
+
+    // check if users are already stored in local storage (30 seconds cache)
+    if ((localStorage.getItem('blocked_users') && localStorage.getItem('blocked_users_timestamp') &&
+      Date.now() - Number(localStorage.getItem('blocked_users_timestamp')) < 30000) && !no_cache) {
+      this.user_list = JSON.parse(localStorage.getItem('blocked_users') as string);
+      this.filteredUsers = this.user_list;
+      this.dataService.isLoading = false;
+      this.startLoading = false;
+      return;
+    }
+
+    const sub: Subscription = this.apiService.getBlockedUsers(this.dataService.active_guild.id)
+      .subscribe({
+        next: (userData: BlockedUser[]): void => {
+          this.user_list = userData;
+          this.filteredUsers = this.user_list;
+
+          this.dataService.isLoading = false;
+          this.startLoading = false;
+
+          localStorage.setItem('blocked_users', JSON.stringify(this.user_list));
+          localStorage.setItem('blocked_users_timestamp', Date.now().toString());
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 401) {
+            this.dataService.redirectLoginError('NO_CLANK');
+          } else if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+
+          this.dataService.isLoading = false;
+          this.startLoading = false;
+        }
+      });
+
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Refreshes the cache by disabling the cache button, setting the loading state,
+   * and fetching the snippet data with the cache ignored. The cache button is re-enabled
+   * after 15 seconds.
+   */
+  protected refreshCache(): void {
+    this.disabledCacheBtn = true;
+    this.dataService.isLoading = true;
+    this.getBlockedUsers(true);
+
+    setTimeout((): void => { this.disabledCacheBtn = false; }, 15000);
+  }
+
+  /**
+   * Filters the blocked users based on the search term entered by the user.
+   *
+   * This method updates the `filteredUsers` array to include only the blocked users
+   * whose names contain the search term. The search is case-insensitive.
+   *
+   * @param {Event} event - The input event triggered by the search field.
+   */
+  protected searchBlockedUser(event: Event): void {
+    const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredUsers = this.user_list.filter(blocked_user =>
+      blocked_user.user_id.toString().toLowerCase().includes(searchTerm) ||
+      blocked_user.staff_id.toString().toLowerCase().includes(searchTerm) ||
+      blocked_user.user_name.toLowerCase().includes(searchTerm) ||
+      blocked_user.staff_name.toLowerCase().includes(searchTerm) ||
+      blocked_user.reason.toLowerCase().includes(searchTerm));
   }
 
   /**

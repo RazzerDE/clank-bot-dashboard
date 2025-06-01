@@ -1,16 +1,9 @@
 <dashboard-layout>
   <!-- TODO
-    1. data-loader
-    2. page-loader
-    3. unit-tests
-    4. add user
-    5. remove user
-    6. real users from database (get all ids from guild; otherwise return user_id)
-    7. tap on user; fetch it
-    9. search-function
-    10. cache refresh
-    11. table empty state
-    12. server-switch data-load
+    1. unit-tests
+    2. add user
+    3. remove user
+    4. filter by column click (data-table)
   -->
   <!-- Body -->
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
@@ -42,9 +35,8 @@
               <div class="w-full md:w-2/6">
                 <div class="flex-1 ml-4 lg:ml-0 ">
                   <div class="relative self-center">
-                    <!-- TODO -->
                     <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                    <input type="text" [placeholder]="'PLACEHOLDER_USER_SEARCH' | translate"
+                    <input type="text" [placeholder]="'PLACEHOLDER_USER_SEARCH' | translate" (keyup)="searchBlockedUser($event)"
                            class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                           dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
                   </div>
@@ -63,8 +55,8 @@
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
                                            via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
                                            py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
-                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none">
-                  <!-- TODO -->
+                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                        [disabled]="this.disabledCacheBtn" (click)="refreshCache()">
                   <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
                   {{ 'BUTTON_CACHE_REFRESH' | translate }}
                 </button>

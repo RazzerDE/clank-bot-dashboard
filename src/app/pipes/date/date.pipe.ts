@@ -38,12 +38,12 @@ export class DatePipe implements PipeTransform {
 
     if (lang === 'de') {  // Donnerstag, 01.06.2025 um 15:56 Uhr
       const formattedHours: string = hours.toString().padStart(2, '0');
-      return `${weekday}, ${day}.${month}.${year} um ${formattedHours}:${minutes} Uhr`;
+      return `am ${weekday}, ${day}.${month}.${year} um ${formattedHours}:${minutes} Uhr`;
     } else {              // Thursday, 01.06.2025 at 3:56 PM
       const period = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
       hours = hours ? hours : 12; // 12 AM is 0
-      return `${weekday}, ${day}.${month}.${year} at ${hours}:${minutes} ${period}`;
+      return `on ${weekday}, ${day}.${month}.${year} at ${hours}:${minutes} ${period}`;
     }
   }
 }
