@@ -239,6 +239,11 @@
   "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet already exists",
   "ERROR_SNIPPET_CREATION_CONFLICT_DESC": "A snippet with the name <strong>{{name}}</strong> already exists!",
 
+  "SUCCESS_USER_UNBLOCK_TITLE": "User unblocked",
+  "SUCCESS_USER_UNBLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can now create tickets on the server again.",
+  "ERROR_USER_UNBLOCK_NOT_FOUND_TITLE": "User not blocked",
+  "ERROR_USER_UNBLOCK_NOT_FOUND_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> is not blocked - they can already create tickets.",
+
   "SUCCESS_ANNOUNCEMENT_SET_TITLE": "Ticket announcement set",
   "SUCCESS_ANNOUNCEMENT_SET_DESC": "The announcement will now be displayed before ticket creation and will end on <strong>{{date}}</strong>.",
   "SUCCESS_ANNOUNCEMENT_DELETE_TITLE": "Ticket announcement removed",

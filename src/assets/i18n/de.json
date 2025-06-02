@@ -239,6 +239,11 @@
   "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet existiert bereits",
   "ERROR_SNIPPET_CREATION_CONFLICT_DESC": "Ein Snippet mit dem Namen <strong>{{name}}</strong> existiert bereits!",
 
+  "SUCCESS_USER_UNBLOCK_TITLE": "User entsperrt",
+  "SUCCESS_USER_UNBLOCK_DESC": "Der User <strong>{{user}}</strong> <i>({{user_id}})</i> kann nun wieder Tickets auf dem Server erstellen.",
+  "ERROR_USER_UNBLOCK_NOT_FOUND_TITLE": "User nicht gesperrt",
+  "ERROR_USER_UNBLOCK_NOT_FOUND_DESC": "Der User <strong>{{user}}</strong> <i>({{user_id}})</i> ist nicht gesperrt - er kann bereits Tickets erstellen.",
+
   "SUCCESS_ANNOUNCEMENT_SET_TITLE": "Ticket-Ankündigung festgelegt",
   "SUCCESS_ANNOUNCEMENT_SET_DESC": "Die Ankündigung wird nun vor der Ticket-Erstellung angezeigt und endet <strong>{{date}}</strong>.",
   "SUCCESS_ANNOUNCEMENT_DELETE_TITLE": "Ticket-Ankündigung entfernt",

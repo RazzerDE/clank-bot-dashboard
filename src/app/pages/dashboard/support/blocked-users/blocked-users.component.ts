@@ -2,7 +2,7 @@ import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
@@ -40,7 +40,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   protected startLoading: boolean = false;
   private subscriptions: Subscription[] = [];
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
     document.title = 'Blocked Users ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
 
@@ -134,6 +134,57 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
+   * Deletes a blocked user from the active guild.
+   *
+   * This method sends a request to the server to remove the specified blocked user.
+   * If the operation is successful, the user is removed from the local list and the cache is updated.
+   * In case of an error, appropriate alerts are displayed based on the error type.
+   *
+   * @param {BlockedUser} blockedUser - The blocked user to be deleted.
+   */
+  protected deleteBlockedUser(blockedUser: BlockedUser): void {
+    if (!this.dataService.active_guild) { return; }
+
+    const delete_blocked: Subscription = this.apiService.deleteBlockedUser(this.dataService.active_guild.id, blockedUser.user_id)
+      .subscribe({
+        next: (_data: any): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_USER_UNBLOCK_TITLE'),
+            this.translate.instant('SUCCESS_USER_UNBLOCK_DESC', { user: blockedUser.user_name, user_id: blockedUser.user_id }));
+
+          // update shown data (remove blocked user)
+          const index: number = this.user_list.findIndex((bu: BlockedUser) => bu.user_id === blockedUser.user_id);
+          if (index !== -1) {
+            this.user_list.splice(index, 1);
+            this.filteredUsers = [...this.user_list];
+          }
+
+          localStorage.setItem('blocked_users', JSON.stringify(this.user_list));
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 404) {
+            this.dataService.showAlert(this.translate.instant('ERROR_USER_UNBLOCK_NOT_FOUND_TITLE'),
+              this.translate.instant('ERROR_USER_UNBLOCK_NOT_FOUND_DESC', { user: blockedUser.user_name, user_id: blockedUser.user_id }));
+
+            const index: number = this.user_list.findIndex((bu: BlockedUser) => bu.user_id === blockedUser.user_id);
+            if (index !== -1) {
+              this.user_list.splice(index, 1);
+              this.filteredUsers = [...this.user_list];
+            }
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+        }
+      });
+
+    this.subscriptions.push(delete_blocked);
+  }
+
+  /**
    * Refreshes the cache by disabling the cache button, setting the loading state,
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
    * after 15 seconds.
@@ -189,7 +240,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
           color: 'red',
           icon: faXmark,
           size: 'xl',
-          action: (user: BlockedUser): void => { }  // TODO
+          action: (user: BlockedUser): void => this.deleteBlockedUser(user)
         }
       ],
       actions: []

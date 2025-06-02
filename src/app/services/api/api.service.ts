@@ -88,6 +88,18 @@ export class ApiService {
   }
 
   /**
+   * Deletes a blocked user from a specific guild.
+   *
+   * @param guild_id - The ID of the guild from which the user is to be removed.
+   * @param user_id - The ID of the user to be removed from the blocked list.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteBlockedUser(guild_id: string, user_id: string): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/guilds/blocked-users?guild_id=${guild_id}&user_id=${user_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the support setup status for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the support setup status.

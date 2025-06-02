@@ -85,7 +85,10 @@
                 @if (!isBlockedUserType(obj)) {
                   {{ obj.name }}
                 } @else {
-                  {{ obj.user_name }}
+                  <div [title]="obj.user_id">
+                    {{ obj.user_name }}
+                    <div class="text-xs text-gray-500 mt-1">{{ obj.user_id }}</div>
+                  </div>
                 }
 
                 @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
@@ -154,6 +157,7 @@
                 <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
                             duration-300" [title]="obj.staff_id">
                   {{ obj.staff_name }}
+                  <div class="text-xs text-gray-500 mt-1">{{ obj.staff_id }}</div>
                 </div>
               </div>
             }
