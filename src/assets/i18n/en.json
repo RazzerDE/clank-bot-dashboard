@@ -454,6 +454,12 @@
   "PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE": "IMPORTANT ANNOUNCEMENT!",
   "PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER": "Support system provided by Clank",
 
+  "PLACEHOLDER_BLOCKED_USER_ADD_MODAL_TITLE": "📛 ~ Block User",
+  "PLACEHOLDER_BLOCKED_USER_MODAL_DESC": "What is the ID / Discord name of the user?",
+  "PLACEHOLDER_BLOCKED_USER_DESC_PLACEHOLDER": "e.g. 775415193760169995 or @yannicde",
+  "PLACEHOLDER_BLOCKED_USER_MODAL_DETAILS": "What is the reason? (End date is optional)",
+  "PLACEHOLDER_BLOCKED_USER_SET": "Set user block",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatic Bot Response",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Use as FAQ theme",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "How should the bot respond to the theme?",

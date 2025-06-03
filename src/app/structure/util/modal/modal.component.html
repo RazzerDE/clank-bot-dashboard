@@ -33,6 +33,8 @@
             {{ 'PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE' | translate }}
           } @else if (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
             {{ 'PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL_TITLE' | translate }}
+          } @else if (type === 'BLOCKED_USER_ADD') {
+            {{ 'PLACEHOLDER_BLOCKED_USER_ADD_MODAL_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -55,11 +57,14 @@
                                           [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="theme" />
             }
             @case (type.startsWith('SUPPORT_SNIPPET')) {
-              <template-snippet-add [type]="type" [newSnippet]="obj" [showFirst]="true" [snippet_action]="snippet_action"
+              <template-snippet-add [type]="type" [newSnippet]="$any(obj)" [showFirst]="true" [snippet_action]="snippet_action"
                                     [externalMarkdown]="secondSnippetAdd?.discordMarkdown" [snippet_edit]="snippet_edit" />
             }
             @case (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
               <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true" />
+            }
+            @case (type.startsWith('BLOCKED_USER')) {
+              <template-blocked-user [newBlockedUser]="$any(obj)" />
             }
             @default { <!-- Default Mention & Teamlist -->
               <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"
@@ -74,7 +79,7 @@
     @if (showSecondModal()) {
 
       @if (type.startsWith('SUPPORT_SNIPPET')) {
-        <template-snippet-add #secondSnippetAdd [type]="type" [newSnippet]="obj" [showFirst]="false" />
+        <template-snippet-add #secondSnippetAdd [type]="type" [newSnippet]="$any(obj)" [showFirst]="false" />
       } @else if (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
         <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="false" />
       } @else if (type.startsWith('SUPPORT_THEME')) {

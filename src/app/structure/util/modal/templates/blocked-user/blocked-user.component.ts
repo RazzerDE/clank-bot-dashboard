@@ -1,0 +1,31 @@
+import {Component, Input} from '@angular/core';
+import {BlockedUser} from "../../../../../services/types/discord/User";
+import {DatePipe, NgClass} from "@angular/common";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {TranslatePipe} from "@ngx-translate/core";
+
+@Component({
+  selector: 'template-blocked-user',
+  imports: [
+    DatePipe,
+    ReactiveFormsModule,
+    TranslatePipe,
+    FormsModule,
+    NgClass
+  ],
+  templateUrl: './blocked-user.component.html',
+  styleUrl: './blocked-user.component.scss'
+})
+export class BlockedUserComponent {
+  @Input() newBlockedUser: BlockedUser = {} as BlockedUser;
+
+  /**
+   * Checks if the `newBlockedUser` object is valid.
+   * A user is considered invalid if the `user_id` is missing or if a `reason` is provided.
+   *
+   * @returns `true` if the user is invalid, otherwise `false`.
+   */
+  protected isBlockedUserValid(): boolean {
+    return (Boolean(this.newBlockedUser.user_id) && Boolean(this.newBlockedUser.reason));
+  }
+}

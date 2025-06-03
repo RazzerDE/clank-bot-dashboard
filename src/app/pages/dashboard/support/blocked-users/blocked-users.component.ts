@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -14,6 +14,8 @@ import {BlockedUser} from "../../../../services/types/discord/User";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
+import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 
 @Component({
   selector: 'app-blocked-users',
@@ -23,7 +25,8 @@ import {ApiService} from "../../../../services/api/api.service";
     TranslatePipe,
     PageThumbComponent,
     AlertBoxComponent,
-    DataTableComponent
+    DataTableComponent,
+    ModalComponent
   ],
   templateUrl: './blocked-users.component.html',
   styleUrl: './blocked-users.component.scss'
@@ -39,6 +42,9 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   protected filteredUsers: BlockedUser[] = [...this.user_list];
   protected startLoading: boolean = false;
   private subscriptions: Subscription[] = [];
+
+  @ViewChild(ModalComponent) modal!: ModalComponent;
+  protected newBlockedUser: BlockedUser = {} as BlockedUser;
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
     document.title = 'Blocked Users ~ Clank Discord-Bot';
@@ -236,6 +242,12 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
         { width: 8, name: 'PLACEHOLDER_ACTION' }
       ],
       action_btn: [
+        {
+          color: 'blue',
+          icon: faPencil,
+          size: 'lg',
+          action: (user: BlockedUser): void => {} // TODO
+        },
         {
           color: 'red',
           icon: faXmark,

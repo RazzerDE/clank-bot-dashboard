@@ -454,6 +454,12 @@
   "PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE": "WICHTIGE ANKÜNDIGUNG!",
   "PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER": "Support-System bereitgestellt von Clank",
 
+  "PLACEHOLDER_BLOCKED_USER_ADD_MODAL_TITLE": "📛 ~ User blockieren",
+  "PLACEHOLDER_BLOCKED_USER_MODAL_DESC": "Wie lautet die ID / der Discord-Name des Users?",
+  "PLACEHOLDER_BLOCKED_USER_DESC_PLACEHOLDER": "z.B. 775415193760169995 oder @yannicde",
+  "PLACEHOLDER_BLOCKED_USER_MODAL_DETAILS": "Wie lautet der Grund? (Enddatum ist optional)",
+  "PLACEHOLDER_BLOCKED_USER_SET": "User-Blockierung festlegen",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Als FAQ-Thema verwenden",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "Wie soll der Bot auf das Thema antworten?",

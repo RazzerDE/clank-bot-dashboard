@@ -20,6 +20,8 @@ import {RolePickerComponent} from "./templates/role-picker/role-picker.component
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../../../services/types/Tickets";
 import {SnippetAddComponent} from "./templates/snippet-add/snippet-add.component";
 import {TicketAnnouncementComponent} from "./templates/ticket-announcement/ticket-announcement.component";
+import {BlockedUser} from "../../../services/types/discord/User";
+import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
 
 @Component({
   selector: 'app-modal',
@@ -33,6 +35,7 @@ import {TicketAnnouncementComponent} from "./templates/ticket-announcement/ticke
     RolePickerComponent,
     SnippetAddComponent,
     TicketAnnouncementComponent,
+    BlockedUserComponent,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
@@ -67,7 +70,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() type: string = '';
   @Input() content: string = '';
   @Input() extra: Role[] = [];
-  @Input() obj: TicketSnippet = {} as TicketSnippet;
+  @Input() obj: TicketSnippet | BlockedUser = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 

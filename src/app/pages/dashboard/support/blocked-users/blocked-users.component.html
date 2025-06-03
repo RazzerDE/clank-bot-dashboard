@@ -9,9 +9,8 @@
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
-    <!-- User Modal TODO -->
-<!--    <app-modal [type]="modalType" [obj]="this.newSnippet" [announcement]="this.currentAnnouncement"-->
-<!--               [snippet_action]="addTextSnippet.bind(this)" [snippet_edit]="editTextSnippet.bind(this)"/>-->
+    <!-- User Modal -->
+    <app-modal [type]="'BLOCKED_USER_ADD'" [obj]="this.newBlockedUser" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_BLOCKED_SUBTITLE' | translate" [title]="'PAGE_BLOCKED_TITLE' | translate"
@@ -48,7 +47,8 @@
                           justify-end md:space-x-3 flex-shrink-0">
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-red-500
                                            via-rose-500 to-red-700 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
-                                           focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br">
+                                           focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br"
+                        (click)="this.modal.showModal();">
                   <!-- TODO ADD USER -->
                   <fa-icon [icon]="faPlus" class="me-2" />{{ 'PLACEHOLDER_BUTTON_USER_ADD' | translate }}
                 </button>
