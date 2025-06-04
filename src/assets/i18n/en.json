@@ -241,6 +241,10 @@
 
   "SUCCESS_USER_UNBLOCK_TITLE": "User unblocked",
   "SUCCESS_USER_UNBLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can now create tickets on the server again.",
+  "SUCCESS_USER_BLOCK_TITLE": "User blocked",
+  "SUCCESS_USER_BLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can no longer create tickets on the server - The block expires on <strong>{{end_date}}</strong>.",
+  "ERROR_USER_BLOCK_NOT_FOUND_TITLE": "User not found",
+  "ERROR_USER_BLOCK_NOT_FOUND_DESC": "The User-ID is not valid - please check it again.",
   "ERROR_USER_UNBLOCK_NOT_FOUND_TITLE": "User not blocked",
   "ERROR_USER_UNBLOCK_NOT_FOUND_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> is not blocked - they can already create tickets.",
 
@@ -455,8 +459,8 @@
   "PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER": "Support system provided by Clank",
 
   "PLACEHOLDER_BLOCKED_USER_ADD_MODAL_TITLE": "📛 ~ Block User",
-  "PLACEHOLDER_BLOCKED_USER_MODAL_DESC": "What is the ID / Discord name of the user?",
-  "PLACEHOLDER_BLOCKED_USER_DESC_PLACEHOLDER": "e.g. 775415193760169995 or @yannicde",
+  "PLACEHOLDER_BLOCKED_USER_MODAL_DESC": "What is the ID of the discord user?",
+  "PLACEHOLDER_BLOCKED_USER_DESC_PLACEHOLDER": "e.g. 775415193760169995",
   "PLACEHOLDER_BLOCKED_USER_MODAL_DETAILS": "What is the reason? (End date is optional)",
   "PLACEHOLDER_BLOCKED_USER_SET": "Set user block",
 

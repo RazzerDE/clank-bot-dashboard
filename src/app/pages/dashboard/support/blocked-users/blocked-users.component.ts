@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -16,6 +16,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
+import {DatePipe} from "../../../../pipes/date/date.pipe";
 
 @Component({
   selector: 'app-blocked-users',
@@ -36,6 +37,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected disabledCacheBtn: boolean = false;
+  protected disabledAddBtn: boolean = false;
   protected dataLoading: boolean = true;
 
   protected user_list: BlockedUser[] = [];
@@ -45,6 +47,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
 
   @ViewChild(ModalComponent) modal!: ModalComponent;
   protected newBlockedUser: BlockedUser = {} as BlockedUser;
+  private datePipe: DatePipe = new DatePipe();
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
     document.title = 'Blocked Users ~ Clank Discord-Bot';
@@ -191,6 +194,97 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
+   * Adds a blocked user to the active guild.
+   *
+   * This method sends a request to the server to add the specified blocked user.
+   * If the operation is successful, the user is added to the local list and the cache is updated.
+   * In case of an error, appropriate alerts are displayed based on the error type.
+   *
+   * @param {BlockedUser} blockedUser - The blocked user to be added.
+   */
+  protected addBlockedUser(blockedUser: BlockedUser): void {
+    if (!this.dataService.active_guild || !this.dataService.profile) { return; }
+    blockedUser.guild_id = this.dataService.active_guild.id;
+    blockedUser.staff_id = this.dataService.profile.id;
+    blockedUser.staff_name = this.dataService.profile.username;
+
+    const avatar_url: string = `https://cdn.discordapp.com/avatars/${blockedUser.staff_id}/${this.dataService.profile.avatar}`;
+    blockedUser.staff_avatar = avatar_url + `.${blockedUser.staff_avatar?.startsWith('a_') ? 'gif' : 'png'}`;
+
+    if (this.newBlockedUser.end_date) {
+      this.newBlockedUser.end_date = new Date(this.newBlockedUser.end_date).toISOString();  // respect timezone
+    }
+
+    this.disabledAddBtn = true;
+    const add_blocked: Subscription = this.apiService.addBlockedUser(this.dataService.active_guild.id, blockedUser)
+      .subscribe({
+        next: (result: BlockedUser): void => {
+          blockedUser = result;
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_USER_BLOCK_TITLE'),
+            this.translate.instant('SUCCESS_USER_BLOCK_DESC', { user: blockedUser.user_name,
+              user_id: blockedUser.user_id,
+              end_date: blockedUser.end_date ? this.datePipe.transform(blockedUser.end_date, this.translate.currentLang)
+                : this.translate.instant('PLACEHOLDER_NEVER').toUpperCase() }));
+
+          // update shown data (add/update blocked user)
+          this.updateBlockedUserList(blockedUser);
+          this.newBlockedUser = {} as BlockedUser; // reset new blocked user object
+          this.disabledAddBtn = false;
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 404) {
+            this.dataService.showAlert(this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_TITLE'),
+              this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_DESC', { user: blockedUser.user_name }));
+            blockedUser = {} as BlockedUser; // reset blocked user object
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.disabledAddBtn = false;
+        }
+      });
+
+    this.modal.hideModal();
+    this.subscriptions.push(add_blocked);
+  }
+
+  /**
+   * Updates the local list of blocked users.
+   *
+   * This method adds or updates a blocked user in the local list and sorts the list
+   * by `end_date` and `user_name`. The updated list is stored in local storage.
+   *
+   * @param {BlockedUser} blockedUser - The blocked user to be added or updated.
+   */
+  private updateBlockedUserList(blockedUser: BlockedUser): void {
+    const existingIndex = this.user_list.findIndex(user => user.user_id === blockedUser.user_id);
+    if (existingIndex !== -1) {
+      this.user_list[existingIndex] = blockedUser;
+    } else {
+      this.user_list.push(blockedUser);
+    }
+
+    // sort the list by end_date and user_name
+    this.user_list.sort((a, b) => {
+      if (a.end_date === null && b.end_date === null) return a.user_name.localeCompare(b.user_name);
+      if (a.end_date === null) return 1;
+      if (b.end_date === null) return -1;
+
+      const dateCompare: number = new Date(a.end_date).getTime() - new Date(b.end_date).getTime();
+      return dateCompare !== 0 ? dateCompare : a.user_name.localeCompare(b.user_name);
+    });
+
+    this.filteredUsers = [...this.user_list];
+    localStorage.setItem('blocked_users', JSON.stringify(this.user_list));
+  }
+
+  /**
    * Refreshes the cache by disabling the cache button, setting the loading state,
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
    * after 15 seconds.
@@ -219,6 +313,20 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
       blocked_user.user_name.toLowerCase().includes(searchTerm) ||
       blocked_user.staff_name.toLowerCase().includes(searchTerm) ||
       blocked_user.reason.toLowerCase().includes(searchTerm));
+  }
+
+  /**
+   * Handles document click events to close modals if the user clicks outside of them.
+   *
+   * @param {MouseEvent} event - The click event triggered on the document.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // two modals are visible; hide if clicked outside of the modal
+    if ((event.target as HTMLElement).id.includes('roleModalContent')) {
+      this.modal.hideModal();
+      return;
+    }
   }
 
   /**

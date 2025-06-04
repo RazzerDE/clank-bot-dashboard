@@ -64,7 +64,7 @@
               <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true" />
             }
             @case (type.startsWith('BLOCKED_USER')) {
-              <template-blocked-user [newBlockedUser]="$any(obj)" />
+              <template-blocked-user [newBlockedUser]="$any(obj)" [block_action]="this.block_action" />
             }
             @default { <!-- Default Mention & Teamlist -->
               <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"

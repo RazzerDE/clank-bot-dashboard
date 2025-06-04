@@ -18,6 +18,8 @@ import {TranslatePipe} from "@ngx-translate/core";
 })
 export class BlockedUserComponent {
   @Input() newBlockedUser: BlockedUser = {} as BlockedUser;
+  @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
+  @Input() block_edit: (blockedUser: BlockedUser) => void = (): void => {};
 
   /**
    * Checks if the `newBlockedUser` object is valid.
@@ -26,6 +28,16 @@ export class BlockedUserComponent {
    * @returns `true` if the user is invalid, otherwise `false`.
    */
   protected isBlockedUserValid(): boolean {
-    return (Boolean(this.newBlockedUser.user_id) && Boolean(this.newBlockedUser.reason));
+    return (Boolean(this.newBlockedUser.user_id) && Boolean(this.newBlockedUser.reason) && /^\d+$/.test(this.newBlockedUser.user_id));
+  }
+
+  /**
+   * Removes all non-digit characters from the `user_id` property of `newBlockedUser`.
+   * This ensures that the `user_id` contains only numeric characters.
+   *
+   * Avoid typescripts "rounding" on big numbers.
+   */
+  protected removeCharsFromUserId(): void {
+    this.newBlockedUser.user_id = this.newBlockedUser.user_id.replace(/\D/g, '');
   }
 }

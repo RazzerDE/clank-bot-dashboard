@@ -88,6 +88,18 @@ export class ApiService {
   }
 
   /**
+   * Adds a new blocked user to the blocked users list for a specific guild.
+   *
+   * @param guild_id - The ID of the guild where the user is to be blocked.
+   * @param blockedUser - The `BlockedUser` object containing details of the user to be blocked.
+   * @returns An Observable emitting the server's response.
+   */
+  addBlockedUser(guild_id: string, blockedUser: BlockedUser): Observable<BlockedUser> {
+    return this.http.post<BlockedUser>(`${this.API_URL}/guilds/blocked-users?guild_id=${guild_id}`, blockedUser,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Deletes a blocked user from a specific guild.
    *
    * @param guild_id - The ID of the guild from which the user is to be removed.

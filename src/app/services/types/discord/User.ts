@@ -24,5 +24,5 @@ export interface BlockedUser {
   staff_name: string;
   staff_avatar: string | null;
   reason: string;
-  end_date: number | null;      // null if no end date is set (else timestamp)
+  end_date: number | string | null;      // null if no end date is set (else timestamp)
 }
