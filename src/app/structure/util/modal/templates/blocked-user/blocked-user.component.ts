@@ -17,6 +17,7 @@ import {TranslatePipe} from "@ngx-translate/core";
   styleUrl: './blocked-user.component.scss'
 })
 export class BlockedUserComponent {
+  @Input() type: 'BLOCKED_USER_ADD' | 'BLOCKED_USER_EDIT' = 'BLOCKED_USER_ADD'
   @Input() newBlockedUser: BlockedUser = {} as BlockedUser;
   @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
   @Input() block_edit: (blockedUser: BlockedUser) => void = (): void => {};
