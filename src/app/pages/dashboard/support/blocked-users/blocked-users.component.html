@@ -9,7 +9,7 @@
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- User Modal -->
-    <app-modal [type]="'BLOCKED_USER_ADD'" [obj]="this.newBlockedUser" [block_action]="this.addBlockedUser.bind(this)"/>
+    <app-modal [type]="this.modalType" [obj]="this.newBlockedUser" [block_action]="this.addBlockedUser.bind(this)" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_BLOCKED_SUBTITLE' | translate" [title]="'PAGE_BLOCKED_TITLE' | translate"
@@ -48,7 +48,8 @@
                                            via-rose-500 to-red-700 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
                                            focus:ring-red-700 focus:outline-none hover:bg-gradient-to-br
                                            disabled:!bg-gray-500 disabled:cursor-not-allowed"
-                        (click)="this.modal.showModal();" [disabled]="disabledAddBtn">
+                        (click)="this.modalType = 'BLOCKED_USER_ADD'; this.newBlockedUser = $any({}); this.modal.showModal();"
+                        [disabled]="disabledAddBtn">
                   <fa-icon [icon]="faPlus" class="me-2" />{{ 'PLACEHOLDER_BUTTON_USER_ADD' | translate }}
                 </button>
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700

@@ -33,7 +33,7 @@
             {{ 'PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE' | translate }}
           } @else if (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
             {{ 'PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL_TITLE' | translate }}
-          } @else if (type === 'BLOCKED_USER_ADD') {
+          } @else if (type.startsWith('BLOCKED_USER')) {
             {{ 'PLACEHOLDER_BLOCKED_USER_ADD_MODAL_TITLE' | translate }}
           }
         </p>

@@ -39,6 +39,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   protected disabledCacheBtn: boolean = false;
   protected disabledAddBtn: boolean = false;
   protected dataLoading: boolean = true;
+  protected modalType: string = 'BLOCKED_USER_ADD';
 
   protected user_list: BlockedUser[] = [];
   protected filteredUsers: BlockedUser[] = [...this.user_list];
@@ -354,7 +355,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
           color: 'blue',
           icon: faPencil,
           size: 'lg',
-          action: (user: BlockedUser): void => {} // TODO
+          action: (user: BlockedUser): void => { this.newBlockedUser = user; this.modalType = 'BLOCKED_USER_EDIT'; this.modal.showModal(); }
         },
         {
           color: 'red',
