@@ -4,7 +4,7 @@
  */
 
 /** @type {import('jest').Config} */
-const config = {
+const config: import('jest').Config = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ["<rootDir>/setup-jest.ts"],
   testEnvironment: 'jsdom',
@@ -13,6 +13,7 @@ const config = {
     "<rootDir>/src/app/app.routes.ts"
   ],
 
+  coverageThreshold: { global: { branches: 100,  functions: 100,  lines: 100,  statements: 100 } },
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.ts', // Adjust this pattern to match your source files

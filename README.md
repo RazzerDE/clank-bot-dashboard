@@ -6,9 +6,9 @@
   <i align="center">This dashboard allows you to configure & customize my own Discord bot "Clank" without needing to use Discord directly. <br />It doesn't include the backend functionalities.</i>
   <br /><br />
 
-  <img src="https://i.imgur.com/pWnBahr.gif" align="center">
-
-</p>
+| ![Landing Page](https://i.imgur.com/xYCoqv5.png) | ![Dashboard (Logged In)](https://i.imgur.com/O5DPJkI.png) |
+|:------------------------------------------------:|:---------------------------------------------------------:|
+|                 **Landing Page**                 |                 **Dashboard (Logged In)**                 |
 
 <h4 align="center">
   <a href="https://angular.dev">

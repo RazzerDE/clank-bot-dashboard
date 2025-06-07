@@ -37,7 +37,13 @@ jobs:
           echo "};" >> src/environments/config.ts
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run tests
+      - name: Run tests with coverage
         run: npm test
+
+      - name: Check coverage threshold
+        run: |
+          # Jest with coverageThreshold will automatically fail if coverage < 100%
+          # This step will only run if the previous step succeeds
+          echo "Coverage check passed - 100% coverage achieved!"

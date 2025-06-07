@@ -1,15 +1,22 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'date',
+  name: 'datecustom',
   standalone: true
 })
 export class DatePipe implements PipeTransform {
 
-  transform(value: unknown, format?: string, lang: string = 'de'): string {
+  /**
+   * Transforms a date value into a formatted string based on the specified language.
+   *
+   * @param value - The input value to be transformed. Can be a string or a Date object.
+   * @param lang - The language code for formatting ('de' for German, 'en' for English). Defaults to 'de'.
+   * @returns A formatted date string. Returns an empty string if the input value is invalid.
+   */
+  transform(value: unknown, lang: string = 'de'): string {
     let date: Date;
 
-    if (typeof value === 'string') {
+    if (typeof value === 'string' || typeof value === 'number') {
       date = new Date(value);
     } else if (value instanceof Date) {
       date = value;
@@ -17,54 +24,26 @@ export class DatePipe implements PipeTransform {
       return '';
     }
 
-    if (format === 'long') {
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear();
-      const hours = date.getHours();
-      const minutes = date.getMinutes().toString().padStart(2, '0');
+    // Format weekday
+    const weekday: string = new Intl.DateTimeFormat(lang === 'de' ? 'de-DE' : 'en-US', { weekday: 'long' }).format(date);
 
-      if (lang === 'de') {
-        return `am ${day}.${month}.${year} um ${hours}:${minutes} Uhr`;
-      } else {
-        const hours12 = hours % 12 || 12;
-        const amPm = hours < 12 ? 'AM' : 'PM';
-        return `on ${month}/${day}/${year} at ${hours12}:${minutes} ${amPm}`;
-      }
-    }
+    // Format date
+    const day: string = date.getDate().toString().padStart(2, '0');
+    const month: string = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year: number = date.getFullYear();
 
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
+    // Format time
+    let hours: number = date.getHours();
+    const minutes: string = date.getMinutes().toString().padStart(2, '0');
 
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-      if (lang === 'de') {
-        return days === 1 ? 'gestern' : `vor ${days} Tagen`;
-      } else {
-        return days === 1 ? 'yesterday' : `${days} days ago`;
-      }
-    } else if (hours > 0) {
-      if (lang === 'de') {
-        return hours === 1 ? 'vor 1 Stunde' : `vor ${hours} Stunden`;
-      } else {
-        return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
-      }
-    } else if (minutes > 0) {
-      if (lang === 'de') {
-        return minutes === 1 ? 'vor 1 Minute' : `vor ${minutes} Minuten`;
-      } else {
-        return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
-      }
-    } else {
-      if (lang === 'de') {
-        return seconds <= 10 ? 'gerade eben' : `vor ${seconds} Sekunden`;
-      } else {
-        return seconds <= 10 ? 'just now' : `${seconds} seconds ago`;
-      }
+    if (lang === 'de') {  // Donnerstag, 01.06.2025 um 15:56 Uhr
+      const formattedHours: string = hours.toString().padStart(2, '0');
+      return `am ${weekday}, ${day}.${month}.${year} um ${formattedHours}:${minutes} Uhr`;
+    } else {              // Thursday, 01.06.2025 at 3:56 PM
+      const period = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // 12 AM is 0
+      return `on ${weekday}, ${day}.${month}.${year} at ${hours}:${minutes} ${period}`;
     }
   }
 }

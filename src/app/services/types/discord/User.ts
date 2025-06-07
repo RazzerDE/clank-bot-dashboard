@@ -14,3 +14,15 @@ export interface DiscordUser {
   public_flags: number;
   avatar_decoration_data: AvatarDecoration | null;
 }
+
+export interface BlockedUser {
+  guild_id?: string;            // Only used for adding a blocked user, not for listing
+  user_id: string;
+  user_name: string;
+  user_avatar: string | null;
+  staff_id: string;
+  staff_name: string;
+  staff_avatar: string | null;
+  reason: string;
+  end_date: number | string | null;      // null if no end date is set (else timestamp)
+}
