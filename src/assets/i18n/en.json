@@ -146,6 +146,10 @@
   "PAGE_BLOCKED_TITLE": "Blocked Server Members",
   "PAGE_BLOCKED_DESC": "› On this page, you can see all users who are currently unable to create tickets on your Discord server - this can be useful to prevent spam.",
 
+  "PAGE_EVENTS_SUBTITLE": "🎁 ~ CURRENT ONGOING EVENTS",
+  "PAGE_EVENTS_TITLE": "Active Giveaways",
+  "PAGE_EVENTS_DESC": "› On this page, you can see all currently ongoing giveaways that have been created and are still being managed by Clank on your Discord server.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM ACTIVE - IMPROVEMENTS POSSIBLE!",
@@ -283,12 +287,9 @@
   "SIDEBAR_PAGE_WISHLIST": "Wishlist",
   "SIDEBAR_PAGE_TEAM": "Manage team list",
   "SIDEBAR_PAGE_MODULE_SETUP": "Module setup",
-  "SIDEBAR_PAGE_TICKETS_OPEN": "Open tickets",
   "SIDEBAR_PAGE_SUPPORT_THEMES": "Support themes",
-  "SIDEBAR_PAGE_SUPPORT_PANELS": "Message panels",
   "SIDEBAR_PAGE_TEXT_SNIPPETS": "Snippets / Announcement",
   "SIDEBAR_PAGE_BLOCKED": "Blocked users",
-  "SIDEBAR_PAGE_GIVEAWAYS": "Create giveaway",
   "SIDEBAR_PAGE_EVENTS": "Ongoing events",
   "SIDEBAR_PAGE_MSG_DESIGN": "Message design",
   "SIDEBAR_PAGE_CHC_ROLES": "Channel & role effects",

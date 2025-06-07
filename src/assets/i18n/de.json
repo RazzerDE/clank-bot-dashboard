@@ -146,6 +146,10 @@
   "PAGE_BLOCKED_TITLE": "Blockierte Server-Mitglieder",
   "PAGE_BLOCKED_DESC": "› Auf dieser Seite siehst du alle User, die aktuell keine Tickets auf deinem Discord-Server erstellen können - dies kann nützlich sein, um Spam zu verhindern.",
 
+  "PAGE_EVENTS_SUBTITLE": "🎁 ~ AKTUELL LAUFENDE EVENTS",
+  "PAGE_EVENTS_TITLE": "Aktive Gewinnspiele",
+  "PAGE_EVENTS_DESC": "› Auf dieser Seite siehst du alle aktuell laufenden Gewinnspiele, die von Clank auf deinem Discord-Server erstellt und aktuell weiterhin verwaltet werden.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODUL NICHT AKTIV!",
   "PAGE_SETUP_MODULE_DESC_0": "Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM AKTIV - VERBESSERUNGEN MÖGLICH!",
@@ -283,12 +287,9 @@
   "SIDEBAR_PAGE_WISHLIST": "Wunschliste",
   "SIDEBAR_PAGE_TEAM": "Teamliste verwalten",
   "SIDEBAR_PAGE_MODULE_SETUP": "Modul-Einrichtung",
-  "SIDEBAR_PAGE_TICKETS_OPEN": "Offene Tickets",
   "SIDEBAR_PAGE_SUPPORT_THEMES": "Support-Themen",
-  "SIDEBAR_PAGE_SUPPORT_PANELS": "Nachricht Panels",
   "SIDEBAR_PAGE_TEXT_SNIPPETS": "Snippets & Ankündigung",
   "SIDEBAR_PAGE_BLOCKED": "Blockierte User",
-  "SIDEBAR_PAGE_GIVEAWAYS": "Gewinnspiel erstellen",
   "SIDEBAR_PAGE_EVENTS": "Laufende Events",
   "SIDEBAR_PAGE_MSG_DESIGN": "Nachricht-Design",
   "SIDEBAR_PAGE_CHC_ROLES": "Kanal-& Rollen-Effekte",
