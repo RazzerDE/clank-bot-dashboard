@@ -13,6 +13,7 @@ import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {GeneralStats} from "../types/Statistics";
+import {BlockedUser} from "../types/discord/User";
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -104,6 +105,51 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/progress/modules?guild_id=${guildId}`);
     expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch blocked users for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: BlockedUser[] = [{username: 'User1'}, {username: 'User2'}] as unknown as BlockedUser[];
+
+    service.getBlockedUsers(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/blocked-users?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should add a blocked user to a specific guild', () => {
+    const guild_id = '12345';
+    const blockedUser: BlockedUser = {username: 'User1'} as unknown as BlockedUser;
+    const mockResponse: BlockedUser = {username: 'User1'} as unknown as BlockedUser;
+
+    service.addBlockedUser(guild_id, blockedUser).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/blocked-users?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(blockedUser);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete a blocked user for a specific guild', () => {
+    const guild_id = '12345';
+    const user_id = '67890';
+    const mockResponse = { success: true };
+
+    service.deleteBlockedUser(guild_id, user_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/blocked-users?guild_id=${guild_id}&user_id=${user_id}`);
+    expect(req.request.method).toBe('DELETE');
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });

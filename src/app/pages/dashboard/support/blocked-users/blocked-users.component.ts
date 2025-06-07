@@ -209,7 +209,11 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
     blockedUser.staff_id = this.dataService.profile.id;
     blockedUser.staff_name = this.dataService.profile.username;
 
-    const avatar_url: string = `https://cdn.discordapp.com/avatars/${blockedUser.staff_id}/${this.dataService.profile.avatar}`;
+    let avatar_url: string = `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}`;
+    if (blockedUser.staff_avatar) {
+      avatar_url = `https://cdn.discordapp.com/avatars/${blockedUser.staff_id}/${this.dataService.profile.avatar}`;
+    }
+
     blockedUser.staff_avatar = avatar_url + `.${blockedUser.staff_avatar?.startsWith('a_') ? 'gif' : 'png'}`;
 
     if (this.newBlockedUser.end_date) {

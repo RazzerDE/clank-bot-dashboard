@@ -6,6 +6,7 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {Role} from "../../../services/types/discord/Guilds";
 import {ElementRef} from "@angular/core";
 import {SupportTheme} from "../../../services/types/Tickets";
+import {BlockedUser} from "../../../services/types/discord/User";
 
 describe('DataTableComponent', () => {
   let component: DataTableComponent;
@@ -86,6 +87,16 @@ describe('DataTableComponent', () => {
   });
 
   it('isRoleType should return false for SupportTheme', () => {
+    const supportTheme = {roles: [], name: 'Test'} as unknown as SupportTheme;
+    expect(component.isRoleType(supportTheme)).toBe(false);
+  });
+
+  it('isBlockedUserType should return true for BlockedUser', () => {
+    const blocked_user = { staff_id: '123', reason: 'test' } as BlockedUser;
+    expect(component.isBlockedUserType(blocked_user)).toBe(true);
+  });
+
+  it('isBlockedUserType should return false for SupportTheme', () => {
     const supportTheme = {roles: [], name: 'Test'} as unknown as SupportTheme;
     expect(component.isRoleType(supportTheme)).toBe(false);
   });

@@ -6,6 +6,7 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {TranslateModule} from "@ngx-translate/core";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {ElementRef} from "@angular/core";
+import {BlockedUser} from "../../../services/types/discord/User";
 
 describe('ModalComponent', () => {
   let component: ModalComponent;
@@ -46,6 +47,14 @@ describe('ModalComponent', () => {
     component.snippet_edit(mockSnippet);
 
     expect(snippetEditSpy).toHaveBeenCalledWith(mockSnippet);
+  });
+
+  it('should call block_action with the correct blockedUser', () => {
+    const mockBlockedUser = { staff_name: 'test' } as BlockedUser;
+    const snippetActionSpy = jest.spyOn(component, 'block_action');
+    component.block_action(mockBlockedUser);
+
+    expect(snippetActionSpy).toHaveBeenCalledWith(mockBlockedUser);
   });
 
   it('should call action with default implementation', () => {
