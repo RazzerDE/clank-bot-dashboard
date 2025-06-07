@@ -40,7 +40,7 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm test -- --coverage --coverageReporters=text-lcov | tee coverage.txt
+        run: npm test
 
       - name: Check coverage threshold
         run: |
