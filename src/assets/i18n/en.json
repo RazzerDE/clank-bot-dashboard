@@ -388,6 +388,7 @@
   "PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC": "Change your search and try again.",
   "PLACEHOLDER_TYPE_MESSAGE": "Write a message.. ✏️",
 
+  "PLACEHOLDER_EVENT_SEARCH": "Search for event.. 🎉",
   "PLACEHOLDER_ROLE_SEARCH": "Search for role.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Search for support theme.. 📚",
   "PLACEHOLDER_SNIPPET_SEARCH": "Search for a text snippet.. ✏️",
@@ -405,6 +406,7 @@
   "PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT": "Edit ticket announcement",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Default Mentioned-Role",
   "PLACEHOLDER_BUTTON_RESET": "Remove default mentioned roles",
+  "PLACEHOLDER_BUTTON_GIVEAWAY_ADD": "Create Giveaway",
 
   "PLACEHOLDER_FAQ_MODAL_TITLE": "🤖 - Predefined Bot Response",
   "PLACEHOLDER_FAQ_MODAL_DESC": "❓ › The text below will be shown to all users who select <strong>this</strong> support theme when creating a ticket - this means that no ticket will be created.",

@@ -388,6 +388,7 @@
   "PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC": "Ändere deine Suche und versuche es erneut.",
   "PLACEHOLDER_TYPE_MESSAGE": "Schreibe eine Nachricht.. ✏️",
 
+  "PLACEHOLDER_EVENT_SEARCH": "Nach Event suchen.. 🎉",
   "PLACEHOLDER_ROLE_SEARCH": "Nach Rolle suchen.. 🤔",
   "PLACEHOLDER_THEME_SEARCH": "Nach Support-Thema suchen.. 📚",
   "PLACEHOLDER_SNIPPET_SEARCH": "Nach einem Text-Snippet suchen.. ✏️",
@@ -405,6 +406,7 @@
   "PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT": "Ticket-Ankündigung bearbeiten",
   "PLACEHOLDER_BUTTON_DEFAULT_PING": "Standard Erwähnte-Rolle",
   "PLACEHOLDER_BUTTON_RESET": "Standard Ping-Rollen entfernen",
+  "PLACEHOLDER_BUTTON_GIVEAWAY_ADD": "Gewinnspiel erstellen",
 
   "PLACEHOLDER_FAQ_MODAL_TITLE": "🤖 - Festgelegte Bot-Antwort",
   "PLACEHOLDER_FAQ_MODAL_DESC": "❓ › Der untere Text wird allen Usern angezeigt, welche bei einer Ticket-Erstellung <strong>dieses</strong> Support-Thema auswählen - das bedeutet, dass kein Ticket erstellt wird.",
