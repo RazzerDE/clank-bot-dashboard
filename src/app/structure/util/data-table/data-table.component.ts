@@ -10,8 +10,8 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
 import {BlockedUser} from "../../../services/types/discord/User";
-import {faRotate} from "@fortawesome/free-solid-svg-icons/faRotate";
 import {DatePipe} from "../../../pipes/date/date.pipe";
+import {Giveaway} from "../../../services/types/Events";
 
 @Component({
   selector: 'data-table',
@@ -44,7 +44,6 @@ export class DataTableComponent implements AfterViewInit {
 
     protected rowHeight: number = 0;
     protected readonly faRobot: IconDefinition = faRobot;
-    protected readonly faRotate: IconDefinition = faRotate;
     protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;
 
     constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
@@ -68,7 +67,7 @@ export class DataTableComponent implements AfterViewInit {
    *
    * @param row - The row object that was clicked, which can be of type `SupportTheme`, `Role`, or `TicketSnippet`.
    */
-    onRowClick(row: SupportTheme | Role | TicketSnippet | BlockedUser): void {
+    onRowClick(row: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): void {
       this.rowClick.emit(row);
     }
 
@@ -79,7 +78,7 @@ export class DataTableComponent implements AfterViewInit {
      * @param obj - The object to check, which can be of type `SupportTheme` or `Role`.
      * @returns `true` if the object is of type `SupportTheme`, otherwise `false`.
      */
-    isSupportType(obj: SupportTheme | Role | TicketSnippet | BlockedUser): obj is SupportTheme {
+    isSupportType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is SupportTheme {
       return (obj as SupportTheme).roles !== undefined;
     }
 
@@ -90,19 +89,30 @@ export class DataTableComponent implements AfterViewInit {
      * @param obj - The object to check, which can be of type `SupportTheme` or `Role`.
      * @returns `true` if the object is of type `Role`, otherwise `false`.
      */
-    isRoleType(obj: SupportTheme | Role | TicketSnippet | BlockedUser): obj is Role {
+    isRoleType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is Role {
       return (obj as Role).support_level !== undefined;
     }
 
-  /**
-   * Type guard to check if the given object is of type `BlockedUser`.
-   * This function ensures that the `staff_id` attribute exists, which is specific to `BlockedUser`.
-   *
-   * @param obj - The object to check.
-   * @returns `true` if the object is of type `BlockedUser`, otherwise `false`.
-   */
-    isBlockedUserType(obj: SupportTheme | Role | TicketSnippet | BlockedUser): obj is BlockedUser {
+    /**
+     * Type guard to check if the given object is of type `BlockedUser`.
+     * This function ensures that the `staff_id` attribute exists, which is specific to `BlockedUser`.
+     *
+     * @param obj - The object to check.
+     * @returns `true` if the object is of type `BlockedUser`, otherwise `false`.
+     */
+    isBlockedUserType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is BlockedUser {
       return (obj as BlockedUser).staff_id !== undefined && (obj as BlockedUser).reason !== undefined;
+    }
+
+    /**
+     * Type guard to check if the given object is of type `Giveaway`.
+     * This function ensures that the `creator_id` and `prize` attributes exist, which are specific to `Giveaway`.
+     *
+     * @param obj - The object to check, which can be of type `SupportTheme`, `Role`, `TicketSnippet`, `BlockedUser`, or `Giveaway`.
+     * @returns `true` if the object is of type `Giveaway`, otherwise `false`.
+     */
+    isGiveawayType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is Giveaway {
+      return (obj as Giveaway).creator_id !== undefined && (obj as Giveaway).prize !== undefined;
     }
 
     /**

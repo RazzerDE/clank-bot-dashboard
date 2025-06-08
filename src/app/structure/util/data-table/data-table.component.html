@@ -82,9 +82,9 @@
                 }
 
                 <!-- Main Element Name -->
-                @if (!isBlockedUserType(obj)) {
+                @if (!isBlockedUserType(obj) && !isGiveawayType(obj)) {
                   {{ obj.name }}
-                } @else {
+                } @else if (isBlockedUserType(obj)) {
                   <div [title]="obj.user_id">
                     {{ obj.user_name }}
                     <div class="text-xs text-gray-500 mt-1">{{ obj.user_id }}</div>

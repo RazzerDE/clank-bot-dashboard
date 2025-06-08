@@ -1,0 +1,17 @@
+export interface Giveaway {
+  guild_id?: string;      // Optional
+  channel_id?: string;    // Optional
+  message_id?: string;    // Optional
+
+  creator_id: string;     // creator of the giveaway
+  creator_name: string;   // name of the creator
+  creator_avatar: string; // avatar of the creator
+  gw_req: string;         // requirement for the giveaway
+  end_date: Date;         // end date of the giveaway
+  prize: string;          // prize of the giveaway
+  winner_count: number;   // number of winners
+
+  sponsor_id?: string;    // Optional, sponsor of the giveaway
+  sponsor_name?: string;  // Optional, name of the sponsor
+  sponsor_avatar?: string; // Optional, avatar of the sponsor
+}
