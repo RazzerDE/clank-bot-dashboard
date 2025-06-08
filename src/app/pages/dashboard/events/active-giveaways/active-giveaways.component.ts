@@ -38,6 +38,24 @@ export class ActiveGiveawaysComponent {
   }
 
   /**
+   * Filters the active giveaways based on the search term entered by the user.
+   *
+   * This method updates the `filteredEvents` array to include only the active giveaways
+   * whose names contain the search term. The search is case-insensitive.
+   *
+   * @param {Event} event - The input event triggered by the search field.
+   */
+  protected searchGiveaways(event: Event): void {
+    const searchTerm: string = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredEvents = this.events.filter(giveaway =>
+      giveaway.creator_id.toString().toLowerCase().includes(searchTerm) ||
+      giveaway.creator_name.toString().toLowerCase().includes(searchTerm) ||
+      giveaway.sponsor_id?.toString().toLowerCase().includes(searchTerm) ||
+      giveaway.sponsor_name?.toString().toLowerCase().includes(searchTerm) ||
+      giveaway.prize.toLowerCase().includes(searchTerm) || giveaway.gw_req?.toLowerCase().includes(searchTerm));
+  }
+
+  /**
    * Getter for the table configuration used in the Active giveaways component.
    * This configuration defines the structure and behavior of the table displayed
    * in the component, including columns, rows, and action buttons.
