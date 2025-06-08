@@ -66,10 +66,7 @@
             <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
                        duration-300" #mainRow
                 [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[1].width + '%' : tconfig.columns[0].width + '%'"
-                [class.!text-red-600]="isSupportType(obj) && obj.pending && obj.action == 'DELETE'"
-                [title]="isSupportType(obj) && obj.pending ?
-                (obj.action === 'CREATE' ? ('PLACEHOLDER_THEME_PENDING' | translate) :
-                 obj.action === 'UPDATE' ? ('PLACEHOLDER_THEME_UPDATE_PENDING' | translate) : '') : ''">
+                [class.!text-red-600]="isSupportType(obj) && obj.pending && obj.action == 'DELETE'">
               <div class="flex items-center">
 
                 @if (isRoleType(obj)) {                                    <!-- Show Rolor-Color Dot for Role Types -->
@@ -89,21 +86,44 @@
                     {{ obj.user_name }}
                     <div class="text-xs text-gray-500 mt-1">{{ obj.user_id }}</div>
                   </div>
+                } @else if (isGiveawayType(obj)) {
+                  <div [innerHTML]="this.markdownPipe.transform(obj.prize)"></div>
+
+                  <!-- Button to show Winner-& Participant-Count -->
+                  <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                                 duration-200" type="button" id="faqBtn_{{ $index }}"
+                          [ngbTooltip]="tooltipContent" placement="top" tooltipClass="table-tooltip">
+                    <fa-icon [icon]="faChartSimple"></fa-icon>
+                  </button>
+
+                  <ng-template #tooltipContent>
+                    <div [innerHTML]="'PLACEHOLDER_EVENT_STATS' | translate: { participants: obj.participants, winners: obj.winner_count }"></div>
+                  </ng-template>
                 }
 
                 @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
                   @if (obj.faq_answer) {                                  <!-- Show Tooltip for FAQ-Status -->
                     <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
-                                 duration-200" (click)="tconfig.actions[0](obj)" type="button" id="faqBtn_{{ $index }}"
-                            [title]="'PLACEHOLDER_THEME_FAQ' | translate">
+                                 duration-200" (click)="tconfig.actions[0](obj); tooltip.close()" type="button" id="faqBtn_{{ $index }}"
+                            [ngbTooltip]="tooltipContent" #tooltip="ngbTooltip" placement="top" tooltipClass="table-tooltip">
                       <fa-icon [icon]="faRobot"></fa-icon>
                     </button>
+
+                    <ng-template #tooltipContent>
+                      {{ 'PLACEHOLDER_THEME_FAQ' | translate }}
+                    </ng-template>
                   }
                   @if (obj.pending) {                                     <!-- Show Pending Action Button -->
                     <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
-                                 duration-200 !cursor-help" (click)="tconfig.actions[0](obj)" type="button">
+                                 duration-200 !cursor-help" (click)="tconfig.actions[0](obj)" type="button"
+                            [ngbTooltip]="tooltipContent" placement="top" tooltipClass="table-tooltip">
                       <fa-icon [icon]="faHourglassEnd"></fa-icon>
                     </button>
+
+                    <ng-template #tooltipContent>
+                      {{ obj.action === 'CREATE' ? ('PLACEHOLDER_THEME_PENDING' | translate) :
+                                                   ('PLACEHOLDER_THEME_UPDATE_PENDING' | translate)}}
+                    </ng-template>
                   }
                 }
               </div>
@@ -145,21 +165,69 @@
                     {{ 'PLACEHOLDER_NEVER' | translate }}
                   }
                 </span>
-            </td>
+              </td>
 
               <!-- Blocked User: Staff who blocked the user -->
               <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
-              <div class="flex items-center">
-                <img [ngSrc]="obj.staff_avatar ? obj.staff_avatar.replace('size=1024', 'size=24') : 'https://cdn.discordapp.com/embed/avatars/' + (obj.staff_id.length % 5) + '.png'"
-                     width="24" height="24" alt="Avatar for {{ obj.staff_name }}" class="w-6 h-6 rounded-full me-2.5"
-                     [title]="obj.staff_id" />
+                <div class="flex items-center">
+                  <img [ngSrc]="obj.staff_avatar ? obj.staff_avatar.replace('size=1024', 'size=24') : 'https://cdn.discordapp.com/embed/avatars/' + (obj.staff_id.length % 5) + '.png'"
+                       width="24" height="24" alt="Avatar for {{ obj.staff_name }}" class="w-6 h-6 rounded-full me-2.5"
+                       [title]="obj.staff_id" />
 
-                <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
-                            duration-300" [title]="obj.staff_id">
-                  {{ obj.staff_name }}
-                  <div class="text-xs text-gray-500 mt-1">{{ obj.staff_id }}</div>
+                  <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                              duration-300" [title]="obj.staff_id">
+                    {{ obj.staff_name }}
+                    <div class="text-xs text-gray-500 mt-1">{{ obj.staff_id }}</div>
+                  </div>
                 </div>
-              </div>
+              </td>
+            } @else if (tconfig.type === 'EVENTS_VIEW' && isGiveawayType(obj)) {
+              <!-- Giveaway: End date -->
+              <td class="px-4 py-3" [width]="tconfig.columns[1].width + '%'">
+                <span class="text-gray-500 dark:text-gray-400"
+                      [ngClass]="!obj.end_date ? 'text-red-500 dark:text-red-700 uppercase' : ''">
+                  {{ obj.end_date | datecustom: this.translate.currentLang  }}
+                </span>
+              </td>
+
+              <!-- Giveaway: Participation Requirement -->
+              <td class="px-4 py-3" [width]="tconfig.columns[2].width + '%'">
+                <span class="text-gray-500 dark:text-gray-400">{{ obj.gw_req }}</span>
+              </td>
+
+              <!-- Giveaway: Creator -->
+              <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
+                <div class="flex items-center">
+                  <img [ngSrc]="obj.creator_avatar ? obj.creator_avatar.replace('size=1024', 'size=24')
+                                                   : 'https://cdn.discordapp.com/embed/avatars/' + (obj.creator_id.length % 5) + '.png'"
+                       width="24" height="24" alt="Avatar for {{ obj.creator_name }}" class="w-6 h-6 rounded-full me-2.5"
+                       [title]="obj.creator_id" />
+
+                  <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                              duration-300" [title]="obj.creator_id">
+                    {{ obj.creator_name }}
+                    <div class="text-xs text-gray-500 mt-1">{{ obj.creator_id }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Giveaway: Sponsor -->
+              <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
+                @if (obj.sponsor_id) {
+                    <div class="flex items-center">
+                      <img [ngSrc]="obj.sponsor_avatar ? obj.sponsor_avatar.replace('size=1024', 'size=24')
+                                                       : 'https://cdn.discordapp.com/embed/avatars/' + (obj.sponsor_id.length % 5) + '.png'"
+                           width="24" height="24" alt="Avatar for {{ obj.sponsor_name }}" class="w-6 h-6 rounded-full me-2.5"
+                           [title]="obj.sponsor_id" />
+
+                      <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                                  duration-300" [title]="obj.sponsor_id">
+                        {{ obj.sponsor_name }}
+                        <div class="text-xs text-gray-500 mt-1">{{ obj.sponsor_id }}</div>
+                      </div>
+                    </div>
+                }
+              </td>
             }
 
             <!-- Action Buttons -->

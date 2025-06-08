@@ -441,6 +441,7 @@
   "PLACEHOLDER_THEME_UPDATE_PENDING": "🔶 - Dieses Thema wird in den nächsten Minuten automatisch bearbeitet - aktualisiere den Cache!",
   "PLACEHOLDER_THEME_FAQ": "🤖 - Dieses Thema wird automatisch beantwortet - klicke für mehr Infos!",
   "PLACEHOLDER_BLOCKED_USER_FETCH": "📢 - Klicke, um die User-Daten zu laden..",
+  "PLACEHOLDER_EVENT_STATS": "📊 - Das Gewinnspiel hat aktuell <strong>{{participants}}</strong> Teilnehmer und <strong>{{winners}}</strong> Gewinner festgelegt.",
 
   "PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE": "📜 ~ Snippet erstellen",
   "PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE": "✍️ ~ Snippet bearbeiten",

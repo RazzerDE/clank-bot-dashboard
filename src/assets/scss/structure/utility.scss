@@ -248,6 +248,11 @@
   @apply opacity-0 invisible duration-[400ms];
 }
 
+// Tooltip Design
+.table-tooltip * {
+  @apply w-auto max-w-[35vw] dark:bg-slate-900 bg-slate-500 shadow-2xl;
+}
+
 .hover-shape-border:hover .border-shadow {
   @apply opacity-100 visible;
 }

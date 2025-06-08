@@ -441,6 +441,7 @@
   "PLACEHOLDER_THEME_UPDATE_PENDING": "🔶 - This theme will be automatically edited in the next few minutes - refresh the cache!",
   "PLACEHOLDER_THEME_FAQ": "🤖 - This theme will be automatically answered - click for more info!",
   "PLACEHOLDER_BLOCKED_USER_FETCH": "📢 - Click to load user data..",
+  "PLACEHOLDER_EVENT_STATS": "📊 - The giveaway currently has <strong>{{participants}}</strong> participants and <strong>{{winners}}</strong> winners set.",
 
   "PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE": "📜 ~ Create a new Snippet",
   "PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE": "✍️ ~ Edit a Snippet",

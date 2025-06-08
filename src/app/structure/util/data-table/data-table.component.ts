@@ -12,6 +12,9 @@ import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
 import {BlockedUser} from "../../../services/types/discord/User";
 import {DatePipe} from "../../../pipes/date/date.pipe";
 import {Giveaway} from "../../../services/types/Events";
+import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
+import {faChartSimple} from "@fortawesome/free-solid-svg-icons/faChartSimple";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'data-table',
@@ -22,6 +25,7 @@ import {Giveaway} from "../../../services/types/Events";
     NgOptimizedImage,
     NgStyle,
     DatePipe,
+    NgbTooltip,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
@@ -41,9 +45,11 @@ export class DataTableComponent implements AfterViewInit {
     @Input() tconfig: TableConfig = {} as TableConfig;
     @Output() rowClick = new EventEmitter<any>();
     @ViewChild('mainRow') protected mainRow!: ElementRef<HTMLTableCellElement>;
+    protected markdownPipe: MarkdownPipe = new MarkdownPipe();
 
     protected rowHeight: number = 0;
     protected readonly faRobot: IconDefinition = faRobot;
+    protected readonly faChartSimple: IconDefinition = faChartSimple;
     protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;
 
     constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}

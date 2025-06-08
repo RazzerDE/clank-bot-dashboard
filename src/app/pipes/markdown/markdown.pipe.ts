@@ -83,7 +83,7 @@ export class MarkdownPipe implements PipeTransform {
    * @param id The emoji ID to validate.
    * @returns true if the ID is valid.
    */
-  private isValidEmojiId(id: string): boolean {
+  public isValidEmojiId(id: string): boolean {
     return /^\d+$/.test(id) && id.length > 0 && id.length < 20;
   }
 }

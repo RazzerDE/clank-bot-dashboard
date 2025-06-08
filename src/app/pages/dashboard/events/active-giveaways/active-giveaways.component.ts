@@ -29,8 +29,8 @@ export class ActiveGiveawaysComponent {
   protected readonly faGift: IconDefinition = faGift;
   protected readonly faRefresh: IconDefinition = faRefresh;
 
-  protected events: Giveaway[] = [];
-  protected filteredEvents: Giveaway[] = [];
+  protected events: Giveaway[] = this.createDummyGiveaways();
+  protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
 
   constructor(private dataService: DataHolderService) {
     document.title = 'Active Events - Clank Discord-Bot';
@@ -75,4 +75,58 @@ export class ActiveGiveawaysComponent {
       actions: []
     };
   };
+
+  // TODO: replace after implementing real data fetching
+  private createDummyGiveaways(): Giveaway[] {
+    const creators = ['Alex', 'Sophia', 'Liam', 'Emma', 'Noah', 'Charlotte', 'Max', 'Julia', 'Ben', 'Mia'];
+    const sponsors = ['GameHub', 'TechWorld', 'StreamerParadise', 'GamingStore', 'DigitalDreams'];
+    const prizes = [
+      '<a:Nitro_Boost:812744849341153330> Discord Nitro (1 Jahr) <a:Nitro_Boost:812744849341153330>',
+      '<a:Diamond_pink:868999547882455090> Gaming Headset <a:Diamond_pink:868999547882455090>',
+      '<a:Diamond_pink:868999547882455090> Mechanische Tastatur <a:Diamond_pink:868999547882455090>',
+      '<a:Diamond_pink:868999547882455090> Gaming-Maus <a:Diamond_pink:868999547882455090>',
+      '<a:money:802721260466864192> Steam-Gutschein 50€ <a:money:802721260466864192>',
+      '<a:Nitro_Boost:812744849341153330> 3 Monate Premium-Abo <a:Nitro_Boost:812744849341153330>',
+      '<a:Diamond_pink:868999547882455090> Gaming-Stuhl <a:Diamond_pink:868999547882455090>',
+      '<a:Diamond_pink:868999547882455090> Grafikkarte RTX 3060 <a:Diamond_pink:868999547882455090>',
+      '<a:Nitro_Boost:812744849341153330> Twitch-Abonnement <a:Nitro_Boost:812744849341153330>',
+      '<a:Diamond_pink:868999547882455090> Logitech G Pro X <a:Diamond_pink:868999547882455090>',
+      '<a:money:802721260466864192> Amazon-Gutschein 20€ <a:money:802721260466864192>',
+      '<a:Nitro_Boost:812744849341153330> Spotify Premium (6 Monate) <a:Nitro_Boost:812744849341153330>',
+      '<a:Diamond_pink:868999547882455090> Gaming-Mauspad XL <a:Diamond_pink:868999547882455090>',
+      '<a:Diamond_pink:868999547882455090> RGB LED-Strips <a:Diamond_pink:868999547882455090>',
+      '<a:Diamond_pink:868999547882455090> Gaming-Monitor 144Hz <a:Diamond_pink:868999547882455090>',
+      '<a:Diamond_pink:868999547882455090> Wireless Earbuds <a:Diamond_pink:868999547882455090>'
+    ];
+    const requirements = [
+      'Server-Mitglied seit mind. 2 Wochen', 'Level 5+ im Server', 'Aktiv im Chat',
+      'Mindestens 3 Freunde einladen', 'Rolle "Unterstützer" haben', 'Teilnahme am letzten Event',
+      'Mitglied im Discord-Partner', 'Boost des Servers', 'Monatlicher Subscriber',
+      'Teilnahme an mindestens 3 Events'
+    ];
+
+    return Array.from({ length: 20 }, (_, i) => {
+      const creatorIndex = Math.floor(Math.random() * creators.length);
+      const hasSponsor = Math.random() > 0.3;
+      const sponsorIndex = Math.floor(Math.random() * sponsors.length);
+      const hasRequirement = Math.random() > 0.3; // 30% Chance, dass keine Bedingung vorhanden ist
+      const today = new Date();
+
+      return {
+        creator_id: `${65645664355556 + i}`,
+        creator_name: creators[creatorIndex],
+        creator_avatar: "assets/img/admin-placeholder.png",
+        gw_req: hasRequirement ? requirements[Math.floor(Math.random() * requirements.length)] : null,
+        end_date: new Date(today.setDate(today.getDate() + Math.floor(Math.random() * 30) + 1)),
+        prize: prizes[Math.floor(Math.random() * prizes.length)],
+        winner_count: Math.floor(Math.random() * 3) + 1,
+        participants: Math.floor(Math.random() * 500) + 10,
+        ...(hasSponsor && {
+          sponsor_id: `sponsor_${200000 + sponsorIndex}`,
+          sponsor_name: sponsors[sponsorIndex],
+          sponsor_avatar: "assets/img/admin-placeholder.png"
+        })
+      };
+    });
+  }
 }
