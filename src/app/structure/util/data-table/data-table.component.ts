@@ -15,6 +15,7 @@ import {Giveaway} from "../../../services/types/Events";
 import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
 import {faChartSimple} from "@fortawesome/free-solid-svg-icons/faChartSimple";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
+import {ConvertTimePipe} from "../../../pipes/convert-time.pipe";
 
 @Component({
   selector: 'data-table',
@@ -26,6 +27,7 @@ import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
     NgStyle,
     DatePipe,
     NgbTooltip,
+    MarkdownPipe,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
@@ -46,6 +48,7 @@ export class DataTableComponent implements AfterViewInit {
     @Output() rowClick = new EventEmitter<any>();
     @ViewChild('mainRow') protected mainRow!: ElementRef<HTMLTableCellElement>;
     protected markdownPipe: MarkdownPipe = new MarkdownPipe();
+    private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
     protected rowHeight: number = 0;
     protected readonly faRobot: IconDefinition = faRobot;
@@ -121,6 +124,28 @@ export class DataTableComponent implements AfterViewInit {
       return (obj as Giveaway).creator_id !== undefined && (obj as Giveaway).prize !== undefined;
     }
 
+  /**
+   * Formats a giveaway requirement string into a user-friendly format.
+   * It checks the prefix of the requirement string and applies the corresponding transformation
+   * from the `giveawayMappings` object. If no mapping is found, it returns the original string.
+   * Special handling is applied for the "no_nitro" requirement.
+   *
+   * @param gw_req - The giveaway requirement string to format, or `null`.
+   * @returns The formatted requirement string, or `null` if the input is `null`.
+   */
+    protected formatGiveawayRequirement(gw_req: string | null): string | null {
+      if (!gw_req) return gw_req;
+
+      for (const prefix in this.giveawayMappings) {
+        if (gw_req.startsWith(prefix)) {
+          return this.giveawayMappings[prefix](gw_req);
+        }
+      }
+
+      if (gw_req === 'no_nitro') { return this.translate.instant('PLACEHOLDER_EVENT_REQ_NO_NITRO'); }
+      return gw_req;
+    }
+
     /**
      * Generates CSS styles for a Discord role for a support-theme based on its color.
      * Converts the role's decimal color value to a hex color string and creates a style object
@@ -150,4 +175,35 @@ export class DataTableComponent implements AfterViewInit {
         'border-width': '1px'
       };
     }
+
+    /**
+     * A mapping of giveaway requirement prefixes to their corresponding transformation functions.
+     * Each function takes the requirement string as input and returns a formatted string.
+     */
+    private giveawayMappings: { [key: string]: (value: string) => string } = {
+      'OWN: ': (value) => this.markdownPipe.transform(value.replace('OWN: ', '💡 ~ ')),
+      'MSG: ': (value) => {
+        const msg_count = parseInt(value.replace('MSG: ', ''));
+        return this.translate.instant('PLACEHOLDER_EVENT_REQ_MSG', { count: msg_count });
+      },
+      'VOICE: ': (value) => {
+        const voice_count = parseInt(value.replace('VOICE: ', ''));
+        return this.translate.instant('PLACEHOLDER_EVENT_REQ_VOICE', {
+          voicetime: this.convertTimePipe.transform(voice_count, this.translate.currentLang),
+        });
+      },
+      'MITGLIED: ': (value) => {
+        const membership_seconds = parseInt(value.replace('MITGLIED: ', ''));
+        return this.translate.instant('PLACEHOLDER_EVENT_REQ_MEMBER', {
+          membership: this.convertTimePipe.transform(membership_seconds, this.translate.currentLang),
+        });
+      },
+      'SERVER: ': (value) => {
+        if (value.includes('https://discord.gg/')) {
+          const [invite, guild_name] = value.replace('SERVER: ', '').split(' - ');
+          return this.translate.instant('PLACEHOLDER_EVENT_REQ_SERVER', { invite, guild_name });
+        }
+        return value;
+      },
+    };
 }

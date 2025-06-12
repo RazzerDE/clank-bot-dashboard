@@ -442,6 +442,11 @@
   "PLACEHOLDER_THEME_FAQ": "🤖 - This theme will be automatically answered - click for more info!",
   "PLACEHOLDER_BLOCKED_USER_FETCH": "📢 - Click to load user data..",
   "PLACEHOLDER_EVENT_STATS": "📊 - The giveaway currently has <strong>{{participants}}</strong> participants and <strong>{{winners}}</strong> winners set.",
+  "PLACEHOLDER_EVENT_REQ_MSG": "📚 ~ Send at least <strong>{{count}}</strong> messages",
+  "PLACEHOLDER_EVENT_REQ_VOICE": "🔊 ~ Spend <strong>{{voicetime}}</strong> in voice channels",
+  "PLACEHOLDER_EVENT_REQ_NO_NITRO": "💎 ~ Do <strong>not own Discord Nitro</strong>",
+  "PLACEHOLDER_EVENT_REQ_MEMBER": "👥 ~ Must be a server member for <strong>{{membership}}</strong>",
+  "PLACEHOLDER_EVENT_REQ_SERVER": "📡 ~ Discover <a href='{{invite}}' target='_blank'><strong>{{guild_name}}</strong></a> <span class='text-xs text-gray-500'>(This is NOT a participation requirement!)</span>",
 
   "PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE": "📜 ~ Create a new Snippet",
   "PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE": "✍️ ~ Edit a Snippet",

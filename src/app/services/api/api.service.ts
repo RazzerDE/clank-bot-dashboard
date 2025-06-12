@@ -11,6 +11,7 @@ import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
+import {Giveaway} from "../types/Events";
 
 @Injectable({
   providedIn: 'root'
@@ -119,6 +120,17 @@ export class ApiService {
    */
   getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
     return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches all events (giveaways) for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the events.
+   * @returns An Observable that emits an array of Giveaway objects.
+   */
+  getGuildEvents(guild_id: string): Observable<Giveaway[]> {
+    return this.http.get<Giveaway[]>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

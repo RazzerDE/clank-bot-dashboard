@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe} from "@ngx-translate/core";
@@ -11,6 +11,9 @@ import {TableConfig} from "../../../../services/types/Config";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
 import {Giveaway} from "../../../../services/types/Events";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
+import {Subscription} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ApiService} from "../../../../services/api/api.service";
 
 @Component({
   selector: 'app-active-giveaways',
@@ -24,17 +27,112 @@ import {DataTableComponent} from "../../../../structure/util/data-table/data-tab
   templateUrl: './active-giveaways.component.html',
   styleUrl: './active-giveaways.component.scss'
 })
-export class ActiveGiveawaysComponent {
+export class ActiveGiveawaysComponent implements OnDestroy {
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faGift: IconDefinition = faGift;
   protected readonly faRefresh: IconDefinition = faRefresh;
+  private subscriptions: Subscription[] = [];
+  private startLoading: boolean = false;
 
-  protected events: Giveaway[] = this.createDummyGiveaways();
+  protected events: Giveaway[] = [];
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
+  protected disabledCacheBtn: boolean = false;
 
-  constructor(private dataService: DataHolderService) {
+  constructor(private dataService: DataHolderService, private apiService: ApiService) {
     document.title = 'Active Events - Clank Discord-Bot';
-    this.dataService.isLoading = false;
+    this.dataService.isLoading = true;
+    this.getGuildEvents(); // first call to get the server data
+    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+      if (value) { // only fetch data if allowed
+        this.dataService.isLoading = true;
+        this.dataService.selectedSnippet = null;
+        this.getGuildEvents(true);
+      }
+    });
+
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  /**
+   * Fetches the active giveaways for the current guild.
+   *
+   * If cached data is available and valid (within 30 seconds), it loads the giveaways from localStorage.
+   * Otherwise, it fetches the data from the API, updates the local cache, and handles loading states.
+   * Handles various HTTP errors by redirecting to appropriate error pages.
+   *
+   * @param {boolean} [no_cache] - If true, ignores the cache and fetches fresh data from the API.
+   */
+  protected getGuildEvents(no_cache?: boolean): void {
+    if (!this.dataService.active_guild) { return; }
+    this.startLoading = true;
+
+    // check if guilds are already stored in local storage (30 seconds cache)
+    if ((localStorage.getItem('active_events') && localStorage.getItem('active_events_timestamp') &&
+      Date.now() - Number(localStorage.getItem('active_events_timestamp')) < 30000) && !no_cache) {
+      this.events = JSON.parse(localStorage.getItem('active_events') as string);
+      this.filteredEvents = this.events;
+      this.dataService.isLoading = false;
+      this.startLoading = false;
+      return;
+    }
+
+    const sub: Subscription = this.apiService.getGuildEvents(this.dataService.active_guild.id)
+      .subscribe({
+        next: (giveaways: Giveaway[]): void => {
+          this.events = giveaways;
+          this.filteredEvents = this.events;
+
+          this.dataService.isLoading = false;
+          this.startLoading = false;
+
+          localStorage.setItem('active_events', JSON.stringify(this.events));
+          localStorage.setItem('active_events_timestamp', Date.now().toString());
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.dataService.isLoading = false;
+          this.startLoading = false;
+
+          if (err.status === 403) {
+            this.dataService.redirectLoginError('FORBIDDEN');
+            return;
+          } else if (err.status === 401) {
+            this.dataService.redirectLoginError('NO_CLANK');
+            return;
+          } else if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+        }
+      });
+
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Refreshes the cache by disabling the cache button, setting the loading state,
+   * and fetching the snippet data with the cache ignored. The cache button is re-enabled
+   * after 15 seconds.
+   */
+  protected refreshCache(): void {
+    this.disabledCacheBtn = true;
+    this.dataService.isLoading = true;
+    this.getGuildEvents(true);
+
+    setTimeout((): void => { this.disabledCacheBtn = false; }, 15000);
   }
 
   /**
@@ -66,12 +164,12 @@ export class ActiveGiveawaysComponent {
     return {
       type: "EVENTS_VIEW",
       list_empty: 'PLACEHOLDER_EVENT_EMPTY',
-      dataLoading: this.dataService.isLoading, // TODO: Implement loading state
+      dataLoading: this.startLoading,
       rows: this.filteredEvents,
       columns: [
-        { width: 22, name: 'PAGE_EVENTS_TABLE_PRICE' },
-        { width: 22, name: 'PAGE_EVENTS_TABLE_END_DATE' },
-        { width: 23, name: 'PAGE_EVENTS_TABLE_REQUIREMENT' },
+        { width: 25, name: 'PAGE_EVENTS_TABLE_PRICE' },
+        { width: 21, name: 'PAGE_EVENTS_TABLE_END_DATE' },
+        { width: 21, name: 'PAGE_EVENTS_TABLE_REQUIREMENT' },
         { width: 15, name: 'PAGE_EVENTS_TABLE_CREATOR' },
         { width: 13, name: 'PAGE_EVENTS_TABLE_SPONSOR' },
         { width: 5, name: 'PLACEHOLDER_ACTION' }
@@ -93,58 +191,4 @@ export class ActiveGiveawaysComponent {
       actions: []
     };
   };
-
-  // TODO: replace after implementing real data fetching
-  private createDummyGiveaways(): Giveaway[] {
-    const creators = ['Alex', 'Sophia', 'Liam', 'Emma', 'Noah', 'Charlotte', 'Max', 'Julia', 'Ben', 'Mia'];
-    const sponsors = ['GameHub', 'TechWorld', 'StreamerParadise', 'GamingStore', 'DigitalDreams'];
-    const prizes = [
-      '<a:Nitro_Boost:812744849341153330> Discord Nitro (1 Jahr) <a:Nitro_Boost:812744849341153330>',
-      '<a:Diamond_pink:868999547882455090> Gaming Headset <a:Diamond_pink:868999547882455090>',
-      '<a:Diamond_pink:868999547882455090> Mechanische Tastatur <a:Diamond_pink:868999547882455090>',
-      '<a:Diamond_pink:868999547882455090> Gaming-Maus <a:Diamond_pink:868999547882455090>',
-      '<a:money:802721260466864192> Steam-Gutschein 50€ <a:money:802721260466864192>',
-      '<a:Nitro_Boost:812744849341153330> 3 Monate Premium-Abo <a:Nitro_Boost:812744849341153330>',
-      '<a:Diamond_pink:868999547882455090> Gaming-Stuhl <a:Diamond_pink:868999547882455090>',
-      '<a:Diamond_pink:868999547882455090> Grafikkarte RTX 3060 <a:Diamond_pink:868999547882455090>',
-      '<a:Nitro_Boost:812744849341153330> Twitch-Abonnement <a:Nitro_Boost:812744849341153330>',
-      '<a:Diamond_pink:868999547882455090> Logitech G Pro X <a:Diamond_pink:868999547882455090>',
-      '<a:money:802721260466864192> Amazon-Gutschein 20€ <a:money:802721260466864192>',
-      '<a:Nitro_Boost:812744849341153330> Spotify Premium (6 Monate) <a:Nitro_Boost:812744849341153330>',
-      '<a:Diamond_pink:868999547882455090> Gaming-Mauspad XL <a:Diamond_pink:868999547882455090>',
-      '<a:Diamond_pink:868999547882455090> RGB LED-Strips <a:Diamond_pink:868999547882455090>',
-      '<a:Diamond_pink:868999547882455090> Gaming-Monitor 144Hz <a:Diamond_pink:868999547882455090>',
-      '<a:Diamond_pink:868999547882455090> Wireless Earbuds <a:Diamond_pink:868999547882455090>'
-    ];
-    const requirements = [
-      'Server-Mitglied seit mind. 2 Wochen', 'Level 5+ im Server', 'Aktiv im Chat',
-      'Mindestens 3 Freunde einladen', 'Rolle "Unterstützer" haben', 'Teilnahme am letzten Event',
-      'Mitglied im Discord-Partner', 'Boost des Servers', 'Monatlicher Subscriber',
-      'Teilnahme an mindestens 3 Events'
-    ];
-
-    return Array.from({ length: 20 }, (_, i) => {
-      const creatorIndex = Math.floor(Math.random() * creators.length);
-      const hasSponsor = Math.random() > 0.3;
-      const sponsorIndex = Math.floor(Math.random() * sponsors.length);
-      const hasRequirement = Math.random() > 0.3; // 30% Chance, dass keine Bedingung vorhanden ist
-      const today = new Date();
-
-      return {
-        creator_id: `${65645664355556 + i}`,
-        creator_name: creators[creatorIndex],
-        creator_avatar: "assets/img/admin-placeholder.png",
-        gw_req: hasRequirement ? requirements[Math.floor(Math.random() * requirements.length)] : null,
-        end_date: new Date(today.setDate(today.getDate() + Math.floor(Math.random() * 30) + 1)),
-        prize: prizes[Math.floor(Math.random() * prizes.length)],
-        winner_count: Math.floor(Math.random() * 3) + 1,
-        participants: Math.floor(Math.random() * 500) + 10,
-        ...(hasSponsor && {
-          sponsor_id: `sponsor_${200000 + sponsorIndex}`,
-          sponsor_name: sponsors[sponsorIndex],
-          sponsor_avatar: "assets/img/admin-placeholder.png"
-        })
-      };
-    });
-  }
 }

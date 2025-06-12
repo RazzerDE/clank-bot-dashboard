@@ -56,10 +56,9 @@
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
                                            via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
                                            py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
-                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none">
-                  <!-- TODO: Refresh Cache button -->
-                  <fa-icon [icon]="faRefresh" class="me-2"></fa-icon>
-                  {{ 'BUTTON_CACHE_REFRESH' | translate }}
+                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                        (click)="this.refreshCache()">
+                  <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
                 </button>
               </div>
             </div>
