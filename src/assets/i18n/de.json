@@ -446,7 +446,8 @@
   "PLACEHOLDER_EVENT_REQ_VOICE": "🔊 ~ <strong>{{voicetime}}</strong> in Sprachkanälen verbringen",
   "PLACEHOLDER_EVENT_REQ_NO_NITRO": "💎 ~ <strong>Kein Discord-Nitro</strong> besitzen",
   "PLACEHOLDER_EVENT_REQ_MEMBER": "👥 ~ Server-Mitglied seit <strong>{{membership}}</strong> sein",
-  "PLACEHOLDER_EVENT_REQ_SERVER": "📡 ~ <a href='{{invite}}' target='_blank'><strong>{{guild_name}}</strong></a> entdecken <span class='text-xs text-gray-500'>(Dies Ist KEINE Teilnahme-Bedingung!)</span>",
+  "PLACEHOLDER_EVENT_REQ_SERVER": "📡 ~ <a href='{{invite}}' target='_blank'><strong>{{guild_name}}</strong></a> entdecken<br /><span class='text-xs text-gray-500'>(Dies Ist KEINE Teilnahme-Bedingung!)</span>",
+  "PLACEHOLDER_EVENT_REQ_ROLE": "📌 ~ Die <span title='{{role_id}}'><strong>@{{role_name}}</strong></span> Rolle besitzen",
 
   "PLACEHOLDER_SNIPPET_ADD_MODAL_TITLE": "📜 ~ Snippet erstellen",
   "PLACEHOLDER_SNIPPET_EDIT_MODAL_TITLE": "✍️ ~ Snippet bearbeiten",

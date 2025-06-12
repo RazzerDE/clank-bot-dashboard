@@ -131,14 +131,15 @@ export class DataTableComponent implements AfterViewInit {
    * Special handling is applied for the "no_nitro" requirement.
    *
    * @param gw_req - The giveaway requirement string to format, or `null`.
+   * @param index - The index of the requirement - is used for role requirements to apply styles.
    * @returns The formatted requirement string, or `null` if the input is `null`.
    */
-    protected formatGiveawayRequirement(gw_req: string | null): string | null {
+    protected formatGiveawayRequirement(gw_req: string | null, index: number): string | null {
       if (!gw_req) return gw_req;
 
       for (const prefix in this.giveawayMappings) {
         if (gw_req.startsWith(prefix)) {
-          return this.giveawayMappings[prefix](gw_req);
+          return this.giveawayMappings[prefix](gw_req, index);
         }
       }
 
@@ -180,7 +181,7 @@ export class DataTableComponent implements AfterViewInit {
      * A mapping of giveaway requirement prefixes to their corresponding transformation functions.
      * Each function takes the requirement string as input and returns a formatted string.
      */
-    private giveawayMappings: { [key: string]: (value: string) => string } = {
+    private giveawayMappings: { [key: string]: (value: string, index: number) => string } = {
       'OWN: ': (value) => this.markdownPipe.transform(value.replace('OWN: ', '💡 ~ ')),
       'MSG: ': (value) => {
         const msg_count = parseInt(value.replace('MSG: ', ''));
@@ -197,6 +198,15 @@ export class DataTableComponent implements AfterViewInit {
         return this.translate.instant('PLACEHOLDER_EVENT_REQ_MEMBER', {
           membership: this.convertTimePipe.transform(membership_seconds, this.translate.currentLang),
         });
+      },
+      'ROLE_ID: ': (value, index) => {
+        const [role_id, role_name, role_color] = value.replace('ROLE_ID: ', '').split(' - ');
+        const roleElement: HTMLSpanElement = document.getElementById(`gw_req_${index}`) as HTMLSpanElement;
+        if (roleElement && roleElement.children.length > 0) {
+          (roleElement.children[0] as HTMLSpanElement).style.color = `${role_color}`;
+        }
+
+        return this.translate.instant('PLACEHOLDER_EVENT_REQ_ROLE', { role_id, role_name });
       },
       'SERVER: ': (value) => {
         if (value.includes('https://discord.gg/')) {

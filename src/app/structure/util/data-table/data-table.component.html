@@ -192,7 +192,8 @@
 
               <!-- Giveaway: Participation Requirement -->
               <td class="px-4 py-3" [width]="tconfig.columns[2].width + '%'">
-                <span class="text-gray-500 dark:text-gray-400" [innerHTML]="this.formatGiveawayRequirement(obj.gw_req)"></span>
+                <span class="text-gray-500 dark:text-gray-400" id="gw_req_{{ $index }}"
+                      [innerHTML]="this.formatGiveawayRequirement(obj.gw_req, $index)"></span>
               </td>
 
               <!-- Giveaway: Creator -->
