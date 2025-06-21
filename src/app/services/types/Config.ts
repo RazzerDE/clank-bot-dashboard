@@ -4,6 +4,11 @@ import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {BlockedUser} from "./discord/User";
 import {Giveaway} from "./Events";
 
+export interface SelectItems {
+  value: string;
+  label: string;
+}
+
 export interface ColumnConfig {
   width: number; // Width of the column header in %
   name: string;

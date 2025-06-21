@@ -3,12 +3,12 @@
      [@fadeAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_backdrop"></div>
 
 <!-- Role Modal -->
-<div tabindex="-1" class="hidden overflow-hidden fixed z-50 justify-center items-center w-full md:inset-0
-                          h-[calc(100%-1rem)] max-h-full bottom-0" #roleModal
+<div tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed z-50 flex justify-center items-center w-full md:inset-0
+                        h-[100vh] max-h-full" #roleModal
      [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
-  <div class="relative p-4 w-full h-full items-center" id="roleModalContent" #roleModalContent
-       [ngClass]="{'max-w-lg -left-0 md:-left-16 xl:left-[45%] mx-auto xl:!mx-0 translate-y-1/4': !showSecondModal(),
-                  'flex justify-center gap-4 xl:translate-x-36': showSecondModal()}">
+  <div class="relative p-4 w-full max-h-[90vh] overflow-auto translate-x-36" id="roleModalContent" #roleModalContent
+       [ngClass]="{'max-w-lg mx-auto ': !showSecondModal(),
+                  'flex justify-center items-center gap-4': showSecondModal()}">
 
     <!-- First Modal (Always visible) -->
     <div class="relative bg-white rounded-lg shadow-sm dark:shadow-xl dark:!bg-gray-700 !border-gray-400
@@ -35,6 +35,10 @@
             {{ 'PLACEHOLDER_TICKET_ANNOUNCEMENT_MODAL_TITLE' | translate }}
           } @else if (type.startsWith('BLOCKED_USER')) {
             {{ 'PLACEHOLDER_BLOCKED_USER_ADD_MODAL_TITLE' | translate }}
+          } @else if (type === 'EVENTS_CREATE') {
+            {{ 'PLACEHOLDER_EVENT_CREATE_MODAL_TITLE' | translate }}
+          } @else if (type === 'EVENTS_EDIT') {
+            {{ 'PLACEHOLDER_EVENT_EDIT_MODAL_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -66,6 +70,9 @@
             @case (type.startsWith('BLOCKED_USER')) {
               <template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />
             }
+            @case (type.startsWith('EVENTS_')) {
+              <template-create-giveaway [showFirst]="true" />
+            }
             @default { <!-- Default Mention & Teamlist -->
               <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"
                                     [isDefaultMentioned]="isDefaultMentioned.bind(this)" />
@@ -84,6 +91,8 @@
         <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="false" />
       } @else if (type.startsWith('SUPPORT_THEME')) {
         <template-support-theme-add [showFirst]="false" />
+      } @else if (type.startsWith('EVENTS_')) {
+        <template-create-giveaway [showFirst]="false" />
       }
 
     }

@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe} from "@ngx-translate/core";
@@ -14,6 +14,9 @@ import {DataTableComponent} from "../../../../structure/util/data-table/data-tab
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
+import {ComService} from "../../../../services/discord-com/com.service";
 
 @Component({
   selector: 'app-active-giveaways',
@@ -23,6 +26,8 @@ import {ApiService} from "../../../../services/api/api.service";
     TranslatePipe,
     FaIconComponent,
     DataTableComponent,
+    ModalComponent,
+    AlertBoxComponent,
   ],
   templateUrl: './active-giveaways.component.html',
   styleUrl: './active-giveaways.component.scss'
@@ -33,12 +38,13 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected readonly faRefresh: IconDefinition = faRefresh;
   private subscriptions: Subscription[] = [];
   private startLoading: boolean = false;
-
+  protected modalType: string = 'EVENTS_CREATE';
   protected events: Giveaway[] = [];
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
   protected disabledCacheBtn: boolean = false;
+  @ViewChild(ModalComponent) private modal!: ModalComponent;
 
-  constructor(private dataService: DataHolderService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService) {
     document.title = 'Active Events - Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getGuildEvents(); // first call to get the server data
@@ -120,6 +126,19 @@ export class ActiveGiveawaysComponent implements OnDestroy {
       });
 
     this.subscriptions.push(sub);
+  }
+
+  /**
+   * Opens a modal dialog of the specified type (and optionally pre-fills it with snippet data).
+   *
+   * @param {string} type - The type of modal to open (e.g., 'EVENTS_CREATE', 'EVENTS_EDIT').
+   * @param {Giveaway} [giveaway] - Optional giveaway data to pre-fill the modal
+   */
+  protected openModal(type: 'EVENTS_CREATE' | 'EVENTS_EDIT', giveaway?: Giveaway): void {
+    this.dataService.getGuildChannels(this.comService);  // fetch guild channels for the select dropdown
+
+    this.modalType = type;
+    this.modal.showModal();
   }
 
   /**

@@ -61,8 +61,8 @@
            [class.opacity-50]="this.dataService.isFAQ">
       {{ 'PLACEHOLDER_THEME_MODAL_ROLES' | translate }}
     </label>
-    <template-select [discordRoles]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
-                     (selectionChange)="newTheme.roles = $event; this.updateThemeMentions();"/>
+    <template-select [options]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
+                     (selectionChange)="newTheme.roles = $any($event); this.updateThemeMentions();"/>
     <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isThemeInvalid() && type === 'SUPPORT_THEME_ADD',
                         'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': !isThemeInvalid() && type !== 'SUPPORT_THEME_ADD',
                         'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': isThemeInvalid()}"

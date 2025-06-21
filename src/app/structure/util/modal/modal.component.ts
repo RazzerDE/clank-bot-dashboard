@@ -22,6 +22,7 @@ import {SnippetAddComponent} from "./templates/snippet-add/snippet-add.component
 import {TicketAnnouncementComponent} from "./templates/ticket-announcement/ticket-announcement.component";
 import {BlockedUser} from "../../../services/types/discord/User";
 import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
+import {CreateGiveawayComponent} from "./templates/create-giveaway/create-giveaway.component";
 
 @Component({
   selector: 'app-modal',
@@ -36,6 +37,7 @@ import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.compon
     SnippetAddComponent,
     TicketAnnouncementComponent,
     BlockedUserComponent,
+    CreateGiveawayComponent,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',

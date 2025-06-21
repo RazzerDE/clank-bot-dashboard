@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
-import {Subject} from "rxjs";
-import {Guild} from "../types/discord/Guilds";
+import {Subject, Subscription} from "rxjs";
+import {Channel, Guild, Role} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SupportTheme, TicketSnippet} from "../types/Tickets";
+import {ComService} from "../discord-com/com.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import {SupportTheme, TicketSnippet} from "../types/Tickets";
 export class DataHolderService {
   isLoading: boolean = true;
   isDarkTheme: boolean = false;
+  isFetching: boolean = false;
   isFAQ: boolean = false;
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
@@ -34,6 +36,8 @@ export class DataHolderService {
   readonly initTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
                                     default_roles: [], pending: true, action: 'CREATE' };
   support_themes: SupportTheme[] = [];
+  guild_roles: Role[] = [];
+  guild_channels: Channel[] = [];
   selectedSnippet: TicketSnippet | null = null;
 
   constructor(private router: Router) {
@@ -42,6 +46,87 @@ export class DataHolderService {
       this.showSidebarLogo = true;
       this.active_guild = JSON.parse(temp_guild) as Guild;
     }
+  }
+
+  /**
+   * Fetches the roles of the active guild from the Discord API.
+   *
+   * This method checks if the roles are cached in local storage and uses the cache
+   * if it is valid (less than one minute old). If the cache is invalid or `no_cache`
+   * is set to `true`, it fetches the roles from the API and updates the cache.
+   *
+   * @param discordService - The service used to communicate with the Discord API.
+   * @param loading - Optional flag to indicate if the loading state should be set (default: `true`).
+   * @param no_cache - Optional flag to bypass the cache and fetch fresh data (default: `false`).
+   */
+  getGuildRoles(discordService: ComService, loading?: boolean, no_cache?: boolean): void {
+    if (!this.active_guild) { return; }
+    if (loading) { this.isFetching = true; }
+
+    // check if guilds are already stored in local storage (one minute cache)
+    if ((localStorage.getItem('guild_roles') && localStorage.getItem('guild_roles_timestamp') &&
+      Date.now() - Number(localStorage.getItem('guild_roles_timestamp')) < 60000) && !no_cache) {
+      this.guild_roles = JSON.parse(localStorage.getItem('guild_roles') as string) as Role[];
+      if (loading) { this.isFetching = false; }
+      return;
+    }
+
+    discordService.getGuildRoles(this.active_guild.id).then((observable) => {
+      const subscription: Subscription = observable.subscribe({
+        next: (response: Role[]): void => {
+          this.guild_roles = response;
+          if (loading) { this.isFetching = false; }
+
+          localStorage.setItem('guild_roles', JSON.stringify(this.guild_roles));
+          localStorage.setItem('guild_roles_timestamp', Date.now().toString());
+          subscription.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.handleApiError(err);
+          subscription.unsubscribe();
+        }
+      });
+    });
+  }
+
+  /**
+   * Fetches the channels of the active guild from the Discord API.
+   *
+   * This method checks if the channels are cached in local storage and uses the cache
+   * if it is valid (less than one minute old). If the cache is invalid or `no_cache`
+   * is set to `true`, it fetches the channels from the API and updates the cache.
+   *
+   * @param discordService - The service used to communicate with the Discord API.
+   * @param no_cache - Optional flag to bypass the cache and fetch fresh data (default: `false`).
+   */
+  getGuildChannels(discordService: ComService, no_cache?: boolean): void {
+    if (!this.active_guild) { return; }
+    this.isFetching = true;
+
+    // check if guilds are already stored in local storage (one minute cache)
+    if ((localStorage.getItem('guild_channels') && localStorage.getItem('guild_channels_timestamp') &&
+      Date.now() - Number(localStorage.getItem('guild_channels_timestamp')) < 60000) && !no_cache) {
+      this.guild_channels = JSON.parse(localStorage.getItem('guild_channels') as string) as Channel[];
+      this.isFetching = false;
+      return;
+    }
+
+    discordService.getGuildChannels(this.active_guild.id).then((observable) => {
+      const subscription: Subscription = observable.subscribe({
+        next: (response: Channel[]): void => {
+          this.guild_channels = response;
+          this.isFetching = false;
+
+          localStorage.setItem('guild_channels', JSON.stringify(this.guild_channels));
+          localStorage.setItem('guild_channels_timestamp', Date.now().toString());
+          subscription.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.handleApiError(err);
+          subscription.unsubscribe();
+        }
+      });
+    });
   }
 
   /**
