@@ -21,6 +21,7 @@ export class BlockedUserComponent {
   @Input() newBlockedUser: BlockedUser = {} as BlockedUser;
   @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
   @Input() block_edit: (blockedUser: BlockedUser) => void = (): void => {};
+  protected readonly today: Date = new Date();
 
   /**
    * Checks if the `newBlockedUser` object is valid.

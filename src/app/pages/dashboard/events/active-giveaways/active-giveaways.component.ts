@@ -1,9 +1,9 @@
-import {Component, OnDestroy, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
-import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faSearch, faStop, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faGift} from "@fortawesome/free-solid-svg-icons/faGift";
@@ -33,6 +33,9 @@ import {ComService} from "../../../../services/discord-com/com.service";
   styleUrl: './active-giveaways.component.scss'
 })
 export class ActiveGiveawaysComponent implements OnDestroy {
+  private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
+    channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1,
+    participants: 0 };
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faGift: IconDefinition = faGift;
   protected readonly faRefresh: IconDefinition = faRefresh;
@@ -40,6 +43,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   private startLoading: boolean = false;
   protected modalType: string = 'EVENTS_CREATE';
   protected events: Giveaway[] = [];
+  public giveaway: Giveaway = this.initGiveaway;
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
   protected disabledCacheBtn: boolean = false;
   @ViewChild(ModalComponent) private modal!: ModalComponent;
@@ -173,6 +177,20 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   }
 
   /**
+   * Handles document click events to close modals if the user clicks outside of them.
+   *
+   * @param {MouseEvent} event - The click event triggered on the document.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // two modals are visible; hide if clicked outside of the modal
+    if ((event.target as HTMLElement).id.includes('roleModalContent') || (event.target as HTMLElement).id.includes('modal_container')) {
+      this.modal.hideModal();
+      return;
+    }
+  }
+
+  /**
    * Getter for the table configuration used in the Active giveaways component.
    * This configuration defines the structure and behavior of the table displayed
    * in the component, including columns, rows, and action buttons.
@@ -202,8 +220,8 @@ export class ActiveGiveawaysComponent implements OnDestroy {
         },
         {
           color: 'red',
-          icon: faXmark,
-          size: 'xl',
+          icon: faStop,
+          size: 'lg',
           action: (event: Giveaway): void => {} // TODO
         }
       ],

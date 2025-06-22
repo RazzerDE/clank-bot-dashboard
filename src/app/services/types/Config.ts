@@ -31,3 +31,10 @@ export interface TableConfig {
   action_btn: ButtonConfig[];
   actions: Function[];
 }
+
+export interface EmbedConfig {
+  color: string;              // Hex color code
+  thumbnail: string | null;   // URL to the thumbnail image
+  banner: string | null;      // URL to the banner image, can be null
+  emoji: string;              // Emoji to be displayed, e.g., '<a:present:873708141085343764>'
+}

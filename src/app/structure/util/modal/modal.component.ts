@@ -23,6 +23,7 @@ import {TicketAnnouncementComponent} from "./templates/ticket-announcement/ticke
 import {BlockedUser} from "../../../services/types/discord/User";
 import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
 import {CreateGiveawayComponent} from "./templates/create-giveaway/create-giveaway.component";
+import {Giveaway} from "../../../services/types/Events";
 
 @Component({
   selector: 'app-modal',
@@ -72,7 +73,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() type: string = '';
   @Input() content: string = '';
   @Input() extra: Role[] = [];
-  @Input() obj: TicketSnippet | BlockedUser = {} as TicketSnippet;
+  @Input() obj: TicketSnippet | BlockedUser | Giveaway = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
@@ -88,6 +89,7 @@ export class ModalComponent implements AfterContentInit  {
   @ViewChild('roleModalContent') modalContent!: ElementRef<HTMLDivElement>;
   @ViewChild('roleBackdrop') roleBackdrop!: ElementRef<HTMLDivElement>;
   @ViewChild('secondSnippetAdd') secondSnippetAdd: SnippetAddComponent | undefined = undefined;
+  @ViewChild('secondGiveawayAdd') secondGiveawayAdd: CreateGiveawayComponent | undefined = undefined;
 
   constructor(protected dataService: DataHolderService, private cdr: ChangeDetectorRef) {}
 
@@ -138,6 +140,7 @@ export class ModalComponent implements AfterContentInit  {
    * @returns `true` if a second modal should be displayed, otherwise `false`.
    */
   protected showSecondModal(): boolean {
-    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) && !this.type.includes('TEAMLIST')
+    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) ||
+      this.type.startsWith('EVENTS_') && !this.type.includes('TEAMLIST')
   }
 }

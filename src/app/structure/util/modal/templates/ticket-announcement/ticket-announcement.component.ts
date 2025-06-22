@@ -35,6 +35,7 @@ export class TicketAnnouncementComponent implements OnDestroy {
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
   private subscriptions: Subscription[] = [];
+  protected readonly today: Date = new Date();
 
   constructor(private dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {}
 

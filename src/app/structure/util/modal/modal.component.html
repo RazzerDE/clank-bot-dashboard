@@ -13,7 +13,7 @@
     <!-- First Modal (Always visible) -->
     <div class="relative bg-white rounded-lg shadow-sm dark:shadow-xl dark:!bg-gray-700 !border-gray-400
               dark:!border-gray-500 border-1"
-         [ngClass]="{'w-full': !showSecondModal(), 'w-1/2 max-w-md': showSecondModal()}" id="ignore">
+         [ngClass]="{'w-full': !showSecondModal(), 'w-1/2 max-w-lg': showSecondModal()}" id="ignore">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
         <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
@@ -71,7 +71,8 @@
               <template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />
             }
             @case (type.startsWith('EVENTS_')) {
-              <template-create-giveaway [showFirst]="true" />
+              <template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true"
+                                        [externalMarkdown]="secondGiveawayAdd?.discordMarkdown" />
             }
             @default { <!-- Default Mention & Teamlist -->
               <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"
@@ -92,7 +93,7 @@
       } @else if (type.startsWith('SUPPORT_THEME')) {
         <template-support-theme-add [showFirst]="false" />
       } @else if (type.startsWith('EVENTS_')) {
-        <template-create-giveaway [showFirst]="false" />
+        <template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)" />
       }
 
     }

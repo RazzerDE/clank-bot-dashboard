@@ -1,0 +1,9 @@
+<label [for]="id" class="block text-sm font-medium text-gray-900 dark:text-white mb-3 mt-3">
+  {{ labelText }} @if (required) { <span class="text-red-500">*</span> }
+</label>
+
+<input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                          focus:ring-primary-500 focus:border-primary-500 block p-2.5 dark:bg-gray-600
+                          dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
+                          [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+       [placeholder]="placeholderKey | translate" [id]="id" (input)="onInput($event)" />

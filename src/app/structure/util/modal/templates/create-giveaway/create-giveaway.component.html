@@ -15,13 +15,13 @@
                                 focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
                                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                maxlength="49" minlength="1" [placeholder]="'PLACEHOLDER_EVENT_PRIZE_PLACEHOLDER' | translate"
-               [(ngModel)]="this.giveaway.prize" id="prize">
+               [(ngModel)]="this.giveaway.prize" id="prize" (input)="this.updateGiveawayPreview('PRIZE', $any($event))" />
         <div class="relative">
           <div class="absolute top-1/2 -translate-y-1/2 -left-1 flex items-center ps-3 pointer-events-none border-r pr-2
                   border-gray-300 dark:border-gray-500 h-3/5">
             <fa-icon [icon]="faTrophy" class="text-gray-500 dark:text-gray-400" />
           </div>
-          <input type="number" min="1" max="99" maxlength="2" placeholder="1-99" (input)="checkWinnerInput()"
+          <input type="number" min="1" max="99" maxlength="2" placeholder="1-99" (input)="checkWinnerInput($any($event))"
                  [(ngModel)]="this.giveaway.winner_count" class="w-28 bg-gray-50 border border-gray-300 text-gray-900
          text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 ps-12 dark:bg-gray-600
          dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" onwheel="this.blur()" />
@@ -33,13 +33,15 @@
         {{ 'PLACEHOLDER_EVENT_END_DATE_TITLE' | translate }}
       </label>
       <div class="flex gap-2">
-        <template-select [options]="this.giveaway_reqs" [type]="'EVENTS_CREATE'" class="w-full"
-                         (selectionChange)="this.changeGiveawayReq($any($event))" id="reqpicker" />
-        <input type="datetime-local" class="w-40 bg-gray-50 border border-gray-300 text-gray-900
+        <template-select [options]="this.giveaway_reqs" [type]="'EVENTS_CREATE'" class="w-full" id="reqpicker"
+                         (selectionChange)="this.changeGiveawayReq($any($event));
+                                            this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req!)" />
+        <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
                text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
                dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
                [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-               [ngModel]="giveaway.end_date | date:'yyyy-MM-ddTHH:mm'" (ngModelChange)="giveaway.end_date = $event">
+               [min]="today | date:'yyyy-MM-ddTHH:mm'" [ngModel]="giveaway.end_date | date:'yyyy-MM-ddTHH:mm'"
+               (ngModelChange)="giveaway.end_date = $event; this.updateGiveawayPreview('DATE', $event)">
       </div>
 
       <!-- Channel-Picker and Sponsor -->
@@ -55,102 +57,61 @@
                dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
                [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                [placeholder]="'PLACEHOLDER_EVENT_SPONSOR_PLACEHOLDER' | translate"
-               (input)="this.numberInput($any($event))" [(ngModel)]="this.giveaway.sponsor_id" />
+               (input)="this.numberInput($any($event)); this.updateGiveawayPreview('SPONSOR', $any($event))"
+               [(ngModel)]="this.giveaway.sponsor_id" />
       </div>
 
       <!-- Requirement Box -->
       @if (this.giveaway.gw_req) {
-        @switch (true) {
-          <!-- MSG Requirement -->
-          @case (this.giveaway.gw_req!.startsWith('MSG: ')) {
-            <label for="msg" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              {{ 'PLACEHOLDER_EVENT_REQ_LABEL' | translate }} <span class="text-red-500">*</span>
-            </label>
-
-            <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900
-               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
-               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
-               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                   [placeholder]="'PLACEHOLDER_EVENT_REQ_MSG_PLACEHOLDER' | translate"
-                   (input)="this.numberInput($any($event), true);" id="msg" />
+        @switch (this.giveaway.gw_req!.split(':')[0]) {
+          @case ('MSG') {
+            <req-field id="msg-req" [labelText]="'PLACEHOLDER_EVENT_REQ_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MSG_PLACEHOLDER'" [required]="true"
+                       (inputChange)="this.numberInput($any($event), true);
+                                      this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req!)" />
           }
-
-          <!-- Voice Requirement -->
-          @case (this.giveaway.gw_req!.startsWith("VOICE: ")) {
-            <label for="msg" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              {{ 'PLACEHOLDER_EVENT_REQ_VOICE_LABEL' | translate }} <span class="text-red-500">*</span>
-            </label>
-
-            <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900
-               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
-               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
-               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                   [placeholder]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER' | translate"
-                   (input)="this.giveaway.gw_req = 'VOICE: ' + $any($event.target).value" id="msg" />
+          @case ('VOICE') {
+            <req-field id="voice-req" [labelText]="'PLACEHOLDER_EVENT_REQ_VOICE_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
+                       (inputChange)="this.giveaway.gw_req = 'VOICE: ' + this.convertToSeconds($any($event.target).value);
+                                      this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req)" />
           }
-
-          <!-- Own Requirement -->
-          @case (this.giveaway.gw_req!.startsWith("OWN: ")) {
-            <label for="msg" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              {{ 'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate }} <span class="text-red-500">*</span>
-            </label>
-
-            <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900
-               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
-               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
-               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                   [placeholder]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER' | translate"
-                   (input)="this.giveaway.gw_req = 'OWN: ' + $any($event.target).value" id="msg" />
+          @case ('OWN') {
+            <req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER'" [required]="true"
+                       (inputChange)="this.giveaway.gw_req = 'OWN: ' + ($any($event.target).value).replace(':', '');
+                                      this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req)" />
           }
-
-          <!-- Server Recommendation -->
-          @case (this.giveaway.gw_req!.startsWith("SERVER: ")) {
-            <label for="msg" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              {{ 'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate }} <span class="text-red-500">*</span>
-            </label>
-
-            <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900
-               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
-               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
-               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                   [placeholder]="'PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER' | translate"
-                   (input)="this.giveaway.gw_req = 'SERVER: ' + $any($event.target).value" id="msg" />
+          @case ('SERVER') {
+            <req-field id="server-req" [labelText]="'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER'" [required]="true"
+                       (inputChange)="this.giveaway.gw_req = 'SERVER: ' + $any($event.target).value;
+                                      this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req)" />
           }
-
-          <!-- Member Requirement -->
-          @case (this.giveaway.gw_req!.startsWith("MITGLIED: ")) {
-            <label for="msg" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-              {{ 'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate }} <span class="text-red-500">*</span>
-            </label>
-
-            <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900
-               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
-               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
-               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                   [placeholder]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER' | translate"
-                   (input)="this.giveaway.gw_req = 'MITGLIED: ' + $any($event.target).value" id="msg" />
+          @case ('MITGLIED') {
+            <req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
+                       (inputChange)="this.giveaway.gw_req = 'MITGLIED: ' + this.convertToSeconds($any($event.target).value);
+                                      this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req)" />
           }
-
-          <!-- Role Requirement -->
-          @case (this.giveaway.gw_req!.startsWith("ROLE_ID: ")) {
-            <label for="role" class="block text-sm font-medium text-gray-900 dark:text-white mb-3">
+          @case ('ROLE_ID') {
+            <label for="role-req" class="block text-sm font-medium text-gray-900 dark:text-white mb-3">
               {{ 'PLACEHOLDER_EVENT_REQ_ROLE_LABEL' | translate }} <span class="text-red-500">*</span>
             </label>
 
             @if (!this.rolesLoading) {
               <template-select [options]="this.dataService.guild_roles" [type]="'EVENTS_CREATE'" class="w-full"
-                               (selectionChange)="this.giveaway.gw_req = 'ROLE_ID: ' + $any($event).toString()" id="rolereqpicker" />
+                               (selectionChange)="this.giveaway.gw_req = 'ROLE_ID: ' + $any($event).toString();
+                                                  this.updateGiveawayPreview('REQ', $any($event), this.giveaway.gw_req)"
+                               id="role-req" />
             } @else {
               <div class="flex justify-center items-center">
                 <span class="data-loader"></span>
               </div>
             }
-
           }
         }
       }
-
-      <!-- TODO: Discord-Preview -->
 
       <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': isValidGiveaway() && type === 'EVENTS_CREATE',
                       'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': isValidGiveaway() && type !== 'EVENTS_CREATE',
@@ -163,19 +124,19 @@
     </div>
   }
 } @else {
-  <!-- Template for create new Snippet (Second Modal) -->
+  <!-- Template for Giveaway Preview (Second Modal) -->
   <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 max-w-md w-full !border-gray-400
-              dark:!border-gray-500 border-1">
+              dark:!border-gray-500 border-1" [class.!max-w-xl]="type.startsWith('EVENTS_')">
     <!-- Modal Header -->
     <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
       <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
-        {{ 'PLACEHOLDER_SNIPPET_MODAL2_TITLE' | translate }}
+        {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_TITLE' | translate }}
       </p>
     </div>
 
     <!-- Modal body -->
     <div class="p-4 md:p-5">
-      <template-discord-markdown [type]="this.type" class="!mt-0"/>
+      <template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0"/>
     </div>
   </div>
 }

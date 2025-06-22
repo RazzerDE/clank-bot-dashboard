@@ -30,7 +30,8 @@
                                 dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400
                                 appearance-none [&::-webkit-calendar-picker-indicator]:dark:invert
                                 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-               [ngModel]="newBlockedUser.end_date | date:'yyyy-MM-ddTHH:mm'" (ngModelChange)="newBlockedUser.end_date = $event">
+               [min]="today | date:'yyyy-MM-ddTHH:mm'" (ngModelChange)="newBlockedUser.end_date = $event"
+               [ngModel]="newBlockedUser.end_date | date:'yyyy-MM-ddTHH:mm'">
       </div>
     </div>
 
