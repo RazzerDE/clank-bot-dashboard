@@ -71,7 +71,7 @@
               <template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />
             }
             @case (type.startsWith('EVENTS_')) {
-              <template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true"
+              <template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true" [event_action]="event_action"
                                         [externalMarkdown]="secondGiveawayAdd?.discordMarkdown" />
             }
             @default { <!-- Default Mention & Teamlist -->

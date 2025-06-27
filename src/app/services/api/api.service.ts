@@ -135,6 +135,18 @@ export class ApiService {
   }
 
   /**
+   * Creates a new giveaway for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be created.
+   * @param lang - The language code for the giveaway.
+   * @returns An Observable emitting the server's response.
+   */
+  createGuildEvent(giveaway: Giveaway, lang: string): Observable<Giveaway> {
+    return this.http.post<Giveaway>(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}&lang=${lang}`, giveaway,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the predefined text snippets for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the ticket snippets.

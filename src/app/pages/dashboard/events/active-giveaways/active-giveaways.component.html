@@ -11,7 +11,7 @@
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Giveaway Modal TODO: Add / Edit -->
-    <app-modal [type]="modalType" [obj]="this.giveaway" />
+    <app-modal [type]="modalType" [obj]="this.giveaway" [event_action]="this.addGuildEvent.bind(this)" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_EVENTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_TITLE' | translate"
@@ -50,7 +50,7 @@
                                              font-medium from-purple-500 via-purple-600 to-purple-700
                                              rounded-lg text-sm px-4 py-2 focus:ring-purple-700 focus:outline-none
                                              hover:bg-gradient-to-br disabled:!bg-gray-500 disabled:cursor-not-allowed"
-                        (click)="this.openModal('EVENTS_CREATE')">
+                        (click)="this.openModal('EVENTS_CREATE')" [disabled]="disableSendBtn">
                   <fa-icon [icon]="faGift" class="me-2" />{{ 'PLACEHOLDER_BUTTON_GIVEAWAY_ADD' | translate }}
                 </button>
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700

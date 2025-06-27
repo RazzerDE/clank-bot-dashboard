@@ -81,6 +81,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
   @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => {};
   @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
+  @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
 
   protected isVisible: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;

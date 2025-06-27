@@ -15,6 +15,7 @@ import {DatePipe as ownDatePipe} from "../../../../../pipes/date/date.pipe";
 import {RequirementFieldComponent} from "./req-field/req-field.component";
 import {ConvertTimePipe} from "../../../../../pipes/convert-time.pipe";
 import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
+import {faUser} from "@fortawesome/free-solid-svg-icons/faUser";
 
 @Component({
   selector: 'template-create-giveaway',
@@ -37,8 +38,10 @@ export class CreateGiveawayComponent implements AfterViewChecked {
                                      participants: 0, start_date: null };
   protected giveaway_reqs: SelectItems[] = this.getGiveawayReqs();
   protected readonly faTrophy: IconDefinition = faTrophy;
+  protected readonly faUser: IconDefinition = faUser;
   protected rolesLoading: boolean = false;
   protected readonly today: Date = new Date();
+  protected readonly now: Date = new Date(Date.now());
   private ownDatePipe: ownDatePipe = new ownDatePipe();
   private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
@@ -47,6 +50,7 @@ export class CreateGiveawayComponent implements AfterViewChecked {
   @Input() showFirst: boolean = false;
   @Input() giveaway: Giveaway = this.initGiveaway;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
+  @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
 
   constructor(protected dataService: DataHolderService, private comService: ComService, protected translate: TranslateService) {}
@@ -69,8 +73,8 @@ export class CreateGiveawayComponent implements AfterViewChecked {
    * @param {KeyboardEvent} event - The keyboard event triggered by user input.
    * @param {string} [gw_req] - Optional giveaway requirement string to update the preview.
    */
-  protected updateGiveawayPreview(type: 'PRIZE'|'WINNERS'|'DATE'|'SPONSOR'|'REQ', event: KeyboardEvent | string,
-                                  gw_req?: string): void {
+  protected updateGiveawayPreview(type: 'PRIZE'|'WINNERS'|'START_DATE'|'END_DATE'|'SPONSOR'|'REQ',
+                                  event: KeyboardEvent | string, gw_req?: string): void {
     const value: string = typeof event === 'string' ? event : (event.target as HTMLTextAreaElement)?.value || '';
     const markdown: DiscordMarkdownComponent | undefined | null = this.discordMarkdown || this.externalMarkdown;
     if (!markdown) return;
@@ -88,7 +92,7 @@ export class CreateGiveawayComponent implements AfterViewChecked {
           markdown.prizeElement.nativeElement.innerHTML = value.toUpperCase();
         }
         break;
-      case 'DATE':
+      case 'END_DATE':
         if (markdown.dateElement) {
           markdown.dateElement.nativeElement.innerHTML =
             this.ownDatePipe.transform(value, this.translate.currentLang, 'short');

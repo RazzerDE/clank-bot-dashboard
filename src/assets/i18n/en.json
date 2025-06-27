@@ -248,6 +248,11 @@
   "ERROR_SNIPPET_CREATION_CONFLICT": "Snippet already exists",
   "ERROR_SNIPPET_CREATION_CONFLICT_DESC": "A snippet with the name <strong>{{name}}</strong> already exists!",
 
+  "SUCCESS_GIVEAWAY_CREATION_TITLE": "Giveaway created",
+  "SUCCESS_GIVEAWAY_CREATION_DESC": "The giveaway <strong>{{name}}</strong> was successfully created & will start at <strong>{{start}}</strong>!",
+  "ERROR_GIVEAWAY_CREATION_CONFLICT": "Invalid values",
+  "ERROR_GIVEAWAY_CREATION_CONFLICT_DESC": "Invalid data was detected for the giveaway - please check your entries!",
+
   "SUCCESS_USER_UNBLOCK_TITLE": "User unblocked",
   "SUCCESS_USER_UNBLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can now create tickets on the server again.",
   "SUCCESS_USER_BLOCK_TITLE": "User blocked",
@@ -506,8 +511,8 @@
   "PLACEHOLDER_EVENT_PRIZE_TITLE": "What is the prize & how many winners are there?",
   "PLACEHOLDER_EVENT_PRIZE_PLACEHOLDER": "e.g. Discord Nitro, Steam voucher, etc.",
   "PLACEHOLDER_EVENT_END_DATE_TITLE": "Participation requirement & end date",
-  "PLACEHOLDER_EVENT_CHANNEL_TITLE": "Where should it be started",
-  "PLACEHOLDER_EVENT_SPONSOR_TITLE": "and who is the sponsor?",
+  "PLACEHOLDER_EVENT_CHANNEL_TITLE": "Where should the giveaway start & when should it end?",
+  "PLACEHOLDER_EVENT_SPONSOR_TITLE": "Is there a sponsor for the giveaway?",
   "PLACEHOLDER_EVENT_SPONSOR_PLACEHOLDER": "Discord user ID..",
   "PLACEHOLDER_EVENT_REQ": "✅ ~ Everyone can participate",
   "PLACEHOLDER_EVENT_REQ_MSG_MODAL": "📚 ~ Number of messages",
