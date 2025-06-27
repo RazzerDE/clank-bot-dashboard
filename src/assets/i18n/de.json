@@ -461,6 +461,7 @@
   "PLACEHOLDER_THEME_FAQ": "🤖 - Dieses Thema wird automatisch beantwortet - klicke für mehr Infos!",
   "PLACEHOLDER_BLOCKED_USER_FETCH": "📢 - Klicke, um die User-Daten zu laden..",
   "PLACEHOLDER_EVENT_STATS": "📊 - Das Gewinnspiel hat aktuell <strong>{{participants}}</strong> Teilnehmer und <strong>{{winners}}</strong> Gewinner festgelegt.",
+  "PLACEHOLDER_GIVEAWAY_SCHEDULE": "⏰ - Das Gewinnspiel startet automatisch <strong>{{start}}</strong>.",
   "PLACEHOLDER_EVENT_REQ_MSG": "📚 ~ Mindestens <strong>{{count}}</strong> Nachrichten senden",
   "PLACEHOLDER_EVENT_REQ_VOICE": "🔊 ~ <strong>{{voicetime}}</strong> in Sprachkanälen verbringen",
   "PLACEHOLDER_EVENT_REQ_NO_NITRO": "💎 ~ <strong>Kein Discord-Nitro</strong> besitzen",

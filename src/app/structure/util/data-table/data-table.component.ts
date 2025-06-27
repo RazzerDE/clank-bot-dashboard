@@ -7,7 +7,7 @@ import {SupportTheme, TicketSnippet} from "../../../services/types/Tickets";
 import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faClock, faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
 import {BlockedUser} from "../../../services/types/discord/User";
 import {DatePipe} from "../../../pipes/date/date.pipe";
@@ -51,6 +51,7 @@ export class DataTableComponent implements AfterViewInit {
     private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
     protected rowHeight: number = 0;
+    protected readonly faClock: IconDefinition = faClock;
     protected readonly faRobot: IconDefinition = faRobot;
     protected readonly faChartSimple: IconDefinition = faChartSimple;
     protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;

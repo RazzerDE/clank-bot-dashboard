@@ -11,6 +11,7 @@ export interface Giveaway {
   prize: string;                // prize of the giveaway
   winner_count: number;         // number of winners
   participants: number;         // number of participants in the giveaway
+  start_date: Date | null;      // start date of the giveaway
 
   sponsor_id?: string;          // Optional, sponsor of the giveaway
   sponsor_name?: string;        // Optional, name of the sponsor

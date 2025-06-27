@@ -3,7 +3,7 @@ import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/d
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
-import {faSearch, faStop, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faPlay, faSearch, faStop, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faGift} from "@fortawesome/free-solid-svg-icons/faGift";
@@ -34,8 +34,7 @@ import {ComService} from "../../../../services/discord-com/com.service";
 })
 export class ActiveGiveawaysComponent implements OnDestroy {
   private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
-    channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1,
-    participants: 0 };
+    channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faGift: IconDefinition = faGift;
   protected readonly faRefresh: IconDefinition = faRefresh;
@@ -219,11 +218,23 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           action: (event: Giveaway): void => {} // TODO
         },
         {
+          color: 'green',
+          icon: faPlay,
+          size: 'lg',
+          action: (event: Giveaway): void => {} // TODO
+        },
+        {
           color: 'red',
           icon: faStop,
           size: 'lg',
           action: (event: Giveaway): void => {} // TODO
-        }
+        },
+        {
+          color: 'red',
+          icon: faXmark,
+          size: 'xl',
+          action: (event: Giveaway): void => {} // TODO
+        },
       ],
       actions: []
     };

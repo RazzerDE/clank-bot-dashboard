@@ -34,7 +34,7 @@ import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
 export class CreateGiveawayComponent implements AfterViewChecked {
   private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
                                      channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1,
-                                     participants: 0 };
+                                     participants: 0, start_date: null };
   protected giveaway_reqs: SelectItems[] = this.getGiveawayReqs();
   protected readonly faTrophy: IconDefinition = faTrophy;
   protected rolesLoading: boolean = false;

@@ -89,15 +89,18 @@
                 } @else if (isGiveawayType(obj)) {
                   <div class="break-words whitespace-pre-line" [innerHTML]="obj.prize | markdown"></div>
 
-                  <!-- Button to show Winner-& Participant-Count -->
+                  <!-- Button to show Winner-& Participant-Count / Scheduling info -->
+
                   <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
                                  duration-200" type="button" id="faqBtn_{{ $index }}"
                           [ngbTooltip]="tooltipContent" placement="top" tooltipClass="table-tooltip">
-                    <fa-icon [icon]="faChartSimple"></fa-icon>
+                    <fa-icon [icon]="obj.start_date ? faClock : faChartSimple"></fa-icon>
                   </button>
 
                   <ng-template #tooltipContent>
-                    <div [innerHTML]="'PLACEHOLDER_EVENT_STATS' | translate: { participants: obj.participants, winners: obj.winner_count }"></div>
+                    <div [innerHTML]="obj.start_date ?
+                    ('PLACEHOLDER_GIVEAWAY_SCHEDULE' | translate: { start: obj.start_date | datecustom: this.translate.currentLang }) :
+                    ('PLACEHOLDER_EVENT_STATS' | translate: { participants: obj.participants, winners: obj.winner_count })"></div>
                   </ng-template>
                 }
 
@@ -236,13 +239,27 @@
                 [width]="tconfig.columns[tconfig.columns.length - 1].width + '%'">
               @for (button of tconfig.action_btn; track $index) {
                 <!-- Show all Buttons, except Edit Button for Support-Themes if Pending -->
-                @if (!($index === 0 && isSupportType(obj) && obj.pending === true)) {
+                @if (!($index === 0 && isSupportType(obj) && obj.pending === true) && !isGiveawayType(obj)) {
                   <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
                    focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40
                    transition-colors duration-300" type="button" (click)="button.action(obj)" id="TableBtn_{{ $index }}"
                           [ngClass]="button.color === 'blue' ? '!text-blue-500' : 'text-red-700 dark:text-red-700'">
                     <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
                   </button>
+                }
+
+                <!-- Special Case for Giveaway Type: Toggle some buttons -->
+                @if (isGiveawayType(obj)) {
+                  @if (obj.start_date && ($index === 0 || $index === 2) || (!obj.start_date && ($index === 1 || $index === 3))) {}
+                  @else {
+                    <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
+                     focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40 transition-colors
+                     duration-300" [class.mt-1]="$index === 3" type="button" (click)="button.action(obj)"
+                            id="TableBtn_{{ $index }}" [ngClass]="button.color === 'blue' ? '!text-blue-500' :
+                            (button.color === 'green' ? '!text-green-500' : 'text-red-700 dark:text-red-700')">
+                      <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
+                    </button>
+                  }
                 }
               }
             </td>
