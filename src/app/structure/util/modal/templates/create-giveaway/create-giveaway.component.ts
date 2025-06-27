@@ -212,10 +212,9 @@ export class CreateGiveawayComponent implements AfterViewChecked {
         ((this.giveaway.gw_req.startsWith('SERVER: ') && this.giveaway.gw_req.includes('://discord.gg/')) ||
           (!this.giveaway.gw_req.startsWith('SERVER: ') && this.giveaway.gw_req.split(': ')[1].trim().length > 0)));
 
-    return !!this.giveaway.prize && !!this.giveaway.end_date && !isNaN(this.giveaway.end_date.getTime())
-      && this.giveaway.end_date.getTime() > Date.now() &&
-      !!this.giveaway.channel_id && !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 &&
-      this.giveaway.winner_count <= 100 && hasValidRequirement;
+    return !!this.giveaway.prize && !!this.giveaway.end_date && !isNaN(new Date(this.giveaway.end_date).getTime()) &&
+      new Date(this.giveaway.end_date).getTime() > Date.now() && !!this.giveaway.channel_id &&
+      !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 && this.giveaway.winner_count <= 100 && hasValidRequirement;
   }
 
   /**

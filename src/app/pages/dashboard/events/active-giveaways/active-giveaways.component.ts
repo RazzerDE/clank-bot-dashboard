@@ -144,13 +144,15 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected addGuildEvent(giveaway: Giveaway): void {
     if (!this.dataService.active_guild || !this.dataService.profile) { return; }
     if (!giveaway.start_date) { giveaway.start_date = new Date(); }
-    giveaway.guild_id = this.dataService.active_guild!.id;
     giveaway.creator_id = this.dataService.profile.id;
+    giveaway.creator_name = this.dataService.profile.username;
+    giveaway.creator_avatar = `https://cdn.discordapp.com/avatars/${giveaway.creator_id}/${this.dataService.profile.avatar}`;
+    giveaway.guild_id = this.dataService.active_guild!.id;
     giveaway.channel_id = giveaway.channel_id![0];
     this.disableSendBtn = true;
 
     const { participants, ...giveawayToSend } = giveaway;
-    const sent_gw: Subscription = this.apiService.createGuildEvent(giveawayToSend, this.translate.currentLang)
+    const sent_gw: Subscription = this.apiService.createGuildEvent(giveawayToSend)
       .subscribe({
         next: (created_giveaway: Giveaway): void => {
           this.dataService.error_color = 'green';
