@@ -49,8 +49,10 @@
       } @else {
         <!-- Row Content -->
         @for (obj of tconfig.rows; track $index) {
-        <tr class="border-b dark:border-gray-700 transition-colors duration-200" [@rowAnimation] (click)="onRowClick(obj)"
-            [ngClass]="{'cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-900/80': this.rowClick.observers.length > 0,
+        <tr class="border-b dark:border-gray-700 transition-colors duration-100 hover:bg-gray-200
+                 dark:hover:bg-slate-900/60 odd:bg-white even:bg-gray-50 dark:odd:bg-slate-800
+                 dark:even:bg-slate-900/20" [@rowAnimation] (click)="onRowClick(obj)"
+            [ngClass]="{'cursor-pointer': this.rowClick.observers.length > 0,
                         '!bg-blue-200 dark:!bg-blue-950': obj === this.dataService.selectedSnippet && tconfig.type === 'SUPPORT_SNIPPETS'}">
             @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
               <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
@@ -87,7 +89,8 @@
                     <div class="text-xs text-gray-500 mt-1">{{ obj.user_id }}</div>
                   </div>
                 } @else if (isGiveawayType(obj)) {
-                  <div class="break-words whitespace-pre-line" [innerHTML]="obj.prize | markdown"></div>
+                  <div class="break-words whitespace-pre-line"
+                       [innerHTML]="obj.start_date ? obj.prize.toUpperCase() : obj.prize | markdown"></div>
 
                   <!-- Button to show Winner-& Participant-Count / Scheduling info -->
 
