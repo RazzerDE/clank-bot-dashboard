@@ -41,7 +41,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected readonly faRefresh: IconDefinition = faRefresh;
   private readonly subscription: Subscription | null;
   private startLoading: boolean = false;
-  public giveaway: Giveaway = this.initGiveaway;
+  public giveaway: Giveaway = { ...this.initGiveaway };
   protected modalType: string = 'EVENTS_CREATE';
   protected modalObj: Giveaway = this.giveaway;
   protected disableSendBtn: boolean = false;
@@ -197,12 +197,12 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected openModal(type: 'EVENTS_CREATE' | 'EVENTS_EDIT', giveaway?: Giveaway): void {
     this.dataService.getGuildChannels(this.comService);  // fetch guild channels for the select dropdown
-    if (giveaway) {
+    if (giveaway && type != 'EVENTS_CREATE') {
       const event: Giveaway = { ...giveaway };
       event.prize = event.prize.replace(/<a?:\w+:\d+>/g, '').trim();
       this.modalObj = event;
     } else {
-      this.modalObj = this.initGiveaway;
+      this.modalObj = { ...this.initGiveaway };
     }
 
     this.modalType = type;
