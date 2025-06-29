@@ -41,10 +41,11 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected readonly faRefresh: IconDefinition = faRefresh;
   private readonly subscription: Subscription | null;
   private startLoading: boolean = false;
+  public giveaway: Giveaway = this.initGiveaway;
   protected modalType: string = 'EVENTS_CREATE';
+  protected modalObj: Giveaway = this.giveaway;
   protected disableSendBtn: boolean = false;
   protected events: Giveaway[] = [];
-  public giveaway: Giveaway = this.initGiveaway;
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
   protected disabledCacheBtn: boolean = false;
   private dateCustomPipe: DatePipe = new DatePipe();
@@ -196,7 +197,13 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected openModal(type: 'EVENTS_CREATE' | 'EVENTS_EDIT', giveaway?: Giveaway): void {
     this.dataService.getGuildChannels(this.comService);  // fetch guild channels for the select dropdown
-    this.giveaway = this.initGiveaway; // reset input fields
+    if (giveaway) {
+      const event: Giveaway = { ...giveaway };
+      event.prize = event.prize.replace(/<a?:\w+:\d+>/g, '').trim();
+      this.modalObj = event;
+    } else {
+      this.modalObj = this.initGiveaway;
+    }
 
     this.modalType = type;
     this.modal.showModal();
@@ -312,7 +319,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           color: 'blue',
           icon: faPencil,
           size: 'lg',
-          action: (event: Giveaway): void => {} // TODO
+          action: (event: Giveaway): void => this.openModal('EVENTS_EDIT', event)
         },
         {
           color: 'green',

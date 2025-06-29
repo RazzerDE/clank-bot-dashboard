@@ -52,10 +52,10 @@
               <div class="flex-1 pr-3">
                 <div class="text-white font-semibold text-base mb-2">
                   <img class="inline-block align-middle mx-0.5 mb-1" height="20" width="20"
-                       [ngSrc]="'assets/img/icons/' + prize_emoji" alt="Price-Emoji ~ Clank Discord-Bot" />
-                  <span #prizeElement class="mx-0.5" >{{ 'PLACEHOLDER_GIVEAWAY_PRIZE' | translate }}</span>
+                       [ngSrc]="'assets/img/icons/' + this.getPrizeEmoji(this.giveaway!.prize)" alt="Price-Emoji ~ Clank Discord-Bot" />
+                  <span [innerText]="this.giveaway?.prize!.length > 0 ? this.giveaway?.prize : ('PLACEHOLDER_GIVEAWAY_PRIZE' | translate)" class="mx-0.5" ></span>
                   <img class="inline-block align-middle mx-0.5 mb-1" height="20" width="20"
-                       [ngSrc]="'assets/img/icons/' + prize_emoji" alt="Price-Emoji ~ Clank Discord-Bot" />
+                       [ngSrc]="'assets/img/icons/' + this.getPrizeEmoji(this.giveaway!.prize)" alt="Price-Emoji ~ Clank Discord-Bot" />
                 </div>
 
                 <div class="mb-3 text-sm" [innerHTML]="'PLACEHOLDER_GIVEAWAY_EMBED_INVITE' | translate"></div>
@@ -70,12 +70,12 @@
                   <div class="text-sm">
                     <div><img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
                               [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
-                      <span #winnerElement class="font-bold text-white">1</span>
+                      <span [innerText]="this.giveaway ? this.giveaway.winner_count :'0'" class="font-bold text-white">1</span>
                       {{'PLACEHOLDER_GIVEAWAY_EMBED_WINNERS' | translate }}
                     </div>
                     <div><img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
                            [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
-                      <span class="font-bold text-white">0</span>
+                      <span [innerText]="this.giveaway ? this.giveaway.participants : '0'" class="font-bold text-white"></span>
                       {{'PLACEHOLDER_GIVEAWAY_EMBED_PARTICIPANTS' | translate }}
                     </div>
                     <div><img class="inline-block align-middle mb-1" height="20" width="20"
@@ -86,11 +86,11 @@
                     <div><img class="inline-block align-middle mb-1" height="20" width="20"
                               [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
                       {{ 'PLACEHOLDER_GIVEAWAY_EMBED_ENDS' | translate}}
-                      <span #dateElement class="font-bold">
-                        {{ this.translate.currentLang === 'de' ? 'in 1 Stunde' : 'in 1 hour'}}
-                      </span>
+                      <span class="font-bold" [innerText]="this.giveaway ?
+                      (this.ownDatePipe.transform(this.giveaway.end_date, this.translate.currentLang, 'short')) :
+                      this.translate.currentLang === 'de' ? 'in 1 Stunde' : 'in 1 hour'"></span>
                     </div>
-                    <div class="hidden" #sponsorElement>
+                    <div [class.hidden]="!this.giveaway?.sponsor_id">
                       <img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
                            [ngSrc]="'assets/img/icons/love.gif'" alt="Love-Emoji ~ Clank Discord-Bot" />
                     <span [innerHTML]="('PLACEHOLDER_GIVEAWAY_EMBED_SPONSOR' | translate)"></span> </div>
@@ -108,7 +108,7 @@
                     <div [class.hidden]="reqElement.innerHTML.length === 0">
                       <img class="inline-block align-middle mb-1 mr-0.5" height="20" width="20"
                            [ngSrc]="'assets/img/icons/arrow2.png'" alt="Arrow2-Emoji ~ Clank Discord-Bot" />
-                    <span #reqElement></span></div>
+                    <span #reqElement id="req_element"></span></div>
                     <div><img class="inline-block align-middle mb-1 mr-0.5" height="20" width="20"
                               [ngSrc]="'assets/img/icons/arrow2.png'" alt="Arrow2-Emoji ~ Clank Discord-Bot" />
                       <span [innerHTML]="'PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_NONE' | translate"></span></div>

@@ -3,18 +3,20 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
-import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faHashtag, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Channel, Role} from "../../../../../services/types/discord/Guilds";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 import {SelectItems} from "../../../../../services/types/Config";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'template-select',
-    imports: [
-        FaIconComponent,
-        FormsModule,
-        TranslatePipe
-    ],
+  imports: [
+    FaIconComponent,
+    FormsModule,
+    TranslatePipe,
+    NgClass
+  ],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss'
 })
@@ -22,12 +24,14 @@ export class SelectComponent {
   @Input() id: string = 'rolepicker';
   @Input() type: string = '';
   @Input() options: Role[] | Channel[] | SelectItems[] = [];
+  @Input() activeOption: string | null = null;
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
   isRolePickerValid: boolean = false;
   @Output() selectionChange = new EventEmitter<string[] | string>();
 
   @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
+  protected readonly faHashtag: IconDefinition = faHashtag;
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService) {}
 
@@ -77,5 +81,25 @@ export class SelectComponent {
    */
   protected isSelectItemsType(value: SelectItems | Role | Channel): value is SelectItems {
     return value !== null && 'label' in value && 'value' in value;
+  }
+
+  /**
+   * Type guard to check if a value is of type `Channel`.
+   *
+   * @param value - The value to check, which can be a SelectItems, Role, or `Channel` object.
+   * @return `true` if the value is a `Channel` object, otherwise `false`.
+   */
+  protected isChannelType(value: SelectItems | Role | Channel): value is Channel {
+    return value !== null && 'parent_id' in value && 'permission_overwrites' in value && 'nsfw' in value;
+  }
+
+  /**
+   * Checks if the current options list represents a list of channels for event types.
+   *
+   * @returns `true` if the options array contains at least one element, the first element is a `Channel`,
+   *          and the `type` string starts with `EVENTS_`; otherwise, `false`.
+   */
+  isChannelList(): boolean {
+    return this.options.length > 0 && this.isChannelType(this.options[0]) && this.type.startsWith('EVENTS_');
   }
 }

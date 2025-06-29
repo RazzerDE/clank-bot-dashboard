@@ -1,7 +1,8 @@
 <dashboard-layout>
   <!-- TODO:
-  4. add/edit modal for giveaways
-  5. delete function
+  4. edit modal for giveaways
+  5. delete/play/pause function
+  6. real data for gw preview banner, color, etc.
 
   7. spalten-breite bearbeitbar machen
   8. filter by spalte
@@ -10,8 +11,8 @@
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
-    <!-- Giveaway Modal TODO: Add / Edit -->
-    <app-modal [type]="modalType" [obj]="this.giveaway" [event_action]="this.addGuildEvent.bind(this)" />
+    <!-- Giveaway Modal TODO: Edit -->
+    <app-modal [type]="modalType" [obj]="modalObj" [event_action]="this.addGuildEvent.bind(this)" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_EVENTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_TITLE' | translate"

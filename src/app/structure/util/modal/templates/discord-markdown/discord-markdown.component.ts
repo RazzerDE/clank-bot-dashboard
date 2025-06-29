@@ -8,6 +8,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {EmbedConfig} from "../../../../../services/types/Config";
 import {Giveaway} from "../../../../../services/types/Events";
+import {DatePipe as own} from "../../../../../pipes/date/date.pipe";
 
 @Component({
   selector: 'template-discord-markdown',
@@ -16,8 +17,8 @@ import {Giveaway} from "../../../../../services/types/Events";
     NgOptimizedImage,
     TranslatePipe,
     NgClass,
+    FaIconComponent,
     DatePipe,
-    FaIconComponent
   ],
   templateUrl: './discord-markdown.component.html',
   styleUrl: './discord-markdown.component.scss'
@@ -35,16 +36,37 @@ export class DiscordMarkdownComponent {
   @ViewChild('ticketPreview') ticketPreview!: ElementRef<HTMLDivElement>;
 
   // giveaway Preview Eelements
-  @ViewChild('prizeElement') prizeElement!: ElementRef<HTMLDivElement>;
-  @ViewChild('winnerElement') winnerElement!: ElementRef<HTMLDivElement>;
-  @ViewChild('dateElement') dateElement!: ElementRef<HTMLDivElement>;
-  @ViewChild('sponsorElement') sponsorElement!: ElementRef<HTMLDivElement>;
   @ViewChild('reqElement') reqElement!: ElementRef<HTMLDivElement>;
 
-  prize_emoji: string = 'diamond_pink.gif'
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
   protected invalidImg: boolean = false;
+  protected ownDatePipe: own = new own();
 
   constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
+
+  /**
+   * Returns the appropriate emoji file name based on the giveaway prize content
+   * @returns The emoji file name as string
+   */
+  protected getPrizeEmoji(prize: string): string {
+    if (!this.giveaway) { return 'diamond_pink.gif'; }
+
+    const emojiMap: Record<string, string[]> = {
+      'ad1.gif': ['classic', 'basic'],
+      'nitro_boost.gif': ['nitro'],
+      'dsh.png': ['server'],
+      'chip.png': ['casino'],
+      'banner.gif': ['banner', 'profile', 'avatar'],
+      'money.gif': ['paypal', 'money', 'giftcard', 'amazon', 'gutschein', 'paysafecard', 'psc', 'euro', 'dollar', 'guthaben'],
+    };
+
+    for (const [emoji, keywords] of Object.entries(emojiMap)) {
+      if (keywords.some(keyword => prize.toLowerCase().includes(keyword))) {
+        return emoji;
+      }
+    }
+
+    return 'diamond_pink.gif';
+  }
 }

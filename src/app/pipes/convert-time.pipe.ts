@@ -41,6 +41,74 @@ export class ConvertTimePipe implements PipeTransform {
   }
 
   /**
+   * Converts a total number of seconds into a formatted time string like "1y 2mo 3d 4h 5m 6s".
+   *
+   * The function returns only non-zero units and preserves the order from largest to smallest unit.
+   * For example, 31622400 seconds would be formatted as "1y 2d 4h".
+   *
+   * @param seconds - The total number of seconds to convert
+   * @returns A formatted time string with appropriate units
+   */
+  convertToFormattedTime(seconds: number): string {
+    if (seconds === null || seconds === undefined || isNaN(Number(seconds)) || seconds < 0) {
+      return '';
+    }
+
+    // Define time units in descending order
+    const units: { value: number, label: string }[] = [
+      { value: 31536000, label: 'y' },    // years (365 days)
+      { value: 2592000, label: 'mo' },    // months (30 days)
+      { value: 86400, label: 'd' },       // days (24 hours)
+      { value: 3600, label: 'h' },        // hours (60 minutes)
+      { value: 60, label: 'm' },          // minutes (60 seconds)
+      { value: 1, label: 's' }            // seconds
+    ];
+
+    let result: string = '';
+    let remainingSeconds: number = seconds;
+
+    // Process each unit in order
+    for (const unit of units) {
+      const count = Math.floor(remainingSeconds / unit.value);
+      if (count > 0) {
+        result += `${count}${unit.label} `;
+        remainingSeconds %= unit.value;
+      }
+    }
+
+    return result.trim();
+  }
+
+  /**
+   * Converts a formatted time string (e\.g\. '1y 1mo 7d 5m 3s') into the total number of seconds as a string\.
+   *
+   * Supported units:
+   *  - y: years \(365 days each\)
+   *  - mo: months \(30 days each\)
+   *  - d: days
+   *  - m: minutes
+   *  - s: seconds
+   *
+   * @param {string} timeInput \- The input string representing the time duration\.
+   * @returns {string} The total duration in seconds as a string\.
+   */
+  convertToSeconds(timeInput: string): string {
+    const yearMatch: RegExpMatchArray | null = timeInput.match(/(\d+)y/);
+    const monthMatch: RegExpMatchArray | null = timeInput.match(/(\d+)mo/);
+    const dayMatch: RegExpMatchArray | null = timeInput.match(/(\d+)d/);
+    const minuteMatch: RegExpMatchArray | null = timeInput.match(/(\d+)m/);
+    const secondMatch: RegExpMatchArray | null = timeInput.match(/(\d+)s/);
+    let totalSeconds: number = 0;
+
+    if (yearMatch) totalSeconds += parseInt(yearMatch[1]) * 31536000; // 365 days
+    if (monthMatch) totalSeconds += parseInt(monthMatch[1]) * 2592000; // 30 days
+    if (dayMatch) totalSeconds += parseInt(dayMatch[1]) * 86400;
+    if (minuteMatch) totalSeconds += parseInt(minuteMatch[1]) * 60;
+    if (secondMatch) totalSeconds += parseInt(secondMatch[1]);
+    return totalSeconds.toString();
+  }
+
+  /**
    * A static map defining time units and their corresponding values, singular, and plural forms
    * for supported languages ('de' for German and 'en' for English).
    *

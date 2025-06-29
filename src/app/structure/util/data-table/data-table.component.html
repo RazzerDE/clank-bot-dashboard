@@ -253,8 +253,9 @@
 
                 <!-- Special Case for Giveaway Type: Toggle some buttons -->
                 @if (isGiveawayType(obj)) {
+                  <!-- Show only Start and End Button for Giveaways -->
                   @if (obj.start_date && ($index === 0 || $index === 2) || (!obj.start_date && ($index === 1 || $index === 3))) {}
-                  @else {
+                  @else { <!-- Show play and delete button for scheduled Giveaways -->
                     <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
                      focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40 transition-colors
                      duration-300" [class.mt-1]="$index === 3" type="button" (click)="button.action(obj)"
