@@ -72,7 +72,8 @@
             }
             @case (type.startsWith('EVENTS_')) {
               <template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true" [event_action]="event_action"
-                                        [externalMarkdown]="secondGiveawayAdd?.discordMarkdown" [type]="$any(this.type)" />
+                                        [event_edit]="event_edit" [externalMarkdown]="secondGiveawayAdd?.discordMarkdown"
+                                        [type]="$any(this.type)" />
             }
             @default { <!-- Default Mention & Teamlist -->
               <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"

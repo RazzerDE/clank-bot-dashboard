@@ -14,6 +14,7 @@ export class RequirementFieldComponent {
   @Input() id!: string;
   @Input() value!: string;
   @Input() labelText!: string;
+  @Input() type!: string;
   @Input() placeholderKey!: string;
   @Input() required: boolean = false;
   @Output() inputChange: EventEmitter<Event> = new EventEmitter<Event>();

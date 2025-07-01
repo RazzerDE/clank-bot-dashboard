@@ -144,7 +144,8 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected addGuildEvent(giveaway: Giveaway): void {
     if (!this.dataService.active_guild || !this.dataService.profile) { return; }
-    if (!giveaway.start_date) { giveaway.start_date = new Date(); }
+    if (!giveaway.start_date) { giveaway.start_date = new Date(); } else { giveaway.start_date = new Date(giveaway.start_date).toISOString(); }
+    giveaway.end_date = new Date(giveaway.end_date).toISOString();
     giveaway.creator_id = this.dataService.profile.id;
     giveaway.creator_name = this.dataService.profile.username;
     giveaway.creator_avatar = `https://cdn.discordapp.com/avatars/${giveaway.creator_id}/${this.dataService.profile.avatar}`;
@@ -183,6 +184,59 @@ export class ActiveGiveawaysComponent implements OnDestroy {
 
           this.disableSendBtn = false;
           sent_gw.unsubscribe();
+        }
+      });
+
+    this.modal.hideModal();
+  }
+
+  /**
+   * Updates an existing giveaway event for the current guild.
+   *
+   * Sends the modified giveaway object to the backend API. On success, updates the local event list,
+   * restores the participants count, and displays a success alert. Handles and displays errors for known HTTP status codes.
+   * If the giveaway is not found (404), removes it from the local list. Closes the modal after completion.
+   *
+   * @param {Giveaway} giveaway - The giveaway object to be updated.
+   */
+  protected editGuildEvent(giveaway: Giveaway): void {
+    if (!this.dataService.active_guild) { return; }
+    const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.message_id === giveaway.message_id
+                                                                        && gw.channel_id === giveaway.channel_id));
+    const participants: number = giveaway.participants || 0; // ensure participants is defined
+    const org_price: string = giveaway.prize;
+
+    giveaway.end_date = new Date(giveaway.end_date).toISOString();
+    const edited_gw: Subscription = this.apiService.updateGuildEvent(giveaway)
+      .subscribe({
+        next: (giveaway: Giveaway): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_EDITED_TITLE'),
+            this.translate.instant('SUCCESS_GIVEAWAY_EDITED_DESC', { name: org_price }));
+
+          // update shown data (find correct giveaway and replace it)
+          giveaway.participants = participants; // restore participants count
+          if (index !== -1) { this.events[index] = giveaway; }
+          this.filteredEvents = this.sortEvents([...this.events]);
+          localStorage.setItem('active_events', JSON.stringify(this.events));
+          edited_gw.unsubscribe();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 404) { // already exist / invalid data
+            this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EDIT_404'),
+              this.translate.instant('ERROR_GIVEAWAY_EDIT_404_DESC'));
+            if (index !== -1) { this.events.splice(index, 1); }
+            localStorage.setItem('active_events', JSON.stringify(this.events));
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          edited_gw.unsubscribe();
         }
       });
 

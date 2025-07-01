@@ -5,10 +5,11 @@
 
   <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                           focus:ring-primary-500 focus:border-primary-500 block p-2.5 dark:bg-gray-600
-                          dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
+                          dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white disabled:!text-gray-400
                           [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
          [placeholder]="placeholderKey | translate" [id]="id" (input)="onInput($event)"
-         [value]="this.dataService.getGWRequirementValue(this.value)"/>
+         [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed dark:!text-gray-400' : ''"
+         [value]="this.dataService.getGWRequirementValue(this.value)" [disabled]="this.type === 'EVENTS_EDIT'"/>
 } @else {
   <div class="hidden" [id]="this.dataService.getGWRequirementValue(this.value)"></div>
 }

@@ -15,8 +15,8 @@
                                 focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
                                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                maxlength="49" minlength="1" [placeholder]="'PLACEHOLDER_EVENT_PRIZE_PLACEHOLDER' | translate"
-               [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed dark:!text-gray-400' : ''"
-               [(ngModel)]="this.giveaway.prize" id="prize" />
+               [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed !text-gray-400' : ''"
+               [(ngModel)]="this.giveaway.prize" id="prize" [disabled]="this.type === 'EVENTS_EDIT'"/>
         <div class="relative">
           <div class="absolute top-1/2 -translate-y-1/2 -left-1 flex items-center ps-3 pointer-events-none border-r pr-2
                   border-gray-300 dark:border-gray-500 h-3/5">
@@ -45,7 +45,7 @@
                (ngModelChange)="giveaway.end_date = $event;">
       </div>
 
-      <!-- Event Requirement & Sponsor (Optional) -->
+      <!-- Event Requirement & Start date (Optional) -->
       <label for="reqpicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
         {{ 'PLACEHOLDER_EVENT_END_DATE_TITLE' | translate }}
       </label>
@@ -56,7 +56,8 @@
         <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
                text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
                dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
-               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer
+                disabled:!text-gray-400"
                [disabled]="this.type === 'EVENTS_EDIT'" [min]="now | date:'yyyy-MM-ddTHH:mm'"
                [ngModel]="this.type === 'EVENTS_EDIT' ? null : now | date:'yyyy-MM-ddTHH:mm'"
                [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed dark:!text-gray-400' : ''"
@@ -70,33 +71,33 @@
             <req-field id="msg-req" [labelText]="'PLACEHOLDER_EVENT_REQ_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MSG_PLACEHOLDER'" [required]="true"
                        [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''"
-                       (inputChange)="this.numberInput($any($event), true);" />
+                       (inputChange)="this.numberInput($any($event), true);" [type]="this.type" />
           }
           @case ('VOICE') {
             <req-field id="voice-req" [labelText]="'PLACEHOLDER_EVENT_REQ_VOICE_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
-                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
                        (inputChange)="this.giveaway.gw_req = 'VOICE: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
           }
           @case ('OWN') {
             <req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER'" [required]="true"
-                       [value]="this.type === 'EVENTS_EDIT' ?this.giveaway.gw_req : ''"
+                       [value]="this.type === 'EVENTS_EDIT' ?this.giveaway.gw_req : ''" [type]="this.type"
                        (inputChange)="this.giveaway.gw_req = 'OWN: ' + ($any($event.target).value).replace(':', '');
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
           }
           @case ('SERVER') {
             <req-field id="server-req" [labelText]="'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER'" [required]="true"
-                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
                        (inputChange)="this.giveaway.gw_req = 'SERVER: ' + $any($event.target).value;
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
           }
           @case ('MITGLIED') {
             <req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
-                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
                        (inputChange)="this.giveaway.gw_req = 'MITGLIED: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
           }
@@ -139,8 +140,8 @@
                  dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
                  [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                [placeholder]="'PLACEHOLDER_EVENT_SPONSOR_PLACEHOLDER' | translate"
-               (input)="this.numberInput($any($event));"
-               [(ngModel)]="this.giveaway.sponsor_id" />
+               [ngClass]="{'placeholder:text-black dark:placeholder:text-white': this.type === 'EVENTS_EDIT'}"
+               (input)="this.numberInput($any($event), false, true);" [(ngModel)]="this.giveaway.sponsor_id" />
       </div>
 
       <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': isValidGiveaway() && type === 'EVENTS_CREATE',
@@ -148,7 +149,8 @@
                       'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': !isValidGiveaway()}"
               class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg
                      py-2.5 text-center transition-colors duration-100 dark:focus:ring-green-800 text-sm px-5"
-              (click)="this.event_action(giveaway)">
+              [disabled]="!isValidGiveaway()"
+              (click)="this.type === 'EVENTS_CREATE' ? this.event_action(giveaway) : this.event_edit(giveaway)">
         {{ type === 'EVENTS_CREATE' ? ('PLACEHOLDER_EVENT_MODAL_BUTTON' | translate) : ('PLACEHOLDER_EVENT_MODAL_BUTTON_EDIT' | translate) }}
       </button>
     </div>

@@ -146,6 +146,17 @@ export class ApiService {
   }
 
   /**
+   * Updates an existing giveaway for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be updated.
+   * @returns An Observable emitting the server's response.
+   */
+  updateGuildEvent(giveaway: Giveaway): Observable<Giveaway> {
+    return this.http.put<Giveaway>(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}`, giveaway,
+      {headers: this.authService.headers});
+  }
+
+  /**
    * Fetches the predefined text snippets for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the ticket snippets.

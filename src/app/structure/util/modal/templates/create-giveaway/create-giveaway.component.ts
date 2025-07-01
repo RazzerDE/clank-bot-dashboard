@@ -47,6 +47,7 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
   @Input() giveaway: Giveaway = this.initGiveaway;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
   @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
+  @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   @ViewChild(RequirementFieldComponent) reqField!: RequirementFieldComponent;
   @ViewChild('roleVisible') roleVisible!: ElementRef<HTMLLabelElement>;
@@ -124,12 +125,13 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    * This method ensures that the input field accepts only valid numeric characters.
    *
    * @param {InputEvent} event - The input event triggered by the user.
+   * @param {boolean} [sponsor] - Optional parameter to indicate if this is related to sponsor giveaways.
    * @param {boolean} [gw_req] - Optional parameter to indicate if this is related to giveaway requirements.
    */
-  protected numberInput(event: InputEvent, gw_req?: boolean): void {
+  protected numberInput(event: InputEvent, gw_req?: boolean, sponsor?: boolean): void {
     if (!(event.target instanceof HTMLInputElement)) { return; }
     const inputValue: number = Number(event.target.value.replace(/[^0-9]/g, ''));
-    if (isNaN(inputValue) || inputValue < 1 || inputValue > 1000) { event.target.value = '1' }
+    if ((isNaN(inputValue) || inputValue < 1 || inputValue > 1000) && !sponsor) { event.target.value = '1' }
 
     if (gw_req) {
       const prefix: string = this.giveaway.gw_req?.split(/\d/).shift() || '';
