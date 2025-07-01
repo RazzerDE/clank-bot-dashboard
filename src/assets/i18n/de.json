@@ -254,6 +254,8 @@
   "SUCCESS_GIVEAWAY_EDITED_DESC": "Das Gewinnspiel <strong>{{name}}</strong> wurde erfolgreich bearbeitet & die Änderungen werden in Kürze übernommen!",
   "ERROR_GIVEAWAY_EDIT_404": "Gewinnspiel nicht gefunden",
   "ERROR_GIVEAWAY_EDIT_404_DESC": "Dieses Gewinnspiel konnte nicht gefunden werden - wurde es bereits beendet?",
+  "ERROR_GIVEAWAY_406": "Ungültiger Sponsor",
+  "ERROR_GIVEAWAY_406_DESC": "Der Sponsor <strong>{{sponsor}}</strong> ist ungültig - bitte überprüfe die ID des Users!",
   "ERROR_GIVEAWAY_CREATION_CONFLICT": "Ungültige Werte",
   "ERROR_GIVEAWAY_CREATION_CONFLICT_DESC": "Es wurden ungültige Daten für das Gewinnspiel erkannt - bitte überprüfe die Eingaben!",
 

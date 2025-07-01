@@ -254,6 +254,8 @@
   "SUCCESS_GIVEAWAY_EDITED_DESC": "The giveaway <strong>{{name}}</strong> was successfully edited & the changes will be applied shortly!",
   "ERROR_GIVEAWAY_EDIT_404": "Giveaway not found",
   "ERROR_GIVEAWAY_EDIT_404_DESC": "This giveaway could not be found - has it already ended?",
+  "ERROR_GIVEAWAY_406": "Invalid sponsor",
+  "ERROR_GIVEAWAY_406_DESC": "The sponsor <strong>{{sponsor}}</strong> is invalid - please check the user's ID!",
   "ERROR_GIVEAWAY_CREATION_CONFLICT": "Invalid values",
   "ERROR_GIVEAWAY_CREATION_CONFLICT_DESC": "Invalid data was detected for the giveaway - please check your entries!",
 

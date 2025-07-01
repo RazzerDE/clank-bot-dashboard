@@ -172,7 +172,10 @@ export class ActiveGiveawaysComponent implements OnDestroy {
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
 
-          if (error.status === 409) { // already exist / invalid data
+          if (error.status === 406) { // sponsor not found
+            this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_406'),
+              this.translate.instant('ERROR_GIVEAWAY_406_DESC', { sponsor: giveaway.sponsor_id }));
+          } else if (error.status === 409) { // already exist / invalid data
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_CREATION_CONFLICT'),
               this.translate.instant('ERROR_GIVEAWAY_CREATION_CONFLICT_DESC'));
           } else if (error.status == 429) {
@@ -229,6 +232,9 @@ export class ActiveGiveawaysComponent implements OnDestroy {
               this.translate.instant('ERROR_GIVEAWAY_EDIT_404_DESC'));
             if (index !== -1) { this.events.splice(index, 1); }
             localStorage.setItem('active_events', JSON.stringify(this.events));
+          } else if (error.status === 406) { // sponsor not found
+            this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_406'),
+              this.translate.instant('ERROR_GIVEAWAY_406_DESC', { sponsor: giveaway.sponsor_id }));
           } else if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
