@@ -1,4 +1,5 @@
 export interface Giveaway {
+  event_id?: string;                        // Unique identifier for the giveaway
   guild_id?: string;                  // Optional
   channel_id?: string | null;         // Optional
   message_id?: string;                // Optional

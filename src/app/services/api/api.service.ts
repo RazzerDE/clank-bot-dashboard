@@ -157,6 +157,17 @@ export class ApiService {
   }
 
   /**
+   * Deletes an existing (SCHEDULED) giveaway for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be deleted.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteGuildEvent(giveaway: Giveaway): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
+      {headers: this.authService.headers});
+  }
+
+  /**
    * Fetches the predefined text snippets for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the ticket snippets.

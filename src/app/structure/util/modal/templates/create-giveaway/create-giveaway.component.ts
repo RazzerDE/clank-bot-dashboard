@@ -86,6 +86,7 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    * - The channel ID is missing or undefined.
    * - A giveaway requirement was set but has no value
    * - A server recommendation was set but has no valid discord URL
+   * - the start date is bigger than the end date
    *
    * @returns {boolean} `true` if the giveaway is valid, otherwise `false`.
    */
@@ -97,7 +98,8 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
 
     return !!this.giveaway.prize && !!this.giveaway.end_date && !isNaN(new Date(this.giveaway.end_date).getTime()) &&
       new Date(this.giveaway.end_date).getTime() > Date.now() && !!this.giveaway.channel_id &&
-      !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 && this.giveaway.winner_count <= 100 && hasValidRequirement;
+      !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 && this.giveaway.winner_count <= 100 &&
+      hasValidRequirement && (!this.giveaway.start_date || new Date(this.giveaway.start_date).getTime() <= new Date(this.giveaway.end_date).getTime());
   }
 
   /**

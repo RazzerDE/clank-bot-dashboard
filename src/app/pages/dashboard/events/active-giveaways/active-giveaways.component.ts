@@ -250,6 +250,55 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   }
 
   /**
+   * Deletes a giveaway event from the current guild.
+   *
+   * Sends a request to the backend API to remove the specified giveaway. On success, removes the giveaway
+   * from the local event list and updates the cache. Handles and displays errors for known HTTP status codes.
+   * Closes the modal after completion.
+   *
+   * @param {Giveaway} giveaway - The giveaway object to be deleted.
+   */
+  protected deleteGuildEvent(giveaway: Giveaway): void {
+    if (!this.dataService.active_guild) { return; }
+    const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.message_id === giveaway.message_id
+      && gw.channel_id === giveaway.channel_id));
+
+    const org_price: string = giveaway.prize;
+    const removed_gw: Subscription = this.apiService.deleteGuildEvent(giveaway)
+      .subscribe({
+        next: (_: Object): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_REMOVED_TITLE'),
+            this.translate.instant('SUCCESS_GIVEAWAY_REMOVED_DESC', { name: org_price }));
+
+          // update shown data (find correct giveaway and remove it)
+          if (index !== -1) { this.events.splice(index, 1); }
+          localStorage.setItem('active_events', JSON.stringify(this.events));
+          removed_gw.unsubscribe();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+
+          if (error.status === 404) { // doesnt exist
+            this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_REMOVED_404'),
+              this.translate.instant('ERROR_GIVEAWAY_REMOVED_404_DESC'));
+            if (index !== -1) { this.events.splice(index, 1); }
+            localStorage.setItem('active_events', JSON.stringify(this.events));
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          removed_gw.unsubscribe();
+        }
+      });
+
+    this.modal.hideModal();
+  }
+
+  /**
    * Opens a modal dialog of the specified type (and optionally pre-fills it with snippet data).
    *
    * @param {string} type - The type of modal to open (e.g., 'EVENTS_CREATE', 'EVENTS_EDIT').
@@ -397,7 +446,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           color: 'red',
           icon: faXmark,
           size: 'xl',
-          action: (event: Giveaway): void => {} // TODO
+          action: (event: Giveaway): void => this.deleteGuildEvent(event)
         },
       ],
       actions: []
