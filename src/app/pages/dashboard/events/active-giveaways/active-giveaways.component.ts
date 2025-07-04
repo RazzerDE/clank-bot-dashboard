@@ -18,6 +18,7 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {DatePipe} from "../../../../pipes/date/date.pipe";
+import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
 
 @Component({
   selector: 'app-active-giveaways',
@@ -49,6 +50,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
   protected disabledCacheBtn: boolean = false;
   private dateCustomPipe: DatePipe = new DatePipe();
+  private markdownPipe: MarkdownPipe = new MarkdownPipe();
   @ViewChild(ModalComponent) private modal!: ModalComponent;
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService,
@@ -159,7 +161,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
         next: (created_giveaway: Giveaway): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_CREATION_TITLE'),
-            this.translate.instant('SUCCESS_GIVEAWAY_CREATION_DESC', { name: created_giveaway.prize,
+            this.translate.instant('SUCCESS_GIVEAWAY_CREATION_DESC', { name: this.markdownPipe.transform(created_giveaway.prize),
               start: this.dateCustomPipe.transform(created_giveaway.start_date, this.translate.currentLang)}));
 
           // update shown data
@@ -201,21 +203,27 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    * If the giveaway is not found (404), removes it from the local list. Closes the modal after completion.
    *
    * @param {Giveaway} giveaway - The giveaway object to be updated.
+   * @param {'START' | 'END' | ''} [action=''] - The action type for the giveaway (default is edit all).
    */
-  protected editGuildEvent(giveaway: Giveaway): void {
+  protected editGuildEvent(giveaway: Giveaway, action: 'END_' | '' = ''): void {
     if (!this.dataService.active_guild) { return; }
     const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.message_id === giveaway.message_id
                                                                         && gw.channel_id === giveaway.channel_id));
     const participants: number = giveaway.participants || 0; // ensure participants is defined
-    const org_price: string = giveaway.prize;
+    const org_price: string = this.markdownPipe.transform(giveaway.prize);
 
-    giveaway.end_date = new Date(giveaway.end_date).toISOString();
+    if (action === 'END_') {
+      giveaway.end_date = new Date(Date.now() - 5 * 60 * 1000).toISOString(); // set end date to 5 minutes ago
+    } else {
+      giveaway.end_date = new Date(giveaway.end_date).toISOString();
+    }
+
     const edited_gw: Subscription = this.apiService.updateGuildEvent(giveaway)
       .subscribe({
         next: (giveaway: Giveaway): void => {
           this.dataService.error_color = 'green';
-          this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_EDITED_TITLE'),
-            this.translate.instant('SUCCESS_GIVEAWAY_EDITED_DESC', { name: org_price }));
+          this.dataService.showAlert(this.translate.instant(`SUCCESS_GIVEAWAY_EDITED_${action}TITLE`),
+            this.translate.instant(`SUCCESS_GIVEAWAY_EDITED_${action}DESC`, { name: org_price }));
 
           // update shown data (find correct giveaway and replace it)
           giveaway.participants = participants; // restore participants count
@@ -263,7 +271,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.message_id === giveaway.message_id
       && gw.channel_id === giveaway.channel_id));
 
-    const org_price: string = giveaway.prize;
+    const org_price: string = this.markdownPipe.transform(giveaway.prize);
     const removed_gw: Subscription = this.apiService.deleteGuildEvent(giveaway)
       .subscribe({
         next: (_: Object): void => {
@@ -440,7 +448,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           color: 'red',
           icon: faStop,
           size: 'lg',
-          action: (event: Giveaway): void => {} // TODO
+          action: (event: Giveaway): void => this.editGuildEvent(event, 'END_')
         },
         {
           color: 'red',

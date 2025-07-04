@@ -90,10 +90,9 @@
                   </div>
                 } @else if (isGiveawayType(obj)) {
                   <div class="break-words whitespace-pre-line"
-                       [innerHTML]="obj.start_date ? obj.prize.toUpperCase() : obj.prize | markdown"></div>
+                       [innerHTML]="obj.start_date ? (obj.prize.toUpperCase() | markdown) : obj.prize | markdown"></div>
 
                   <!-- Button to show Winner-& Participant-Count / Scheduling info -->
-
                   <button class="ml-2 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
                                  duration-200" type="button" id="faqBtn_{{ $index }}"
                           [ngbTooltip]="tooltipContent" placement="top" tooltipClass="table-tooltip">
@@ -253,8 +252,7 @@
 
                 <!-- Special Case for Giveaway Type: Toggle some buttons -->
                 @if (isGiveawayType(obj)) {
-                  <!-- Show only Start and End Button for Giveaways -->
-                  @if (obj.start_date && ($index === 0 || $index === 2) || (!obj.start_date && ($index === 1 || $index === 3))) {}
+                  @if (isInvalidButtonForIndex(obj, $index)) {}
                   @else { <!-- Show play and delete button for scheduled Giveaways -->
                     <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
                      focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40 transition-colors

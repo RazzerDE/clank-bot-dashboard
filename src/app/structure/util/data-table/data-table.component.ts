@@ -50,6 +50,7 @@ export class DataTableComponent implements AfterViewInit {
     protected markdownPipe: MarkdownPipe = new MarkdownPipe();
     private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
+    protected now: Date = new Date();
     protected rowHeight: number = 0;
     protected readonly faClock: IconDefinition = faClock;
     protected readonly faRobot: IconDefinition = faRobot;
@@ -217,4 +218,27 @@ export class DataTableComponent implements AfterViewInit {
         return value;
       },
     };
+
+  /**
+   * Determines if a button should be disabled for a giveaway based on its index and the giveaway's state.
+   *
+   * Button indexes:
+   * - 0: Play button (disabled for running giveaways)
+   * - 1: Edit button (disabled for scheduled/pending giveaways)
+   * - 2: Delete button (disabled for running giveaways)
+   * - 3: Stop button (disabled for scheduled/pending giveaways)
+   *
+   * Cases:
+   * - Running giveaways (with `start_date`): Disable Play/Delete buttons (index 0,2)
+   * - Scheduled giveaways (without `start_date`): Disable Edit/Stop buttons (index 1,3)
+   * - Ended giveaways (where `end_date` is in the past): Disable all buttons
+   *
+   * @param obj - The giveaway object to check
+   * @param index - The button index (0-3)
+   * @returns `true` if the button should be disabled, otherwise `false`
+   */
+  isInvalidButtonForIndex(obj: Giveaway, index: number) {
+    return obj.start_date && (index === 0 || index === 2) || (!obj.start_date && (index === 1 || index === 3)) ||
+    (!obj.start_date && obj.end_date && this.now.getTime() > new Date(obj.end_date).getTime())
+  }
 }
