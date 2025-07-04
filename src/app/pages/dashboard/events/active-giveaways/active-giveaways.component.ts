@@ -77,7 +77,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   }
 
   /**
-   * Fetches the active giveaways for the current guild.
+   * Fetches the active giveaways for the current guild (and scheduled ones).
    *
    * If cached data is available and valid (within 30 seconds), it loads the giveaways from localStorage.
    * Otherwise, it fetches the data from the API, updates the local cache, and handles loading states.
@@ -137,7 +137,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   }
 
   /**
-   * Adds a new giveaway event to the current guild.
+   * Adds a new scheduled giveaway event to the current guild.
    *
    * Sends the provided giveaway data to the backend API for creation. On success, updates the local event list,
    * resets the input fields, and displays a success alert. Handles and displays errors for known HTTP status codes.
@@ -196,14 +196,14 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   }
 
   /**
-   * Updates an existing giveaway event for the current guild.
+   * Updates an existing, running giveaway event for the current guild.
    *
    * Sends the modified giveaway object to the backend API. On success, updates the local event list,
    * restores the participants count, and displays a success alert. Handles and displays errors for known HTTP status codes.
    * If the giveaway is not found (404), removes it from the local list. Closes the modal after completion.
    *
    * @param {Giveaway} giveaway - The giveaway object to be updated.
-   * @param {'START' | 'END' | ''} [action=''] - The action type for the giveaway (default is edit all).
+   * @param {'END_' | ''} [action=''] - The action type for the giveaway (default is edit all).
    */
   protected editGuildEvent(giveaway: Giveaway, action: 'END_' | '' = ''): void {
     if (!this.dataService.active_guild) { return; }
@@ -258,7 +258,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   }
 
   /**
-   * Deletes a giveaway event from the current guild.
+   * Deletes a (scheduled) giveaway event from the current guild.
    *
    * Sends a request to the backend API to remove the specified giveaway. On success, removes the giveaway
    * from the local event list and updates the cache. Handles and displays errors for known HTTP status codes.
@@ -268,8 +268,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected deleteGuildEvent(giveaway: Giveaway): void {
     if (!this.dataService.active_guild) { return; }
-    const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.message_id === giveaway.message_id
-      && gw.channel_id === giveaway.channel_id));
+    const index: number = this.events.findIndex((gw: Giveaway): boolean => gw.event_id === giveaway.event_id);
 
     const org_price: string = this.markdownPipe.transform(giveaway.prize);
     const removed_gw: Subscription = this.apiService.deleteGuildEvent(giveaway)
@@ -285,25 +284,78 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           removed_gw.unsubscribe();
         },
         error: (error: HttpErrorResponse): void => {
-          this.dataService.error_color = 'red';
-
-          if (error.status === 404) { // doesnt exist
-            this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_REMOVED_404'),
-              this.translate.instant('ERROR_GIVEAWAY_REMOVED_404_DESC'));
-            if (index !== -1) { this.events.splice(index, 1); }
-            localStorage.setItem('active_events', JSON.stringify(this.events));
-          } else if (error.status == 429) {
-            this.dataService.redirectLoginError('REQUESTS');
-            return;
-          } else {
-            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
-          }
-
+          this.handleScheduledError(error, index);
           removed_gw.unsubscribe();
         }
       });
 
     this.modal.hideModal();
+  }
+
+  /**
+   * Starts a scheduled giveaway event for the current guild.
+   *
+   * Sends a request to the backend API to start the specified scheduled giveaway.
+   * On success, updates the local event list and cache, and displays a success alert.
+   * Handles and displays errors for known HTTP status codes (404: not found, 429: rate limit).
+   * Closes the modal after completion.
+   *
+   * @param {Giveaway} giveaway - The scheduled giveaway object to be started.
+   * @returns {void}
+   */
+  protected startScheduledEvent(giveaway: Giveaway): void {
+    if (!this.dataService.active_guild) { return; }
+    const index: number = this.events.findIndex((gw: Giveaway): boolean => gw.event_id === giveaway.event_id);
+
+    const org_price: string = this.markdownPipe.transform(giveaway.prize);
+    const started_gw: Subscription = this.apiService.startScheduledEvent(giveaway)
+      .subscribe({
+        next: (giveaway: Giveaway): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_EDITED_START_TITLE'),
+            this.translate.instant('SUCCESS_GIVEAWAY_EDITED_START_DESC', { name: org_price }));
+
+          // update shown data (find correct giveaway and replace it)
+          if (index !== -1) { this.events[index] = giveaway; }
+          this.filteredEvents = this.sortEvents([...this.events]);
+          localStorage.setItem('active_events', JSON.stringify(this.events));
+          started_gw.unsubscribe();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.handleScheduledError(error, index);
+          started_gw.unsubscribe();
+        }
+      });
+
+    this.modal.hideModal();
+  }
+
+  /**
+   * Handles errors that occur during scheduled giveaway operations.
+   *
+   * Displays appropriate alerts based on the HTTP error status:
+   * - 404: Shows a not found alert and removes the event from the local list.
+   * - 429: Triggers a rate limit error redirect.
+   * - Other: Shows a generic unknown error alert.
+   *
+   * @param {HttpErrorResponse} error - The HTTP error response object.
+   * @param {number} index - The index of the affected event in the local events array.
+   * @returns {void}
+   */
+  private handleScheduledError(error: HttpErrorResponse, index: number): void {
+    this.dataService.error_color = 'red';
+
+    if (error.status === 404) { // doesnt exist
+      this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_REMOVED_404'),
+        this.translate.instant('ERROR_GIVEAWAY_REMOVED_404_DESC'));
+      if (index !== -1) { this.events.splice(index, 1); }
+      localStorage.setItem('active_events', JSON.stringify(this.events));
+    } else if (error.status == 429) {
+      this.dataService.redirectLoginError('REQUESTS');
+      return;
+    } else {
+      this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+    }
   }
 
   /**
@@ -442,7 +494,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           color: 'green',
           icon: faPlay,
           size: 'lg',
-          action: (event: Giveaway): void => {} // TODO
+          action: (event: Giveaway): void => this.startScheduledEvent(event)
         },
         {
           color: 'red',

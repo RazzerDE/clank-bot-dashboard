@@ -232,6 +232,7 @@ export class DataTableComponent implements AfterViewInit {
    * - Running giveaways (with `start_date`): Disable Play/Delete buttons (index 0,2)
    * - Scheduled giveaways (without `start_date`): Disable Edit/Stop buttons (index 1,3)
    * - Ended giveaways (where `end_date` is in the past): Disable all buttons
+   * - Giveaways that have not started yet (with `start_date` in the future): Disable Play/Edit buttons (index 0,1)
    *
    * @param obj - The giveaway object to check
    * @param index - The button index (0-3)
@@ -239,6 +240,7 @@ export class DataTableComponent implements AfterViewInit {
    */
   isInvalidButtonForIndex(obj: Giveaway, index: number) {
     return obj.start_date && (index === 0 || index === 2) || (!obj.start_date && (index === 1 || index === 3)) ||
-    (!obj.start_date && obj.end_date && this.now.getTime() > new Date(obj.end_date).getTime())
+    (!obj.start_date && obj.end_date && this.now.getTime() > new Date(obj.end_date).getTime()) ||
+    (obj.start_date && this.now.getTime() > new Date(obj.start_date).getTime());
   }
 }

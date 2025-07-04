@@ -168,6 +168,17 @@ export class ApiService {
   }
 
   /**
+   * Starts a scheduled giveaway event for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be started.
+   * @returns An Observable emitting the server's response.
+   */
+  startScheduledEvent(giveaway: Giveaway): Observable<Giveaway> {
+    return this.http.put<Giveaway>(`${this.API_URL}/guilds/events/start?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
+      {}, { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the predefined text snippets for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the ticket snippets.
