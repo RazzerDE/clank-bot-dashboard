@@ -238,7 +238,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           if (error.status === 404) { // already exist / invalid data
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EDIT_404'),
               this.translate.instant('ERROR_GIVEAWAY_EDIT_404_DESC'));
-            if (index !== -1) { this.events.splice(index, 1); }
+            if (index !== -1) { this.events.splice(index, 1); this.filteredEvents = this.sortEvents([...this.events]); }
             localStorage.setItem('active_events', JSON.stringify(this.events));
           } else if (error.status === 406) { // sponsor not found
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_406'),
@@ -280,7 +280,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
             this.translate.instant('SUCCESS_GIVEAWAY_REMOVED_DESC', { name: org_price }));
 
           // update shown data (find correct giveaway and remove it)
-          if (index !== -1) { this.events.splice(index, 1); }
+          if (index !== -1) { this.events.splice(index, 1); this.filteredEvents = this.sortEvents([...this.events]); }
           localStorage.setItem('active_events', JSON.stringify(this.events));
           removed_gw.unsubscribe();
         },
@@ -348,9 +348,9 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     this.dataService.error_color = 'red';
 
     if (error.status === 404) { // doesnt exist
-      this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_REMOVED_404'),
+      this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EDIT_404'),
         this.translate.instant('ERROR_GIVEAWAY_REMOVED_404_DESC'));
-      if (index !== -1) { this.events.splice(index, 1); }
+      if (index !== -1) { this.events.splice(index, 1); this.filteredEvents = this.sortEvents([...this.events]); }
       localStorage.setItem('active_events', JSON.stringify(this.events));
     } else if (error.status == 429) {
       this.dataService.redirectLoginError('REQUESTS');

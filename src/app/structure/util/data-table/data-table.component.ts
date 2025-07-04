@@ -239,7 +239,7 @@ export class DataTableComponent implements AfterViewInit {
    * @returns `true` if the button should be disabled, otherwise `false`
    */
   isInvalidButtonForIndex(obj: Giveaway, index: number) {
-    return obj.start_date && (index === 0 || index === 2) || (!obj.start_date && (index === 1 || index === 3)) ||
+    return (obj.start_date && (index === 0 || index === 2) || (!obj.start_date && (index === 1 || index === 3))) ||
     (!obj.start_date && obj.end_date && this.now.getTime() > new Date(obj.end_date).getTime()) ||
     (obj.start_date && this.now.getTime() > new Date(obj.start_date).getTime());
   }

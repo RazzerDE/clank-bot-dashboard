@@ -12,7 +12,7 @@
                    dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
                    dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400" [class.ps-8]="isChannelList()">
     @if (rolePicker.type === 'select-one' && this.id != 'reqpicker') {
-      <option [selected]="this.type != 'EVENTS_EDIT'" disabled>
+      <option [selected]="!this.activeOption" disabled>
         @if (this.id == 'channelpicker' && this.dataService.guild_channels.length > 0) {
           {{ 'PLACEHOLDER_CHANNEL_MODAL_DEFAULT' | translate }}
         } @else if (this.id == 'channelpicker' && this.dataService.guild_channels.length === 0) {
@@ -30,7 +30,7 @@
           {{ obj.name }}
         </option>
       } @else {
-        <option value="{{ obj.value }}" [selected]="this.type === 'EVENTS_EDIT' && (this.activeOption && this.activeOption.startsWith(obj.value))">
+        <option value="{{ obj.value }}" [selected]="this.type.startsWith('EVENTS_') && (this.activeOption && this.activeOption.startsWith(obj.value))">
           {{ obj.label | translate }}
         </option>
       }
