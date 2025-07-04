@@ -268,7 +268,8 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected deleteGuildEvent(giveaway: Giveaway): void {
     if (!this.dataService.active_guild) { return; }
-    const index: number = this.events.findIndex((gw: Giveaway): boolean => gw.event_id === giveaway.event_id);
+    const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.event_id === giveaway.event_id
+      && gw.guild_id === giveaway.guild_id));
 
     const org_price: string = this.markdownPipe.transform(giveaway.prize);
     const removed_gw: Subscription = this.apiService.deleteGuildEvent(giveaway)
@@ -305,7 +306,8 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected startScheduledEvent(giveaway: Giveaway): void {
     if (!this.dataService.active_guild) { return; }
-    const index: number = this.events.findIndex((gw: Giveaway): boolean => gw.event_id === giveaway.event_id);
+    const index: number = this.events.findIndex((gw: Giveaway): boolean => (gw.event_id === giveaway.event_id
+      && gw.guild_id === giveaway.guild_id));
 
     const org_price: string = this.markdownPipe.transform(giveaway.prize);
     const started_gw: Subscription = this.apiService.startScheduledEvent(giveaway)
