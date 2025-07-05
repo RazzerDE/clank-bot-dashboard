@@ -24,6 +24,7 @@ import {BlockedUser} from "../../../services/types/discord/User";
 import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
 import {CreateGiveawayComponent} from "./templates/create-giveaway/create-giveaway.component";
 import {Giveaway} from "../../../services/types/Events";
+import {EmbedConfig} from "../../../services/types/Config";
 
 @Component({
   selector: 'app-modal',
@@ -72,10 +73,12 @@ export class ModalComponent implements AfterContentInit  {
   @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() content: string = '';
+
   @Input() extra: Role[] = [];
   @Input() obj: TicketSnippet | BlockedUser | Giveaway = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
+  @Input() gift_config: EmbedConfig = { color_code: null, thumbnail_url: null, banner_url: null, emoji_reaction: null };
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};

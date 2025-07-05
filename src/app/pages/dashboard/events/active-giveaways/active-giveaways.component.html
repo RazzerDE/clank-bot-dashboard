@@ -1,7 +1,5 @@
 <dashboard-layout>
   <!-- TODO:
-  6. real data for gw preview banner, color, etc.
-
   7. spalten-breite bearbeitbar machen
   8. filter by spalte
   -->
@@ -11,7 +9,7 @@
 
     <!-- Giveaway Modal -->
     <app-modal [type]="modalType" [obj]="modalObj" [event_action]="this.addGuildEvent.bind(this)"
-               [event_edit]="this.editGuildEvent.bind(this)"/>
+               [event_edit]="this.editGuildEvent.bind(this)" [gift_config]="this.embed_config" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_EVENTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_TITLE' | translate"

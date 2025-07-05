@@ -94,7 +94,8 @@
       } @else if (type.startsWith('SUPPORT_THEME')) {
         <template-support-theme-add [showFirst]="false" />
       } @else if (type.startsWith('EVENTS_')) {
-        <template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)" />
+        <template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)"
+                                  [gift_config]="this.gift_config" />
       }
 
     }

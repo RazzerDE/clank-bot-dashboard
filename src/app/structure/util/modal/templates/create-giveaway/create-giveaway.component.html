@@ -168,7 +168,17 @@
 
     <!-- Modal body -->
     <div class="p-4 md:p-5">
-      <template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0"/>
+      <template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0"
+                                 [embed_config]="this.gift_config" />
     </div>
+
+  <!-- Modal footer -->
+  @if (this.gift_config.banner_url) {
+    <div class="p-3 border-t border-gray-200 dark:border-gray-600">
+      <p class="text-xs text-gray-600 dark:text-gray-400 text-center mb-0">
+        {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_FOOTER' | translate }}
+      </p>
+    </div>
+  }
   </div>
 }

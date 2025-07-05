@@ -28,8 +28,8 @@ export class DiscordMarkdownComponent {
   @Input() content: string = '';
   @Input() no_overlay: boolean = false;
   @Input() giveaway: Giveaway | null = null;
-  @Input() embed_config: EmbedConfig = { color: '#706fd3', thumbnail: 'https://i.imgur.com/8eajG1v.gif', banner: null,
-                                         emoji: this.dataService.getEmojibyId('<a:present:873708141085343764>') }
+  @Input() embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
+                                         banner_url: null, emoji_reaction: this.dataService.getEmojibyId('<a:present:873708141085343764>') }
 
   // Other Preview Elements
   @ViewChild('faqPreview') faqPreview!: ElementRef<HTMLSpanElement>;
@@ -47,6 +47,7 @@ export class DiscordMarkdownComponent {
 
   /**
    * Returns the appropriate emoji file name based on the giveaway prize content
+   *
    * @returns The emoji file name as string
    */
   protected getPrizeEmoji(prize: string): string {
@@ -68,5 +69,23 @@ export class DiscordMarkdownComponent {
     }
 
     return 'diamond_pink.gif';
+  }
+
+  /**
+   * Returns a valid hex color string for Discord embed elements.
+   * Accepts a number (converted to hex), a string (used as-is), or null (returns default color).
+   *
+   * @param color_code - The color code as number, string, or null.
+   * @returns The hex color string (e.g. '#706fd3').
+   */
+  getEventEmbedColor(color_code: number | string | null): string {
+    if (!color_code) { return '#706fd3'; } // Default color
+
+    if (typeof color_code === 'number') {
+      const hex = color_code.toString(16).padStart(6, '0');
+      return `#${hex.toUpperCase()}`;
+    }
+
+    return color_code;
   }
 }

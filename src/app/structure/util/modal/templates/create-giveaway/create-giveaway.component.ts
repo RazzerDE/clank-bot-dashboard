@@ -7,7 +7,7 @@ import {Giveaway} from "../../../../../services/types/Events";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faTrophy} from "@fortawesome/free-solid-svg-icons/faTrophy";
-import {SelectItems} from "../../../../../services/types/Config";
+import {EmbedConfig, SelectItems} from "../../../../../services/types/Config";
 import {SelectComponent} from "../select/select.component";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 import {ComService} from "../../../../../services/discord-com/com.service";
@@ -42,12 +42,14 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
   protected readonly now: Date = new Date(Date.now());
   protected convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
+  @Input() gift_config: EmbedConfig = { color_code: null, thumbnail_url: null, banner_url: null, emoji_reaction: null };
   @Input() type: 'EVENTS_CREATE' | 'EVENTS_EDIT' = 'EVENTS_CREATE';
   @Input() showFirst: boolean = false;
   @Input() giveaway: Giveaway = this.initGiveaway;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
   @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
   @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
+
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   @ViewChild(RequirementFieldComponent) reqField!: RequirementFieldComponent;
   @ViewChild('roleVisible') roleVisible!: ElementRef<HTMLLabelElement>;

@@ -7,7 +7,7 @@ import {faPlay, faSearch, faStop, faXmark, IconDefinition} from "@fortawesome/fr
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faGift} from "@fortawesome/free-solid-svg-icons/faGift";
-import {TableConfig} from "../../../../services/types/Config";
+import {EmbedConfig, TableConfig} from "../../../../services/types/Config";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
 import {Giveaway} from "../../../../services/types/Events";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
@@ -37,17 +37,21 @@ import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
 export class ActiveGiveawaysComponent implements OnDestroy {
   private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
+  protected embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
+    banner_url: null, emoji_reaction: this.dataService.getEmojibyId('<a:present:873708141085343764>') }
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faGift: IconDefinition = faGift;
   protected readonly faRefresh: IconDefinition = faRefresh;
   private readonly subscription: Subscription | null;
   private startLoading: boolean = false;
+
   public giveaway: Giveaway = { ...this.initGiveaway };
-  protected modalType: string = 'EVENTS_CREATE';
-  protected modalObj: Giveaway = this.giveaway;
-  protected disableSendBtn: boolean = false;
   protected events: Giveaway[] = [];
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
+  protected modalType: string = 'EVENTS_CREATE';
+  protected modalObj: Giveaway = this.giveaway;
+
+  protected disableSendBtn: boolean = false;
   protected disabledCacheBtn: boolean = false;
   private dateCustomPipe: DatePipe = new DatePipe();
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
@@ -94,8 +98,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
       Date.now() - Number(localStorage.getItem('active_events_timestamp')) < 30000) && !no_cache) {
       this.events = JSON.parse(localStorage.getItem('active_events') as string);
       this.filteredEvents = this.events;
-      this.dataService.isLoading = false;
-      this.startLoading = false;
+      this.getEventConfig(no_cache);
       return;
     }
 
@@ -105,9 +108,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           this.events = giveaways;
           this.filteredEvents = this.events;
 
-          this.dataService.isLoading = false;
-          this.startLoading = false;
-
+          setTimeout((): void => { this.getEventConfig(no_cache) }, 500);
           localStorage.setItem('active_events', JSON.stringify(this.events));
           localStorage.setItem('active_events_timestamp', Date.now().toString());
           sub.unsubscribe();
@@ -134,6 +135,56 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           sub.unsubscribe();
         }
       })
+  }
+
+  /**
+   * Retrieves the event embed configuration for the current guild.
+   *
+   * This method first checks if a valid configuration is available in localStorage (cached for 30 seconds).
+   * If so, it loads the configuration from the cache. Otherwise, it fetches the configuration from the API,
+   * updates the local cache, and handles loading states. Handles HTTP errors by redirecting to appropriate error pages.
+   *
+   * @param {boolean} [no_cache] - If true, ignores the cache and fetches fresh data from the API.
+   * @returns {void}
+   */
+  private getEventConfig(no_cache?: boolean): void {
+    // check if guilds are already stored in local storage (30 seconds cache)
+    if ((localStorage.getItem('gift_config') && localStorage.getItem('gift_config_timestamp') &&
+      Date.now() - Number(localStorage.getItem('gift_config_timestamp')) < 30000 && !no_cache)) {
+      this.embed_config = JSON.parse(localStorage.getItem('gift_config') as string);
+      this.dataService.isLoading = false;
+      this.startLoading = false;
+      return;
+    }
+
+    const sub: Subscription = this.apiService.getEventConfig(this.dataService.active_guild!.id)
+      .subscribe({
+        next: (config: EmbedConfig): void => {
+          console.log(config);
+          this.embed_config = config;
+          this.dataService.isLoading = false;
+          this.startLoading = false;
+
+          localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
+          localStorage.setItem('gift_config_timestamp', Date.now().toString());
+          sub.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.dataService.isLoading = false;
+          this.startLoading = false;
+
+          if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+          sub.unsubscribe();
+        }
+      });
   }
 
   /**

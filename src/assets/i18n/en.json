@@ -547,6 +547,7 @@
   "PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER": "Subscribe to our YT channel!",
   "PLACEHOLDER_EVENT_REQ_SERVER_LABEL": "📡 - What is the URL of the Discord server?",
   "PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER": "e.g. https://discord.gg/bl4cklist",
+  "PLACEHOLDER_EVENT_PREVIEW_MODAL_FOOTER": "Your set banner will not be displayed here to save space.",
 
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatic Bot Response",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Use as FAQ theme",

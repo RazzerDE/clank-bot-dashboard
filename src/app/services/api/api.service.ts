@@ -12,6 +12,7 @@ import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
 import {Giveaway} from "../types/Events";
+import {EmbedConfig} from "../types/Config";
 
 @Injectable({
   providedIn: 'root'
@@ -131,6 +132,17 @@ export class ApiService {
    */
   getGuildEvents(guild_id: string): Observable<Giveaway[]> {
     return this.http.get<Giveaway[]>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the configuration for discord event embeds in a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the event embed configuration.
+   * @return An Observable that emits the EmbedConfig object containing the configuration details.
+   */
+  getEventConfig(guild_id: string): Observable<EmbedConfig> {
+    return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 
