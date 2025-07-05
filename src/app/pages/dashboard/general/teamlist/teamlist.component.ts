@@ -45,7 +45,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
   protected dataLoading: boolean = true;
   protected selectedSupportLevels: number[] = [0, 1, 2];
-  private subscriptions: Subscription[] = [];
+  private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
 
   @ViewChild(ModalComponent) protected modalComponent!: ModalComponent;
@@ -59,14 +59,12 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     this.dataService.isLoading = true;
 
     this.getTeamRoles(); // first call to get the server data
-    const dataFetchSubscription: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = true;
         this.getTeamRoles();
       }
     });
-
-    this.subscriptions.push(dataFetchSubscription);
   }
 
   /**
@@ -75,7 +73,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(s => s.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -138,12 +136,14 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
           this.filteredRoles = roles.team_roles;
           this.discordRoles = roles.other_roles;
           this.dataService.isLoading = false;
+          subscription.unsubscribe();
 
           localStorage.setItem('guild_team', JSON.stringify(this.roles));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('guild_team_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
+          subscription.unsubscribe();
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
           } else if (err.status === 401) {
@@ -153,8 +153,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
           }
         }
       });
-
-      this.subscriptions.push(subscription);
     });
   }
 
@@ -211,12 +209,14 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
           this.discordRoles.push(role);
           this.discordRoles.sort((a, b) => b.position - a.position);
 
+          subscription.unsubscribe();
           localStorage.removeItem('guild_team');
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_DELETE'),
                                      this.translate.instant('SUCCESS_ROLE_DELETE_DESC', { role: role.name }));
         },
         error: (err: HttpErrorResponse): void => {
+          subscription.unsubscribe();
           if (err.status === 404) {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant('ERROR_ROLE_DELETE_TITLE'),
@@ -233,8 +233,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
           }
         }
       });
-
-      this.subscriptions.push(subscription);
     });
   }
 
@@ -272,8 +270,10 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modalComponent.hideModal();
+            subscription.unsubscribe();
           },
           error: (err: HttpErrorResponse): void => {
+            subscription.unsubscribe();
             if (err.status === 409) {
               this.dataService.error_color = 'red';
               this.dataService.showAlert(this.translate.instant('ERROR_ROLE_ADD_TITLE'),
@@ -293,8 +293,6 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
             this.modalComponent.hideModal();
           }
         });
-
-        this.subscriptions.push(subscription);
     });
   }
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -65,7 +65,7 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
         ])
     ]
 })
-export class WishlistComponent implements AfterViewInit, OnDestroy {
+export class WishlistComponent implements AfterViewInit {
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faLightbulb: IconDefinition = faLightbulb;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -80,7 +80,6 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
   protected feature_list: Feature[] = feature_list;
   protected tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
-  private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
     document.title = "Wishlist ~ Clank Discord-Bot";
@@ -98,15 +97,6 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.setResponsiveHeight();
     this.getFeatureVotes();
-  }
-
-  /**
-   * Lifecycle hook that is called when the component is destroyed.
-   *
-   * This method unsubscribes from all active subscriptions to prevent memory leaks.
-   */
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   /**
@@ -133,10 +123,12 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
         this.dataService.error_color = 'green';
         this.dataService.showAlert(this.translate.instant('SUCCESS_VOTE_TITLE'), this.translate.instant('SUCCESS_VOTE_DESC'));
 
+        feature_vote.unsubscribe();
         setTimeout((): void => { if (cooldownFeature) { cooldownFeature.onCooldown = false; } }, 5500);
       },
       error: (error: HttpErrorResponse): void => {
         this.dataService.error_color = 'red';
+        feature_vote.unsubscribe();
 
         if (error.status === 304) { // not modified
           this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
@@ -155,8 +147,6 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
         }, 5500);
       }
     });
-
-    this.subscriptions.push(feature_vote);
   }
 
   /**
@@ -182,9 +172,11 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
           this.isOnCooldown = votes.featureVotes.map(v => ({ featureId: v.id, onCooldown: false, isLoading: false }));
         }
         this.dataService.isLoading = false;
+        get_votes.unsubscribe();
       },
       error: (error: HttpErrorResponse): void => {
         this.dataService.error_color = 'red';
+        get_votes.unsubscribe();
 
         if (error.status == 429) {
           this.dataService.redirectLoginError('REQUESTS');
@@ -194,8 +186,6 @@ export class WishlistComponent implements AfterViewInit, OnDestroy {
         this.dataService.isLoading = false;
       }
     });
-
-    this.subscriptions.push(get_votes);
   }
 
   /**

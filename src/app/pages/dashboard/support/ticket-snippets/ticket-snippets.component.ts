@@ -46,7 +46,7 @@ import {
   styleUrl: './ticket-snippets.component.scss'
 })
 export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
-  private subscriptions: Subscription[] = [];
+  private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected dataLoading: { snippets: boolean, announcement: boolean } = { snippets: true, announcement: true };
   private startLoading: boolean = false;
@@ -73,7 +73,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     document.title = 'Ticket Snippets ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSnippetDetails(); // first call to get the server data
-    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
         this.dataLoading = { snippets: true, announcement: true };
@@ -82,8 +82,6 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
         this.getSnippetDetails(true);
       }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -92,7 +90,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -185,16 +183,16 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           localStorage.setItem('ticket_snippets_timestamp', Date.now().toString());
 
           // fetch announcement details after snippets are fetched (avoid ratelimits)
+          sub.unsubscribe();
           setTimeout(() => { this.getAnnouncementDetails(); }, 1000);
         },
         error: (err: HttpErrorResponse): void => {
+          sub.unsubscribe();
           this.handleError(err);
           this.dataService.isLoading = false;
           this.startLoading = false;
         }
       });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -212,16 +210,16 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
 
           this.dataService.isLoading = false;
           this.startLoading = false;
+          sub.unsubscribe();
           localStorage.setItem('ticket_announcement', JSON.stringify(this.currentAnnouncement));
         },
         error: (err: HttpErrorResponse): void => {
+          sub.unsubscribe();
           this.handleError(err);
           this.dataService.isLoading = false;
           this.startLoading = false;
         }
       });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -253,7 +251,9 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.dataService.selectedSnippet = snippet;
           localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
           this.newSnippet = { name: '', desc: '' }; // reset input fields
+
           this.modal.hideModal();
+          sent_snippet.unsubscribe();
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -269,10 +269,9 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           }
 
           this.modal.hideModal();
+          sent_snippet.unsubscribe();
         }
       });
-
-    this.subscriptions.push(sent_snippet);
   }
 
   /**
@@ -307,9 +306,11 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.dataService.selectedSnippet = snippet;
           this.newSnippet = { name: '', desc: '' }; // reset input fields
           this.modal.hideModal();
+          sent_snippet.unsubscribe();
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
+          sent_snippet.unsubscribe();
 
           if (error.status === 409) { // already exist
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT'),
@@ -334,8 +335,6 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.modal.hideModal();
         }
       });
-
-    this.subscriptions.push(sent_snippet);
   }
 
   /**
@@ -376,9 +375,11 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
           this.newSnippet = { name: '', desc: '' }; // reset input fields
           this.modal.hideModal();
+          delete_snippet.unsubscribe();
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
+          delete_snippet.unsubscribe();
 
           if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_EDIT_404'),
@@ -398,8 +399,6 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.modal.hideModal();
         }
       });
-
-    this.subscriptions.push(delete_snippet);
   }
 
   /**

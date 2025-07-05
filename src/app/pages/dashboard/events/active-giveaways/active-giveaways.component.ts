@@ -160,7 +160,6 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     const sub: Subscription = this.apiService.getEventConfig(this.dataService.active_guild!.id)
       .subscribe({
         next: (config: EmbedConfig): void => {
-          console.log(config);
           this.embed_config = config;
           this.dataService.isLoading = false;
           this.startLoading = false;

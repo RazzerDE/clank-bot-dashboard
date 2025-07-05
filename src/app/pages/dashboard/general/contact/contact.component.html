@@ -206,7 +206,7 @@
           <!-- Content of Form -->
           <div class="relative overflow-hidden border-b border-gray-300 dark:!border-gray-700
                         transition-colors duration-500" #formBugReport [style.height]="formContainerHeight">
-            @for (step of getFormStep('BUG'); track step) {
+            @for (step of getFormStep('BUG'); track $index) {
               <div [@stepContent] class="mb-3">
                 <!-- Form Description -->
                 <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>

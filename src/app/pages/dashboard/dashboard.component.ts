@@ -55,7 +55,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected readonly faRefresh: IconDefinition = faRefresh;
 
   private startLoading: boolean = false;
-  private subscriptions: Subscription[] = [];
+  private subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected dataLoading: { moduleProgress: boolean, guildList: boolean } = { moduleProgress: true, guildList: true };
 
@@ -65,14 +65,12 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
     this.dataService.hideGuildSidebar = false;
 
     this.getServerData(); // first call to get the server data
-    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = { moduleProgress: true, guildList: true };
         this.getServerData();
       }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -81,7 +79,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -134,11 +132,13 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
           this.dataService.isLoading = false;
           this.startLoading = false;
 
+          sub.unsubscribe();
           if (moduleStatus['task_1'].cached) { return; }
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
           localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
+          sub.unsubscribe();
           if (err.status === 403) {
             this.dataService.redirectLoginError('FORBIDDEN');
             return;
@@ -155,8 +155,6 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
           this.dataService.isLoading = false;
         }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
