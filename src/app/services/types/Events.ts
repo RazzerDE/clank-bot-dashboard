@@ -1,5 +1,5 @@
 export interface Giveaway {
-  event_id?: string;                        // Unique identifier for the giveaway
+  event_id?: string;                  // Unique identifier for the giveaway
   guild_id?: string;                  // Optional
   channel_id?: string | null;         // Optional
   message_id?: string;                // Optional
@@ -7,6 +7,7 @@ export interface Giveaway {
   creator_id: string;                 // creator of the giveaway
   creator_name: string;               // name of the creator
   creator_avatar: string;             // avatar of the creator
+  creator_invalidImg?: boolean;       // Optional, indicates if the creator avatar is invalid
   gw_req: string | null;              // requirement for the giveaway
   end_date: Date | string;            // end date of the giveaway
   prize: string;                      // prize of the giveaway
@@ -17,4 +18,5 @@ export interface Giveaway {
   sponsor_id?: string;                // Optional, sponsor of the giveaway
   sponsor_name?: string;              // Optional, name of the sponsor
   sponsor_avatar?: string;            // Optional, avatar of the sponsor
+  sponsor_invalidImg?: boolean;       // Optional, indicates if the sponsor avatar is invalid
 }

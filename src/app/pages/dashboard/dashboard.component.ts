@@ -45,7 +45,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   @ViewChild('serverlistDiv') protected serverlistDiv!: ElementRef<HTMLDivElement>;
 
   protected readonly localStorage: Storage = localStorage;
-  protected readonly Math: Math = Math;
+  protected readonly Number: NumberConstructor = Number;
   protected readonly Intl = Intl;
   protected readonly window: Window = window;
 
@@ -53,9 +53,8 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faRefresh: IconDefinition = faRefresh;
-
   private startLoading: boolean = false;
-  private subscription: Subscription | null = null;
+  private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected dataLoading: { moduleProgress: boolean, guildList: boolean } = { moduleProgress: true, guildList: true };
 

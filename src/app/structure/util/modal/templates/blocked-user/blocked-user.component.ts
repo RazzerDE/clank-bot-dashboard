@@ -40,6 +40,7 @@ export class BlockedUserComponent {
    * Avoid typescripts "rounding" on big numbers.
    */
   protected removeCharsFromUserId(): void {
+    if (!this.newBlockedUser.user_id) { return; }
     this.newBlockedUser.user_id = this.newBlockedUser.user_id.replace(/\D/g, '');
   }
 }

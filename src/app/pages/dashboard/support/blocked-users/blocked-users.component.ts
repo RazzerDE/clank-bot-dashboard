@@ -204,6 +204,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
     blockedUser.guild_id = this.dataService.active_guild.id;
     blockedUser.staff_id = this.dataService.profile.id;
     blockedUser.staff_name = this.dataService.profile.username;
+    blockedUser.staff_avatar = this.dataService.profile.avatar;
 
     let avatar_url: string = `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}`;
     if (blockedUser.staff_avatar) {
