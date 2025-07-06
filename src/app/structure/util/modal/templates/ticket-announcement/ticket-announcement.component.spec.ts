@@ -21,7 +21,6 @@ describe('TicketAnnouncementComponent', () => {
 
     fixture = TestBed.createComponent(TicketAnnouncementComponent);
     component = fixture.componentInstance;
-    component['subscriptions'] = []; // Ensure subscriptions is initialized
     fixture.detectChanges();
   });
 

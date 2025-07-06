@@ -4,7 +4,7 @@ import { SupportThemeAddComponent } from './support-theme-add.component';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
-import {of, Subscription, throwError} from "rxjs";
+import {of, throwError} from "rxjs";
 import {SupportTheme} from "../../../../../services/types/Tickets";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
@@ -107,16 +107,6 @@ describe('SupportThemeAddComponent', () => {
     expect(hideModalSpy).toHaveBeenCalled();
   });
 
-  it('should push the subscription to the subscriptions array', () => {
-    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
-    mockApiService.createSupportTheme.mockReturnValue(of({}));
-    component.newTheme = { ...theme };
-    const initialLength = component['subscriptions'].length;
-    component['addSupportTheme'](theme);
-    expect(component['subscriptions'].length).toBe(initialLength + 1);
-    expect(component['subscriptions'][0]).toBeInstanceOf(Subscription);
-  });
-
   it('should call API, update data, show success alert and close modal on successful editSupportTheme', () => {
     localStorage.removeItem('support_themes');
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
@@ -180,16 +170,6 @@ describe('SupportThemeAddComponent', () => {
     );
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
-
-  it('should push the subscription to the subscriptions array for editSupportTheme', () => {
-    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
-    mockApiService.editSupportTheme.mockReturnValue(of({}));
-    component.newTheme = { ...theme };
-    const initialLength = (component as any).subscriptions.length;
-    component['editSupportTheme'](theme);
-    expect((component as any).subscriptions.length).toBe(initialLength + 1);
-    expect((component as any).subscriptions[0]).toBeInstanceOf(Subscription);
   });
 
   it('should sort support_themes by pending status and then by name', () => {

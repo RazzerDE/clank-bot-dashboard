@@ -129,21 +129,22 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
       return;
     }
 
+    let subscription: Subscription | null = null;
     this.discordService.getTeamRoles(this.dataService.active_guild!.id).then((observable) => {
-      const subscription: Subscription = observable.subscribe({
+      subscription = observable.subscribe({
         next: (roles: TeamList): void => {
           this.roles = roles.team_roles;
           this.filteredRoles = roles.team_roles;
           this.discordRoles = roles.other_roles;
           this.dataService.isLoading = false;
-          subscription.unsubscribe();
+          if (subscription) { subscription.unsubscribe(); }
 
           localStorage.setItem('guild_team', JSON.stringify(this.roles));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('guild_team_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
-          subscription.unsubscribe();
+          if (subscription) { subscription.unsubscribe(); }
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
           } else if (err.status === 401) {
@@ -199,8 +200,9 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   removeRole(role: Role): void {
     if (!this.dataService.active_guild) { return; }
 
+    let subscription: Subscription | null = null;
     this.discordService.removeTeamRole(this.dataService.active_guild.id, role.id).then((observable) => {
-      const subscription: Subscription = observable.subscribe({
+      subscription = observable.subscribe({
         next: (_result: boolean): void => {
           // Successfully removed, update shown data
           this.roles = this.roles.filter(r => r.id !== role.id);
@@ -209,14 +211,14 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
           this.discordRoles.push(role);
           this.discordRoles.sort((a, b) => b.position - a.position);
 
-          subscription.unsubscribe();
+          if (subscription) { subscription.unsubscribe(); }
           localStorage.removeItem('guild_team');
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_ROLE_DELETE'),
                                      this.translate.instant('SUCCESS_ROLE_DELETE_DESC', { role: role.name }));
         },
         error: (err: HttpErrorResponse): void => {
-          subscription.unsubscribe();
+          if (subscription) { subscription.unsubscribe(); }
           if (err.status === 404) {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant('ERROR_ROLE_DELETE_TITLE'),
@@ -255,9 +257,10 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
     found_role.support_level = this.getActiveTab();
 
+    let subscription: Subscription | null = null;
     this.discordService.addTeamRole(this.dataService.active_guild.id, found_role.id, (found_role.support_level + 1).toString())
       .then((observable) => {
-        const subscription: Subscription = observable.subscribe({
+        subscription = observable.subscribe({
           next: (_result: boolean): void => {
             // Successfully added, update shown data
             this.addRoleToTeam(found_role);
@@ -270,10 +273,10 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modalComponent.hideModal();
-            subscription.unsubscribe();
+            if (subscription) { subscription.unsubscribe(); }
           },
           error: (err: HttpErrorResponse): void => {
-            subscription.unsubscribe();
+            if (subscription) { subscription.unsubscribe(); }
             if (err.status === 409) {
               this.dataService.error_color = 'red';
               this.dataService.showAlert(this.translate.instant('ERROR_ROLE_ADD_TITLE'),

@@ -138,7 +138,8 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
       }
     }
 
-    let sub: Subscription;
+    let sub: Subscription | null = null;
+    let sub2: Subscription | null = null;
     sub = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
       .subscribe({
         next: (moduleStatus: TasksCompletionList): void => {
@@ -146,11 +147,11 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
           moduleStatus['task_1'].subtasks.pop(); // remove last element, it's not needed
           this.moduleStatusObj = moduleStatus['task_1'];
           this.updateStatus();
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
 
           // after first call was a success, we call the next
           setTimeout((): void => {
-            const sub2: Subscription = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
+            sub2 = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
               .subscribe({
                 next: (supportSetup: SupportSetup): void => {
                   if (supportSetup.support_forum != null) {
@@ -163,10 +164,14 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
                   localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
                   this.dataService.isLoading = false;
                   this.startLoading = false;
-                  sub2.unsubscribe();
-                }, error: (error: HttpErrorResponse): void => { sub2.unsubscribe(); this.dataService.handleApiError(error) }
+                  if (sub2) { sub2.unsubscribe(); }
+                }, error: (error: HttpErrorResponse): void => {
+                  if (sub2) {sub2.unsubscribe(); }
+                  this.dataService.handleApiError(error) }
               }); }, 1000);
-        }, error: (error: HttpErrorResponse): void => { sub.unsubscribe(); this.dataService.handleApiError(error) }
+        }, error: (error: HttpErrorResponse): void => {
+          if (sub) { sub.unsubscribe(); }
+          this.dataService.handleApiError(error) }
       });
   }
 

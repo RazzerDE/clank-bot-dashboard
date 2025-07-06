@@ -55,7 +55,8 @@ export class TicketAnnouncementComponent {
       this.activeAnnounce.end_date = new Date(this.activeAnnounce.end_date).toISOString();  // respect timezone
     }
 
-    const sub: Subscription = this.apiService.setAnnouncement(this.activeAnnounce, this.dataService.active_guild.id)
+    let sub: Subscription | null = null;
+    sub = this.apiService.setAnnouncement(this.activeAnnounce, this.dataService.active_guild.id)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -64,7 +65,7 @@ export class TicketAnnouncementComponent {
 
           localStorage.setItem('ticket_announcement', JSON.stringify(this.activeAnnounce));
           this.hideModal();
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -74,7 +75,7 @@ export class TicketAnnouncementComponent {
             this.dataService.redirectLoginError('UNKNOWN');
           }
           this.hideModal();
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
         }
       });
   }
@@ -91,7 +92,8 @@ export class TicketAnnouncementComponent {
   deleteAnnouncement(): void {
     if (!this.dataService.active_guild) { return; }
 
-    const sub1: Subscription = this.apiService.deleteAnnouncement(this.dataService.active_guild.id)
+    let sub1: Subscription | null = null;
+    sub1 = this.apiService.deleteAnnouncement(this.dataService.active_guild.id)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -103,11 +105,11 @@ export class TicketAnnouncementComponent {
           this.activeAnnounce.end_date = null;
           localStorage.setItem('ticket_announcement', JSON.stringify(this.activeAnnounce));
           this.hideModal();
-          sub1.unsubscribe();
+          if (sub1) { sub1.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
-          sub1.unsubscribe();
+          if (sub1) { sub1.unsubscribe(); }
           if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

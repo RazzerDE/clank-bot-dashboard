@@ -115,7 +115,8 @@ export class WishlistComponent implements AfterViewInit {
     if (cooldownFeature) { cooldownFeature.isLoading = true; cooldownFeature.onCooldown = true; }
 
     const data: FeatureData = { feature_id: feature_id, user_id: this.dataService.profile!.id, vote: vote };
-    const feature_vote: Subscription = this.apiService.sendFeatureVote(data).subscribe({
+    let feature_vote: Subscription | null = null;
+    feature_vote = this.apiService.sendFeatureVote(data).subscribe({
       next: (_data: any): void => {
         this.getFeatureVotes();
         if (cooldownFeature) { cooldownFeature.isLoading = false; }
@@ -123,12 +124,12 @@ export class WishlistComponent implements AfterViewInit {
         this.dataService.error_color = 'green';
         this.dataService.showAlert(this.translate.instant('SUCCESS_VOTE_TITLE'), this.translate.instant('SUCCESS_VOTE_DESC'));
 
-        feature_vote.unsubscribe();
+        if (feature_vote) { feature_vote.unsubscribe(); }
         setTimeout((): void => { if (cooldownFeature) { cooldownFeature.onCooldown = false; } }, 5500);
       },
       error: (error: HttpErrorResponse): void => {
         this.dataService.error_color = 'red';
-        feature_vote.unsubscribe();
+        if (feature_vote) { feature_vote.unsubscribe(); }
 
         if (error.status === 304) { // not modified
           this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
@@ -158,7 +159,8 @@ export class WishlistComponent implements AfterViewInit {
    * it logs the error to the console.
    */
   getFeatureVotes(): void {
-    const get_votes: Subscription = this.apiService.getFeatureVotes().subscribe({
+    let get_votes: Subscription | null = null;
+    get_votes = this.apiService.getFeatureVotes().subscribe({
       next: (votes: FeatureVotes): void => {
         this.feature_list.forEach(feature => {
           const voteData: FeatureVote | undefined = votes.featureVotes.find(vote => vote.id === feature.id);
@@ -172,11 +174,11 @@ export class WishlistComponent implements AfterViewInit {
           this.isOnCooldown = votes.featureVotes.map(v => ({ featureId: v.id, onCooldown: false, isLoading: false }));
         }
         this.dataService.isLoading = false;
-        get_votes.unsubscribe();
+        if (get_votes) { get_votes.unsubscribe(); }
       },
       error: (error: HttpErrorResponse): void => {
         this.dataService.error_color = 'red';
-        get_votes.unsubscribe();
+        if (get_votes) { get_votes.unsubscribe(); }
 
         if (error.status == 429) {
           this.dataService.redirectLoginError('REQUESTS');

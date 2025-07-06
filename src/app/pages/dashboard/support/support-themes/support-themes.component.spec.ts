@@ -38,7 +38,7 @@ describe('SupportThemesComponent', () => {
         { provide: DataHolderService, useValue: { isLoading: false, allowDataFetch: of(true),
             initTheme: { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
               default_roles: [], pending: true, action: 'CREATE' }, redirectLoginError: jest.fn(), showAlert: jest.fn(),
-          support_themes: [] } },
+          support_themes: [], getEmojibyId: jest.fn() } },
       ]
     })
     .compileComponents();
@@ -275,19 +275,6 @@ describe('SupportThemesComponent', () => {
     expect(component['modal'].hideModal).toHaveBeenCalled();
   });
 
-  it('should add subscription to subscriptions array', () => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    const fakeSub = { unsubscribe: jest.fn() };
-    const subscribe = jest.fn(({ next }) => { next({}); return fakeSub; });
-    jest.spyOn(component['apiService'], 'deleteSupportTheme').mockReturnValue({ subscribe } as any);
-
-    component['subscriptions'] = [];
-    component.deleteSupportTheme(mockTheme);
-
-    expect(component['subscriptions'].length).toBe(1);
-    expect(component['subscriptions'][0]).toBe(fakeSub);
-  });
-
   it('should return if no active guild', () => {
     jest.spyOn(component['discordService'], 'getGuildEmojis');
 
@@ -330,7 +317,6 @@ describe('SupportThemesComponent', () => {
     expect(component['discordService'].getGuildEmojis).toHaveBeenCalledWith('guild1');
     expect(component['emojis']).toEqual([{ id: '2', name: 'wink' }]);
     expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify([{ id: '2', name: 'wink' }]));
-    expect(component['subscriptions'].length).toBe(2);
   }));
 
   it('should handle API error 429 by calling redirectLoginError with REQUESTS', fakeAsync(() => {

@@ -112,7 +112,8 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
       return;
     }
 
-    const sub: Subscription = this.apiService.getBlockedUsers(this.dataService.active_guild.id)
+    let sub: Subscription | null = null;
+    sub = this.apiService.getBlockedUsers(this.dataService.active_guild.id)
       .subscribe({
         next: (userData: BlockedUser[]): void => {
           this.user_list = userData;
@@ -120,7 +121,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
 
           this.dataService.isLoading = false;
           this.startLoading = false;
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
 
           localStorage.setItem('blocked_users', JSON.stringify(this.user_list));
           localStorage.setItem('blocked_users_timestamp', Date.now().toString());
@@ -136,7 +137,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
 
           this.dataService.isLoading = false;
           this.startLoading = false;
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
         }
       });
   }
@@ -153,7 +154,8 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   protected deleteBlockedUser(blockedUser: BlockedUser): void {
     if (!this.dataService.active_guild) { return; }
 
-    const delete_blocked: Subscription = this.apiService.deleteBlockedUser(this.dataService.active_guild.id, blockedUser.user_id)
+    let delete_blocked: Subscription | null = null;
+    delete_blocked = this.apiService.deleteBlockedUser(this.dataService.active_guild.id, blockedUser.user_id)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -168,7 +170,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
           }
 
           localStorage.setItem('blocked_users', JSON.stringify(this.user_list));
-          delete_blocked.unsubscribe();
+          if (delete_blocked) { delete_blocked.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -185,7 +187,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
           }
 
-          delete_blocked.unsubscribe();
+          if (delete_blocked) { delete_blocked.unsubscribe(); }
         }
       });
   }
@@ -218,7 +220,8 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
     }
 
     this.disabledAddBtn = true;
-    const add_blocked: Subscription = this.apiService.addBlockedUser(this.dataService.active_guild.id, blockedUser)
+    let add_blocked: Subscription | null = null;
+    add_blocked = this.apiService.addBlockedUser(this.dataService.active_guild.id, blockedUser)
       .subscribe({
         next: (result: BlockedUser): void => {
           blockedUser = result;
@@ -233,11 +236,11 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
           this.updateBlockedUserList(blockedUser);
           this.newBlockedUser = {} as BlockedUser; // reset new blocked user object
           this.disabledAddBtn = false;
-          add_blocked.unsubscribe();
+          if (add_blocked) { add_blocked.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
-          add_blocked.unsubscribe();
+          if (add_blocked) { add_blocked.unsubscribe(); }
 
           if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_TITLE'),

@@ -39,11 +39,6 @@ describe('BlockedUsersComponent', () => {
     dataHolderService.allowDataFetch.next(true);
 
     expect(getBlockedUsersSpy).toHaveBeenCalledWith(true);
-    expect(component['subscriptions'].length).toBeGreaterThan(0);
-  });
-
-  it('should push subscription to subscriptions array', () => {
-    expect(component['subscriptions'].length).toBeGreaterThan(0);
   });
 
   it('should set dataLoading to false after view is checked if conditions are met', () => {
@@ -145,15 +140,6 @@ describe('BlockedUsersComponent', () => {
     expect(component['startLoading']).toBe(false);
   });
 
-  it("should return void if active_guild is not set", () => {
-    component['dataService'].active_guild = null;
-    const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-
-    component['deleteBlockedUser'](mockBlockedUser);
-
-    expect(component['subscriptions'].length).toEqual(1);
-  });
-
   it('should call deleteBlockedUser API and update the user list on success', () => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
@@ -224,15 +210,6 @@ describe('BlockedUsersComponent', () => {
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser.user_id);
     expect(alertSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
-  });
-
-  it("should return void if active_guild is not set when adding a blocked user", () => {
-    component['dataService'].active_guild = null;
-    const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-
-    component['addBlockedUser'](mockBlockedUser);
-
-    expect(component['subscriptions'].length).toEqual(1);
   });
 
   it('should add a blocked user and update the user list on success', () => {

@@ -121,7 +121,8 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
     if (!window.location.href.endsWith('/dashboard')) { return; }
     this.startLoading = true;
 
-    const sub: Subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
+    let sub: Subscription | null = null;
+    sub = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
                                   moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
       .subscribe({
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
@@ -131,13 +132,13 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
           this.dataService.isLoading = false;
           this.startLoading = false;
 
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
           if (moduleStatus['task_1'].cached) { return; }
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
           localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
-          sub.unsubscribe();
+          if (sub) { sub.unsubscribe(); }
           if (err.status === 403) {
             this.dataService.redirectLoginError('FORBIDDEN');
             return;

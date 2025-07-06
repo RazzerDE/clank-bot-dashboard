@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RequirementFieldComponent } from './req-field.component';
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('ReqFieldComponent', () => {
   let component: RequirementFieldComponent;
@@ -8,7 +9,7 @@ describe('ReqFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RequirementFieldComponent]
+      imports: [RequirementFieldComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
 

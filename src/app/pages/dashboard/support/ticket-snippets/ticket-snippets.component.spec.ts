@@ -8,7 +8,6 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {Guild} from "../../../../services/types/discord/Guilds";
 import {TicketSnippet} from "../../../../services/types/Tickets";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Subscription} from "rxjs";
 
 describe('TicketSnippetsComponent', () => {
   let component: TicketSnippetsComponent;
@@ -214,18 +213,6 @@ describe('TicketSnippetsComponent', () => {
     expect(handleErrorSpy).toHaveBeenCalledWith(error);
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
-
-  it('should add subscription to subscriptions array', () => {
-    const mockSubscription = { unsubscribe: jest.fn() } as unknown as Subscription;
-    jest.spyOn(component['apiService'], 'getTicketAnnouncement').mockReturnValue({
-      subscribe: jest.fn(() => mockSubscription),
-    } as any);
-
-    component['dataService'].active_guild = { id: '123' } as Guild;
-    component['getAnnouncementDetails']();
-
-    expect(component['subscriptions']).toContain(mockSubscription);
   });
 
   it("should return if guild_id is not set when adding/editing/delting a new text snippet", () => {
