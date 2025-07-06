@@ -16,7 +16,7 @@
                                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                maxlength="49" minlength="1" [placeholder]="'PLACEHOLDER_EVENT_PRIZE_PLACEHOLDER' | translate"
                [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed !text-gray-400' : ''"
-               [(ngModel)]="this.giveaway.prize" id="prize" [disabled]="this.type === 'EVENTS_EDIT'"/>
+               [(ngModel)]="this.giveaway.prize" id="prize" [disabled]="this.type === 'EVENTS_EDIT'" />
         <div class="relative">
           <div class="absolute top-1/2 -translate-y-1/2 -left-1 flex items-center ps-3 pointer-events-none border-r pr-2
                   border-gray-300 dark:border-gray-500 h-3/5">
@@ -25,7 +25,7 @@
           <input type="number" min="1" max="99" maxlength="2" placeholder="1-99" (input)="checkWinnerInput($any($event))"
                  [(ngModel)]="this.giveaway.winner_count" class="w-28 bg-gray-50 border border-gray-300 text-gray-900
                  text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 ps-12 dark:bg-gray-600
-                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" id="winner_count" />
         </div>
       </div>
 
@@ -36,7 +36,7 @@
       <div class="flex gap-2 justify-between">
         <template-select [options]="this.dataService.guild_channels" [type]="this.type" class="w-full"
                          [activeOption]="$any(this.giveaway.channel_id)"
-                         (selectionChange)="this.giveaway.channel_id = $any($event)" id="channelpicker" />
+                         (selectionChange)="this.giveaway.channel_id = $any($event)" [id]="'channelpicker'" />
         <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
                text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
                dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
@@ -50,7 +50,7 @@
         {{ 'PLACEHOLDER_EVENT_END_DATE_TITLE' | translate }}
       </label>
       <div class="flex gap-2">
-        <template-select [options]="this.giveaway_reqs" [type]="this.type" class="w-full" [id]="getReqId()" id="reqpicker"
+        <template-select [options]="this.giveaway_reqs" [type]="this.type" class="w-full" [id]="getReqId()"
                          [activeOption]="$any(this.giveaway.gw_req)"
                          (selectionChange)="this.giveaway.gw_req = $any($event); this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
         <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
@@ -116,7 +116,7 @@
                                                this.giveaway.gw_req.split('ROLE_ID: ')[1].split(' - ')[0] : ''"
                                (selectionChange)="this.giveaway.gw_req = 'ROLE_ID: ' + $any($event).toString();
                                                   this.dataService.getGWRequirementValue(this.giveaway.gw_req)"
-                               id="role-req" />
+                               [id]="'role-req'" />
             } @else {
               <div class="flex justify-center items-center">
                 <span class="data-loader"></span>
@@ -127,7 +127,7 @@
       }
 
       <!-- Sponsor Input -->
-      <label for="reqpicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      <label for="sponsorid" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
         {{ 'PLACEHOLDER_EVENT_SPONSOR_TITLE' | translate }}
       </label>
       <div class="relative mb-3">
@@ -139,7 +139,7 @@
                  text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 ps-11
                  dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
                  [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-               [placeholder]="'PLACEHOLDER_EVENT_SPONSOR_PLACEHOLDER' | translate"
+               [placeholder]="'PLACEHOLDER_EVENT_SPONSOR_PLACEHOLDER' | translate" id="sponsorid"
                [ngClass]="{'placeholder:text-black dark:placeholder:text-white': this.type === 'EVENTS_EDIT'}"
                (input)="this.numberInput($any($event), false, true);" [(ngModel)]="this.giveaway.sponsor_id" />
       </div>

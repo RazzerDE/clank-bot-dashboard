@@ -1,17 +1,17 @@
 @if (newBlockedUser) {
   <div class="space-y-4">
-    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-      {{ 'PLACEHOLDER_BLOCKED_USER_MODAL_DESC' | translate }}
+    <label for="blockeduser" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_BLOCKED_USER_MODAL_DESC' | translate }} <span class="text-red-500">*</span>
     </label>
     <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
               focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
               dark:!border-gray-500 dark:placeholder-gray-400 disabled:text-gray-400 dark:text-white
               disabled:cursor-not-allowed" [(ngModel)]="newBlockedUser.user_id" [disabled]="this.type === 'BLOCKED_USER_EDIT'"
-           [placeholder]="'PLACEHOLDER_BLOCKED_USER_DESC_PLACEHOLDER' | translate"
+           [placeholder]="'PLACEHOLDER_BLOCKED_USER_DESC_PLACEHOLDER' | translate" id="blockeduser"
            (keyup)="removeCharsFromUserId()" (paste)="removeCharsFromUserId()">
 
-    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-      {{ 'PLACEHOLDER_BLOCKED_USER_MODAL_DETAILS' | translate }}
+    <label for="blockeduser_reason" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_BLOCKED_USER_MODAL_DETAILS' | translate }} <span class="text-red-500">*</span>
     </label>
     <div class="flex gap-2">
       <!-- Reason input field -->
@@ -20,7 +20,7 @@
                                   focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
                                   dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                maxlength="31" minlength="1" [placeholder]="'PLACEHOLDER_REASON' | translate"
-               [(ngModel)]="newBlockedUser.reason">
+               [(ngModel)]="newBlockedUser.reason" id="blockeduser_reason">
       </div>
 
       <!-- Datepicker -->

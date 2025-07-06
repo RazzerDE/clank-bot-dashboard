@@ -138,7 +138,8 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
       }
     }
 
-    const sub: Subscription = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
+    let sub: Subscription;
+    sub = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
       .subscribe({
         next: (moduleStatus: TasksCompletionList): void => {
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));

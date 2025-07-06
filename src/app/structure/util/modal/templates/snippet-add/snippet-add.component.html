@@ -1,22 +1,24 @@
 <!-- Template for Create new Snippet (First Modal) -->
 @if (showFirst) {
   <div class="space-y-4">
-    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-      {{ 'PLACEHOLDER_SNIPPET_MODAL_NAME' | translate }}
+    <label for="snippetname" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_SNIPPET_MODAL_NAME' | translate }} <span class="text-red-500">*</span>
     </label>
     <input type="text" class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
           focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
           dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" maxlength="49" minlength="1"
-           [placeholder]="'PLACEHOLDER_SNIPPET_MODAL_NAME_PLACEHOLDER' | translate" [(ngModel)]="newSnippet.name">
+           [placeholder]="'PLACEHOLDER_SNIPPET_MODAL_NAME_PLACEHOLDER' | translate"
+           [(ngModel)]="newSnippet.name" id="snippetname">
 
-    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
-      {{ 'PLACEHOLDER_SNIPPET_MODAL_DESC' | translate }}
+    <label for="snippetdesc" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+      {{ 'PLACEHOLDER_SNIPPET_MODAL_DESC' | translate }} <span class="text-red-500">*</span>
     </label>
     <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                      focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
                      dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white min-h-28 max-h-96"
               placeholder="{{ 'PLACEHOLDER_SNIPPET_MODAL_DESC_PLACEHOLDER' | translate }}"
-              rows="2" maxlength="999" minlength="1" [(ngModel)]="newSnippet.desc" (keyup)="updateSnippetPreview($event)"></textarea>
+              rows="2" maxlength="999" minlength="1" [(ngModel)]="newSnippet.desc"
+              (keyup)="updateSnippetPreview($event)" id="snippetdesc"></textarea>
 
     <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isSnippetInvalid() && type === 'SUPPORT_SNIPPET_ADD',
                       'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': !isSnippetInvalid() && type !== 'SUPPORT_SNIPPET_ADD',
