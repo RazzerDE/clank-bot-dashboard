@@ -1,0 +1,73 @@
+<dashboard-layout>
+  <!-- TODO:
+  7. spalten-breite bearbeitbar machen
+  8. filter by spalte
+  -->
+  <!-- Body -->
+  <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- Giveaway Modal -->
+    <app-modal [type]="modalType" [obj]="modalObj" [event_action]="this.addGuildEvent.bind(this)"
+               [event_edit]="this.editGuildEvent.bind(this)" [gift_config]="this.embed_config" />
+
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_EVENTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_TITLE' | translate"
+                [color]="'purple'" [desc]="'PAGE_EVENTS_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
+    <div class="flex-1 my-4">
+      <div class="p-3 sm:p-5">
+        <div class="mx-auto max-w-[2000px] max-h-full px-4 lg:!px-0">
+
+          <!-- Table Header -->
+          <div class="bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800 overflow-hidden
+                      dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
+                      transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
+
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+              <div class="w-full md:w-2/6">
+                <div class="flex-1 ml-4 lg:ml-0 ">
+                  <div class="relative self-center">
+                    <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
+                    <input type="text" [placeholder]="'PLACEHOLDER_EVENT_SEARCH' | translate"
+                           (keyup)="searchGiveaways($event)" id="search_giveaways"
+                           class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
+                          dark:!border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-colors duration-500" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Table Buttons -->
+              <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center
+                          justify-end md:space-x-3 flex-shrink-0">
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r focus:ring-4
+                                             font-medium from-purple-500 via-purple-600 to-purple-700
+                                             rounded-lg text-sm px-4 py-2 focus:ring-purple-700 focus:outline-none
+                                             hover:bg-gradient-to-br disabled:!bg-gray-500 disabled:cursor-not-allowed"
+                        (click)="this.openModal('EVENTS_CREATE')" [disabled]="disableSendBtn">
+                  <fa-icon [icon]="faGift" class="me-2" />{{ 'PLACEHOLDER_BUTTON_GIVEAWAY_ADD' | translate }}
+                </button>
+                <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                           via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
+                                           py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                        (click)="this.refreshCache()">
+                  <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <data-table [tconfig]="tableConfig" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</dashboard-layout>

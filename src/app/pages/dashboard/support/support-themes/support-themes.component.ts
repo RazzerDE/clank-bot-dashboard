@@ -42,7 +42,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected discordRoles: Role[] = [];
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
-  protected subscriptions: Subscription[] = [];
+  private readonly subscription: Subscription | null = null;
   private reloadEmojis: boolean = false;
 
   private startLoading: boolean = false;
@@ -64,7 +64,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     this.dataService.isLoading = true;
 
     this.getSupportThemes(); // first call to get the server data
-    const dataFetchSubscription: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = true;
         this.dataService.isLoading = true;
@@ -72,8 +72,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         this.getSupportThemes(true);
       }
     });
-
-    this.subscriptions.push(dataFetchSubscription);
   }
 
   /**
@@ -82,7 +80,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(s => s.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -146,20 +144,23 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       return;
     }
 
+    let subscription: Subscription | null = null;
     this.discordService.getSupportThemes(this.dataService.active_guild!.id).then((observable) => {
-      const subscription: Subscription = observable.subscribe({
+      subscription = observable.subscribe({
         next: (response: SupportThemeResponse): void => {
           this.dataService.support_themes = response.themes;
           this.filteredThemes = this.dataService.support_themes;
           this.discordRoles = response.guild_roles;
           this.dataService.isLoading = false;
           this.dataLoading = false;
+          if (subscription) { subscription.unsubscribe(); }
 
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('support_themes_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
+          if (subscription) { subscription.unsubscribe(); }
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
           } else if (err.status === 401) {
@@ -169,8 +170,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           }
         }
       });
-
-      this.subscriptions.push(subscription);
     });
   }
 
@@ -185,7 +184,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * @param {SupportTheme} theme - The support theme object to be deleted
    */
   public deleteSupportTheme(theme: SupportTheme): void {
-    const del_theme: Subscription = this.apiService.deleteSupportTheme(theme, this.dataService.active_guild!.id)
+    let del_theme: Subscription | null = null;
+    del_theme = this.apiService.deleteSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -198,9 +198,11 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
 
           this.modal.hideModal();
+          if (del_theme) { del_theme.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
+          if (del_theme) { del_theme.unsubscribe(); }
 
           if (error.status === 409) { // already pending
             this.dataService.showAlert(this.translate.instant('ERROR_THEME_DELETION_CONFLICT'),
@@ -215,8 +217,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           this.modal.hideModal();
         }
       });
-
-    this.subscriptions.push(del_theme);
   }
 
   /**
@@ -242,13 +242,16 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       return;
     }
 
+    let subscription: Subscription | null = null;
     this.discordService.getGuildEmojis(this.dataService.active_guild!.id).then((observable) => {
-      const subscription: Subscription = observable.subscribe({
+      subscription = observable.subscribe({
         next: (response: Emoji[]): void => {
           this.emojis = response;
           localStorage.setItem('guild_emojis', JSON.stringify(this.emojis));
+          if (subscription) { subscription.unsubscribe(); }
         },
         error: (err: HttpErrorResponse): void => {
+          if (subscription) { subscription.unsubscribe(); }
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
           } else if (err.status === 401) {
@@ -258,8 +261,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           }
         }
       });
-
-      this.subscriptions.push(subscription);
     });
   }
 
@@ -353,9 +354,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     const foundRoles: Role[] = this.discordRoles.filter(role => selectedOptions.includes(role.id));
     if (useDelete) { selectedOptions = []; }
 
+    let subscription: Subscription | null = null;
     this.discordService.changeDefaultMention(this.dataService.active_guild.id, selectedOptions)
       .then((observable): void => {
-        const subscription: Subscription = observable.subscribe({
+        subscription = observable.subscribe({
           next: (_result: boolean): void => {
             // Successfully changed, update shown data
             this.selectedOptions = selectedOptions;
@@ -375,8 +377,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modal.hideModal();
+            if (subscription) { subscription.unsubscribe(); }
           },
           error: (err: HttpErrorResponse): void => {
+            if (subscription) { subscription.unsubscribe(); }
             if (err.status === 429) {
               this.dataService.redirectLoginError('REQUESTS');
             } else if (err.status === 401) {
@@ -389,8 +393,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
             this.modal.hideModal();
           }
         });
-
-        this.subscriptions.push(subscription);
       });
   }
 

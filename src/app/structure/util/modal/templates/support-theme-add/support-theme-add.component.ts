@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnDestroy, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
@@ -25,7 +25,7 @@ import {HttpErrorResponse} from "@angular/common/http";
   templateUrl: './support-theme-add.component.html',
   styleUrl: './support-theme-add.component.scss'
 })
-export class SupportThemeAddComponent implements OnDestroy {
+export class SupportThemeAddComponent {
   @Input() showFirst: boolean = false;
   @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
@@ -36,18 +36,9 @@ export class SupportThemeAddComponent implements OnDestroy {
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
   protected showEmojiPicker: boolean = false;
-  private subscriptions: Subscription[] = [];
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService,
               private apiService: ApiService) {}
-
-  /**
-   * Lifecycle hook that is called when the component is destroyed.
-   * Unsubscribes from all active subscriptions to prevent memory leaks.
-   */
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
-  }
 
   /**
    * Creates a new support theme by sending it to the API.
@@ -74,6 +65,7 @@ export class SupportThemeAddComponent implements OnDestroy {
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           this.newTheme = this.dataService.initTheme;
           this.hideModal();
+          sent_theme.unsubscribe();
           },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -87,10 +79,9 @@ export class SupportThemeAddComponent implements OnDestroy {
           }
 
           this.hideModal();
+          sent_theme.unsubscribe();
         }
       });
-
-    this.subscriptions.push(sent_theme);
   }
 
   /**
@@ -126,6 +117,7 @@ export class SupportThemeAddComponent implements OnDestroy {
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           this.newTheme = this.dataService.initTheme;
           this.hideModal();
+          edit_theme.unsubscribe();
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -138,10 +130,9 @@ export class SupportThemeAddComponent implements OnDestroy {
           this.newTheme.name = this.newTheme.old_name!;
           this.newTheme = this.dataService.initTheme;
           this.hideModal();
+          edit_theme.unsubscribe();
         }
       });
-
-    this.subscriptions.push(edit_theme);
   }
 
   /**

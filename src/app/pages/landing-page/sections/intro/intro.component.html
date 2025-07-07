@@ -49,8 +49,15 @@
                     @for (item of duplicatedItems; track $index) {
                       <a href="{{ item.guild_invite }}" target="_blank">
                         <div class="slider-item">
-                          <img ngSrc="{{ item.image_url }}" [alt]="item.guild_name + '~ Discord-Server'" width="50" height="50"
-                               class="partner-icon rounded-full" (mouseenter)="activeSlide($event)" (mouseleave)="activeSlide($event)" />
+                          @if (!item.invalidImg) {
+                            <img ngSrc="{{ item.image_url }}" [alt]="item.guild_name + '~ Discord-Server'" width="50" height="50"
+                                 (error)="item.invalidImg = true"
+                                 class="partner-icon rounded-full" (mouseenter)="activeSlide($event)" (mouseleave)="activeSlide($event)" />
+                          } @else {
+                            <div class="partner-icon rounded-full flex items-center justify-center bg-gray-700">
+                              <span>{{ item.guild_name.charAt(0).toUpperCase() + item.guild_name.charAt(1).toUpperCase() }}</span>
+                            </div>
+                          }
                         </div>
                       </a>
                     }

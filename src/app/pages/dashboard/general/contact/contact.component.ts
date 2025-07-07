@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {NgClass} from "@angular/common";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -82,7 +82,7 @@ import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/d
         ])
     ]
 })
-export class ContactComponent implements AfterViewInit, OnDestroy {
+export class ContactComponent implements AfterViewInit {
   protected current_steps: CurrentStep = { bug_report: 2, idea_suggestion: 1 };
   protected bugReportSent: boolean = false;
   protected ideaSuggestionSent: boolean = false;
@@ -116,7 +116,6 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
 
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faDiscord: IconDefinition = faDiscord;
-  private subscriptions: Subscription[] = [];
 
   constructor(protected dataService: DataHolderService, protected translate: TranslateService,
               private apiService: ApiService) {
@@ -141,15 +140,6 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Lifecycle hook that is called when the component is destroyed.
-   *
-   * This method unsubscribes from all active subscriptions to prevent memory leaks.
-   */
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((sub: Subscription): void => sub.unsubscribe());
-  }
-
-  /**
    * Sends the form data to the server.
    * @param type - The type of form to send.
    */
@@ -163,13 +153,13 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
         this.bugReportSent = true;
 
         const bug_report: Subscription = this.apiService.sendBugReport(this.formGroupBug.value).subscribe({
+          next: (_data: any): void => { bug_report.unsubscribe(); },
           error: (_error: HttpErrorResponse): void => {
             this.bugReportInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.bugReportInfo.nativeElement.classList.add('!text-red-600');
+            bug_report.unsubscribe();
           }
         });
-
-        this.subscriptions.push(bug_report);
       }
     } else if (type === 'IDEA') {
       // switch to next step in idea suggestion form
@@ -181,13 +171,13 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
 
         const form_data = { ...this.formGroupIdea.value, profile: this.dataService.profile };
         const idea_suggest: Subscription = this.apiService.sendIdeaSuggestion(form_data).subscribe({
+          next: (_data: any): void => { idea_suggest.unsubscribe(); },
           error: (_error: HttpErrorResponse): void => {
             this.ideaSuggestionInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.ideaSuggestionInfo.nativeElement.classList.add('!text-red-600');
+            idea_suggest.unsubscribe();
           }
         });
-
-        this.subscriptions.push(idea_suggest);
       }
     }
   }

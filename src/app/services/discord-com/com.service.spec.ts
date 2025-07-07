@@ -7,8 +7,9 @@ import {TranslateModule} from "@ngx-translate/core";
 import {AuthService} from "../auth/auth.service";
 import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {config} from "../../../environments/config";
-import {Guild, Role} from "../types/discord/Guilds";
+import {Channel, Guild, Role} from "../types/discord/Guilds";
 import {SupportThemeResponse} from "../types/Tickets";
+import {Observable} from "rxjs";
 
 describe('DiscordComService', () => {
   let service: ComService;
@@ -146,6 +147,68 @@ describe('DiscordComService', () => {
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockEmojis);
+  });
+
+  it('should fetch guild roles for a specific guild', async () => {
+    const mockRoles: Role[] = [{ id: '1', name: 'Role 1' }, { id: '2', name: 'Role 2' }] as Role[];
+    service['isInitialized'] = true;
+
+    const result = await service.getGuildRoles('guild_id');
+
+    result.subscribe(roles => {
+      expect(roles).toEqual(mockRoles);
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/roles?guild_id=guild_id`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockRoles);
+  });
+
+  it('should wait for initialization before fetching guild roles', async () => {
+    service['isInitialized'] = false;
+    const ensureInitSpy = jest.spyOn(service as any, 'ensureInitialized');
+    const httpGetSpy = jest.spyOn(service['http'], 'get').mockReturnValueOnce({
+      subscribe: jest.fn()
+    } as any);
+
+    await service.getGuildRoles('guild_id');
+    expect(ensureInitSpy).toHaveBeenCalled();
+    expect(httpGetSpy).toHaveBeenCalledWith(
+      `${config.api_url}/guilds/roles?guild_id=guild_id`,
+      { headers: service['authService'].headers }
+    );
+  });
+
+  it('should fetch guild channels for a specific guild', async () => {
+    const mockChannels = [{ id: '1', name: 'Channel 1' }, { id: '2', name: 'Channel 2' }];
+    service['isInitialized'] = true;
+
+    const result = await service.getGuildChannels('guild_id');
+
+    result.subscribe(channels => {
+      expect(channels).toEqual(mockChannels);
+    });
+
+    const req = httpMock.expectOne(`${config.api_url}/guilds/channels?guild_id=guild_id`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockChannels);
+  });
+
+  it('should wait for initialization before fetching guild channels', async () => {
+    service['isInitialized'] = false;
+    const ensureInitSpy = jest.spyOn(service as any, 'ensureInitialized');
+    const httpGetSpy = jest.spyOn(service['http'], 'get').mockReturnValueOnce({
+      subscribe: jest.fn()
+    } as unknown as Observable<Channel[]>);
+
+    await service.getGuildChannels('guild_id');
+    expect(ensureInitSpy).toHaveBeenCalled();
+    expect(httpGetSpy).toHaveBeenCalledWith(
+      `${config.api_url}/guilds/channels?guild_id=guild_id`,
+      { headers: service['authService'].headers }
+    );
   });
 
   it('should fetch support themes for a specific guild', async () => {

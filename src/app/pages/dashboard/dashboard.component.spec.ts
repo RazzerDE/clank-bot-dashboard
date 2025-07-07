@@ -3,7 +3,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import { DashboardComponent } from './dashboard.component';
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
-import {of, throwError} from "rxjs";
+import {defer, of} from "rxjs";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DataHolderService} from "../../services/data/data-holder.service";
@@ -79,7 +79,7 @@ describe('DashboardComponent', () => {
     expect(component['disabledCacheBtn']).toBe(false);
   }));
 
-  it('should handle server data retrieval and update tasks', () => {
+  it('should handle server data retrieval and update tasks', fakeAsync(() => {
     const guildUsageMock: SliderItems[] = [{ image_url: '', guild_name: '', guild_invite: '', member_count: 0 }];
     const moduleStatusMock = {
       task_1: {
@@ -92,8 +92,8 @@ describe('DashboardComponent', () => {
       }
     };
 
-    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(of(guildUsageMock));
-    jest.spyOn(apiService, 'getModuleStatus').mockReturnValue(of(moduleStatusMock));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(defer(() => Promise.resolve(guildUsageMock)));
+    jest.spyOn(apiService, 'getModuleStatus').mockReturnValue(defer(() => Promise.resolve(moduleStatusMock)));
     jest.spyOn(dataService, 'redirectLoginError');
 
     window = Object.create(window);
@@ -101,40 +101,52 @@ describe('DashboardComponent', () => {
 
     dataService.active_guild = { id: '1', name: '' } as unknown as Guild;
     component.getServerData();
+    tick();
 
+    expect(component['servers']).toEqual(guildUsageMock);
     expect(dataService.isLoading).toBe(false);
     expect(dataService.redirectLoginError).not.toHaveBeenCalled();
-  });
 
-  it('should handle server data retrieval error', () => {
+    const cached = JSON.parse(localStorage.getItem('moduleStatus')!);
+    expect(cached).toEqual(moduleStatusMock);
+  }));
+
+  it('should handle server data retrieval error', fakeAsync(() => {
     jest.spyOn(dataService, 'redirectLoginError');
     dataService.active_guild = { id: '1', name: '' } as unknown as Guild;
 
-    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 403 })));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 403 }))));
+    jest.spyOn(apiService, 'getModuleStatus').mockReturnValue(defer(() => Promise.resolve({})));
     component.getServerData();
+    tick();
 
     expect(dataService.redirectLoginError).toHaveBeenCalledWith('FORBIDDEN');
 
-    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 429 })));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
     component.getServerData();
+    tick();
 
     expect(dataService.redirectLoginError).toHaveBeenCalledWith('REQUESTS');
 
-    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 0 })));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 0 }))));
     component.getServerData();
+    tick();
 
     expect(dataService.redirectLoginError).toHaveBeenCalledWith('OFFLINE');
 
-    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 401 })));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
     component.getServerData();
+    tick();
 
     expect(dataService.redirectLoginError).toHaveBeenCalledWith('NO_CLANK');
+    tick();
 
-    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
+    jest.spyOn(apiService, 'getGuildUsage').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     component.getServerData();
+    tick();
 
     expect(dataService.isLoading).toBeFalsy();
-  });
+  }));
 
   it('should not re-cache same data if already cached & don\'t do anything if its not in dashboard page', () => {
     const guildUsageMock: SliderItems[] = [{ image_url: '', guild_name: '', guild_invite: '', member_count: 0 }];

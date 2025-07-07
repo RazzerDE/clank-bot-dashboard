@@ -46,7 +46,7 @@ import {
   styleUrl: './ticket-snippets.component.scss'
 })
 export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
-  private subscriptions: Subscription[] = [];
+  private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected dataLoading: { snippets: boolean, announcement: boolean } = { snippets: true, announcement: true };
   private startLoading: boolean = false;
@@ -73,7 +73,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     document.title = 'Ticket Snippets ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSnippetDetails(); // first call to get the server data
-    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
         this.dataLoading = { snippets: true, announcement: true };
@@ -82,8 +82,6 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
         this.getSnippetDetails(true);
       }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -92,7 +90,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -174,7 +172,8 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
       return;
     }
 
-    const sub: Subscription = this.apiService.getSnippets(this.dataService.active_guild.id)
+    let sub: Subscription | null = null;
+    sub = this.apiService.getSnippets(this.dataService.active_guild.id)
       .subscribe({
         next: (snippetData: TicketSnippet[]): void => {
           if (snippetData.length > 0) { this.dataService.selectedSnippet = snippetData[0]; }
@@ -185,16 +184,16 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           localStorage.setItem('ticket_snippets_timestamp', Date.now().toString());
 
           // fetch announcement details after snippets are fetched (avoid ratelimits)
+          if (sub) { sub.unsubscribe(); }
           setTimeout(() => { this.getAnnouncementDetails(); }, 1000);
         },
         error: (err: HttpErrorResponse): void => {
+          if (sub) { sub.unsubscribe(); }
           this.handleError(err);
           this.dataService.isLoading = false;
           this.startLoading = false;
         }
       });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -205,23 +204,24 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
    * details for the active guild and updates the local storage with the fetched data.
    */
   private getAnnouncementDetails(): void {
-    const sub: Subscription = this.apiService.getTicketAnnouncement(this.dataService.active_guild!.id)
+    let sub: Subscription | null = null;
+    sub = this.apiService.getTicketAnnouncement(this.dataService.active_guild!.id)
       .subscribe({
         next: (announcementStatus: TicketAnnouncement): void => {
           this.currentAnnouncement = announcementStatus;
 
           this.dataService.isLoading = false;
           this.startLoading = false;
+          if (sub) { sub.unsubscribe(); }
           localStorage.setItem('ticket_announcement', JSON.stringify(this.currentAnnouncement));
         },
         error: (err: HttpErrorResponse): void => {
+          if (sub) { sub.unsubscribe(); }
           this.handleError(err);
           this.dataService.isLoading = false;
           this.startLoading = false;
         }
       });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -238,7 +238,8 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     if (!this.dataService.active_guild) { return; }
     snippet.guild_id = this.dataService.active_guild!.id;
 
-    const sent_snippet: Subscription = this.apiService.createSnippet(snippet)
+    let sent_snippet: Subscription | null = null;
+    sent_snippet = this.apiService.createSnippet(snippet)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -253,7 +254,9 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.dataService.selectedSnippet = snippet;
           localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
           this.newSnippet = { name: '', desc: '' }; // reset input fields
+
           this.modal.hideModal();
+          if (sent_snippet) { sent_snippet.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -269,10 +272,9 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           }
 
           this.modal.hideModal();
+          if (sent_snippet) { sent_snippet.unsubscribe(); }
         }
       });
-
-    this.subscriptions.push(sent_snippet);
   }
 
   /**
@@ -290,7 +292,8 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     if (!this.dataService.active_guild) { return; }
     snippet.guild_id = this.dataService.active_guild!.id;
 
-    const sent_snippet: Subscription = this.apiService.editSnippet(snippet)
+    let sent_snippet: Subscription | null = null;
+    sent_snippet = this.apiService.editSnippet(snippet)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -307,9 +310,11 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.dataService.selectedSnippet = snippet;
           this.newSnippet = { name: '', desc: '' }; // reset input fields
           this.modal.hideModal();
+          if (sent_snippet) { sent_snippet.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
+          if (sent_snippet) { sent_snippet.unsubscribe(); }
 
           if (error.status === 409) { // already exist
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT'),
@@ -334,8 +339,6 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.modal.hideModal();
         }
       });
-
-    this.subscriptions.push(sent_snippet);
   }
 
   /**
@@ -353,7 +356,8 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     if (!this.dataService.active_guild) { return; }
     snippet.guild_id = this.dataService.active_guild!.id;
 
-    const delete_snippet: Subscription = this.apiService.deleteSnippet(snippet)
+    let delete_snippet: Subscription | null = null;
+    delete_snippet = this.apiService.deleteSnippet(snippet)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -376,9 +380,11 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           localStorage.setItem('ticket_snippets', JSON.stringify(this.snippets));
           this.newSnippet = { name: '', desc: '' }; // reset input fields
           this.modal.hideModal();
+          if (delete_snippet) { delete_snippet.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
+          if (delete_snippet) { delete_snippet.unsubscribe(); }
 
           if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_EDIT_404'),
@@ -398,8 +404,6 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           this.modal.hideModal();
         }
       });
-
-    this.subscriptions.push(delete_snippet);
   }
 
   /**
@@ -451,7 +455,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     // two modals are visible; hide if clicked outside of the modal
-    if ((event.target as HTMLElement).id.includes('roleModalContent')) {
+    if ((event.target as HTMLElement).id.includes('roleModalContent') || (event.target as HTMLElement).id.includes('modal_container')) {
       this.modal.hideModal();
       return;
     }

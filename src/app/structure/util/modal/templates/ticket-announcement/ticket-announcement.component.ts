@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {TicketAnnouncement} from "../../../../../services/types/Tickets";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -27,25 +27,16 @@ import {ApiService} from "../../../../../services/api/api.service";
   templateUrl: './ticket-announcement.component.html',
   styleUrl: './ticket-announcement.component.scss'
 })
-export class TicketAnnouncementComponent implements OnDestroy {
+export class TicketAnnouncementComponent {
   @Input() type: string = '';
   @Input() showFirst: boolean = false;
 
   @Input() activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
-  private subscriptions: Subscription[] = [];
+  protected readonly today: Date = new Date();
 
   constructor(private dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {}
-
-  /**
-   * Lifecycle hook that is called when the component is destroyed.
-   *
-   * This method unsubscribes from all active subscriptions to prevent memory leaks.
-   */
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
-  }
 
   /**
    * Submits the current ticket announcement to the server.
@@ -64,7 +55,8 @@ export class TicketAnnouncementComponent implements OnDestroy {
       this.activeAnnounce.end_date = new Date(this.activeAnnounce.end_date).toISOString();  // respect timezone
     }
 
-    const sub: Subscription = this.apiService.setAnnouncement(this.activeAnnounce, this.dataService.active_guild.id)
+    let sub: Subscription | null = null;
+    sub = this.apiService.setAnnouncement(this.activeAnnounce, this.dataService.active_guild.id)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -73,6 +65,7 @@ export class TicketAnnouncementComponent implements OnDestroy {
 
           localStorage.setItem('ticket_announcement', JSON.stringify(this.activeAnnounce));
           this.hideModal();
+          if (sub) { sub.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
@@ -82,10 +75,9 @@ export class TicketAnnouncementComponent implements OnDestroy {
             this.dataService.redirectLoginError('UNKNOWN');
           }
           this.hideModal();
+          if (sub) { sub.unsubscribe(); }
         }
       });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -100,7 +92,8 @@ export class TicketAnnouncementComponent implements OnDestroy {
   deleteAnnouncement(): void {
     if (!this.dataService.active_guild) { return; }
 
-    const sub1: Subscription = this.apiService.deleteAnnouncement(this.dataService.active_guild.id)
+    let sub1: Subscription | null = null;
+    sub1 = this.apiService.deleteAnnouncement(this.dataService.active_guild.id)
       .subscribe({
         next: (_data: any): void => {
           this.dataService.error_color = 'green';
@@ -112,9 +105,11 @@ export class TicketAnnouncementComponent implements OnDestroy {
           this.activeAnnounce.end_date = null;
           localStorage.setItem('ticket_announcement', JSON.stringify(this.activeAnnounce));
           this.hideModal();
+          if (sub1) { sub1.unsubscribe(); }
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
+          if (sub1) { sub1.unsubscribe(); }
           if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
@@ -132,8 +127,6 @@ export class TicketAnnouncementComponent implements OnDestroy {
           this.hideModal();
         }
       });
-
-    this.subscriptions.push(sub1);
   }
 
   /**

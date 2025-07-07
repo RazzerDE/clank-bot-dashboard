@@ -1,13 +1,13 @@
 <!-- Template für Role Picker (TEAMLIST_ROLE_ADD oder DEFAULT_MENTION) -->
 <label for="rolepicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-3">
   @if (type === 'DEFAULT_MENTION') {
-    {{ 'PLACEHOLDER_MENTION_MODAL_PICK' | translate }}
+    {{ 'PLACEHOLDER_MENTION_MODAL_PICK' | translate }} <span class="text-red-500">*</span>
   } @else {
-    {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }}
+    {{ 'PLACEHOLDER_ROLE_MODAL_PICK' | translate }} <span class="text-red-500">*</span>
   }
 </label>
 <div class="relative">
-  <template-select [discordRoles]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned" />
+  <template-select [options]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned" [id]="'rolepicker'" />
 </div>
 
 <!-- Support-Level for TEAMLIST_ROLE_ADD -->
@@ -19,7 +19,8 @@
     </label>
     <div class="w-full">
       <div class="relative right-0">
-        <ul class="relative flex flex-wrap py-1.5 list-none" id="levelpicker">
+        <input class="hidden" id="levelpicker" />
+        <ul class="relative flex flex-wrap py-1.5 list-none">
           @for (_ of [].constructor(3); track $index) {
             <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
                    dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100

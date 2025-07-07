@@ -10,6 +10,7 @@ import {ModuleSetupComponent} from "./pages/dashboard/support/module-setup/modul
 import {SupportThemesComponent} from "./pages/dashboard/support/support-themes/support-themes.component";
 import {TicketSnippetsComponent} from "./pages/dashboard/support/ticket-snippets/ticket-snippets.component";
 import {BlockedUsersComponent} from "./pages/dashboard/support/blocked-users/blocked-users.component";
+import {ActiveGiveawaysComponent} from "./pages/dashboard/events/active-giveaways/active-giveaways.component";
 
 export const routes: Routes = [
   // General pages
@@ -24,6 +25,9 @@ export const routes: Routes = [
   { path: 'dashboard/support/themes', component: SupportThemesComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/support/snippets', component: TicketSnippetsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/support/blocked-users', component: BlockedUsersComponent, canActivate: [AuthGuard] },
+
+  // Events pages
+  { path: 'dashboard/events/view', component: ActiveGiveawaysComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}

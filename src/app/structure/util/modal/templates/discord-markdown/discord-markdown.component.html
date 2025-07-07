@@ -1,54 +1,192 @@
-<!-- Template for Discord FAQ-Answer Preview -->
-@if (!type.startsWith('SUPPORT_SNIPPET')) {
-  <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
+@switch (true) {
+  <!-- Ticket Snippet Preview -->
+  @case (type.startsWith('SUPPORT_SNIPPET')) {
+    <div class="discord-embed mb-0 h-fit">
+      <div class="author">
+        <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
+        <span>Mr.Supercool ~ ADMINISTRATOR</span>
+      </div>
+
+      <div class="description" #ticketPreview
+           [innerHTML]="this.content.length === 0 ? ('PLACEHOLDER_SNIPPET_PREVIEW_DESC' | translate) : this.content | markdown"></div>
+
+      <div class="footer">
+        @if (this.dataService.active_guild) {
+          <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
+          <span>{{ this.dataService.active_guild.name }}</span>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Template for Giveaway Preview -->
+  @case (type.startsWith('EVENTS_')) {
+    <div class="max-w-xl mx-auto">
+      <div class="flex mb-2">
+        <!-- Message Content -->
+        <img class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold mr-2"
+             [ngSrc]="'assets/img/icons/clank-40x.png'" height="40" width="40" alt="Clank Avatar ~ Clank Discord-Bot" />
+        <div class="flex-1">
+          <div class="flex items-center mb-0">
+            <div class="font-semibold text-black dark:!text-white mr-2">Clank</div>
+            <div class="bg-[#5865f2] text-white text-xs px-1 rounded mr-2 flex items-center">
+              <fa-icon [icon]="faCheck" class="mr-0.5" /> APP
+            </div>
+            <div class="text-[#72767d] text-xs">{{ now | date: (this.translate.currentLang === 'en' ? 'h:mm a' : 'HH:mm') }}</div>
+          </div>
+          <div class="text-white text-base font-bold">
+            <img class="inline-block align-middle mx-0.5" height="20" width="20"
+                 [ngSrc]="'assets/img/icons/confetti.gif'" alt="Confetti ~ Clank Discord-Bot" />
+            <img class="inline-block align-middle mx-0.5" height="20" width="20"
+                 [ngSrc]="'assets/img/icons/confetti.gif'" alt="Confetti ~ Clank Discord-Bot" />
+            <p class="inline-block mx-0.5 mb-0 text-black dark:!text-white">{{ ('PLACEHOLDER_NEW_GIVEAWAY' | translate).toUpperCase() }}</p>
+            <img class="inline-block align-middle mx-0.5" height="20" width="20"
+                 [ngSrc]="'assets/img/icons/confetti.gif'" alt="Confetti ~ Clank Discord-Bot" />
+            <img class="inline-block align-middle mx-0.5" height="20" width="20"
+                 [ngSrc]="'assets/img/icons/confetti.gif'" alt="Confetti ~ Clank Discord-Bot" />
+          </div>
+
+          <!-- Embed Content -->
+          <div class="bg-[#2f3136] rounded border-l-4 p-3 mt-1" [style.border-color]="getEventEmbedColor(this.embed_config.color_code)">
+            <div class="flex">
+              <div class="flex-1 pr-3">
+                <div class="text-white font-semibold text-base mb-2">
+                  <img class="inline-block align-middle mx-0.5 mb-1" height="20" width="20"
+                       [ngSrc]="'assets/img/icons/' + this.getPrizeEmoji(this.giveaway!.prize)" alt="Price-Emoji ~ Clank Discord-Bot" />
+                  <span [innerText]="this.giveaway?.prize!.length > 0 ? this.giveaway?.prize : ('PLACEHOLDER_GIVEAWAY_PRIZE' | translate)" class="mx-0.5" ></span>
+                  <img class="inline-block align-middle mx-0.5 mb-1" height="20" width="20"
+                       [ngSrc]="'assets/img/icons/' + this.getPrizeEmoji(this.giveaway!.prize)" alt="Price-Emoji ~ Clank Discord-Bot" />
+                </div>
+
+                <div class="mb-3 text-sm" [innerHTML]="'PLACEHOLDER_GIVEAWAY_EMBED_INVITE' | translate"></div>
+
+                <!-- Information Section -->
+                <div class="mb-3">
+                  <div class="text-white font-bold text-sm mb-0">
+                    <img class="inline-block align-middle mb-1" height="20" width="20"
+                         [ngSrc]="'assets/img/icons/news.gif'" alt="News-Emoji ~ Clank Discord-Bot" />
+                    › <span class="underline">Information</span>
+                  </div>
+                  <div class="text-sm">
+                    <div><img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
+                              [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
+                      <span [innerText]="this.giveaway ? this.giveaway.winner_count :'0'" class="font-bold text-white">1</span>
+                      {{'PLACEHOLDER_GIVEAWAY_EMBED_WINNERS' | translate }}
+                    </div>
+                    <div><img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
+                           [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
+                      <span [innerText]="this.giveaway ? this.giveaway.participants : '0'" class="font-bold text-white"></span>
+                      {{'PLACEHOLDER_GIVEAWAY_EMBED_PARTICIPANTS' | translate }}
+                    </div>
+                    <div><img class="inline-block align-middle mb-1" height="20" width="20"
+                              [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
+                      {{ 'PLACEHOLDER_GIVEAWAY_EMBED_CREATOR' | translate }}
+                      <span class="text-[#00aff4] bg-[#5865f2] bg-opacity-10 rounded px-0.5">&#64;{{this.dataService.profile?.username}}</span>
+                    </div>
+                    <div><img class="inline-block align-middle mb-1" height="20" width="20"
+                              [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
+                      {{ 'PLACEHOLDER_GIVEAWAY_EMBED_ENDS' | translate}}
+                      <span class="font-bold" [innerText]="this.giveaway ?
+                      (this.ownDatePipe.transform(this.giveaway.end_date, this.translate.currentLang, 'short')) :
+                      this.translate.currentLang === 'de' ? 'in 1 Stunde' : 'in 1 hour'"></span>
+                    </div>
+                    <div [class.hidden]="!this.giveaway?.sponsor_id">
+                      <img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
+                           [ngSrc]="'assets/img/icons/love.gif'" alt="Love-Emoji ~ Clank Discord-Bot" />
+                    <span [innerHTML]="('PLACEHOLDER_GIVEAWAY_EMBED_SPONSOR' | translate)"></span> </div>
+                  </div>
+                </div>
+
+                <!-- Requirements Section -->
+                <div class="mb-3">
+                  <div class="text-white font-bold text-sm mb-1">
+                    <img class="inline-block align-middle mb-1 mr-0.5" height="20" width="20"
+                         [ngSrc]="'assets/img/icons/pin.gif'" alt="Pin-Emoji ~ Clank Discord-Bot" />
+                    › <span class="underline">{{ 'PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS' | translate }}</span>
+                  </div>
+                  <div class="text-sm">
+                    <div [class.hidden]="reqElement.innerHTML.length === 0">
+                      <img class="inline-block align-middle mb-1 mr-0.5" height="20" width="20"
+                           [ngSrc]="'assets/img/icons/arrow2.png'" alt="Arrow2-Emoji ~ Clank Discord-Bot" />
+                    <span #reqElement id="req_element"></span></div>
+                    <div><img class="inline-block align-middle mb-1 mr-0.5" height="20" width="20"
+                              [ngSrc]="'assets/img/icons/arrow2.png'" alt="Arrow2-Emoji ~ Clank Discord-Bot" />
+                      <span [innerHTML]="'PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_NONE' | translate"></span></div>
+                  </div>
+                </div>
+
+                <div class="text-sm" [innerHTML]="'PLACEHOLDER_GIVEAWAY_EMBED_STATS' | translate"></div>
+              </div>
+
+              <!-- Right column for the gift image -->
+              @if (embed_config.thumbnail_url != null) {
+                <div class="flex items-start justify-center">
+                  @if (!this.invalidImg) {
+                    <div class="w-20 h-20 flex items-center justify-center">
+                      <img height="80" width="80" [ngSrc]="embed_config.thumbnail_url" alt="Embed-Avatar ~ Clank Discord-Bot"
+                           (error)="this.invalidImg = true;"/>
+                    </div>
+                  } @else {
+                    <div class="w-20 h-20 rounded bg-gray-600 flex items-center justify-center">
+                      <span class="text-2xl">:)</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <button class="bg-[#5865f2] text-white border-none rounded-xl px-4 py-1.5 text-sm font-medium flex items-center">
+              @if ((embed_config.emoji_reaction && embed_config.emoji_reaction.startsWith('<')) || !embed_config.emoji_reaction) {
+                <img class="inline-block align-middle mt-0 mr-1" height="20" width="20" alt="Participate-Emoji ~ Clank Discord-Bot"
+                     [ngSrc]="this.dataService.getEmojibyId(this.embed_config.emoji_reaction ? this.embed_config.emoji_reaction : '<a:present:873708141085343764>')" />
+              } @else {
+                <div class="inline-block align-middle mt-0 mr-1">
+                  <span class="emoji" [innerText]="this.embed_config.emoji_reaction"></span>
+                </div>
+              } {{ 'PLACEHOLDER_GIVEAWAY_EMBED_BUTTON' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Discord FAQ-Answer Preview -->
+  @default {
+    <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
                   text-gray-300 font-sans mt-2 transition-all duration-300"
-       [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
-    <div class="absolute top-0 left-0 w-1 h-full rounded-l"
-    [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'bg-[#f98928]' : 'bg-[#5865f2]'"></div>
-    <div class="pl-3 w-full">
-      <div class="flex items-center font-bold text-sm text-white mb-0">
-        <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
-        <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/faq_answer_theme.gif'"
-             alt="Clank-Icon ~ Clank Discord-Bot" class="w-5 h-5" height="40" width="40"
-             [ngClass]="!type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'mx-2' : 'ml-2 mx-0.5'">
-        <span>~ {{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
-          ? ('PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE' | translate) : ('PLACEHOLDER_THEME_PREVIEW_TITLE' | translate) }}</span>
-      </div>
+         [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
+      <div class="absolute top-0 left-0 w-1 h-full rounded-l"
+           [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'bg-[#f98928]' : 'bg-[#5865f2]'"></div>
+      <div class="pl-3 w-full">
+        <div class="flex items-center font-bold text-sm text-white mb-0">
+          <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
+          <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/faq_answer_theme.gif'"
+               alt="Clank-Icon ~ Clank Discord-Bot" class="w-5 h-5" height="40" width="40"
+               [ngClass]="!type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'mx-2' : 'ml-2 mx-0.5'">
+          <span>~ {{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+            ? ('PLACEHOLDER_ANNOUNCEMENT_EMBED_TITLE' | translate) : ('PLACEHOLDER_THEME_PREVIEW_TITLE' | translate) }}</span>
+        </div>
 
-      <div class="mb-1.5 text-sm font-normal leading-snug whitespace-pre-wrap break-words">
-        <img ngSrc="assets/img/icons/faq_answer-small.png" alt="Clank-Icon ~ Clank Discord-Bot"
-             class="h-[19px] rounded-full inline-block ml-0.5 mr-1 mt-0.5 align-middle" height="19" width="19">
-        <span class="align-middle" #faqPreview
-              [innerHTML]="!content || (content && content.length === 0) ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
+        <div class="mb-1.5 text-sm font-normal leading-snug whitespace-pre-wrap break-words">
+          <img ngSrc="assets/img/icons/faq_answer-small.png" alt="Clank-Icon ~ Clank Discord-Bot"
+               class="h-[19px] rounded-full inline-block ml-0.5 mr-1 mt-0.5 align-middle" height="19" width="19">
+          <span class="align-middle" #faqPreview
+                [innerHTML]="!content || (content && content.length === 0) ? ('PLACEHOLDER_THEME_PREVIEW_DESC' | translate) : (content | markdown)">
         </span>
+        </div>
+
+        <!-- Footer-Area -->
+        <div class="flex items-center font-medium text-[10px] tracking-tight leading-3 text-gray-200 mt-2">
+          <img ngSrc="assets/img/icons/clank.png" alt="Clank-Icon ~ Clank Discord-Bot"
+               class="w-4 h-4 rounded-full mr-1.5" height="16" width="16">
+          <span>{{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ?
+            ('PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER' | translate) : ('PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate) }}</span>
+        </div>
       </div>
-
-      <!-- Footer-Area -->
-      <div class="flex items-center font-medium text-[10px] tracking-tight leading-3 text-gray-200 mt-2">
-        <img ngSrc="assets/img/icons/clank.png" alt="Clank-Icon ~ Clank Discord-Bot"
-             class="w-4 h-4 rounded-full mr-1.5" height="16" width="16">
-        <span>{{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ?
-          ('PLACEHOLDER_ANNOUNCEMENT_PREVIEW_FOOTER' | translate) : ('PLACEHOLDER_THEME_PREVIEW_FOOTER' | translate) }}</span>
-      </div>
     </div>
-  </div>
-} @else {
-  <!-- Template for Discord Snippet Preview -->
-  <div class="discord-embed mb-0 h-fit">
-    <div class="author">
-      <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
-      <span>Mr.Supercool ~ ADMINISTRATOR</span>
-    </div>
-
-    <div class="description" #ticketPreview
-         [innerHTML]="this.content.length === 0 ? ('PLACEHOLDER_SNIPPET_PREVIEW_DESC' | translate) : this.content | markdown"></div>
-
-    <div class="footer">
-      @if (this.dataService.active_guild) {
-        <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
-        <span>{{ this.dataService.active_guild.name }}</span>
-      }
-    </div>
-  </div>
+  }
 }
 

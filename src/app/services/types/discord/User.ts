@@ -16,13 +16,15 @@ export interface DiscordUser {
 }
 
 export interface BlockedUser {
-  guild_id?: string;            // Only used for adding a blocked user, not for listing
+  guild_id?: string;                      // Only used for adding a blocked user, not for listing
+  invalidImg?: boolean;                   // Optional property to indicate if the user avatar is invalid
   user_id: string;
   user_name: string;
   user_avatar: string | null;
   staff_id: string;
   staff_name: string;
   staff_avatar: string | null;
+  staff_invalidImg?: boolean;             // Optional property to indicate if the staff avatar is invalid
   reason: string;
-  end_date: number | string | null;      // null if no end date is set (else timestamp)
+  end_date: number | string | null;       // null if no end date is set (else timestamp)
 }

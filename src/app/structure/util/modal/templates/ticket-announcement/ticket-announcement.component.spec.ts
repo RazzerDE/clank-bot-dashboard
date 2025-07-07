@@ -1,10 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { TicketAnnouncementComponent } from './ticket-announcement.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {Guild} from "../../../../../services/types/discord/Guilds";
+import {defer} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
 
 describe('TicketAnnouncementComponent', () => {
   let component: TicketAnnouncementComponent;
@@ -21,7 +23,6 @@ describe('TicketAnnouncementComponent', () => {
 
     fixture = TestBed.createComponent(TicketAnnouncementComponent);
     component = fixture.componentInstance;
-    component['subscriptions'] = []; // Ensure subscriptions is initialized
     fixture.detectChanges();
   });
 
@@ -61,19 +62,15 @@ describe('TicketAnnouncementComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should handle success response correctly', () => {
+  it('should handle success response correctly', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as Guild;
-    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.next({});
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
+    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue(defer(() => Promise.resolve({})));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
     localStorage.removeItem('ticket_announcement');
 
     component.submitAnnouncement();
+    tick();
 
     expect(alertSpy).toHaveBeenCalledWith(
       expect.any(String),
@@ -81,43 +78,36 @@ describe('TicketAnnouncementComponent', () => {
     );
     expect(hideModalSpy).toHaveBeenCalled();
     expect(localStorage.getItem('ticket_announcement')).toBeTruthy();
-  });
+  }));
 
-  it('should handle error response with status 429', () => {
+  it('should handle error response with status 429', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as Guild;
-    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    component['activeAnnounce'] = { level: 1, description: 'Test announcement', end_date: '2023-10-01' };
+    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
 
     component.submitAnnouncement();
+    tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle error response with unknown status', () => {
+  it('should handle error response with unknown status', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as Guild;
-    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
 
     component.submitAnnouncement();
+    tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should not proceed if active_guild is not set', () => {
+  it('should not proceed if active_guild is not set (delete)', () => {
     jest.spyOn(component['apiService'], 'deleteAnnouncement');
     component['dataService'].active_guild = null;
 
@@ -126,18 +116,14 @@ describe('TicketAnnouncementComponent', () => {
     expect(component['apiService'].deleteAnnouncement).not.toHaveBeenCalled();
   });
 
-  it('should handle successful deletion of announcement', () => {
+  it('should handle successful deletion of announcement (delete)', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as any;
-    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.next({});
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
+    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue(defer(() => Promise.resolve({})));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
 
     component.deleteAnnouncement();
+    tick();
 
     expect(alertSpy).toHaveBeenCalledWith(
       expect.any(String),
@@ -148,37 +134,30 @@ describe('TicketAnnouncementComponent', () => {
     expect(component.activeAnnounce.end_date).toBeNull();
     expect(localStorage.getItem('ticket_announcement')).toBe(JSON.stringify(component.activeAnnounce));
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle error response with status 429', () => {
+  it('should handle error response with status 429 (delete)', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as any;
-    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
 
     component.deleteAnnouncement();
+    tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
     expect(hideModalSpy).not.toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle error response with status 404', () => {
+  it('should handle error response with status 404 (delete)', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as any;
-    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.error({ status: 404 });
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
+    localStorage.removeItem('ticket_announcement');
+    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 404 }))));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
 
     component.deleteAnnouncement();
+    tick();
 
     expect(alertSpy).toHaveBeenCalledWith(
       expect.any(String),
@@ -189,24 +168,20 @@ describe('TicketAnnouncementComponent', () => {
     expect(component.activeAnnounce.end_date).toBeNull();
     expect(localStorage.getItem('ticket_announcement')).toBe(JSON.stringify(component.activeAnnounce));
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle error response with unknown status', () => {
+  it('should handle error response with unknown status (delete)', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as any;
-    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue({
-      subscribe: (callbacks: any) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    jest.spyOn(component['apiService'], 'deleteAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
 
     component.deleteAnnouncement();
+    tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
   it('should return true if level or description is null', () => {
     component.activeAnnounce.level = null;

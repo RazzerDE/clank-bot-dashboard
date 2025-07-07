@@ -22,6 +22,9 @@ import {SnippetAddComponent} from "./templates/snippet-add/snippet-add.component
 import {TicketAnnouncementComponent} from "./templates/ticket-announcement/ticket-announcement.component";
 import {BlockedUser} from "../../../services/types/discord/User";
 import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
+import {CreateGiveawayComponent} from "./templates/create-giveaway/create-giveaway.component";
+import {Giveaway} from "../../../services/types/Events";
+import {EmbedConfig} from "../../../services/types/Config";
 
 @Component({
   selector: 'app-modal',
@@ -36,6 +39,7 @@ import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.compon
     SnippetAddComponent,
     TicketAnnouncementComponent,
     BlockedUserComponent,
+    CreateGiveawayComponent,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
@@ -69,15 +73,19 @@ export class ModalComponent implements AfterContentInit  {
   @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() content: string = '';
+
   @Input() extra: Role[] = [];
-  @Input() obj: TicketSnippet | BlockedUser = {} as TicketSnippet;
+  @Input() obj: TicketSnippet | BlockedUser | Giveaway = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
+  @Input() gift_config: EmbedConfig = { color_code: null, thumbnail_url: null, banner_url: null, emoji_reaction: null };
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
   @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => {};
   @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
+  @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
+  @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
 
   protected isVisible: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;
@@ -86,6 +94,7 @@ export class ModalComponent implements AfterContentInit  {
   @ViewChild('roleModalContent') modalContent!: ElementRef<HTMLDivElement>;
   @ViewChild('roleBackdrop') roleBackdrop!: ElementRef<HTMLDivElement>;
   @ViewChild('secondSnippetAdd') secondSnippetAdd: SnippetAddComponent | undefined = undefined;
+  @ViewChild('secondGiveawayAdd') secondGiveawayAdd: CreateGiveawayComponent | undefined = undefined;
 
   constructor(protected dataService: DataHolderService, private cdr: ChangeDetectorRef) {}
 
@@ -136,6 +145,7 @@ export class ModalComponent implements AfterContentInit  {
    * @returns `true` if a second modal should be displayed, otherwise `false`.
    */
   protected showSecondModal(): boolean {
-    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) && !this.type.includes('TEAMLIST')
+    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) ||
+      this.type.startsWith('EVENTS_') && !this.type.includes('TEAMLIST')
   }
 }

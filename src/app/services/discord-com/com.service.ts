@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
-import {Guild, Role} from "../types/discord/Guilds";
+import {Channel, Guild, Role} from "../types/discord/Guilds";
 import {SupportThemeResponse} from "../types/Tickets";
 
 @Injectable({
@@ -66,6 +66,36 @@ export class ComService {
   async getGuildEmojis(guild_id: string): Promise<Observable<any>> {
     await this.ensureInitialized();
     return this.http.get<any>(`${config.api_url}/guilds/emojis?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Retrieves the list of roles for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the roles for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to fetch roles for.
+   * @returns {Promise<Observable<Role[]>>} A promise that resolves to an observable of the list of roles.
+   */
+  async getGuildRoles(guild_id: string): Promise<Observable<Role[]>> {
+    await this.ensureInitialized();
+    return this.http.get<Role[]>(`${config.api_url}/guilds/roles?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Retrieves the list of channels for a specific guild.
+   *
+   * This method ensures that the service is initialized before making the request.
+   * It makes a GET request to the internal API to fetch the channels for the specified guild.
+   *
+   * @param {string} guild_id - The ID of the guild to fetch channels for.
+   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the list of channels.
+   */
+  async getGuildChannels(guild_id: string): Promise<Observable<Channel[]>> {
+    await this.ensureInitialized();
+    return this.http.get<Channel[]>(`${config.api_url}/guilds/channels?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

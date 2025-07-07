@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {SelectComponent} from './select.component';
 import {TranslateModule} from "@ngx-translate/core";
+import {ElementRef} from "@angular/core";
+import {Channel, Role} from "../../../../../services/types/discord/Guilds";
+import {SelectItems} from "../../../../../services/types/Config";
 
 describe('SelectComponent', () => {
   let component: SelectComponent;
@@ -26,55 +29,133 @@ describe('SelectComponent', () => {
     expect(component.isDefaultMentioned('anyRoleId')).toBe(false);
   });
 
-  it('should set isRolePickerValid to true and emit selected roles when a valid role is selected', () => {
-    const mockSelect = document.createElement('select');
-    const option1 = document.createElement('option');
-    option1.value = 'role1';
-    option1.selected = true;
-    mockSelect.appendChild(option1);
+  it('should return early if options is empty', () => {
+    component.options = [];
+    const emitSpy = jest.spyOn(component.selectionChange, 'emit');
+    component.changeSelectPicker();
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
 
-    component.rolePicker = { nativeElement: mockSelect } as any;
+  it('should handle role type selection and emit selected roles', () => {
+    const mockRole = { id: '1', name: 'Role1' } as Role;
+    component.options = [mockRole];
+    component.type = '';
+    component.rolePicker = {
+      nativeElement: {
+        value: '1',
+        selectedOptions: [{value: '1'}, {value: '2'}]
+      }
+    } as unknown as ElementRef<HTMLSelectElement>;
+    jest.spyOn(component as any, 'isSelectItemsType').mockReturnValue(false);
+    jest.spyOn(component as any, 'isRoleType').mockReturnValue(true);
     jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_ROLE_MODAL_DEFAULT');
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.validateRolePicker();
+    component.changeSelectPicker();
 
     expect(component.isRolePickerValid).toBe(true);
-    expect(emitSpy).toHaveBeenCalledWith(['role1']);
+    expect(emitSpy).toHaveBeenCalledWith(['1', '2']);
   });
 
-  it('should set isRolePickerValid to false and emit empty array when no role is selected', () => {
-    const mockSelect = document.createElement('select');
-    const option1 = document.createElement('option');
-    option1.value = '';
-    option1.selected = true;
-    mockSelect.appendChild(option1);
-
-    component.rolePicker = { nativeElement: mockSelect } as any;
+  it('should set isRolePickerValid to false if selectedRole is empty', () => {
+    const mockRole = { id: '1', name: 'Role1' } as Role;
+    component.options = [mockRole];
+    component.rolePicker = {
+      nativeElement: {
+        value: '',
+        selectedOptions: []
+      }
+    } as unknown as ElementRef<HTMLSelectElement>;
+    jest.spyOn(component as any, 'isSelectItemsType').mockReturnValue(false);
+    jest.spyOn(component as any, 'isRoleType').mockReturnValue(true);
     jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_ROLE_MODAL_DEFAULT');
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.validateRolePicker();
+    component.changeSelectPicker();
 
     expect(component.isRolePickerValid).toBe(false);
-    expect(emitSpy).toHaveBeenCalledWith(['']);
+    expect(emitSpy).toHaveBeenCalledWith([]);
   });
 
-  it('should set isRolePickerValid to false if selected role is the placeholder', () => {
-    const mockSelect = document.createElement('select');
-    const option1 = document.createElement('option');
-    option1.value = 'PLACEHOLDER_ROLE_MODAL_DEFAULT';
-    option1.selected = true;
-    mockSelect.appendChild(option1);
-
-    component.rolePicker = { nativeElement: mockSelect } as any;
-    jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_ROLE_MODAL_DEFAULT');
+  it('should use channel placeholder if not role type', () => {
+    const mockChannel = { id: '2', name: 'Channel1' } as Channel;
+    component.options = [mockChannel];
+    component.rolePicker = {
+      nativeElement: {
+        value: '2',
+        selectedOptions: [{value: '2'}]
+      }
+    } as unknown as ElementRef<HTMLSelectElement>;
+    jest.spyOn(component as any, 'isSelectItemsType').mockReturnValue(false);
+    jest.spyOn(component as any, 'isRoleType').mockReturnValue(false);
+    jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_CHANNEL_MODAL_DEFAULT');
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.validateRolePicker();
+    component.changeSelectPicker();
 
-    expect(component.isRolePickerValid).toBe(false);
-    expect(emitSpy).toHaveBeenCalledWith(['PLACEHOLDER_ROLE_MODAL_DEFAULT']);
+    expect(component.isRolePickerValid).toBe(true);
+    expect(emitSpy).toHaveBeenCalledWith(['2']);
+  });
+
+  it('should handle SelectItems type and emit first selected value', () => {
+    const mockSelectItem = { label: 'Test', value: 'abc' } as SelectItems;
+    component.options = [mockSelectItem];
+    component.rolePicker = {
+      nativeElement: {
+        selectedOptions: [{value: 'abc'}]
+      }
+    } as unknown as ElementRef<HTMLSelectElement>;
+    jest.spyOn(component as any, 'isSelectItemsType').mockReturnValue(true);
+    const emitSpy = jest.spyOn(component.selectionChange, 'emit');
+
+    component.changeSelectPicker();
+
+    expect(emitSpy).toHaveBeenCalledWith('abc');
+  });
+
+  it('should return true if value is a Role object', () => {
+    const mockRole = { id: '123', name: 'TestRole' } as Role;
+    expect(component['isRoleType'](mockRole)).toBe(true);
+  });
+
+  it('should return true if value is a SelectItems object', () => {
+    const mockSelectItems = { value: '123', label: 'TestRole' } as SelectItems;
+    expect(component['isSelectItemsType'](mockSelectItems)).toBe(true);
+  });
+
+  it('should return true if value is a ChannelType object', () => {
+    const mockChannel = {parent_id: '123', permission_overwrites: '123', nsfw: false} as unknown as Channel;
+    expect(component['isChannelType'](mockChannel)).toBe(true);
+  });
+
+  it('should return false if options is empty', () => {
+    component.options = [];
+    component.type = 'EVENTS_TEST';
+    expect(component.isChannelList()).toBe(false);
+  });
+
+  it('should return false if first option is not a Channel', () => {
+    const mockRole = { id: '1', name: 'Role1' } as Role;
+    component.options = [mockRole];
+    component.type = 'EVENTS_TEST';
+    jest.spyOn(component as any, 'isChannelType').mockReturnValue(false);
+    expect(component.isChannelList()).toBe(false);
+  });
+
+  it('should return false if type does not start with EVENTS_', () => {
+    const mockChannel = {parent_id: '1', permission_overwrites: 'x', nsfw: false} as unknown as Channel;
+    component.options = [mockChannel];
+    component.type = 'SOMETHING_ELSE';
+    jest.spyOn(component as any, 'isChannelType').mockReturnValue(true);
+    expect(component.isChannelList()).toBe(false);
+  });
+
+  it('should return true if options has Channel and type starts with EVENTS_', () => {
+    const mockChannel = {parent_id: '1', permission_overwrites: 'x', nsfw: false} as unknown as Channel;
+    component.options = [mockChannel];
+    component.type = 'EVENTS_ANNOUNCE';
+    jest.spyOn(component as any, 'isChannelType').mockReturnValue(true);
+    expect(component.isChannelList()).toBe(true);
   });
 
 });

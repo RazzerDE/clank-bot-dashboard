@@ -40,7 +40,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   protected channelItems: Channel[] = [];
 
   protected selectedChannel: Channel | null = null;
-  private subscriptions: Subscription[] = [];
+  private subscription: Subscription | null = null;
   protected cacheRefreshDisabled: boolean = false;
   protected moduleStatusObj: TasksCompletion | undefined;
   protected supportForum: { channel: Channel | null, pending: boolean } = { channel: null, pending: false };
@@ -53,7 +53,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
     document.title = 'Support Setup ~ Clank Discord-Bot';
 
     this.getServerData(); // first call to get the server data
-    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = { statusBox: true, channelItems: true };
         this.supportForum = { channel: null, pending: false };
@@ -62,8 +62,6 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
         this.getServerData(true);
       }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -72,7 +70,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -140,17 +138,20 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
       }
     }
 
-    const sub: Subscription = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
+    let sub: Subscription | null = null;
+    let sub2: Subscription | null = null;
+    sub = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
       .subscribe({
         next: (moduleStatus: TasksCompletionList): void => {
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
           moduleStatus['task_1'].subtasks.pop(); // remove last element, it's not needed
           this.moduleStatusObj = moduleStatus['task_1'];
           this.updateStatus();
+          if (sub) { sub.unsubscribe(); }
 
           // after first call was a success, we call the next
           setTimeout((): void => {
-            const sub2: Subscription = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
+            sub2 = this.apiService.getSupportSetupStatus(this.dataService.active_guild!.id)
               .subscribe({
                 next: (supportSetup: SupportSetup): void => {
                   if (supportSetup.support_forum != null) {
@@ -163,14 +164,15 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
                   localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
                   this.dataService.isLoading = false;
                   this.startLoading = false;
-                }, error: (error: HttpErrorResponse): void => this.dataService.handleApiError(error)
-              });
-
-            this.subscriptions.push(sub2); }, 1000);
-        }, error: (error: HttpErrorResponse): void => this.dataService.handleApiError(error)
+                  if (sub2) { sub2.unsubscribe(); }
+                }, error: (error: HttpErrorResponse): void => {
+                  if (sub2) {sub2.unsubscribe(); }
+                  this.dataService.handleApiError(error) }
+              }); }, 1000);
+        }, error: (error: HttpErrorResponse): void => {
+          if (sub) { sub.unsubscribe(); }
+          this.dataService.handleApiError(error) }
       });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -196,6 +198,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
 
             this.dataService.error_color = 'green';
             this.dataService.showAlert(this.translate.instant('SUCCESS_SAVE'), this.translate.instant('SUCCESS_FORUM_DESC'));
+            subscription.unsubscribe();
           },
           error: (err: HttpErrorResponse): void => {
             if (err.status === 409) {
@@ -208,10 +211,10 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
             } else {
               this.dataService.redirectLoginError('EXPIRED');
             }
+
+            subscription.unsubscribe();
           }
         });
-
-        this.subscriptions.push(subscription);
       });
   }
 

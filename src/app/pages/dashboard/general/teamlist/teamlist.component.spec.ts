@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Guild, Role, TeamList} from "../../../../services/types/discord/Guilds";
-import {of, throwError} from "rxjs";
+import {defer, of} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
@@ -88,7 +88,7 @@ describe('TeamlistComponent', () => {
       other_roles: [{ id: '2', name: 'Role 2' }]
     } as TeamList;
 
-    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(of(mockRoles));
+    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(defer(() => Promise.resolve(mockRoles)));
 
     component.getTeamRoles();
     tick();
@@ -107,7 +107,7 @@ describe('TeamlistComponent', () => {
       other_roles: [{ id: '2', name: 'Role 2' }]
     } as TeamList;
 
-    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(of(mockRoles));
+    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(defer(() => Promise.reject(mockRoles)));
 
     component.getTeamRoles();
     tick();
@@ -121,7 +121,7 @@ describe('TeamlistComponent', () => {
   it('should handle error response with status 429', fakeAsync(() => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
-    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(throwError(() => ({ status: 429 } as HttpErrorResponse)));
+    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
 
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
@@ -134,7 +134,7 @@ describe('TeamlistComponent', () => {
   it('should handle error response with status 401', fakeAsync(() => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
-    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(throwError(() => ({ status: 401 } as HttpErrorResponse)));
+    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
 
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
@@ -147,7 +147,7 @@ describe('TeamlistComponent', () => {
   it('should handle error response with other statuses', fakeAsync(() => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
-    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(throwError(() => ({ status: 500 } as HttpErrorResponse)));
+    jest.spyOn(component['discordService'], 'getTeamRoles').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
 
     const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
 
@@ -198,7 +198,7 @@ describe('TeamlistComponent', () => {
     component['filteredRoles'] = [role2, role];
     component['discordRoles'] = [role3];
 
-    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(of(true));
+    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(defer(() => Promise.resolve(true)));
     const showAlertSpy = jest.spyOn(dataService, 'showAlert');
 
     component.removeRole(role);
@@ -217,7 +217,7 @@ describe('TeamlistComponent', () => {
     component['filteredRoles'] = [role];
     component['discordRoles'] = [];
 
-    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(throwError(() => ({ status: 404 } as HttpErrorResponse)));
+    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 404 }))));
     const showAlertSpy = jest.spyOn(dataService, 'showAlert');
 
     component.removeRole(role);
@@ -232,8 +232,8 @@ describe('TeamlistComponent', () => {
     const role: Role = { id: '1', name: 'Role 1', position: 1 } as Role;
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
-    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(throwError(() => ({ status: 429 } as HttpErrorResponse)));
-    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
 
     component.removeRole(role);
     tick();
@@ -245,8 +245,8 @@ describe('TeamlistComponent', () => {
     const role: Role = { id: '1', name: 'Role 1', position: 1 } as Role;
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
-    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(throwError(() => ({ status: 401 } as HttpErrorResponse)));
-    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
 
     component.removeRole(role);
     tick();
@@ -258,8 +258,8 @@ describe('TeamlistComponent', () => {
     const role: Role = { id: '1', name: 'Role 1', position: 1 } as Role;
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
 
-    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(throwError(() => ({ status: 500 } as HttpErrorResponse)));
-    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+    jest.spyOn(component['discordService'], 'removeTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
 
     component.removeRole(role);
     tick();
@@ -284,7 +284,7 @@ describe('TeamlistComponent', () => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
     component['discordRoles'] = [role];
 
-    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(of(true));
+    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(defer(() => Promise.resolve(true)));
     const addRoleToTeamSpy = jest.spyOn(component as any, 'addRoleToTeam');
 
     const mockCollection = {
@@ -306,7 +306,7 @@ describe('TeamlistComponent', () => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
     component['discordRoles'] = [role];
 
-    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 409 } as HttpErrorResponse)));
+    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 409 }))));
     const addRoleToTeamSpy = jest.spyOn(component as any, 'addRoleToTeam');
 
     const mockCollection = {
@@ -328,8 +328,8 @@ describe('TeamlistComponent', () => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
     component['discordRoles'] = [role];
 
-    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 429 } as HttpErrorResponse)));
-    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
 
     const mockCollection = {
       item: () => option,
@@ -350,8 +350,8 @@ describe('TeamlistComponent', () => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
     component['discordRoles'] = [role];
 
-    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 401 } as HttpErrorResponse)));
-    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
 
     const mockCollection = {
       item: () => option,
@@ -372,8 +372,8 @@ describe('TeamlistComponent', () => {
     dataService.active_guild = { id: '123', name: 'test' } as Guild;
     component['discordRoles'] = [role];
 
-    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(throwError(() => ({ status: 500 } as HttpErrorResponse)));
-    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError');
+    jest.spyOn(component['discordService'], 'addTeamRole').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectLoginErrorSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
 
     const mockCollection = {
       item: () => option,

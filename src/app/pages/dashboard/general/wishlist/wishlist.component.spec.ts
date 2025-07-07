@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { WishlistComponent } from './wishlist.component';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -7,7 +7,7 @@ import {ActivatedRoute} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {ElementRef} from "@angular/core";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import {of, throwError} from "rxjs";
+import {defer, of} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {DiscordUser} from "../../../../services/types/discord/User";
 import {Feature, FeatureVotes, Tag} from "../../../../services/types/navigation/WishlistTags";
@@ -40,20 +40,19 @@ describe('WishlistComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle successful feature vote', () => {
+  it('should handle successful feature vote', fakeAsync(() => {
     const featureId = 1;
     const vote = true;
     const cooldownFeature = { featureId, onCooldown: false, isLoading: false };
     component['isOnCooldown'] = [cooldownFeature];
     component['dataService'].profile = { id: "123" } as DiscordUser;
 
-    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(of({}));
+    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(defer(() => Promise.resolve({})));
     const getFeatureVotesSpy = jest.spyOn(component, 'getFeatureVotes');
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
-    jest.useFakeTimers();
     component.sendFeatureVote(featureId, vote);
-    jest.advanceTimersByTime(5502);
+    tick();
 
     expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(getFeatureVotesSpy).toHaveBeenCalled();
@@ -64,9 +63,9 @@ describe('WishlistComponent', () => {
     sendFeatureVoteSpy.mockRestore();
     getFeatureVotesSpy.mockRestore();
     showAlertSpy.mockRestore();
-  });
+  }));
 
-  it('should handle error when feature vote fails', () => {
+  it('should handle error when feature vote fails', fakeAsync(() => {
     const featureId = 1;
     const vote = true;
     const cooldownFeature = { featureId, onCooldown: false, isLoading: false };
@@ -74,10 +73,11 @@ describe('WishlistComponent', () => {
     component['dataService'].profile = { id: "123" } as DiscordUser;
 
     const errorResponse = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
-    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(throwError(() => errorResponse));
+    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(defer(() => Promise.reject(errorResponse)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component.sendFeatureVote(featureId, vote);
+    tick();
 
     expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(component['dataService'].error_color).toBe('red');
@@ -91,21 +91,20 @@ describe('WishlistComponent', () => {
     component['dataService'].profile = null;
     component.sendFeatureVote(featureId, vote);
     expect(sendFeatureVoteSpy).not.toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle 304 error when feature vote fails', () => {
+  it('should handle 304 error when feature vote fails', fakeAsync(() => {
     const vote = true;
     const cooldownFeature = { featureId: 1, onCooldown: false, isLoading: false };
     component['isOnCooldown'] = [cooldownFeature];
     component['dataService'].profile = { id: "123" } as DiscordUser;
 
     const errorResponse = new HttpErrorResponse({ status: 304, statusText: 'Not Modified' });
-    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(throwError(() => errorResponse));
+    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(defer(() => Promise.reject(errorResponse)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
-    jest.useFakeTimers();
     component.sendFeatureVote(1, vote);
-    jest.advanceTimersByTime(5502);
+    tick();
 
     expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(component['dataService'].error_color).toBe('red');
@@ -114,22 +113,21 @@ describe('WishlistComponent', () => {
 
     sendFeatureVoteSpy.mockRestore();
     showAlertSpy.mockRestore();
-  });
+  }));
 
-  it('should handle 429 error when feature vote fails', () => {
+  it('should handle 429 error when feature vote fails', fakeAsync(() => {
     const vote = true;
     const cooldownFeature = { featureId: 1, onCooldown: false, isLoading: false };
     component['isOnCooldown'] = [cooldownFeature];
     component['dataService'].profile = { id: "123" } as DiscordUser;
 
     const errorResponse = new HttpErrorResponse({ status: 429, statusText: 'Too many requests' });
-    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(throwError(() => errorResponse));
+    const sendFeatureVoteSpy = jest.spyOn(apiService, 'sendFeatureVote').mockReturnValue(defer(() => Promise.reject(errorResponse)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
-    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
 
-    jest.useFakeTimers();
     component.sendFeatureVote(1, vote);
-    jest.advanceTimersByTime(5502);
+    tick();
 
     expect(sendFeatureVoteSpy).toHaveBeenCalledWith({ feature_id: 1, user_id: "123", vote });
     expect(component['dataService'].error_color).toBe('red');
@@ -139,9 +137,9 @@ describe('WishlistComponent', () => {
     sendFeatureVoteSpy.mockRestore();
     showAlertSpy.mockRestore();
     redirectLoginErrorSpy.mockRestore();
-  });
+  }));
 
-  it('should retrieve feature votes and update feature list', () => {
+  it('should retrieve feature votes and update feature list', fakeAsync(() => {
     const featureVotesMock = {
       featureVotes: [
         { id: 1, votes: 10, dislikes: 2 },
@@ -149,9 +147,10 @@ describe('WishlistComponent', () => {
       ]
     } as FeatureVotes;
 
-    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(of(featureVotesMock));
+    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(defer(() => Promise.resolve(featureVotesMock)));
 
     component.getFeatureVotes();
+    tick();
 
     expect(component['feature_list'][0].votes).toBe(10);
     expect(component['feature_list'][0].dislikes).toBe(2);
@@ -163,15 +162,16 @@ describe('WishlistComponent', () => {
     expect(component['dataService'].isLoading).toBe(false);
 
     getFeatureVotesSpy.mockRestore();
-  });
+  }));
 
-  it('should handle error when retrieving feature votes', () => {
+  it('should handle error when retrieving feature votes', fakeAsync(() => {
     const errorResponse = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
 
-    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(throwError(() => errorResponse));
+    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(defer(() => Promise.reject(errorResponse)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component.getFeatureVotes();
+    tick();
 
     expect(component['dataService'].error_color).toBe('red');
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_VOTE_SAME_TITLE', 'ERROR_VOTE_SAME_DESC');
@@ -179,16 +179,17 @@ describe('WishlistComponent', () => {
 
     getFeatureVotesSpy.mockRestore();
     showAlertSpy.mockRestore();
-  });
+  }));
 
-  it('should handle ratelimit error when retrieving feature votes', () => {
+  it('should handle ratelimit error when retrieving feature votes', fakeAsync(() => {
     const errorResponse = new HttpErrorResponse({ status: 429, statusText: 'Too many requests' });
 
-    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(throwError(() => errorResponse));
+    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(defer(() => Promise.reject(errorResponse)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
-    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
 
     component.getFeatureVotes();
+    tick();
 
     expect(component['dataService'].error_color).toBe('red');
     expect(showAlertSpy).not.toHaveBeenCalledWith();
@@ -198,7 +199,7 @@ describe('WishlistComponent', () => {
     getFeatureVotesSpy.mockRestore();
     showAlertSpy.mockRestore();
     redirectLoginErrorSpy.mockRestore();
-  });
+  }));
 
   it('should filter features based on tag ID', () => {
     const featureListMock = [

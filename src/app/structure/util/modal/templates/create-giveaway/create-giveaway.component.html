@@ -1,0 +1,184 @@
+<!-- Template for Create new Snippet (First Modal) -->
+@if (showFirst) {
+  @if (this.dataService.isFetching && !this.rolesLoading) {
+    <div class="flex justify-center items-center h-full">
+      <span class="data-loader"></span>
+    </div>
+  } @else {
+    <div class="space-y-4">
+      <!-- Event Prize & Winner Count -->
+      <label for="prize" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_EVENT_PRIZE_TITLE' | translate }} <span class="text-red-500">*</span>
+      </label>
+      <div class="flex gap-2">
+        <input type="text" class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
+                                dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
+               maxlength="49" minlength="1" [placeholder]="'PLACEHOLDER_EVENT_PRIZE_PLACEHOLDER' | translate"
+               [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed !text-gray-400' : ''"
+               [(ngModel)]="this.giveaway.prize" id="prize" [disabled]="this.type === 'EVENTS_EDIT'" />
+        <div class="relative">
+          <div class="absolute top-1/2 -translate-y-1/2 -left-1 flex items-center ps-3 pointer-events-none border-r pr-2
+                  border-gray-300 dark:border-gray-500 h-3/5">
+            <fa-icon [icon]="faTrophy" class="text-gray-500 dark:text-gray-400" />
+          </div>
+          <input type="number" min="1" max="99" maxlength="2" placeholder="1-99" (input)="checkWinnerInput($any($event))"
+                 [(ngModel)]="this.giveaway.winner_count" class="w-28 bg-gray-50 border border-gray-300 text-gray-900
+                 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 ps-12 dark:bg-gray-600
+                 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white" id="winner_count" />
+        </div>
+      </div>
+
+      <!-- Channel-Picker and End Date -->
+      <label for="channelpicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_EVENT_CHANNEL_TITLE' | translate }} <span class="text-red-500">*</span>
+      </label>
+      <div class="flex gap-2 justify-between">
+        <template-select [options]="this.dataService.guild_channels" [type]="this.type" class="w-full"
+                         [activeOption]="$any(this.giveaway.channel_id)"
+                         (selectionChange)="this.giveaway.channel_id = $any($event)" [id]="'channelpicker'" />
+        <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
+               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
+               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
+               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+               [min]="today | date:'yyyy-MM-ddTHH:mm'" [ngModel]="giveaway.end_date | date:'yyyy-MM-ddTHH:mm'"
+               (ngModelChange)="giveaway.end_date = $event;">
+      </div>
+
+      <!-- Event Requirement & Start date (Optional) -->
+      <label for="reqpicker" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_EVENT_END_DATE_TITLE' | translate }}
+      </label>
+      <div class="flex gap-2">
+        <template-select [options]="this.giveaway_reqs" [type]="this.type" class="w-full" [id]="getReqId()"
+                         [activeOption]="$any(this.giveaway.gw_req)"
+                         (selectionChange)="this.giveaway.gw_req = $any($event); this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+        <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
+               text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5
+               dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
+               [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer
+                disabled:!text-gray-400"
+               [disabled]="this.type === 'EVENTS_EDIT'" [min]="now | date:'yyyy-MM-ddTHH:mm'"
+               [ngModel]="this.type === 'EVENTS_EDIT' ? null : now | date:'yyyy-MM-ddTHH:mm'"
+               [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed dark:!text-gray-400' : ''"
+               (ngModelChange)="giveaway.start_date = $event;">
+      </div>
+
+      <!-- Requirement Box -->
+      @if (this.giveaway.gw_req) {
+        @switch (this.giveaway.gw_req!.split(':')[0]) {
+          @case ('MSG') {
+            <req-field id="msg-req" [labelText]="'PLACEHOLDER_EVENT_REQ_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MSG_PLACEHOLDER'" [required]="true"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''"
+                       (inputChange)="this.numberInput($any($event), true);" [type]="this.type" />
+          }
+          @case ('VOICE') {
+            <req-field id="voice-req" [labelText]="'PLACEHOLDER_EVENT_REQ_VOICE_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
+                       (inputChange)="this.giveaway.gw_req = 'VOICE: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
+                                      this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+          }
+          @case ('OWN') {
+            <req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER'" [required]="true"
+                       [value]="this.type === 'EVENTS_EDIT' ?this.giveaway.gw_req : ''" [type]="this.type"
+                       (inputChange)="this.giveaway.gw_req = 'OWN: ' + ($any($event.target).value).replace(':', '');
+                                      this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+          }
+          @case ('SERVER') {
+            <req-field id="server-req" [labelText]="'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER'" [required]="true"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
+                       (inputChange)="this.giveaway.gw_req = 'SERVER: ' + $any($event.target).value;
+                                      this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+          }
+          @case ('MITGLIED') {
+            <req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
+                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
+                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
+                       (inputChange)="this.giveaway.gw_req = 'MITGLIED: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
+                                      this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+          }
+          @case ('no_nitro') {
+            <req-field id="no-nitro-req" [value]="'no_nitro'"
+                       (inputChange)="this.giveaway.gw_req = 'no_nitro'; this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+          }
+          @case ('ROLE_ID') {
+            <label #roleVisible for="role-req" class="block text-sm font-medium text-gray-900 dark:text-white mb-3">
+              {{ 'PLACEHOLDER_EVENT_REQ_ROLE_LABEL' | translate }} <span class="text-red-500">*</span>
+            </label>
+
+            @if (!this.dataService.isFetching) {
+              <template-select [options]="this.dataService.guild_roles" [type]="this.type" class="w-full"
+                               [activeOption]="this.type === 'EVENTS_EDIT' ?
+                                               this.giveaway.gw_req.split('ROLE_ID: ')[1].split(' - ')[0] : ''"
+                               (selectionChange)="this.giveaway.gw_req = 'ROLE_ID: ' + $any($event).toString();
+                                                  this.dataService.getGWRequirementValue(this.giveaway.gw_req)"
+                               [id]="'role-req'" />
+            } @else {
+              <div class="flex justify-center items-center">
+                <span class="data-loader"></span>
+              </div>
+            }
+          }
+        }
+      }
+
+      <!-- Sponsor Input -->
+      <label for="sponsorid" class="block text-sm font-medium text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_EVENT_SPONSOR_TITLE' | translate }}
+      </label>
+      <div class="relative mb-3">
+        <div class="absolute top-1/2 -translate-y-1/2 -left-1 flex items-center ps-3 pointer-events-none border-r pr-2
+                  border-gray-300 dark:border-gray-500 h-3/5">
+          <fa-icon [icon]="faUser" class="text-gray-500 dark:text-gray-400" />
+        </div>
+        <input type="text" class="w-full bg-gray-50 border border-gray-300 text-gray-900
+                 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5 ps-11
+                 dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white
+                 [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+               [placeholder]="'PLACEHOLDER_EVENT_SPONSOR_PLACEHOLDER' | translate" id="sponsorid"
+               [ngClass]="{'placeholder:text-black dark:placeholder:text-white': this.type === 'EVENTS_EDIT'}"
+               (input)="this.numberInput($any($event), false, true);" [(ngModel)]="this.giveaway.sponsor_id" />
+      </div>
+
+      <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': isValidGiveaway() && type === 'EVENTS_CREATE',
+                      'bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700': isValidGiveaway() && type !== 'EVENTS_CREATE',
+                      'bg-gray-400 dark:bg-gray-500 cursor-not-allowed': !isValidGiveaway()}"
+              class="w-full text-white focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg
+                     py-2.5 text-center transition-colors duration-100 dark:focus:ring-green-800 text-sm px-5"
+              [disabled]="!isValidGiveaway()"
+              (click)="this.type === 'EVENTS_CREATE' ? this.event_action(giveaway) : this.event_edit(giveaway)">
+        {{ type === 'EVENTS_CREATE' ? ('PLACEHOLDER_EVENT_MODAL_BUTTON' | translate) : ('PLACEHOLDER_EVENT_MODAL_BUTTON_EDIT' | translate) }}
+      </button>
+    </div>
+  }
+} @else {
+  <!-- Template for Giveaway Preview (Second Modal) -->
+  <div class="relative bg-white rounded-lg shadow-sm dark:!bg-gray-700 max-w-md w-full !border-gray-400
+              dark:!border-gray-500 border-1" [class.!max-w-xl]="type.startsWith('EVENTS_')">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+      <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
+        {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_TITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Modal body -->
+    <div class="p-4 md:p-5">
+      <template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0"
+                                 [embed_config]="this.gift_config" />
+    </div>
+
+  <!-- Modal footer -->
+  @if (this.gift_config.banner_url) {
+    <div class="p-3 border-t border-gray-200 dark:border-gray-600">
+      <p class="text-xs text-gray-600 dark:text-gray-400 text-center mb-0">
+        {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_FOOTER' | translate }}
+      </p>
+    </div>
+  }
+  </div>
+}

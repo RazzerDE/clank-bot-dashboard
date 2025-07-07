@@ -47,7 +47,8 @@
             <div class="flex-1 ml-4 lg:ml-0 ">
               <div class="relative self-center">
                 <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors duration-500"></fa-icon>
-                <input type="text" [placeholder]="'WISHLIST_SEARCH_PLACEHOLDER' | translate" (keyup)="searchFeatures($event)"
+                <input type="text" [placeholder]="'WISHLIST_SEARCH_PLACEHOLDER' | translate"
+                       (keyup)="searchFeatures($event)" id="search_wishlist"
                        class="w-full pl-10 pr-4 py-2 bg-white dark:!bg-gray-800 rounded-full !border border-gray-300
                             dark:!border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors duration-500" />
               </div>

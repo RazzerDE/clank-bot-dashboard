@@ -1,6 +1,6 @@
 import {
   faBan, faBirthdayCake,
-  faComments, faEarthEurope, faFilter, faGift,
+  faComments, faEarthEurope, faFilter,
   faHouse, faImage,
   faScrewdriverWrench, faScroll, faServer, faShieldHalved,
   faStar,
@@ -47,9 +47,7 @@ export const nav_items: NavigationItem[] = [
     description: "SIDEBAR_CATEGORY_2_DESC",
     pages: [
       { title: "SIDEBAR_PAGE_MODULE_SETUP", desc: "SIDEBAR_PAGE_MODULE_SETUP_DESC", icon: faScrewdriverWrench, redirect_url: "/dashboard/support/setup" },
-      //{ title: "SIDEBAR_PAGE_TICKETS_OPEN", desc: "SIDEBAR_PAGE_TICKETS_OPEN_DESC", icon: faTicket, redirect_url: "/dashboard/support/tickets" },
       { title: "SIDEBAR_PAGE_SUPPORT_THEMES", desc: "SIDEBAR_PAGE_SUPPORT_THEMES_DESC", icon: faComments, redirect_url: "/dashboard/support/themes" },
-      // { title: "SIDEBAR_PAGE_SUPPORT_PANELS", desc: "SIDEBAR_PAGE_SUPPORT_PANELS_DESC", icon: faTableColumns, redirect_url: "/dashboard/support/panels" },
       { title: "SIDEBAR_PAGE_TEXT_SNIPPETS", desc: "SIDEBAR_PAGE_TEXT_SNIPPETS_DESC", icon: faScroll, redirect_url: "/dashboard/support/snippets" },
       { title: "SIDEBAR_PAGE_BLOCKED", desc: "SIDEBAR_PAGE_BLOCKED_DESC", icon: faBan, redirect_url: "/dashboard/support/blocked-users" },
     ]
@@ -59,7 +57,6 @@ export const nav_items: NavigationItem[] = [
     color: "orange",
     description: "SIDEBAR_CATEGORY_3_DESC",
     pages: [
-      { title: "SIDEBAR_PAGE_GIVEAWAYS", desc: "SIDEBAR_PAGE_GIVEAWAYS_DESC", icon: faGift, redirect_url: "/dashboard/events/create" },
       { title: "SIDEBAR_PAGE_EVENTS", desc: "SIDEBAR_PAGE_EVENTS_DESC", icon: faBirthdayCake, redirect_url: "/dashboard/events/view" },
       { title: "SIDEBAR_PAGE_MSG_DESIGN", desc: "SIDEBAR_PAGE_MSG_DESIGN_DESC", icon: faImage, redirect_url: "/dashboard/events/design" },
       { title: "SIDEBAR_PAGE_CHC_ROLES", desc: "SIDEBAR_PAGE_CHC_ROLES_DESC", icon: faWandMagicSparkles, redirect_url: "/dashboard/events/channel-roles" }

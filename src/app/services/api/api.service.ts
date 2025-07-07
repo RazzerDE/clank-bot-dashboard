@@ -11,6 +11,8 @@ import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
+import {Giveaway} from "../types/Events";
+import {EmbedConfig} from "../types/Config";
 
 @Injectable({
   providedIn: 'root'
@@ -120,6 +122,72 @@ export class ApiService {
   getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
     return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
       { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches all events (giveaways) for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the events.
+   * @returns An Observable that emits an array of Giveaway objects.
+   */
+  getGuildEvents(guild_id: string): Observable<Giveaway[]> {
+    return this.http.get<Giveaway[]>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the configuration for discord event embeds in a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the event embed configuration.
+   * @return An Observable that emits the EmbedConfig object containing the configuration details.
+   */
+  getEventConfig(guild_id: string): Observable<EmbedConfig> {
+    return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Creates a new giveaway for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be created.
+   * @returns An Observable emitting the server's response.
+   */
+  createGuildEvent(giveaway: Giveaway): Observable<Giveaway> {
+    return this.http.post<Giveaway>(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}`, giveaway,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Updates an existing giveaway for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be updated.
+   * @returns An Observable emitting the server's response.
+   */
+  updateGuildEvent(giveaway: Giveaway): Observable<Giveaway> {
+    return this.http.put<Giveaway>(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}`, giveaway,
+      {headers: this.authService.headers});
+  }
+
+  /**
+   * Deletes an existing (SCHEDULED) giveaway for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be deleted.
+   * @returns An Observable emitting the server's response.
+   */
+  deleteGuildEvent(giveaway: Giveaway): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
+      {headers: this.authService.headers});
+  }
+
+  /**
+   * Starts a scheduled giveaway event for a specific guild.
+   *
+   * @param giveaway - The giveaway object to be started.
+   * @returns An Observable emitting the server's response.
+   */
+  startScheduledEvent(giveaway: Giveaway): Observable<Giveaway> {
+    return this.http.put<Giveaway>(`${this.API_URL}/guilds/events/start?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
+      {}, { headers: this.authService.headers });
   }
 
   /**

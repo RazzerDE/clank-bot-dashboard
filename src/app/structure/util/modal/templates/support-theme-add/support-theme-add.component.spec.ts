@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { SupportThemeAddComponent } from './support-theme-add.component';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
-import {of, Subscription, throwError} from "rxjs";
+import {defer} from "rxjs";
 import {SupportTheme} from "../../../../../services/types/Tickets";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
@@ -57,16 +57,17 @@ describe('SupportThemeAddComponent', () => {
     expect(component.isDefaultMentioned('anyRoleId')).toBe(false);
   });
 
-  it('should call API, update data, show success alert and close modal on successful addSupportTheme', () => {
+  it('should call API, update data, show success alert and close modal on successful addSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
     const pushSpy = jest.spyOn(mockDataService.support_themes, 'push');
     const updateThemesSpy = jest.spyOn(component as any, 'updateThemes');
-    const hideModalSpy = jest.spyOn(component as any, 'hideModal');
-    mockApiService.createSupportTheme.mockReturnValue(of({}));
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.createSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
     localStorage.removeItem('support_themes');
 
     component.newTheme = { ...theme };
     component['addSupportTheme'](theme);
+    tick();
 
     expect(mockApiService.createSupportTheme).toHaveBeenCalledWith(theme, 'guild1');
     expect(mockDataService.error_color).toBe('green');
@@ -76,58 +77,49 @@ describe('SupportThemeAddComponent', () => {
     expect(localStorage.getItem('support_themes')).toBeTruthy();
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should show conflict alert and close modal on 409 error in addSupportTheme', () => {
+  it('should show conflict alert and close modal on 409 error in addSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
-    const hideModalSpy = jest.spyOn(component as any, 'hideModal');
-    mockApiService.createSupportTheme.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 409 }))
-    );
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.createSupportTheme.mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 409 }))));
     component.newTheme = { ...theme };
+
     component['addSupportTheme'](theme);
+    tick();
 
     expect(mockDataService.error_color).toBe('red');
     expect(mockDataService.showAlert).toHaveBeenCalledWith('ERROR_THEME_CREATION_CONFLICT', 'ERROR_THEME_CREATION_CONFLICT_DESC');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should show unknown error alert, reset newTheme and close modal on other error in addSupportTheme', () => {
+  it('should show unknown error alert, reset newTheme and close modal on other error in addSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
-    const hideModalSpy = jest.spyOn(component as any, 'hideModal');
-    mockApiService.createSupportTheme.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 500 }))
-    );
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.createSupportTheme.mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     component.newTheme = { ...theme };
+
     component['addSupportTheme'](theme);
+    tick();
 
     expect(mockDataService.error_color).toBe('red');
     expect(mockDataService.showAlert).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should push the subscription to the subscriptions array', () => {
-    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
-    mockApiService.createSupportTheme.mockReturnValue(of({}));
-    component.newTheme = { ...theme };
-    const initialLength = component['subscriptions'].length;
-    component['addSupportTheme'](theme);
-    expect(component['subscriptions'].length).toBe(initialLength + 1);
-    expect(component['subscriptions'][0]).toBeInstanceOf(Subscription);
-  });
-
-  it('should call API, update data, show success alert and close modal on successful editSupportTheme', () => {
+  it('should call API, update data, show success alert and close modal on successful editSupportTheme', fakeAsync(() => {
     localStorage.removeItem('support_themes');
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
     mockDataService.support_themes = [{ ...theme }];
     const updateThemeMentionsSpy = jest.spyOn(component as any, 'updateThemeMentions');
     const updateThemesSpy = jest.spyOn(component as any, 'updateThemes');
-    const hideModalSpy = jest.spyOn(component as any, 'hideModal');
-    mockApiService.editSupportTheme.mockReturnValue(of({}));
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
     component.newTheme = { ...theme };
 
     component['editSupportTheme'](theme);
+    tick();
 
     expect(mockApiService.editSupportTheme).toHaveBeenCalledWith(theme, 'guild1');
     expect(mockDataService.error_color).toBe('green');
@@ -142,17 +134,16 @@ describe('SupportThemeAddComponent', () => {
     expect(localStorage.getItem('support_themes')).toBeTruthy();
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should show conflict alert and close modal on 400 error in editSupportTheme', () => {
+  it('should show conflict alert and close modal on 400 error in editSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '', old_name: 'OldName' } as SupportTheme;
-    const hideModalSpy = jest.spyOn(component as any, 'hideModal');
-    mockApiService.editSupportTheme.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 400 }))
-    );
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 400 }))));
     component.newTheme = { ...theme };
 
     component['editSupportTheme'](theme);
+    tick();
 
     expect(mockDataService.error_color).toBe('red');
     expect(mockDataService.showAlert).toHaveBeenCalledWith(
@@ -161,17 +152,16 @@ describe('SupportThemeAddComponent', () => {
     );
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should show unknown error alert, reset newTheme and close modal on other error in editSupportTheme', () => {
+  it('should show unknown error alert, reset newTheme and close modal on other error in editSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '', old_name: 'OldName' } as SupportTheme;
-    const hideModalSpy = jest.spyOn(component as any, 'hideModal');
-    mockApiService.editSupportTheme.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 500 }))
-    );
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     component.newTheme = { ...theme };
 
     component['editSupportTheme'](theme);
+    tick();
 
     expect(mockDataService.error_color).toBe('red');
     expect(mockDataService.showAlert).toHaveBeenCalledWith(
@@ -180,17 +170,7 @@ describe('SupportThemeAddComponent', () => {
     );
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
-
-  it('should push the subscription to the subscriptions array for editSupportTheme', () => {
-    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
-    mockApiService.editSupportTheme.mockReturnValue(of({}));
-    component.newTheme = { ...theme };
-    const initialLength = (component as any).subscriptions.length;
-    component['editSupportTheme'](theme);
-    expect((component as any).subscriptions.length).toBe(initialLength + 1);
-    expect((component as any).subscriptions[0]).toBeInstanceOf(Subscription);
-  });
+  }));
 
   it('should sort support_themes by pending status and then by name', () => {
     const themeA = { name: 'Alpha', pending: false } as SupportTheme;

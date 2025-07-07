@@ -7,6 +7,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {ElementRef} from "@angular/core";
 import {BlockedUser} from "../../../services/types/discord/User";
+import {Giveaway} from "../../../services/types/Events";
 
 describe('ModalComponent', () => {
   let component: ModalComponent;
@@ -30,6 +31,16 @@ describe('ModalComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have a default event_action function that does nothing and returns void', () => {
+    const result = component.event_action({} as Giveaway);
+    expect(result).toBeUndefined();
+  });
+
+  it('should have a default event_edit function that does nothing and returns void', () => {
+    const result = component.event_edit({} as Giveaway);
+    expect(result).toBeUndefined();
   });
 
   it('should call snippet_action with the correct snippet', () => {

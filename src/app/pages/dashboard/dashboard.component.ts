@@ -45,7 +45,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   @ViewChild('serverlistDiv') protected serverlistDiv!: ElementRef<HTMLDivElement>;
 
   protected readonly localStorage: Storage = localStorage;
-  protected readonly Math: Math = Math;
+  protected readonly Number: NumberConstructor = Number;
   protected readonly Intl = Intl;
   protected readonly window: Window = window;
 
@@ -53,9 +53,8 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faRefresh: IconDefinition = faRefresh;
-
   private startLoading: boolean = false;
-  private subscriptions: Subscription[] = [];
+  private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected dataLoading: { moduleProgress: boolean, guildList: boolean } = { moduleProgress: true, guildList: true };
 
@@ -65,14 +64,12 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
     this.dataService.hideGuildSidebar = false;
 
     this.getServerData(); // first call to get the server data
-    const sub: Subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
+    this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = { moduleProgress: true, guildList: true };
         this.getServerData();
       }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
@@ -81,7 +78,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
    * This method unsubscribes from all active subscriptions to prevent memory leaks.
    */
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
@@ -124,8 +121,9 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
     if (!window.location.href.endsWith('/dashboard')) { return; }
     this.startLoading = true;
 
-    const sub: Subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
-                                  moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
+    let sub: Subscription | null = null;
+    sub = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
+                    moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
       .subscribe({
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
           this.updateTasks(moduleStatus);
@@ -134,11 +132,13 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
           this.dataService.isLoading = false;
           this.startLoading = false;
 
+          if (sub) { sub.unsubscribe(); }
           if (moduleStatus['task_1'].cached) { return; }
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
           localStorage.setItem('moduleStatusTimestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
+          if (sub) { sub.unsubscribe(); }
           if (err.status === 403) {
             this.dataService.redirectLoginError('FORBIDDEN');
             return;
@@ -155,8 +155,6 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
           this.dataService.isLoading = false;
         }
     });
-
-    this.subscriptions.push(sub);
   }
 
   /**
