@@ -211,7 +211,7 @@ export class DataTableComponent implements AfterViewInit {
         return this.translate.instant('PLACEHOLDER_EVENT_REQ_ROLE', { role_id, role_name });
       },
       'SERVER: ': (value) => {
-        if (value.includes('https://discord.gg/')) {
+        if (value.replace('SERVER: ', '').startsWith('https://discord.gg/')) {
           const [invite, guild_name] = value.replace('SERVER: ', '').split(' - ');
           return this.translate.instant('PLACEHOLDER_EVENT_REQ_SERVER', { invite, guild_name });
         }
