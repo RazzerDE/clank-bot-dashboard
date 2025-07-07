@@ -6,8 +6,9 @@ import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {Guild} from "../../../../services/types/discord/Guilds";
-import {TicketSnippet} from "../../../../services/types/Tickets";
+import {TicketAnnouncement, TicketSnippet} from "../../../../services/types/Tickets";
 import {HttpErrorResponse} from "@angular/common/http";
+import {defer} from "rxjs";
 
 describe('TicketSnippetsComponent', () => {
   let component: TicketSnippetsComponent;
@@ -135,85 +136,68 @@ describe('TicketSnippetsComponent', () => {
     expect(component['startLoading']).toBe(false);
   });
 
-  it('should fetch snippets from the server if cache is invalid', () => {
+  it('should fetch snippets from the server if cache is invalid', fakeAsync(() => {
     const mockSnippets = [{ name: 'Snippet1', desc: 'Description1' }];
-    const apiSpy = jest.spyOn(component['apiService'], 'getSnippets').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next(mockSnippets);
-        return { unsubscribe: jest.fn() }; // Mock unsubscribe method
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'getSnippets').mockReturnValue(defer(() => Promise.resolve(mockSnippets)));
     const getAnnouncementSpy = jest.spyOn(component as any, 'getAnnouncementDetails');
 
-    jest.useFakeTimers({ legacyFakeTimers: true });
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['getSnippetDetails'](true);
-    jest.runAllTimers();
+    tick(1500);
 
     expect(apiSpy).toHaveBeenCalledWith('123');
     expect(component['snippets']).toEqual(mockSnippets);
     expect(component['filteredSnippets']).toEqual(mockSnippets);
     expect(localStorage.getItem('ticket_snippets')).toEqual(JSON.stringify(mockSnippets));
     expect(getAnnouncementSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle error when fetching snippets from the server', () => {
+  it('should handle error when fetching snippets from the server', fakeAsync(() => {
     const error = { status: 500 } as any;
-    const apiSpy = jest.spyOn(component['apiService'], 'getSnippets').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error(error);
-        return { unsubscribe: jest.fn() }; // Korrekte Definition der unsubscribe-Methode
-      }),
-    } as any);
-    const handleErrorSpy = jest.spyOn(component as any, 'handleError');
+    const apiSpy = jest.spyOn(component['apiService'], 'getSnippets').mockReturnValue(defer(() => Promise.reject(error)));
+    const handleErrorSpy = jest.spyOn(component as any, 'handleError').mockImplementation(() => {});
 
     component['dataService'].active_guild = { id: '123' } as any;
     component['getSnippetDetails'](true);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith('123');
     expect(handleErrorSpy).toHaveBeenCalledWith(error);
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
   // Test case for successful fetching of announcement details
-  it('should fetch announcement details and update localStorage', () => {
-    const mockAnnouncement = { level: 'info', description: 'Test Announcement', end_date: '2023-12-31' };
-    const apiSpy = jest.spyOn(component['apiService'], 'getTicketAnnouncement').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next(mockAnnouncement);
-        return { unsubscribe: jest.fn() }; // Mock unsubscribe method
-      }),
-    } as any);
+  it('should fetch announcement details and update localStorage', fakeAsync(() => {
+    localStorage.removeItem('ticket_announcement');
+    const mockAnnouncement = {level: 'info', description: 'Test Announcement', end_date: '2023-12-31'} as unknown as TicketAnnouncement;
+    const apiSpy = jest.spyOn(component['apiService'], 'getTicketAnnouncement').mockReturnValue(defer(() => Promise.resolve(mockAnnouncement)));
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['getAnnouncementDetails']();
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith('123');
     expect(component['currentAnnouncement']).toEqual(mockAnnouncement);
     expect(localStorage.getItem('ticket_announcement')).toEqual(JSON.stringify(mockAnnouncement));
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
-  it('should handle error when fetching announcement details', () => {
+  it('should handle error when fetching announcement details', fakeAsync(() => {
     const error = { status: 500 } as HttpErrorResponse;
-    const apiSpy = jest.spyOn(component['apiService'], 'getTicketAnnouncement').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error(error);
-        return { unsubscribe: jest.fn() }; // Mock unsubscribe method
-      }),
-    } as any);
-    const handleErrorSpy = jest.spyOn(component as any, 'handleError');
+    const apiSpy = jest.spyOn(component['apiService'], 'getTicketAnnouncement').mockReturnValue(defer(() => Promise.reject(error)));
+    const handleErrorSpy = jest.spyOn(component as any, 'handleError').mockImplementation(() => {});
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['getAnnouncementDetails']();
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith('123');
     expect(handleErrorSpy).toHaveBeenCalledWith(error);
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
   it("should return if guild_id is not set when adding/editing/delting a new text snippet", () => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description'} as TicketSnippet;
@@ -226,44 +210,36 @@ describe('TicketSnippetsComponent', () => {
     expect(snippet.guild_id).toBeFalsy();
   });
 
-  it('should add a new text snippet successfully', () => {
+  it('should add a new text snippet successfully', fakeAsync(() => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
     component['snippets'] = [ snippet, { name: 'Existing Snippet', desc: 'Existing Description', guild_id: '123' } as TicketSnippet ];
     component['filteredSnippets'] = [...component['snippets']];
-    const createSnippetSpy = jest.spyOn(component['apiService'], 'createSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next({});
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const createSnippetSpy = jest.spyOn(component['apiService'], 'createSnippet').mockReturnValue(defer(() => Promise.resolve({})));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['addTextSnippet'](snippet);
+    tick();
 
     expect(createSnippetSpy).toHaveBeenCalledWith(snippet);
     expect(component['snippets']).toContain(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('SUCCESS_SNIPPET_CREATION_TITLE', 'SUCCESS_SNIPPET_CREATION_DESC');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle conflict error when adding a new text snippet', () => {
+  it('should handle conflict error when adding a new text snippet', fakeAsync(() => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
-    const createSnippetSpy = jest.spyOn(component['apiService'], 'createSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 409 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const createSnippetSpy = jest.spyOn(component['apiService'], 'createSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 409 }))));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['addTextSnippet'](snippet);
+    tick();
 
     expect(createSnippetSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_SNIPPET_CREATION_CONFLICT', 'ERROR_SNIPPET_CREATION_CONFLICT_DESC');
-  });
+  }));
 
   it('should handle rate limit error when adding a new text snippet', () => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
@@ -301,14 +277,9 @@ describe('TicketSnippetsComponent', () => {
     expect(hideModalSpy).toHaveBeenCalled();
   });
 
-  it('should edit a text snippet successfully', () => {
+  it('should edit a text snippet successfully', fakeAsync(() => {
     const snippet = { name: 'Updated Snippet', desc: 'Updated Description', old_name: 'Old Snippet', guild_id: '123' } as TicketSnippet;
-    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next({});
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue(defer(() => Promise.resolve({})));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
 
@@ -316,94 +287,74 @@ describe('TicketSnippetsComponent', () => {
     component['snippets'] = [snippet, { name: 'Old Snippet', desc: 'Old Description', guild_id: '123' } as TicketSnippet];
     component['filteredSnippets'] = [...component['snippets']];
     component['editTextSnippet'](snippet);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('SUCCESS_SNIPPET_EDIT_TITLE', 'SUCCESS_SNIPPET_EDIT_DESC');
     expect(component['snippets'][0]).toEqual(snippet);
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle conflict error when editing a text snippet', () => {
+  it('should handle conflict error when editing a text snippet', fakeAsync(() => {
     const snippet = { name: 'Updated Snippet', desc: 'Updated Description', old_name: 'Old Snippet', guild_id: '123' } as TicketSnippet;
-    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 409 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 409 }))));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['editTextSnippet'](snippet);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_SNIPPET_CREATION_CONFLICT', 'ERROR_SNIPPET_CREATION_CONFLICT_DESC');
     expect(snippet.name).toBe(snippet.old_name);
-  });
+  }));
 
-  it('should handle not found error when editing a text snippet', () => {
+  it('should handle not found error when editing a text snippet', fakeAsync(() => {
     const snippet = { name: 'Updated Snippet', desc: 'Updated Description', old_name: 'Old Snippet', guild_id: '123' } as TicketSnippet;
-    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 404 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 404 }))));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['snippets'] = [{ name: 'Old Snippet', desc: 'Old Description', guild_id: '123' } as TicketSnippet];
     component['editTextSnippet'](snippet);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_SNIPPET_EDIT_404', 'ERROR_SNIPPET_EDIT_404_DESC');
     expect(component['snippets']).not.toContainEqual({ name: 'Old Snippet', desc: 'Old Description', guild_id: '123' });
-  });
+  }));
 
-  it('should handle rate limit error when editing a text snippet', () => {
+  it('should handle rate limit error when editing a text snippet', fakeAsync(() => {
     const snippet = { name: 'Updated Snippet', desc: 'Updated Description', old_name: 'Old Snippet', guild_id: '123' } as TicketSnippet;
-    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['editTextSnippet'](snippet);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(snippet);
     expect(redirectLoginErrorSpy).toHaveBeenCalledWith('REQUESTS');
-  });
+  }));
 
-  it('should handle unknown error when editing a text snippet', () => {
+  it('should handle unknown error when editing a text snippet', fakeAsync(() => {
     const snippet = { name: 'Updated Snippet', desc: 'Updated Description', old_name: 'Old Snippet', guild_id: '123' } as TicketSnippet;
-    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'editSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['editTextSnippet'](snippet);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should delete a ticket snippet successfully', () => {
+  it('should delete a ticket snippet successfully', fakeAsync(() => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
-    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next({});
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue(defer(() => Promise.resolve({})));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
 
@@ -411,6 +362,7 @@ describe('TicketSnippetsComponent', () => {
     component['snippets'] = [snippet];
     component['filteredSnippets'] = [...component['snippets']];
     component['deleteTicketSnippet'](snippet);
+    tick();
 
     expect(deleteSnippetSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('SUCCESS_SNIPPET_DELETE_TITLE', 'SUCCESS_SNIPPET_DELETE_DESC');
@@ -420,65 +372,54 @@ describe('TicketSnippetsComponent', () => {
     // snippet list is NOT empty after deletion
     component['snippets'] = [snippet, { name: 'Another Snippet', desc: 'Another Description', guild_id: '123' } as TicketSnippet ];
     component['deleteTicketSnippet'](snippet);
+    tick();
 
     expect(component['dataService'].selectedSnippet).not.toBeNull();
-  });
+  }));
 
-  it('should handle not found error when deleting a ticket snippet', () => {
+  it('should handle not found error when deleting a ticket snippet', fakeAsync(() => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
-    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 404 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 404 }))));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['snippets'] = [snippet];
     component['filteredSnippets'] = [...component['snippets']];
     component['deleteTicketSnippet'](snippet);
+    tick();
 
     expect(deleteSnippetSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_SNIPPET_EDIT_404', 'ERROR_SNIPPET_EDIT_404_DESC');
     expect(component['snippets']).not.toContain(snippet);
-  });
+  }));
 
-  it('should handle rate limit error when deleting a ticket snippet', () => {
+  it('should handle rate limit error when deleting a ticket snippet', fakeAsync(() => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
-    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['deleteTicketSnippet'](snippet);
+    tick();
 
     expect(deleteSnippetSpy).toHaveBeenCalledWith(snippet);
     expect(redirectLoginErrorSpy).toHaveBeenCalledWith('REQUESTS');
-  });
+  }));
 
-  it('should handle unknown error when deleting a ticket snippet', () => {
+  it('should handle unknown error when deleting a ticket snippet', fakeAsync(() => {
     const snippet = { name: 'Test Snippet', desc: 'Test Description', guild_id: '123' } as TicketSnippet;
-    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const deleteSnippetSpy = jest.spyOn(component['apiService'], 'deleteSnippet').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
 
     component['dataService'].active_guild = { id: '123' } as Guild;
     component['deleteTicketSnippet'](snippet);
+    tick();
 
     expect(deleteSnippetSpy).toHaveBeenCalledWith(snippet);
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
     expect(hideModalSpy).toHaveBeenCalled();
-  });
+  }));
 
   it('should filter snippets based on the search term', () => {
     const event = { target: { value: 'test' } } as unknown as Event;
@@ -568,6 +509,15 @@ describe('TicketSnippetsComponent', () => {
   it('should hide the modal when clicking on the modal content', () => {
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
     const event = { target: { id: 'roleModalContent' } } as unknown as MouseEvent;
+
+    component.onDocumentClick(event);
+
+    expect(hideModalSpy).toHaveBeenCalled();
+  });
+
+  it('should hide the modal when clicking on the modal container', () => {
+    const hideModalSpy = jest.spyOn(component['modal'], 'hideModal');
+    const event = { target: { id: 'modal_container' } } as unknown as MouseEvent;
 
     component.onDocumentClick(event);
 

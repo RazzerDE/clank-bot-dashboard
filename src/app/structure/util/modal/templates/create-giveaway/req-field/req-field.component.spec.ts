@@ -21,4 +21,11 @@ describe('ReqFieldComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit inputChange event when onInput is called', () => {
+    const event = new Event('input');
+    const emitSpy = jest.spyOn(component.inputChange, 'emit');
+    component.onInput(event);
+    expect(emitSpy).toHaveBeenCalledWith(event);
+  });
 });

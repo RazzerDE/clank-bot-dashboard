@@ -229,8 +229,8 @@ export class DataTableComponent implements AfterViewInit {
    * - 3: Stop button (disabled for scheduled/pending giveaways)
    *
    * Cases:
-   * - Running giveaways (with `start_date`): Disable Play/Delete buttons (index 0,2)
-   * - Scheduled giveaways (without `start_date`): Disable Edit/Stop buttons (index 1,3)
+   * - Running giveaways (without `start_date`): Disable Play/Delete buttons (index 0,2)
+   * - Scheduled giveaways (with `start_date`): Disable Edit/Stop buttons (index 1,3)
    * - Ended giveaways (where `end_date` is in the past): Disable all buttons
    * - Giveaways that have not started yet (with `start_date` in the future): Disable Play/Edit buttons (index 0,1)
    *

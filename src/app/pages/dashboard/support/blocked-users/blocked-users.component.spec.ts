@@ -8,6 +8,8 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {Guild} from "../../../../services/types/discord/Guilds";
 import {BlockedUser, DiscordUser} from "../../../../services/types/discord/User";
+import {defer} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
 
 describe('BlockedUsersComponent', () => {
   let component: BlockedUsersComponent;
@@ -67,17 +69,13 @@ describe('BlockedUsersComponent', () => {
     expect(component['startLoading']).toBe(false);
   });
 
-  it('should fetch blocked users from API when no_cache is true', () => {
+  it('should fetch blocked users from API when no_cache is true', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
-    const mockBlockedUsers = [{ user_id: '123', user_name: 'TestUser' }];
-    const apiSpy = jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next(mockBlockedUsers);
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const mockBlockedUsers = [{ user_id: '123', user_name: 'TestUser' }] as BlockedUser[];
+    const apiSpy = jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue(defer(() => Promise.resolve(mockBlockedUsers)));
 
     component['getBlockedUsers'](true);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id);
     expect(component['user_list']).toEqual(mockBlockedUsers);
@@ -85,149 +83,125 @@ describe('BlockedUsersComponent', () => {
     expect(localStorage.getItem('blocked_users')).toEqual(JSON.stringify(mockBlockedUsers));
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
-  it('should handle API error with status 401', () => {
-    jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 401 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+  it('should handle API error with status 401', fakeAsync(() => {
+    jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation((): void => {});
     component['dataService'].active_guild = { id: 'test-guild-id', name: 'test' } as Guild;
 
     component['getBlockedUsers'](true);
+    tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('NO_CLANK');
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
-  it('should handle API error with status 429', () => {
+  it('should handle API error with status 429', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
-    const apiSpy = jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const apiSpy = jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation((): void => {});
 
     component['getBlockedUsers'](true);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id);
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
-  it('should handle unknown API error', () => {
+  it('should handle unknown API error', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
-    const apiSpy = jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const apiSpy = jest.spyOn(component['apiService'], 'getBlockedUsers').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation((): void => {});
 
     component['getBlockedUsers'](true);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id);
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
     expect(component['dataService'].isLoading).toBe(false);
     expect(component['startLoading']).toBe(false);
-  });
+  }));
 
-  it('should call deleteBlockedUser API and update the user list on success', () => {
+  it('should call deleteBlockedUser API and update the user list on success', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next({});
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue(defer(() => Promise.resolve({})));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['user_list'] = [mockBlockedUser];
     component['deleteBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser.user_id);
     expect(component['user_list']).toEqual([]);
     expect(alertSpy).toHaveBeenCalledWith('SUCCESS_USER_UNBLOCK_TITLE', 'SUCCESS_USER_UNBLOCK_DESC');
-  });
+  }));
 
-  it('should handle 404 error and remove user from the list', () => {
+  it('should handle 404 error and remove user from the list', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 404 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 404 }))));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['user_list'] = [mockBlockedUser];
     component['deleteBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser.user_id);
     expect(component['user_list']).toEqual([]);
     expect(alertSpy).toHaveBeenCalledWith('ERROR_USER_UNBLOCK_NOT_FOUND_TITLE', 'ERROR_USER_UNBLOCK_NOT_FOUND_DESC');
-  });
+  }));
 
-  it('should handle 429 error and redirect to login error', () => {
+  it('should handle 429 error and redirect to login error', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation((): void => {});
 
     component['deleteBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser.user_id);
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
-  });
+  }));
 
-  it('should handle unknown error and show alert', () => {
+  it('should handle unknown error and show alert', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'deleteBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['deleteBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser.user_id);
     expect(alertSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
+  }));
+
+  it("should not run addBlockedUser if active_guild is not set", () => {
+    component['dataService'].active_guild = null;
+    const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
+
+    component['addBlockedUser'](mockBlockedUser);
+    expect(mockBlockedUser.guild_id).toBeUndefined();
   });
 
-  it('should add a blocked user and update the user list on success', () => {
+  it('should add a blocked user and update the user list on success', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
-    component['dataService'].profile = { id: 'test-profile-id' } as DiscordUser;
-    let mockBlockedUser = { user_id: '123', user_name: 'TestUser', staff_avatar: "a_34554tgfdg" } as BlockedUser;
+    component['dataService'].profile = { id: 'test-profile-id' , avatar: "a_34554tgfdg"} as DiscordUser;
+    let mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
     component['newBlockedUser'] = { user_id: mockBlockedUser.user_id, user_name: mockBlockedUser.user_name, end_date: Date.now() + 10000 } as BlockedUser;
 
-    let apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next(mockBlockedUser);
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    let apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue(defer(() => Promise.resolve(mockBlockedUser)));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
     const updateListSpy = jest.spyOn(component as any, 'updateBlockedUserList');
 
     component['addBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser);
     expect(alertSpy).toHaveBeenCalledWith('SUCCESS_USER_BLOCK_TITLE', expect.any(String));
@@ -237,31 +211,24 @@ describe('BlockedUsersComponent', () => {
     // Branch test: use datePipe to transform end_date
     jest.spyOn(component['datePipe'], 'transform');
     mockBlockedUser = { user_id: '123', user_name: 'TestUser', end_date: Date.now() + 10000 } as BlockedUser;
-    apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.next(mockBlockedUser);
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue(defer(() => Promise.resolve(mockBlockedUser)));
 
     component['addBlockedUser'](mockBlockedUser);
+    tick();
+
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser);
     expect(component['datePipe'].transform).toHaveBeenCalledWith(mockBlockedUser.end_date, component['translate'].currentLang);
-  });
+  }));
 
-  it('should handle 404 error when adding a blocked user', () => {
+  it('should handle 404 error when adding a blocked user', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     component['dataService'].profile = { id: 'test-profile-id' } as DiscordUser;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 404 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 404 }))));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['addBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser);
     expect(alertSpy).toHaveBeenCalledWith(
@@ -269,44 +236,36 @@ describe('BlockedUsersComponent', () => {
       expect.any(String)
     );
     expect(component['disabledAddBtn']).toBe(false);
-  });
+  }));
 
-  it('should handle 429 error when adding a blocked user', () => {
+  it('should handle 429 error when adding a blocked user', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     component['dataService'].profile = { id: 'test-profile-id' } as DiscordUser;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 429 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError');
+    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation((): void => {});
 
     component['addBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser);
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
-  });
+  }));
 
-  it('should handle unknown error when adding a blocked user', () => {
+  it('should handle unknown error when adding a blocked user', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     component['dataService'].profile = { id: 'test-profile-id' } as DiscordUser;
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
-    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue({
-      subscribe: jest.fn((callbacks) => {
-        callbacks.error({ status: 500 });
-        return { unsubscribe: jest.fn() };
-      }),
-    } as any);
+    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
     const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
     component['addBlockedUser'](mockBlockedUser);
+    tick();
 
     expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser);
     expect(alertSpy).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
     expect(component['disabledAddBtn']).toBe(false);
-  });
+  }));
 
   it('should update the blocked user list by adding a new user', () => {
     const mockBlockedUser = { user_id: '123', user_name: 'TestUser', end_date: null } as BlockedUser;

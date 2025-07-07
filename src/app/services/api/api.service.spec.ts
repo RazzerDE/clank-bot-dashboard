@@ -14,6 +14,8 @@ import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {GeneralStats} from "../types/Statistics";
 import {BlockedUser} from "../types/discord/User";
+import {Giveaway} from "../types/Events";
+import {EmbedConfig} from "../types/Config";
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -493,6 +495,123 @@ describe('ApiService', () => {
       `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('TestTheme')}`
     );
     expect(req.request.method).toBe('DELETE');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch all events for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: Giveaway[] = [
+      { guild_id, event_id: '1', title: 'Event 1' },
+      { guild_id, event_id: '2', title: 'Event 2' }
+    ] as unknown as Giveaway[];
+
+    service.getGuildEvents(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch event embed configuration for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: EmbedConfig = {
+      color: '#FF0000',
+      thumbnail: 'https://example.com/thumbnail.png'
+    } as unknown as EmbedConfig;
+
+    service.getEventConfig(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/config?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should create a new giveaway event for a specific guild', () => {
+    const giveaway: Giveaway = {
+      guild_id: '12345',
+      event_id: '1',
+      title: 'New Event',
+      description: 'Test description'
+    } as unknown as Giveaway;
+
+    const mockResponse: Giveaway = { ...giveaway };
+
+    service.createGuildEvent(giveaway).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(giveaway);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update an existing giveaway event for a specific guild', () => {
+    const giveaway: Giveaway = {
+      guild_id: '12345',
+      event_id: '1',
+      title: 'Updated Event',
+      description: 'Updated description'
+    } as unknown as Giveaway;
+
+    const mockResponse: Giveaway = { ...giveaway };
+
+    service.updateGuildEvent(giveaway).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(giveaway);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should delete an existing giveaway event for a specific guild', () => {
+    const giveaway: Giveaway = {
+      guild_id: '12345',
+      event_id: '1'
+    } as unknown as Giveaway;
+
+    const mockResponse = { success: true };
+
+    service.deleteGuildEvent(giveaway).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`);
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should start a scheduled giveaway event for a specific guild', () => {
+    const giveaway: Giveaway = {
+      guild_id: '12345',
+      event_id: '1',
+      status: 'SCHEDULED'
+    } as unknown as Giveaway;
+
+    const mockResponse: Giveaway = {
+      ...giveaway,
+      status: 'ACTIVE'
+    } as unknown as Giveaway;
+
+    service.startScheduledEvent(giveaway).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/start?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({});
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });

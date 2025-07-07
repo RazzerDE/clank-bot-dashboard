@@ -123,7 +123,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
 
     let sub: Subscription | null = null;
     sub = forkJoin({guildUsage: this.apiService.getGuildUsage(100),
-                                  moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
+                    moduleStatus: this.apiService.getModuleStatus(this.dataService.active_guild!.id)})
       .subscribe({
         next: ({ guildUsage, moduleStatus }: { guildUsage: SliderItems[], moduleStatus: TasksCompletionList }): void => {
           this.updateTasks(moduleStatus);

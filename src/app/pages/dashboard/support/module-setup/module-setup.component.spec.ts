@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { ModuleSetupComponent } from './module-setup.component';
 import {TranslateModule} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
-import {of, throwError} from "rxjs";
+import {defer, of} from "rxjs";
 import {SubTasksCompletion, TasksCompletion, TasksCompletionList} from "../../../../services/types/Tasks";
 import {Channel, Guild, SupportSetup} from "../../../../services/types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -137,7 +137,7 @@ describe('ModuleSetupComponent', () => {
     expect(dataService.isLoading).toBe(false);
   });
 
-  it('should handle invalid cached moduleStatus', () => {
+  it('should handle invalid cached moduleStatus', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
 
     const localStorageMock = {
@@ -156,15 +156,16 @@ describe('ModuleSetupComponent', () => {
       });
 
     const apiServiceSpy = jest.spyOn(component['apiService'], 'getModuleStatus')
-      .mockReturnValue(of({} as TasksCompletionList));
+      .mockReturnValue(defer(() => Promise.resolve({})));
 
     component['getServerData']();
+    tick();
 
     expect(localStorageMock.removeItem).toHaveBeenCalledWith('moduleStatus');
     expect(apiServiceSpy).not.toHaveBeenCalled();
-  });
+  }));
 
-  it('should fetch fresh data when cache is expired', () => {
+  it('should fetch fresh data when cache is expired', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
 
     const localStorageMock = {
@@ -185,24 +186,24 @@ describe('ModuleSetupComponent', () => {
     const mockModuleStatus = {
       task_1: {
         finished: false,
-        subtasks: [{ finished: true }, { finished: false }, { finished: false }, { finished: true }]
+        subtasks: [{finished: true}, {finished: false}, {finished: false}, {finished: true}]
       }
-    };
+    } as unknown as TasksCompletionList;
 
     const mockSupportSetup = {
       support_forum: { id: '3', name: 'Support' },
       support_forum_pending: false,
       discord_channels: [{ id: '4', name: 'Help' }]
-    };
+    } as SupportSetup;
 
     const getModuleStatusSpy = jest.spyOn(component['apiService'], 'getModuleStatus')
-      .mockReturnValue(of(mockModuleStatus as unknown as TasksCompletionList));
+      .mockReturnValue(defer(() => Promise.resolve(mockModuleStatus)));
 
     const getSupportSetupSpy = jest.spyOn(component['apiService'], 'getSupportSetupStatus')
-      .mockReturnValue(of(mockSupportSetup as SupportSetup));
+      .mockReturnValue(defer(() => Promise.resolve(mockSupportSetup)));
 
-    jest.useFakeTimers();
     component['getServerData']();
+    tick();
 
     expect(getModuleStatusSpy).toHaveBeenCalledWith('123');
     expect(component['moduleStatusObj']).toEqual({
@@ -210,29 +211,30 @@ describe('ModuleSetupComponent', () => {
       subtasks: [{ finished: true }, { finished: false }, { finished: false }]
     });
 
-    jest.advanceTimersByTime(1000);
+    tick(1000);
+
     expect(getSupportSetupSpy).toHaveBeenCalledWith('123');
     expect(localStorageMock.setItem).toHaveBeenCalledWith('supportSetup', JSON.stringify(mockSupportSetup));
     expect(localStorageMock.setItem).toHaveBeenCalledWith('moduleStatusTimestamp', expect.any(String));
 
-    jest.useRealTimers();
-  });
+  }));
 
-  it('should handle API error in getModuleStatus', () => {
+  it('should handle API error in getModuleStatus', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
     const errorResponse = new HttpErrorResponse({ status: 500 });
 
     jest.spyOn(component['apiService'], 'getModuleStatus')
-      .mockReturnValue(throwError(() => errorResponse));
+      .mockReturnValue(defer(() => Promise.reject(errorResponse)));
 
     const handleApiErrorSpy = jest.spyOn(dataService, 'handleApiError');
 
     component['getServerData']();
+    tick();
 
     expect(handleApiErrorSpy).toHaveBeenCalledWith(errorResponse);
-  });
+  }));
 
-  it('should handle API error in getSupportSetupStatus', () => {
+  it('should handle API error in getSupportSetupStatus', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
     const moduleStatusResponse = {
       task_1: {finished: false, subtasks: []}
@@ -240,19 +242,17 @@ describe('ModuleSetupComponent', () => {
     const errorResponse = new HttpErrorResponse({ status: 404 });
 
     jest.spyOn(component['apiService'], 'getModuleStatus')
-      .mockReturnValue(of(moduleStatusResponse));
+      .mockReturnValue(defer(() => Promise.resolve(moduleStatusResponse)));
     jest.spyOn(component['apiService'], 'getSupportSetupStatus')
-      .mockReturnValue(throwError(() => errorResponse));
+      .mockReturnValue(defer(() => Promise.reject(errorResponse)));
 
     const handleApiErrorSpy = jest.spyOn(dataService, 'handleApiError');
 
-    jest.useFakeTimers();
     component['getServerData']();
-    jest.advanceTimersByTime(1000);
+    tick(1500);
 
     expect(handleApiErrorSpy).toHaveBeenCalledWith(errorResponse);
-    jest.useRealTimers();
-  });
+  }));
 
   it('should show error alert if response status is 409', async () => {
     const channel = { id: '1', name: 'General' } as Channel;
@@ -344,22 +344,19 @@ describe('ModuleSetupComponent', () => {
     setSupportForumSpy.mockRestore();
   });
 
-  it('should disable cache refresh and set loading state, then re-enable cache refresh after 60 seconds', () => {
-    jest.useFakeTimers();
+  it('should disable cache refresh and set loading state, then re-enable cache refresh after 60 seconds', fakeAsync(() => {
     const getServerDataSpy = jest.spyOn(component as any, 'getServerData' as any);
 
     component['refreshCache']();
+    tick();
 
     expect(component['cacheRefreshDisabled']).toBe(true);
     expect(dataService.isLoading).toBe(true);
     expect(getServerDataSpy).toHaveBeenCalledWith(true);
 
-    jest.advanceTimersByTime(60000);
-
+    tick(65000); // Simulate 60 seconds passing
     expect(component['cacheRefreshDisabled']).toBe(false);
-
-    jest.useRealTimers();
-  });
+  }));
 
   it('should set moduleStatus to 2 if all tasks are finished', () => {
     component['moduleStatusObj'] = {finished: true, subtasks: []} as unknown as TasksCompletion;
