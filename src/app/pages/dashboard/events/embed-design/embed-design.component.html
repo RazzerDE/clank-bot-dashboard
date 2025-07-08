@@ -1,0 +1,184 @@
+<dashboard-layout>
+  <!-- TODO:
+    1. banner image Input
+    2. thumbnail image Input
+    3. emoji Input
+    4. embed color Input
+    5. save changes
+    6. get current embed settings
+    7. shuffle embed settings
+  -->
+  <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_EVENTS_DESIGN_SUBTITLE' | translate" [title]="'PAGE_EVENTS_DESIGN_TITLE' | translate"
+                [color]="'rosa'" [desc]="'PAGE_EVENTS_DESIGN_DESC' | translate"></page-thumb>
+
+    <!-- Main Content Area -->
+    <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-20rem)] gap-4 p-4">
+
+      <!-- Left Container - Design Controls -->
+      <div class="w-full lg:w-1/2 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
+                dark:via-slate-800 dark:to-slate-900 rounded-lg shadow-md overflow-y-auto dark:shadow-xl
+                  transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
+
+        <!-- Header -->
+        <div class="w-full p-4 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+          <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
+            {{ 'PLACEHOLDER_EVENT_DESIGN_TITLE' | translate }}
+          </h2>
+        </div>
+
+        <!-- Design Form -->
+        <div class="flex flex-col h-full max-h-[calc(100%-80px)] overflow-y-auto">
+          <!-- First Row: Banner URL + Thumbnail URL -->
+          <div class="flex flex-col md:flex-row gap-4 mb-4 p-6 pb-0">
+            <div class="flex-1">  <!-- Banner URL -->
+              <label for="embed_banner" class="block text-sm font-medium text-gray-900 dark:text-white mb-1
+                                               transition-colors duration-300">
+                {{ 'PLACEHOLDER_EVENT_DESIGN_BANNER_LABEL' | translate }}
+              </label>
+              <div class="relative flex items-center">
+                <div class="absolute left-0 top-2.5 pl-3 flex items-center pointer-events-none">
+                  <fa-icon [icon]="faPanorama" class="fas fa-image text-gray-400" />
+                </div>
+                <div class="absolute left-9 top-2.5 flex items-center pointer-events-none ml-2.5">
+                  <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
+                </div>
+                <div class="flex-0 flex flex-col w-full">
+                  <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
+                                          rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
+                                        dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white "
+                         placeholder="https://bl4cklist.de/my-img.gif" [(ngModel)]="this.embed_config.banner_url" id="embed_banner" />
+                  <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                    {{ 'PLACEHOLDER_EVENT_DESIGN_BANNER_INFO' | translate }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-1">  <!-- Thumbnail URL -->
+              <label for="embed_thumbnail" class="block text-sm font-medium text-gray-900 dark:text-white
+                                                  mb-1 transition-colors duration-300">
+                {{ 'PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_LABEL' | translate }}
+              </label>
+              <div class="relative flex items-center">
+                <div class="absolute left-0 top-2.5 pl-3 flex items-center pointer-events-none ml-1">
+                  <fa-icon [icon]="faCamera" class="fas fa-image text-gray-400" />
+                </div>
+                <div class="absolute left-9 top-2.5 flex items-center pointer-events-none ml-2.5">
+                  <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
+                </div>
+                <div class="flex-0 flex flex-col w-full">
+                  <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
+                                          rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
+                                        dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                         placeholder="https://https://bl4cklist.de/my-img.gif" [(ngModel)]="this.embed_config.thumbnail_url" id="embed_thumbnail" />
+                  <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                    {{ 'PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO' | translate
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Second Row: Emoji Reaction + Embed Color -->
+          <div class="flex flex-col md:flex-row gap-4 p-6 pb-0">
+            <div class="flex-1">  <!-- Thumbnail URL -->
+              <label for="embed_emoji" class="block text-sm font-medium text-gray-900 dark:text-white mb-1 transition-colors duration-300">
+                {{ 'PLACEHOLDER_EVENT_DESIGN_EMOJI_LABEL' | translate }}
+              </label>
+              <div class="relative flex items-center">
+                <div class="absolute left-0 top-2.5 pl-3 flex items-center pointer-events-none ml-1">
+                  <fa-icon [icon]="faIcons" class="fas fa-image text-gray-400" />
+                </div>
+                <div class="absolute left-9 top-2.5 flex items-center pointer-events-none ml-2.5">
+                  <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
+                </div>
+                <div class="flex-0 flex flex-col w-full">
+                  <div class="flex flex-col">
+                    <input type="text" class="w-full py-2 pl-14 pr-11 bg-gray-50 border border-gray-300 text-gray-900
+                                          rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
+                                        dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                         placeholder="<a:present:873708141085343764>" [(ngModel)]="this.embed_config.emoji_reaction" id="embed_emoji" />
+                    <div class="absolute right-1.5 top-1.5 w-6 h-6 border-0 p-3 cursor-pointer rounded-lg flex items-center
+                                justify-center hover:bg-gray-700 transition-colors duration-200">
+                      <span class="text-white drop-shadow-xl text-xl">🌟</span>
+                    </div>
+                    </div>
+                  <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                    {{ 'PLACEHOLDER_EVENT_DESIGN_EMOJI_INFO' | translate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full md:w-2/5">  <!-- Embed Color -->
+              <label for="embed_color" class="block text-sm font-medium text-gray-900 dark:text-white mb-1 transition-colors duration-300">
+                {{ 'PLACEHOLDER_EVENT_DESIGN_COLOR_LABEL' | translate }}
+              </label>
+              <div class="relative flex items-center">
+                <div class="absolute left-0 top-2.5 pl-3.5 flex items-center pointer-events-none ml-1">
+                  <fa-icon [icon]="faBrush" class="fas fa-image text-gray-400" />
+                </div>
+                <div class="absolute left-9 top-2.5 flex items-center pointer-events-none ml-2.5">
+                  <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
+                </div>
+
+                <div class="flex-0 flex flex-col w-full">
+                  <div class="flex flex-col">
+                    <input type="text" class="w-full py-2 pl-14 pr-11 bg-gray-50 border border-gray-300 text-gray-900
+                                          rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
+                                        dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white uppercase"
+                           placeholder="#706fd3" id="embed_color" [(ngModel)]="embed_config.color_code" />
+                    <input type="color" class="absolute right-3 inset-y-2 w-6 h-6 border-0 p-0 cursor-pointer"
+                           value="#706fd3" id="embed_color_pick" [(ngModel)]="embed_config.color_code" />
+                  </div>
+                  <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                    {{ 'PLACEHOLDER_EVENT_DESIGN_COLOR_INFO' | translate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Controls -->
+          <div class="border-t border-gray-200 dark:border-gray-700 p-4 mb-0 mt-auto transition-colors duration-300">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+              <!-- Save Button -->
+              <button type="button" class="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700
+                                         text-white py-2 px-4 rounded-md transition-colors duration-200">
+                <fa-icon [icon]="faSave" class="mr-2"/> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+              </button>
+
+              <!-- Random Button -->
+              <button type="button" class="flex items-center justify-center bg-gray-200 hover:bg-gray-300
+                                         dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200
+                                           py-2 px-4 rounded-md transition-colors duration-200 ">
+                <fa-icon [icon]="faShuffle" class="mr-2"/> {{ 'PLACEHOLDER_BUTTON_RANDOM' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Container - Preview -->
+      <div class="w-full lg:w-1/2 bg-gradient-to-tr from-white via-slate-50 to-blue-50 dark:from-slate-800
+                dark:via-slate-800 dark:to-slate-900 rounded-lg dark:shadow-xl shadow-md overflow-y-auto flex flex-col
+                  transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
+
+        <!-- Header -->
+        <div class="w-full p-4 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+          <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
+            {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_TITLE' | translate }}</h2>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center">
+          <template-discord-markdown [type]="'EVENTS_DESIGN'" [giveaway]="this.initGiveaway" [embed_config]="embed_config" />
+        </div>
+      </div>
+    </div>
+
+  </section>
+</dashboard-layout>
