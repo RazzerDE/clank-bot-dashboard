@@ -149,6 +149,10 @@
   "PAGE_EVENTS_SUBTITLE": "🎁 ~ AKTUELL LAUFENDE EVENTS",
   "PAGE_EVENTS_TITLE": "Aktive Gewinnspiele",
   "PAGE_EVENTS_DESC": "› Auf dieser Seite siehst du alle aktuell laufenden Gewinnspiele, die von Clank auf deinem Discord-Server erstellt und aktuell weiterhin verwaltet werden.",
+  "PAGE_EVENTS_DESIGN_SUBTITLE": "🎊 ~ GESTALTE DEINE EIGENEN GEWINNSPIELE",
+  "PAGE_EVENTS_DESIGN_TITLE": "Gewinnspiel-Design",
+  "PAGE_EVENTS_DESIGN_DESC": "› Auf dieser Seite kannst du das Design von Embeds anpassen, welche in Gewinnspiel-Nachrichten vorhanden sind und von Clank erstellt werden.",
+
   "PAGE_EVENTS_TABLE_PRICE": "🎁 ~ Preis",
   "PAGE_EVENTS_TABLE_END_DATE": "⏰ ~ Endet..",
   "PAGE_EVENTS_TABLE_REQUIREMENT": "🎀 ~ Teilnahme-Bedingung",
@@ -549,6 +553,16 @@
   "PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER": "z.B. https://discord.gg/bl4cklist",
   "PLACEHOLDER_EVENT_PREVIEW_MODAL_FOOTER": "Dein festgelegter Banner wird hier nicht angezeigt um Platz zu sparen.",
 
+  "PLACEHOLDER_EVENT_DESIGN_TITLE": "🖼️ ~ EMBED-EINSTELLUNGEN",
+  "PLACEHOLDER_EVENT_DESIGN_BANNER_LABEL": "Wie lautet die URL des Banner-Bildes?",
+  "PLACEHOLDER_EVENT_DESIGN_BANNER_INFO": "Der Banner wird unterhalb des Embeds angezeigt.",
+  "PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_LABEL": "Wie lautet die URL des Thumbnails?",
+  "PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO": "Das Thumbnail ist in der linken oberen Ecke sichtbar.",
+  "PLACEHOLDER_EVENT_DESIGN_EMOJI_LABEL": "Welches Emoji soll im Button verwendet werden?",
+  "PLACEHOLDER_EVENT_DESIGN_EMOJI_INFO": "Klicke auf den Emoji-Picker rechts für eine Eingabehilfe.",
+  "PLACEHOLDER_EVENT_DESIGN_COLOR_LABEL": "Welche Farbe soll das Embed haben?",
+  "PLACEHOLDER_EVENT_DESIGN_COLOR_INFO": "Auf dem Farbfleck findest du eine Eingabehilfe.",
+
   "PLACEHOLDER_THEME_MODAL2_TITLE": "🤖 ~ Automatische Bot-Antwort",
   "PLACEHOLDER_THEME_MODAL2_TOGGLE": "Als FAQ-Thema verwenden",
   "PLACEHOLDER_THEME_MODAL2_ANSWER": "Wie soll der Bot auf das Thema antworten?",
@@ -565,6 +579,7 @@
   "PLACEHOLDER_NO_FORUM_CHANNELS": "Keine Forenkanäle gefunden..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Erstelle einen Forum-Kanal (Anleitung <a href=\"https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">hier</a>) auf deinem Discord-Server oder aktualisiere die Liste.",
 
+  "PLACEHOLDER_BUTTON_RANDOM": "Zufällige Optionen",
   "PLACEHOLDER_BUTTON_SAVE": "Änderungen speichern",
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Forumkanal ändern",
   "PLACEHOLDER_BUTTON_CHANNEL_SET": "Forumkanal festlegen",

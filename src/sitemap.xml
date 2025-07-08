@@ -9,71 +9,63 @@
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://clank.dev/contact</loc>
+    <loc>https://clank.dev/dashboard/contact</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://clank.dev/teamlist</loc>
+    <loc>https://clank.dev/dashboard/teamlist</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/support/setup</loc>
+    <loc>https://clank.dev/dashboard/support/setup</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/support/themes</loc>
+    <loc>https://clank.dev/dashboard/support/themes</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/support/snippets</loc>
+    <loc>https://clank.dev/dashboard/support/snippets</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/support/blocked-users</loc>
+    <loc>https://clank.dev/dashboard/support/blocked-users</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/events/create</loc>
+    <loc>https://clank.dev/dashboard/events/view</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/events/view</loc>
+    <loc>https://clank.dev/dashboard/events/design</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/events/design</loc>
+    <loc>https://clank.dev/dashboard/events/channel-roles</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/events/channel-roles</loc>
+    <loc>https://clank.dev/dashboard/security/members</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/security/members</loc>
+    <loc>https://clank.dev/dashboard/security/shield</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/security/shield</loc>
+    <loc>https://clank.dev/dashboard/security/backups</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/security/backups</loc>
+    <loc>https://clank.dev/dashboard/security/automod</loc>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://clank.dev/security/automod</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/misc/embed-builder</loc>
+    <loc>https://clank.dev/dashboard/misc/global-chat</loc>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://clank.dev/misc/global-chat</loc>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/errors/simple</loc>
+    <loc>https://clank.dev/dashboard/errors/simple</loc>
     <priority>0.20</priority>
   </url>
 </urlset>
