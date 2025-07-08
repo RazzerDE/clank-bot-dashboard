@@ -33,8 +33,8 @@ export interface TableConfig {
 }
 
 export interface EmbedConfig {
-  color_code: string | null;        // Hex color code
-  thumbnail_url: string | null;     // URL to the thumbnail image
-  banner_url: string | null;        // URL to the banner image, can be null
-  emoji_reaction: string | null;    // Emoji to be displayed, e.g., '<a:present:873708141085343764>'
+  color_code: string | number | null;       // Hex color code
+  thumbnail_url: string | null;             // URL to the thumbnail image
+  banner_url: string | null;                // URL to the banner image, can be null
+  emoji_reaction: string | null;            // Emoji to be displayed, e.g., '<a:present:873708141085343764>'
 }

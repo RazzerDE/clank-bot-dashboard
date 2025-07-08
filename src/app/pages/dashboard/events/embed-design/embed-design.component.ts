@@ -7,7 +7,6 @@ import {
   DiscordMarkdownComponent
 } from "../../../../structure/util/modal/templates/discord-markdown/discord-markdown.component";
 import {Giveaway} from "../../../../services/types/Events";
-import {EmbedConfig} from "../../../../services/types/Config";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faPanorama} from "@fortawesome/free-solid-svg-icons/faPanorama";
 import {FormsModule} from "@angular/forms";
@@ -37,8 +36,6 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 export class EmbedDesignComponent implements OnDestroy {
   protected initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
-  protected embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
-    banner_url: null, emoji_reaction: this.dataService.getEmojibyId('<a:present:873708141085343764>') }
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
 

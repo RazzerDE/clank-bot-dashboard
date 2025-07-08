@@ -157,6 +157,10 @@ export class DataHolderService {
     if ((localStorage.getItem('gift_config') && localStorage.getItem('gift_config_timestamp') &&
       Date.now() - Number(localStorage.getItem('gift_config_timestamp')) < 30000 && !no_cache)) {
       this.embed_config = JSON.parse(localStorage.getItem('gift_config') as string);
+      if (typeof this.embed_config.color_code === 'number') {
+        this.embed_config.color_code = `#${this.embed_config.color_code.toString(16).padStart(6, '0')}`;
+      }
+
       this.isLoading = false;
       this.isFetching = false;
       return;
@@ -165,6 +169,10 @@ export class DataHolderService {
     const sub: Subscription = apiService.getEventConfig(this.active_guild!.id)
       .subscribe({
         next: (config: EmbedConfig): void => {
+          if (typeof config.color_code === 'number') {
+            config.color_code = `#${config.color_code.toString(16).padStart(6, '0')}`;
+          }
+
           this.embed_config = config;
           this.isLoading = false;
           this.isFetching = false;
