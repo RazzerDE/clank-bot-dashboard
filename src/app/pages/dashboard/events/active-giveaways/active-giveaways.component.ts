@@ -43,7 +43,6 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected readonly faGift: IconDefinition = faGift;
   protected readonly faRefresh: IconDefinition = faRefresh;
   private readonly subscription: Subscription | null;
-  private startLoading: boolean = false;
 
   public giveaway: Giveaway = { ...this.initGiveaway };
   protected events: Giveaway[] = [];
@@ -65,7 +64,6 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
-        this.dataService.selectedSnippet = null;
         this.getGuildEvents(true);
       }
     });
@@ -91,14 +89,13 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   protected getGuildEvents(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
-    this.startLoading = true;
 
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('active_events') && localStorage.getItem('active_events_timestamp') &&
       Date.now() - Number(localStorage.getItem('active_events_timestamp')) < 30000) && !no_cache) {
       this.events = JSON.parse(localStorage.getItem('active_events') as string);
       this.filteredEvents = this.events;
-      this.getEventConfig(no_cache);
+      this.dataService.getEventConfig(this.apiService, no_cache);
       return;
     }
 
@@ -108,14 +105,13 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           this.events = giveaways;
           this.filteredEvents = this.events;
 
-          setTimeout((): void => { this.getEventConfig(no_cache) }, 500);
+          setTimeout((): void => { this.dataService.getEventConfig(this.apiService, no_cache); }, 500);
           localStorage.setItem('active_events', JSON.stringify(this.events));
           localStorage.setItem('active_events_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
         error: (err: HttpErrorResponse): void => {
           this.dataService.isLoading = false;
-          this.startLoading = false;
 
           if (err.status === 403) {
             this.dataService.redirectLoginError('FORBIDDEN');
@@ -135,55 +131,6 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           sub.unsubscribe();
         }
       })
-  }
-
-  /**
-   * Retrieves the event embed configuration for the current guild.
-   *
-   * This method first checks if a valid configuration is available in localStorage (cached for 30 seconds).
-   * If so, it loads the configuration from the cache. Otherwise, it fetches the configuration from the API,
-   * updates the local cache, and handles loading states. Handles HTTP errors by redirecting to appropriate error pages.
-   *
-   * @param {boolean} [no_cache] - If true, ignores the cache and fetches fresh data from the API.
-   * @returns {void}
-   */
-  private getEventConfig(no_cache?: boolean): void {
-    // check if guilds are already stored in local storage (30 seconds cache)
-    if ((localStorage.getItem('gift_config') && localStorage.getItem('gift_config_timestamp') &&
-      Date.now() - Number(localStorage.getItem('gift_config_timestamp')) < 30000 && !no_cache)) {
-      this.embed_config = JSON.parse(localStorage.getItem('gift_config') as string);
-      this.dataService.isLoading = false;
-      this.startLoading = false;
-      return;
-    }
-
-    const sub: Subscription = this.apiService.getEventConfig(this.dataService.active_guild!.id)
-      .subscribe({
-        next: (config: EmbedConfig): void => {
-          this.embed_config = config;
-          this.dataService.isLoading = false;
-          this.startLoading = false;
-
-          localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
-          localStorage.setItem('gift_config_timestamp', Date.now().toString());
-          sub.unsubscribe();
-        },
-        error: (err: HttpErrorResponse): void => {
-          this.dataService.isLoading = false;
-          this.startLoading = false;
-
-          if (err.status === 429) {
-            this.dataService.redirectLoginError('REQUESTS');
-            return;
-          } else if (err.status === 0) {
-            this.dataService.redirectLoginError('OFFLINE');
-            return;
-          } else {
-            this.dataService.redirectLoginError('UNKNOWN');
-          }
-          sub.unsubscribe();
-        }
-      });
   }
 
   /**
@@ -525,7 +472,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     return {
       type: "EVENTS_VIEW",
       list_empty: 'PLACEHOLDER_EVENT_EMPTY',
-      dataLoading: this.startLoading,
+      dataLoading: this.dataService.isFetching,
       rows: this.filteredEvents,
       columns: [
         { width: 25, name: 'PAGE_EVENTS_TABLE_PRICE' },

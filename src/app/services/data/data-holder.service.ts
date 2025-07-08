@@ -10,6 +10,8 @@ import {ComService} from "../discord-com/com.service";
 import {TranslateService} from "@ngx-translate/core";
 import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
 import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
+import {EmbedConfig} from "../types/Config";
+import {ApiService} from "../api/api.service";
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,8 @@ export class DataHolderService {
   support_themes: SupportTheme[] = [];
   guild_roles: Role[] = [];
   guild_channels: Channel[] = [];
+  embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
+    banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
   selectedSnippet: TicketSnippet | null = null;
 
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
@@ -133,6 +137,58 @@ export class DataHolderService {
         }
       });
     });
+  }
+
+  /**
+   * Retrieves the event embed configuration for the current guild.
+   *
+   * This method first checks if a valid configuration is available in localStorage (cached for 30 seconds).
+   * If so, it loads the configuration from the cache. Otherwise, it fetches the configuration from the API,
+   * updates the local cache, and handles loading states. Handles HTTP errors by redirecting to appropriate error pages.
+   *
+   * @param {ApiService} apiService - The service used to communicate with the API.
+   * @param {boolean} [no_cache] - If true, ignores the cache and fetches fresh data from the API.
+   * @returns {void}
+   */
+  getEventConfig(apiService: ApiService, no_cache?: boolean): void {
+    this.isFetching = true;
+
+    // check if guilds are already stored in local storage (30 seconds cache)
+    if ((localStorage.getItem('gift_config') && localStorage.getItem('gift_config_timestamp') &&
+      Date.now() - Number(localStorage.getItem('gift_config_timestamp')) < 30000 && !no_cache)) {
+      this.embed_config = JSON.parse(localStorage.getItem('gift_config') as string);
+      this.isLoading = false;
+      this.isFetching = false;
+      return;
+    }
+
+    const sub: Subscription = apiService.getEventConfig(this.active_guild!.id)
+      .subscribe({
+        next: (config: EmbedConfig): void => {
+          this.embed_config = config;
+          this.isLoading = false;
+          this.isFetching = false;
+
+          localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
+          localStorage.setItem('gift_config_timestamp', Date.now().toString());
+          sub.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.isLoading = false;
+          this.isFetching = false;
+
+          if (err.status === 429) {
+            this.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.redirectLoginError('UNKNOWN');
+          }
+          sub.unsubscribe();
+        }
+      });
   }
 
   /**

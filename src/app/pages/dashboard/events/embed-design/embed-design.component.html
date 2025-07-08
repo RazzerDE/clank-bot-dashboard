@@ -5,7 +5,6 @@
     3. emoji Input
     4. embed color Input
     5. save changes
-    6. get current embed settings
     7. shuffle embed settings
   -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
@@ -24,10 +23,19 @@
                   transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
 
         <!-- Header -->
-        <div class="w-full p-4 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div class="flex flex-row w-full p-[1.25rem] border-b border-gray-200 dark:border-gray-700 justify-between
+                    transition-colors duration-300 items-center">
           <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
             {{ 'PLACEHOLDER_EVENT_DESIGN_TITLE' | translate }}
           </h2>
+
+          <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
+                                           via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
+                                           py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
+                                           transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
+                  [disabled]="this.disabledCacheBtn" (click)="refreshCache()">
+            <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+          </button>
         </div>
 
         <!-- Design Form -->
@@ -175,7 +183,7 @@
         </div>
 
         <div class="flex-1 flex items-center justify-center">
-          <template-discord-markdown [type]="'EVENTS_DESIGN'" [giveaway]="this.initGiveaway" [embed_config]="embed_config" />
+          <template-discord-markdown [type]="'EVENTS_DESIGN'" [giveaway]="this.initGiveaway" />
         </div>
       </div>
     </div>

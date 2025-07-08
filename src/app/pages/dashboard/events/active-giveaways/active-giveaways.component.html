@@ -4,7 +4,7 @@
 
     <!-- Giveaway Modal -->
     <app-modal [type]="modalType" [obj]="modalObj" [event_action]="this.addGuildEvent.bind(this)"
-               [event_edit]="this.editGuildEvent.bind(this)" [gift_config]="this.embed_config" />
+               [event_edit]="this.editGuildEvent.bind(this)" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_EVENTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_TITLE' | translate"
@@ -51,7 +51,7 @@
                                            via-blue-600 to-blue-500 focus:ring-4 font-medium rounded-lg text-sm px-3
                                            py-2 focus:ring-blue-700 focus:outline-none hover:bg-gradient-to-br
                                            transition-colors duration-300 disabled:bg-gray-700 disabled:bg-none"
-                        (click)="this.refreshCache()">
+                        [disabled]="this.disabledCacheBtn" (click)="this.refreshCache()">
                   <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
                 </button>
               </div>
