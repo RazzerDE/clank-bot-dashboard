@@ -1,7 +1,6 @@
 <dashboard-layout>
   <!-- TODO:
     1. banner image Input
-    2. thumbnail image Input
     3. emoji Input
     5. save changes
     7. shuffle embed settings
@@ -80,7 +79,8 @@
                   <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                         placeholder="https://https://bl4cklist.de/my-img.gif" [(ngModel)]="this.dataService.embed_config.thumbnail_url" id="embed_thumbnail" />
+                         placeholder="https://bl4cklist.de/my-img.gif" (input)="verifyEmbedImage($event)"
+                         [(ngModel)]="this.dataService.embed_config.thumbnail_url" id="embed_thumbnail" />
                   <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                     {{ 'PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO' | translate
                     }}
@@ -138,7 +138,8 @@
                     <input type="text" class="w-full py-2 pl-14 pr-11 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white uppercase"
-                           placeholder="#706fd3" id="embed_color" [(ngModel)]="this.dataService.embed_config.color_code" />
+                           min="1" max="7" maxlength="7" placeholder="#706fd3" id="embed_color"
+                           [(ngModel)]="this.dataService.embed_config.color_code" (input)="verifyEmbedColor($event)" />
                     <input type="color" class="absolute right-3 inset-y-2.5 w-6 h-6 border-0 p-0 cursor-pointer"
                            value="#706fd3" id="embed_color_pick" [(ngModel)]="this.dataService.embed_config.color_code" />
                   </div>

@@ -79,4 +79,50 @@ export class EmbedDesignComponent implements OnDestroy {
 
     setTimeout((): void => { this.disabledCacheBtn = false; }, 15000);
   }
+
+  /**
+   * Validates and normalizes the embed color input.
+   * Only allows alphanumeric characters and a leading '#'.
+   *
+   * @param event InputEvent from the input field
+   */
+  verifyEmbedColor(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value: string = input.value;
+
+    // Only allow alphanumeric and leading '#'
+    value = value.replace(/[^a-zA-Z0-9#]/g, '');
+
+    // Ensure value starts with '#'
+    if (!value.startsWith('#')) {
+      value = '#' + value.replace(/^#+/, '');
+    }
+
+    input.value = value;
+  }
+
+  /**
+   * Validates the embed image URL by attempting to load it.
+   * Sets the `thumbnail_invalid` flag in the embed configuration
+   * based on whether the image loads successfully or not.
+   *
+   * @param event - InputEvent from the image URL input field
+   */
+  verifyEmbedImage(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const url: string = input.value.trim();
+    if (url.length === 0) { this.dataService.embed_config.thumbnail_url = null; }
+
+    // Only allow http(s) URLs and basic image extensions
+    const isValidUrl: boolean = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(url);
+    if (!isValidUrl) {
+      this.dataService.embed_config.thumbnail_invalid = true;
+      return;
+    }
+
+    const img = new Image();
+    img.onload = (): void => { this.dataService.embed_config.thumbnail_invalid = false; };
+    img.onerror = (): void => { this.dataService.embed_config.thumbnail_invalid = true; };
+    img.src = url;
+  }
 }

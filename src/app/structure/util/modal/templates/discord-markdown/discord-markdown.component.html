@@ -121,13 +121,13 @@
               <!-- Right column for the gift image -->
               @if (dataService.embed_config.thumbnail_url != null) {
                 <div class="flex items-start justify-center">
-                  @if (!this.invalidImg) {
+                  @if (!this.dataService.embed_config.thumbnail_invalid) {
                     <div class="w-20 h-20 flex items-center justify-center">
                       <img height="80" width="80" [ngSrc]="dataService.embed_config.thumbnail_url" alt="Embed-Avatar ~ Clank Discord-Bot"
-                           (error)="this.invalidImg = true;"/>
+                           (error)="dataService.embed_config.thumbnail_invalid = true;" class="rounded-xl"/>
                     </div>
                   } @else {
-                    <div class="w-20 h-20 rounded bg-gray-600 flex items-center justify-center">
+                    <div class="w-20 h-20 bg-gray-600 flex items-center justify-center rounded-xl">
                       <span class="text-2xl">:)</span>
                     </div>
                   }

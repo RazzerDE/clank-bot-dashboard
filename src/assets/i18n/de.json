@@ -559,7 +559,7 @@
   "PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_LABEL": "Wie lautet die URL des Thumbnails?",
   "PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO": "Das Thumbnail ist in der linken oberen Ecke sichtbar.",
   "PLACEHOLDER_EVENT_DESIGN_EMOJI_LABEL": "Welches Emoji soll im Button verwendet werden?",
-  "PLACEHOLDER_EVENT_DESIGN_EMOJI_INFO": "Klicke auf den Emoji-Picker rechts für eine Eingabehilfe.",
+  "PLACEHOLDER_EVENT_DESIGN_EMOJI_INFO": "Clank muss ein Mitglied von dem Server des Emojis sein.",
   "PLACEHOLDER_EVENT_DESIGN_COLOR_LABEL": "Welche Farbe soll das Embed haben?",
   "PLACEHOLDER_EVENT_DESIGN_COLOR_INFO": "Auf dem Farbfleck findest du eine Eingabehilfe.",
 

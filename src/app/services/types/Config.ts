@@ -37,4 +37,7 @@ export interface EmbedConfig {
   thumbnail_url: string | null;             // URL to the thumbnail image
   banner_url: string | null;                // URL to the banner image, can be null
   emoji_reaction: string | null;            // Emoji to be displayed, e.g., '<a:present:873708141085343764>'
+
+  thumbnail_invalid?: boolean;              // Flag to indicate if the thumbnail is invalid
+  banner_invalid?: boolean;                 // Flag to indicate if the banner is invalid
 }
