@@ -134,6 +134,23 @@
                 </div>
               }
             </div>
+
+            <!-- Banner image below content -->
+            @if (dataService.embed_config.banner_url != null && type === 'EVENTS_DESIGN') {
+              <div class="mt-2 w-full">
+                @if (!this.dataService.embed_config.banner_invalid) {
+                  <div class="w-full flex items-center justify-center mt-2">
+                    <img [ngSrc]="dataService.embed_config.banner_url" alt="Embed-Banner ~ Clank Discord-Bot"
+                         (error)="dataService.embed_config.banner_invalid = true;"
+                         width="440" height="120" class="rounded w-full object-cover" />
+                  </div>
+                } @else {
+                  <div class="w-full h-20 bg-gray-600 flex items-center justify-center rounded mt-2">
+                    <span class="text-sm text-gray-300">:)</span>
+                  </div>
+                }
+              </div>
+            }
           </div>
 
           <div class="mt-2">

@@ -107,22 +107,33 @@ export class EmbedDesignComponent implements OnDestroy {
    * based on whether the image loads successfully or not.
    *
    * @param event - InputEvent from the image URL input field
+   * @param banner - Optional parameter to indicate if the image is for a banner
    */
-  verifyEmbedImage(event: Event): void {
+  verifyEmbedImage(event: Event, banner?: boolean): void {
     const input = event.target as HTMLInputElement;
     const url: string = input.value.trim();
-    if (url.length === 0) { this.dataService.embed_config.thumbnail_url = null; }
+    if (url.length === 0) {
+      if (!banner) { this.dataService.embed_config.thumbnail_url = null;
+      } else { this.dataService.embed_config.banner_url = null; }
+      return;
+    }
 
     // Only allow http(s) URLs and basic image extensions
-    const isValidUrl: boolean = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(url);
+    const isValidUrl: boolean = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(url.split('?')[0]);
     if (!isValidUrl) {
-      this.dataService.embed_config.thumbnail_invalid = true;
+      if (!banner) { this.dataService.embed_config.thumbnail_invalid = true; } else { this.dataService.embed_config.banner_invalid = true; }
       return;
     }
 
     const img = new Image();
-    img.onload = (): void => { this.dataService.embed_config.thumbnail_invalid = false; };
-    img.onerror = (): void => { this.dataService.embed_config.thumbnail_invalid = true; };
+    img.onload = (): void => {
+      if (!banner) { this.dataService.embed_config.thumbnail_invalid = false;
+      } else { this.dataService.embed_config.banner_invalid = false; }
+    };
+    img.onerror = (): void => {
+      if (!banner) { this.dataService.embed_config.thumbnail_invalid = true;
+      } else { this.dataService.embed_config.banner_invalid = true; }
+    };
     img.src = url;
   }
 }

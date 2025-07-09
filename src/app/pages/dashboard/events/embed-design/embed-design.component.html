@@ -10,10 +10,10 @@
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_EVENTS_DESIGN_SUBTITLE' | translate" [title]="'PAGE_EVENTS_DESIGN_TITLE' | translate"
-                [color]="'rosa'" [desc]="'PAGE_EVENTS_DESIGN_DESC' | translate"></page-thumb>
+                [color]="'rosa'" [desc]="'PAGE_EVENTS_DESIGN_DESC' | translate" [size]="'less'"></page-thumb>
 
     <!-- Main Content Area -->
-    <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-20rem)] gap-4 p-4">
+    <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-16rem)] gap-4 p-4">
 
       <!-- Left Container - Design Controls -->
       <div class="w-full lg:w-1/2 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
@@ -56,7 +56,8 @@
                   <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white "
-                         placeholder="https://bl4cklist.de/my-img.gif" [(ngModel)]="this.dataService.embed_config.banner_url" id="embed_banner" />
+                         placeholder="https://bl4cklist.de/my-img.gif" (input)="verifyEmbedImage($event, true)"
+                         [(ngModel)]="this.dataService.embed_config.banner_url" id="embed_banner" />
                   <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                     {{ 'PLACEHOLDER_EVENT_DESIGN_BANNER_INFO' | translate }}</div>
                 </div>
@@ -79,11 +80,10 @@
                   <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                         placeholder="https://bl4cklist.de/my-img.gif" (input)="verifyEmbedImage($event)"
+                         placeholder="https://bl4cklist.de/my-img.gif" (input)="verifyEmbedImage($event, false)"
                          [(ngModel)]="this.dataService.embed_config.thumbnail_url" id="embed_thumbnail" />
                   <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
-                    {{ 'PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO' | translate
-                    }}
+                    {{ 'PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO' | translate }}
                   </div>
                 </div>
               </div>
@@ -92,7 +92,7 @@
 
           <!-- Second Row: Emoji Reaction + Embed Color -->
           <div class="flex flex-col md:flex-row gap-4 p-6 pb-0">
-            <div class="flex-1">  <!-- Thumbnail URL -->
+            <div class="flex-1">  <!-- Emoji Reaction -->
               <label for="embed_emoji" class="block text-sm font-medium text-gray-900 dark:text-white mb-1 transition-colors duration-300">
                 {{ 'PLACEHOLDER_EVENT_DESIGN_EMOJI_LABEL' | translate }}
               </label>
@@ -177,7 +177,8 @@
                   transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
 
         <!-- Header -->
-        <div class="w-full p-4 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div class="w-full p-4 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300"
+             [class.py-3]="this.dataService.embed_config.banner_url">
           <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
             {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_TITLE' | translate }}</h2>
         </div>

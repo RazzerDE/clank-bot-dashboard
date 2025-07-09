@@ -37,7 +37,6 @@ export class DiscordMarkdownComponent {
 
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
-  protected invalidImg: boolean = false;
   protected ownDatePipe: own = new own();
 
   constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
