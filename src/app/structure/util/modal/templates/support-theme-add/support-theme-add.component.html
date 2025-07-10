@@ -5,7 +5,7 @@
       {{ 'PLACEHOLDER_THEME_MODAL_NAME' | translate }} <span class="text-red-500">*</span>
     </label>
     <div class="flex items-center gap-2">
-      <div (click)="this.showEmojiPicker = !this.showEmojiPicker; $event.stopPropagation();"
+      <div (click)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker; $event.stopPropagation();"
            class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
                 cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
         @if (newTheme.icon.includes('https') || newTheme.icon.startsWith('<:') || newTheme.icon.startsWith('<a:')) {
@@ -18,27 +18,9 @@
           <span class="text-gray-900 dark:text-white select-none">{{ newTheme.icon }}</span>
         }
 
-        @if (this.showEmojiPicker) {
-          <div class="absolute bottom-full left-0 mb-2 p-2 bg-white dark:!bg-gray-700 border border-gray-300
-                      cursor-default dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid
-                      grid-cols-6 gap-1" (click)="$event.stopPropagation();">
-            @for (emoji of emojis; track $index) {
-              @if (isEmojiType(emoji)) {
-                <span (click)="updateThemeIcon(emoji)"
-                      class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
-                           dark:hover:bg-gray-600 p-1 rounded">
-                  <img ngSrc="{{ this.dataService.getEmojibyId(emoji.id, true, emoji.animated) + '?size=40' }}"
-                       width="40" height="40" alt="Emoji ~ Clank Discord-Bot" />
-                </span>
-                } @else {
-                  <span (click)="this.newTheme.icon = emoji.toString(); this.showEmojiPicker = false;"
-                        class="cursor-pointer flex items-center justify-center h-8 w-8 hover:bg-gray-100
-                             dark:hover:bg-gray-600 p-1 rounded">
-                    {{ emoji }}
-                  </span>
-                }
-              }
-          </div>
+        <!-- Modal for Emoji Picker -->
+        @if (this.dataService.showEmojiPicker) {
+          <template-emoji-picker (selected_emoji)="updateThemeIcon($event)" />
         }
 
       </div>

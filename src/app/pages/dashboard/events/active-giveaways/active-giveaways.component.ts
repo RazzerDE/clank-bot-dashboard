@@ -95,7 +95,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
       Date.now() - Number(localStorage.getItem('active_events_timestamp')) < 30000) && !no_cache) {
       this.events = JSON.parse(localStorage.getItem('active_events') as string);
       this.filteredEvents = this.events;
-      this.dataService.getEventConfig(this.apiService, no_cache);
+      this.dataService.getEventConfig(this.apiService, this.comService, no_cache);
       return;
     }
 
@@ -105,7 +105,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
           this.events = giveaways;
           this.filteredEvents = this.events;
 
-          setTimeout((): void => { this.dataService.getEventConfig(this.apiService, no_cache); }, 500);
+          setTimeout((): void => { this.dataService.getEventConfig(this.apiService, this.comService, no_cache); }, 500);
           localStorage.setItem('active_events', JSON.stringify(this.events));
           localStorage.setItem('active_events_timestamp', Date.now().toString());
           sub.unsubscribe();

@@ -6,14 +6,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import {defer} from "rxjs";
 import {ComService} from "../discord-com/com.service";
-import {Channel, Guild, Role} from "../types/discord/Guilds";
+import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
   let router: Router;
   let translate: TranslateService;
-  let comService: ComService
+  let comService: ComService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -399,6 +399,79 @@ describe('DataHolderService', () => {
     tick();
 
     expect(service.handleApiError).toHaveBeenCalledWith(errorResponse);
+  }));
+
+  it('should return if no active guild', () => {
+    jest.spyOn(service['discordService'], 'getGuildEmojis');
+    service.active_guild = null;
+    service.getGuildEmojis()
+    expect(service['discordService']['getGuildEmojis']).not.toHaveBeenCalled();
+  });
+
+  it('should use cache if available and not expired', () => {
+    const emojis = [{ id: '1', animated: false, available: true, managed: false, require_colons: true }] as Emoji[];
+    service['dataService'].active_guild = { id: 'guild1' } as Guild;
+    localStorage.setItem('guild_emojis', JSON.stringify(emojis));
+    localStorage.setItem('support_themes_timestamp', (Date.now()).toString());
+    service.dataService.isLoading = true;
+
+    service['getGuildEmojis']();
+
+    expect(service['emojis']).toEqual(emojis);
+    expect(service.dataService.isLoading).toBe(false);
+  });
+
+  it('should use initEmojis if cache is empty array', () => {
+    localStorage.setItem('guild_emojis', JSON.stringify([]));
+    localStorage.setItem('support_themes_timestamp', (Date.now()).toString());
+    service['dataService'].active_guild = { id: 'guild1' } as Guild;
+
+    service['getGuildEmojis']();
+
+    expect(service['emojis']).toEqual(initEmojis);
+    expect(service.dataService.isLoading).toBe(false);
+  });
+
+  it('should fetch from API if no cache or cache expired', fakeAsync(() => {
+    const mockEmoji = [{id: '2', name: 'wink'}] as unknown as Emoji[];
+    jest.spyOn(service['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.resolve(mockEmoji)));
+    service['dataService'].active_guild = { id: 'guild1' } as Guild;
+    service['getGuildEmojis'](true);
+    tick();
+
+    expect(service['discordService'].getGuildEmojis).toHaveBeenCalledWith('guild1');
+    expect(service['emojis']).toEqual([{ id: '2', name: 'wink' }]);
+    expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify([{ id: '2', name: 'wink' }]));
+  }));
+
+  it('should handle API error 429 by calling redirectLoginError with REQUESTS', fakeAsync(() => {
+    service['dataService'].active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(service['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+
+    service['getGuildEmojis'](true);
+    tick();
+
+    expect(service['dataService'].redirectLoginError).toHaveBeenCalledWith('REQUESTS');
+  }));
+
+  it('should handle API error 401 by calling redirectLoginError with NO_CLANK', fakeAsync(() => {
+    service['dataService'].active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(service['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
+
+    service['getGuildEmojis'](true);
+    tick();
+
+    expect(service['dataService'].redirectLoginError).toHaveBeenCalledWith('NO_CLANK');
+  }));
+
+  it('should handle API error other by calling redirectLoginError with EXPIRED', fakeAsync(() => {
+    service['dataService'].active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(service['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+
+    service['getGuildEmojis'](true);
+    tick();
+
+    expect(service['dataService'].redirectLoginError).toHaveBeenCalledWith('EXPIRED');
   }));
 
 });

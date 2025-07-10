@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
-import {Emoji, initEmojis, Role} from "../../../../services/types/discord/Guilds";
+import {Role} from "../../../../services/types/discord/Guilds";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {ApiService} from "../../../../services/api/api.service";
 
@@ -48,7 +48,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   private startLoading: boolean = false;
   protected modalType: string = 'SUPPORT_THEME_ADD';
   protected modalTheme: SupportTheme = {} as SupportTheme;
-  protected emojis: Emoji[] | string[] = initEmojis;
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faPlus: IconDefinition = faPlus;
@@ -137,7 +136,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
       this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
-      this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
       this.filteredThemes = this.dataService.support_themes;
       this.dataService.isLoading = false;
       this.dataLoading = false;
@@ -220,51 +218,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
-   * Fetches the emojis for the current guild, using a 5-minute cache.
-   *
-   * If the emojis are already cached in localStorage and the cache is still valid (less than 5 minutes old),
-   * the cached emojis are loaded. Otherwise, the emojis are fetched from the server.
-   *
-   * @param {boolean} [no_cache] - Optional flag to force bypassing the cache and fetch fresh data.
-   */
-  protected getGuildEmojis(no_cache?: boolean): void {
-    if (!this.dataService.active_guild) { return; }
-
-    // check if guilds are already stored in local storage (5 minute cache)
-    if ((localStorage.getItem('guild_emojis') && localStorage.getItem('support_themes_timestamp') &&
-      Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 300000) && !no_cache) {
-      this.emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
-      if (this.emojis.length === 0) {
-        this.emojis = initEmojis;
-      }
-
-      this.dataService.isLoading = false;
-      return;
-    }
-
-    let subscription: Subscription | null = null;
-    this.discordService.getGuildEmojis(this.dataService.active_guild!.id).then((observable) => {
-      subscription = observable.subscribe({
-        next: (response: Emoji[]): void => {
-          this.emojis = response;
-          localStorage.setItem('guild_emojis', JSON.stringify(this.emojis));
-          if (subscription) { subscription.unsubscribe(); }
-        },
-        error: (err: HttpErrorResponse): void => {
-          if (subscription) { subscription.unsubscribe(); }
-          if (err.status === 429) {
-            this.dataService.redirectLoginError('REQUESTS');
-          } else if (err.status === 401) {
-            this.dataService.redirectLoginError('NO_CLANK');
-          } else {
-            this.dataService.redirectLoginError('EXPIRED');
-          }
-        }
-      });
-    });
-  }
-
-  /**
    * Filters the support-themes based on the search term entered by the user.
    *
    * This method updates the `filteredThemes` array to include only the support-themes
@@ -319,7 +272,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected openSupportThemeModal(action: 'ADD' | 'EDIT', theme?: SupportTheme): void {
     this.modalType = `SUPPORT_THEME_${action}`;
     if (action === 'ADD') {
-      this.getGuildEmojis(this.reloadEmojis);
+      this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
       this.editTheme = this.dataService.initTheme;
     } else {

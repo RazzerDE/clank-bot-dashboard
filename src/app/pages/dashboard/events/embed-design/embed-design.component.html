@@ -1,7 +1,5 @@
 <dashboard-layout>
   <!-- TODO:
-    1. banner image Input
-    3. emoji Input
     5. save changes
     7. shuffle embed settings
   -->
@@ -97,8 +95,14 @@
                 {{ 'PLACEHOLDER_EVENT_DESIGN_EMOJI_LABEL' | translate }}
               </label>
               <div class="relative flex items-center">
-                <div class="absolute left-0 top-2.5 pl-3 flex items-center pointer-events-none ml-1">
-                  <fa-icon [icon]="faIcons" class="fas fa-image text-gray-400" />
+                <div class="absolute left-0 top-2.5 pl-3 flex items-center pointer-events-none ml-0">
+                  @if (this.dataService.embed_config.emoji_reaction && this.dataService.embed_config.emoji_reaction.startsWith('<')) {
+                    <img [ngSrc]="this.dataService.getEmojibyId(this.dataService.embed_config.emoji_reaction) + '?size=40'"
+                         width="40" height="40" alt="Emoji ~ Clank Discord-Bot" class="h-6 w-6" />
+                  } @else {
+                    <fa-icon [icon]="faIcons" class="text-gray-400" />
+                  }
+
                 </div>
                 <div class="absolute left-9 top-2.5 flex items-center pointer-events-none ml-2.5">
                   <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
@@ -110,9 +114,16 @@
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                          placeholder="<a:present:873708141085343764>" [(ngModel)]="this.dataService.embed_config.emoji_reaction" id="embed_emoji" />
                     <div class="absolute right-1.5 top-1.5 w-6 h-6 border-0 p-3 cursor-pointer rounded-lg flex items-center
-                                justify-center hover:bg-gray-700 transition-colors duration-200">
+                                justify-center transition-colors duration-200 focus:bg-gray-700"
+                         [ngClass]="{'bg-gray-700': this.dataService.showEmojiPicker, 'hover:bg-gray-700': !this.dataService.showEmojiPicker}"
+                         (click)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker">
                       <span class="text-white drop-shadow-xl text-xl">🌟</span>
                     </div>
+
+                    <!-- Emoji Picker Modal -->
+                    @if (this.dataService.showEmojiPicker) {
+                      <template-emoji-picker (selected_emoji)="verifyEmbedEmoji($event)" [type]="'EVENTS_DESIGN'" />
+                    }
                     </div>
                   <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                     {{ 'PLACEHOLDER_EVENT_DESIGN_EMOJI_INFO' | translate }}

@@ -19,6 +19,10 @@ import {ApiService} from "../../../../services/api/api.service";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Subscription} from "rxjs";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {ComService} from "../../../../services/discord-com/com.service";
+import {EmojiPickerComponent} from "../../../../structure/util/modal/templates/emoji-picker/emoji-picker.component";
+import {NgClass, NgOptimizedImage} from "@angular/common";
+import {Emoji} from "../../../../services/types/discord/Guilds";
 
 @Component({
   selector: 'app-embed-design',
@@ -28,7 +32,10 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
     TranslatePipe,
     DiscordMarkdownComponent,
     FaIconComponent,
-    FormsModule
+    FormsModule,
+    EmojiPickerComponent,
+    NgClass,
+    NgOptimizedImage
   ],
   templateUrl: './embed-design.component.html',
   styleUrl: './embed-design.component.scss'
@@ -47,13 +54,13 @@ export class EmbedDesignComponent implements OnDestroy {
   protected readonly faShuffle: IconDefinition = faShuffle;
   protected readonly faRefresh: IconDefinition = faRefresh;
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private comService: ComService, private apiService: ApiService) {
     this.dataService.isLoading = true;
-    this.dataService.getEventConfig(this.apiService); // first call to get the server data
+    this.dataService.getEventConfig(this.apiService, this.comService); // first call to get the server data
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
-        this.dataService.getEventConfig(this.apiService, true);
+        this.dataService.getEventConfig(this.apiService, this.comService, true);
       }
     });
   }
@@ -75,7 +82,7 @@ export class EmbedDesignComponent implements OnDestroy {
   protected refreshCache(): void {
     this.disabledCacheBtn = true;
     this.dataService.isLoading = true;
-    this.dataService.getEventConfig(this.apiService, true);
+    this.dataService.getEventConfig(this.apiService, this.comService, true);
 
     setTimeout((): void => { this.disabledCacheBtn = false; }, 15000);
   }
@@ -110,7 +117,7 @@ export class EmbedDesignComponent implements OnDestroy {
    * @param banner - Optional parameter to indicate if the image is for a banner
    */
   verifyEmbedImage(event: Event, banner?: boolean): void {
-    const input = event.target as HTMLInputElement;
+    const input: HTMLInputElement = event.target as HTMLInputElement;
     const url: string = input.value.trim();
     if (url.length === 0) {
       if (!banner) { this.dataService.embed_config.thumbnail_url = null;
@@ -125,7 +132,7 @@ export class EmbedDesignComponent implements OnDestroy {
       return;
     }
 
-    const img = new Image();
+    const img: HTMLImageElement = new Image();
     img.onload = (): void => {
       if (!banner) { this.dataService.embed_config.thumbnail_invalid = false;
       } else { this.dataService.embed_config.banner_invalid = false; }
@@ -135,5 +142,21 @@ export class EmbedDesignComponent implements OnDestroy {
       } else { this.dataService.embed_config.banner_invalid = true; }
     };
     img.src = url;
+  }
+
+  /**
+   * Sets the emoji reaction for the embed configuration.
+   * Accepts either a string (custom or unicode emoji) or an Emoji object.
+   * If an Emoji object is provided, it formats the emoji as a Discord custom emoji string.
+   *
+   * @param emoji - The emoji to set as a reaction, either as a string or Emoji object.
+   */
+  verifyEmbedEmoji(emoji: Emoji | string): void {
+    if (typeof emoji === 'string') {
+      this.dataService.embed_config.emoji_reaction = emoji;
+    } else {
+      const prefix: '<a:' | '<:' = emoji.animated ? '<a:' : '<:';
+      this.dataService.embed_config.emoji_reaction = `${prefix}${emoji.name}:${emoji.id}>`;
+    }
   }
 }

@@ -3,7 +3,7 @@ import {GeneralStats} from "../types/Statistics";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
 import {Subject, Subscription} from "rxjs";
-import {Channel, Guild, Role} from "../types/discord/Guilds";
+import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SupportTheme, TicketSnippet} from "../types/Tickets";
 import {ComService} from "../discord-com/com.service";
@@ -18,11 +18,13 @@ import {ApiService} from "../api/api.service";
 })
 export class DataHolderService {
   isLoading: boolean = true;
+  isEmojisLoading: boolean = true;
   isDarkTheme: boolean = false;
   isFetching: boolean = false;
   isFAQ: boolean = false;
   showSidebarLogo: boolean = false;
   showMobileSidebar: boolean = false;
+  showEmojiPicker: boolean = false;
   hideGuildSidebar: boolean = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
 
@@ -43,6 +45,7 @@ export class DataHolderService {
   support_themes: SupportTheme[] = [];
   guild_roles: Role[] = [];
   guild_channels: Channel[] = [];
+  guild_emojis: Emoji[] | string[] = [];
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
   selectedSnippet: TicketSnippet | null = null;
@@ -140,6 +143,56 @@ export class DataHolderService {
   }
 
   /**
+   * Fetches the emojis for the current guild, using a 5-minute cache.
+   *
+   * If the emojis are already cached in localStorage and the cache is still valid (less than 5 minutes old),
+   * the cached emojis are loaded. Otherwise, the emojis are fetched from the server.
+   *
+   * @param {ComService} comService - The service used to communicate with the Discord API.
+   * @param {boolean} [no_cache] - Optional flag to force bypassing the cache and fetch fresh data.
+   */
+  getGuildEmojis(comService: ComService, no_cache?: boolean): void {
+    if (!this.active_guild) { return; }
+    this.isEmojisLoading = true;
+
+    // check if guilds are already stored in local storage (5 minute cache)
+    if ((localStorage.getItem('guild_emojis') && localStorage.getItem('guild_emojis_timestamp') &&
+      Date.now() - Number(localStorage.getItem('guild_emojis_timestamp')) < 300000) && !no_cache) {
+      this.guild_emojis = JSON.parse(localStorage.getItem('guild_emojis') as string);
+      if (this.guild_emojis.length === 0) {
+        this.guild_emojis = initEmojis;
+      }
+
+      this.isEmojisLoading = false;
+      this.isLoading = false;
+      return;
+    }
+
+    let subscription: Subscription | null = null;
+    comService.getGuildEmojis(this.active_guild.id).then((observable) => {
+      subscription = observable.subscribe({
+        next: (response: Emoji[]): void => {
+          this.guild_emojis = response;
+          this.isEmojisLoading = false;
+          localStorage.setItem('guild_emojis', JSON.stringify(this.guild_emojis));
+          localStorage.setItem('guild_emojis_timestamp', Date.now().toString());
+          if (subscription) { subscription.unsubscribe(); }
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (subscription) { subscription.unsubscribe(); }
+          if (err.status === 429) {
+            this.redirectLoginError('REQUESTS');
+          } else if (err.status === 401) {
+            this.redirectLoginError('NO_CLANK');
+          } else {
+            this.redirectLoginError('EXPIRED');
+          }
+        }
+      });
+    });
+  }
+
+  /**
    * Retrieves the event embed configuration for the current guild.
    *
    * This method first checks if a valid configuration is available in localStorage (cached for 30 seconds).
@@ -147,10 +200,11 @@ export class DataHolderService {
    * updates the local cache, and handles loading states. Handles HTTP errors by redirecting to appropriate error pages.
    *
    * @param {ApiService} apiService - The service used to communicate with the API.
+   * @param {ComService} comService - Another service used to communicate with the API.
    * @param {boolean} [no_cache] - If true, ignores the cache and fetches fresh data from the API.
    * @returns {void}
    */
-  getEventConfig(apiService: ApiService, no_cache?: boolean): void {
+  getEventConfig(apiService: ApiService, comService: ComService, no_cache?: boolean): void {
     this.isFetching = true;
 
     // check if guilds are already stored in local storage (30 seconds cache)
@@ -161,6 +215,7 @@ export class DataHolderService {
         this.embed_config.color_code = `#${this.embed_config.color_code.toString(16).padStart(6, '0')}`;
       }
 
+      setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 100);
       this.isLoading = false;
       this.isFetching = false;
       return;
@@ -177,6 +232,7 @@ export class DataHolderService {
           this.isLoading = false;
           this.isFetching = false;
 
+          setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 500);
           localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
           localStorage.setItem('gift_config_timestamp', Date.now().toString());
           sub.unsubscribe();

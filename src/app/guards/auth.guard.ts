@@ -26,6 +26,12 @@ export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _state: 
     return of(false);
   }
 
+  // if no active_guild is set but a logged in page is requested, redirect to the dashboard
+  if (!dataService.active_guild && !(route.routeConfig?.path?.endsWith('dashboard') || route.routeConfig?.path?.endsWith('dashboard/contact'))) {
+    window.location.href = '/dashboard';
+    return of(false);
+  }
+
   // Verify existing token
   return http.get<DiscordUser>(`${config.api_url}/auth/me`, { headers: authService.headers}).pipe(
     tap((response: DiscordUser): void => { dataService.profile = response; }), map((): boolean => true),

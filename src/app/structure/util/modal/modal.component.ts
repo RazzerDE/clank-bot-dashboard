@@ -9,7 +9,7 @@ import {
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {Emoji, Role} from "../../../services/types/discord/Guilds";
+import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -69,7 +69,6 @@ import {Giveaway} from "../../../services/types/Events";
 })
 export class ModalComponent implements AfterContentInit  {
   @Input() discordRoles: Role[] = [];
-  @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() content: string = '';
 
