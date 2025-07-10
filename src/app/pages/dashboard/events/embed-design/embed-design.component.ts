@@ -23,6 +23,7 @@ import {ComService} from "../../../../services/discord-com/com.service";
 import {EmojiPickerComponent} from "../../../../structure/util/modal/templates/emoji-picker/emoji-picker.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {Emoji} from "../../../../services/types/discord/Guilds";
+import {EmbedConfig, shuffle_configs} from "../../../../services/types/Config";
 
 @Component({
   selector: 'app-embed-design',
@@ -158,5 +159,22 @@ export class EmbedDesignComponent implements OnDestroy {
       const prefix: '<a:' | '<:' = emoji.animated ? '<a:' : '<:';
       this.dataService.embed_config.emoji_reaction = `${prefix}${emoji.name}:${emoji.id}>`;
     }
+  }
+
+  /**
+   * Shuffles the configuration list, randomly selects one configuration,
+   * and assigns a random hex color code to the selected configuration.
+   */
+  shuffleConfigs(): void {
+    const shuffled: EmbedConfig[] = [...shuffle_configs];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }  // Create a copy and shuffle the array
+
+    // Select the first configuration from the shuffled array
+    this.dataService.embed_config = shuffled[0];
+    this.dataService.embed_config.color_code = '#' +
+      Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
   }
 }

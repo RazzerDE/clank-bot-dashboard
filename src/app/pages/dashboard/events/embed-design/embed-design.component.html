@@ -1,8 +1,5 @@
 <dashboard-layout>
-  <!-- TODO:
-    5. save changes
-    7. shuffle embed settings
-  -->
+  <!-- TODO: save changes -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -174,7 +171,8 @@
               <!-- Random Button -->
               <button type="button" class="flex items-center justify-center bg-gray-200 hover:bg-gray-300
                                          dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200
-                                           py-2 px-4 rounded-md transition-colors duration-200 ">
+                                           py-2 px-4 rounded-md transition-colors duration-200"
+                      (click)="shuffleConfigs()">
                 <fa-icon [icon]="faShuffle" class="mr-2"/> {{ 'PLACEHOLDER_BUTTON_RANDOM' | translate }}
               </button>
             </div>
@@ -194,7 +192,7 @@
             {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_TITLE' | translate }}</h2>
         </div>
 
-        <div class="flex-1 flex items-center justify-center">
+        <div class="flex-1 flex items-center justify-center mt-3">
           <template-discord-markdown [type]="'EVENTS_DESIGN'" [giveaway]="this.initGiveaway" />
         </div>
       </div>
