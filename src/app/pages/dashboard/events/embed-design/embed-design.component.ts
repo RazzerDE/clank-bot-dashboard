@@ -2,7 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {
   DiscordMarkdownComponent
 } from "../../../../structure/util/modal/templates/discord-markdown/discord-markdown.component";
@@ -24,6 +24,8 @@ import {EmojiPickerComponent} from "../../../../structure/util/modal/templates/e
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {Emoji} from "../../../../services/types/discord/Guilds";
 import {EmbedConfig, shuffle_configs} from "../../../../services/types/Config";
+import {HttpErrorResponse} from "@angular/common/http";
+import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 
 @Component({
   selector: 'app-embed-design',
@@ -36,7 +38,8 @@ import {EmbedConfig, shuffle_configs} from "../../../../services/types/Config";
     FormsModule,
     EmojiPickerComponent,
     NgClass,
-    NgOptimizedImage
+    NgOptimizedImage,
+    AlertBoxComponent
   ],
   templateUrl: './embed-design.component.html',
   styleUrl: './embed-design.component.scss'
@@ -46,6 +49,7 @@ export class EmbedDesignComponent implements OnDestroy {
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
+  protected disableSendBtn: boolean = false;
 
   protected readonly faPanorama: IconDefinition = faPanorama;
   protected readonly faCamera: IconDefinition = faCamera;
@@ -55,7 +59,8 @@ export class EmbedDesignComponent implements OnDestroy {
   protected readonly faShuffle: IconDefinition = faShuffle;
   protected readonly faRefresh: IconDefinition = faRefresh;
 
-  constructor(protected dataService: DataHolderService, private comService: ComService, private apiService: ApiService) {
+  constructor(protected dataService: DataHolderService, private comService: ComService, private apiService: ApiService,
+              private translate: TranslateService) {
     this.dataService.isLoading = true;
     this.dataService.getEventConfig(this.apiService, this.comService); // first call to get the server data
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
@@ -86,6 +91,68 @@ export class EmbedDesignComponent implements OnDestroy {
     this.dataService.getEventConfig(this.apiService, this.comService, true);
 
     setTimeout((): void => { this.disabledCacheBtn = false; }, 15000);
+  }
+
+  /**
+   * Saves the given embed configuration for the current guild.
+   *
+   * Ensures the giveaway system is enabled, sets the guild ID, and disables the send button during the save process.
+   * On success, updates the local embed configuration, shows a success alert, and stores the config in localStorage.
+   * On error, shows an error alert and handles rate limiting (HTTP 429) by redirecting to login.
+   *
+   * @param embed_config The embed configuration to save.
+   */
+  protected saveGiftConfig(embed_config: EmbedConfig): void {
+    if (!this.dataService.active_guild) { return; }
+    if (embed_config.thumbnail_invalid || embed_config.banner_invalid) {
+      this.dataService.error_color = 'red';
+      this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_IMAGE_TITLE'),
+        this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_IMAGE_DESC'));
+
+      this.disableSendBtn = true;
+      setTimeout((): void => { this.disableSendBtn = false; }, 3000);
+      return;
+    }
+
+    const { thumbnail_invalid, banner_invalid, ...send_config }: EmbedConfig = { ...embed_config };
+    send_config.guild_id = this.dataService.active_guild.id;
+    send_config.enabled = true; // always enable the giveaway system when saving the config
+    send_config.color_code = parseInt(embed_config.color_code!.toString().replace('#', ''), 16);
+    this.disableSendBtn = true;
+
+    const saved_config: Subscription = this.apiService.saveEmbedConfig(send_config)
+      .subscribe({
+        next: (changed_config: EmbedConfig): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_EMBED_SAVED_TITLE'),
+            this.translate.instant('SUCCESS_GIVEAWAY_EMBED_SAVED_DESC', { name: this.dataService.active_guild?.name}));
+
+          // update shown data
+          if (typeof changed_config.color_code === 'number') {
+            changed_config.color_code = `#${changed_config.color_code.toString(16).padStart(6, '0')}`;
+          }
+          this.dataService.embed_config = changed_config;
+          this.disableSendBtn = false;
+          localStorage.setItem('gift_config', JSON.stringify(this.dataService.embed_config));
+          saved_config.unsubscribe();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+          saved_config.unsubscribe();
+
+          if (error.status == 404) {
+            this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_TITLE'),
+              this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_DESC'));
+          } else if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.disableSendBtn = false;
+        }
+      });
   }
 
   /**

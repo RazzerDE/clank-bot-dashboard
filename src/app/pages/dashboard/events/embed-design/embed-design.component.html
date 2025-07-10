@@ -1,11 +1,16 @@
 <dashboard-layout>
-  <!-- TODO: save changes -->
+  <!-- TODO: Kreuz icon in jedem input-Feld -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_EVENTS_DESIGN_SUBTITLE' | translate" [title]="'PAGE_EVENTS_DESIGN_TITLE' | translate"
                 [color]="'rosa'" [desc]="'PAGE_EVENTS_DESIGN_DESC' | translate" [size]="'less'"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
 
     <!-- Main Content Area -->
     <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-16rem)] gap-4 p-4">
@@ -95,6 +100,7 @@
                 <div class="absolute left-0 top-2.5 pl-3 flex items-center pointer-events-none ml-0">
                   @if (this.dataService.embed_config.emoji_reaction && this.dataService.embed_config.emoji_reaction.startsWith('<')) {
                     <img [ngSrc]="this.dataService.getEmojibyId(this.dataService.embed_config.emoji_reaction) + '?size=40'"
+                         (error)="this.dataService.embed_config.emoji_reaction = ''"
                          width="40" height="40" alt="Emoji ~ Clank Discord-Bot" class="h-6 w-6" />
                   } @else {
                     <fa-icon [icon]="faIcons" class="text-gray-400" />
@@ -164,7 +170,8 @@
             <div class="flex flex-col md:flex-row items-center justify-between gap-3">
               <!-- Save Button -->
               <button type="button" class="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700
-                                         text-white py-2 px-4 rounded-md transition-colors duration-200">
+                                         text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
+                      (click)="saveGiftConfig(this.dataService.embed_config)" [disabled]="this.disableSendBtn">
                 <fa-icon [icon]="faSave" class="mr-2"/> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
               </button>
 

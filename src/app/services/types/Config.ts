@@ -33,6 +33,8 @@ export interface TableConfig {
 }
 
 export interface EmbedConfig {
+  guild_id?: string;                        // ID of the guild, used for saving changes
+  enabled?: boolean;                        // Flag to indicate if the giveaway system is enabled
   color_code: string | number | null;       // Hex color code
   thumbnail_url: string | null;             // URL to the thumbnail image
   banner_url: string | null;                // URL to the banner image, can be null
