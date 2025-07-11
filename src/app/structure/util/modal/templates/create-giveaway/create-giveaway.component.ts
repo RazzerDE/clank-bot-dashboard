@@ -133,8 +133,10 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    */
   protected numberInput(event: InputEvent, gw_req?: boolean, sponsor?: boolean): void {
     if (!(event.target instanceof HTMLInputElement)) { return; }
-    const inputValue: number = Number(event.target.value.replace(/[^0-9]/g, ''));
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    const inputValue: number = Number(event.target.value);
     if ((isNaN(inputValue) || inputValue < 1 || inputValue > 1000) && !sponsor) { event.target.value = '1' }
+    else if (sponsor && (isNaN(inputValue) || inputValue < 1)) { event.target.value = ''; this.giveaway.sponsor_id = undefined; return; }
 
     if (gw_req) {
       const prefix: string = this.giveaway.gw_req?.split(/\d/).shift() || '';

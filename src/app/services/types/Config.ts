@@ -49,7 +49,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#FF5733",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/9004/9004955.png",
     banner_url: "https://img.freepik.com/free-photo/digital-art-style-traditional-christmas-scene_23-2151064237.jpg",
-    emoji_reaction: "<a:tadaa:812782333677404221>",
+    emoji_reaction: "🎊",
   },
   {
     color_code: "#33C1FF",
@@ -61,7 +61,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#A020F0",
     thumbnail_url: null,
     banner_url: "https://img.freepik.com/free-vector/glowing-neon-heart-purple-banner-with-giftbox-text-space_1017-42772.jpg",
-    emoji_reaction: "<a:Diamond_pink:868999547882455090>",
+    emoji_reaction: "✨",
   },
   {
     color_code: "#FFD700",
@@ -73,7 +73,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#FF69B4",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/3835/3835774.png",
     banner_url: null,
-    emoji_reaction: "<a:Herz:753598312568979586>",
+    emoji_reaction: "💗",
   },
   {
     color_code: "#00FF00",
@@ -85,7 +85,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#FF0000",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/8307/8307731.png",
     banner_url: "https://img.freepik.com/free-photo/delicate-natural-floral-background-ai-generated-image_587448-1454.jpg",
-    emoji_reaction: "<a:fire:812724570121306173>",
+    emoji_reaction: "🔥",
   },
   {
     color_code: "#0000FF",
@@ -103,7 +103,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#008080",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/9519/9519382.png",
     banner_url: "https://img.freepik.com/free-photo/digital-art-style-traditional-christmas-scene_23-2151064237.jpg",
-    emoji_reaction: "<a:check:730387138381873184>",
+    emoji_reaction: "✅",
   },
   {
     color_code: "#C0C0C0",
@@ -121,7 +121,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#008000",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/10761/10761306.png",
     banner_url: "https://img.freepik.com/free-vector/cartoon-ui-mobile-game-ribbon-gift-box-icon-vector-design-mystery-present-package-set-level-reward-surprise-trophy-asset-with-bow-2d-casino-achievement-clipart-challenge-progress-loot_107791-21711.jpg",
-    emoji_reaction: "<a:Diamond_pink:868999547882455090>",
+    emoji_reaction: "💫",
   },
   {
     color_code: "#FFDAB9",
@@ -133,7 +133,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#4B0082",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/2743/2743237.png",
     banner_url: "https://img.freepik.com/free-photo/delicate-natural-floral-background-ai-generated-image_587448-1454.jpg",
-    emoji_reaction: "<a:Herz:753598312568979586>",
+    emoji_reaction: "💜",
   },
   {
     color_code: "#F5F5F5",
@@ -145,7 +145,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#DC143C",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/9004/9004955.png",
     banner_url: null,
-    emoji_reaction: "<a:fire:812724570121306173>",
+    emoji_reaction: "🎇",
   },
   {
     color_code: "#4682B4",
@@ -157,7 +157,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#B22222",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/4213/4213958.png",
     banner_url: "https://img.freepik.com/free-vector/kids-birthday-party-decoration-outside_107791-2501.jpg",
-    emoji_reaction: "<a:tadaa:812782333677404221>",
+    emoji_reaction: "🎆",
   },
   {
     color_code: "#DAA520",
@@ -175,7 +175,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#00CED1",
     thumbnail_url: null,
     banner_url: "https://img.freepik.com/free-vector/cartoon-ui-mobile-game-ribbon-gift-box-icon-vector-design-mystery-present-package-set-level-reward-surprise-trophy-asset-with-bow-2d-casino-achievement-clipart-challenge-progress-loot_107791-21711.jpg",
-    emoji_reaction: "<a:check:730387138381873184>",
+    emoji_reaction: "🌟",
   },
   {
     color_code: "#FFB6C1",
@@ -193,7 +193,7 @@ export const shuffle_configs: EmbedConfig[] = [
     color_code: "#F08080",
     thumbnail_url: "https://cdn-icons-png.flaticon.com/512/8307/8307731.png",
     banner_url: "https://img.freepik.com/free-vector/gift-box-with-bonus-money-coins-bills-diamonds-mystery-present-with-question-sign-3d-objects-colorful-wrapping-paper-bows-game-draw-casino-award-isolated-cartoon-vector-icons-set_107791-8449.jpg",
-    emoji_reaction: "<a:Diamond_pink:868999547882455090>",
+    emoji_reaction: "🌈",
   },
   {
     color_code: "#E6E6FA",

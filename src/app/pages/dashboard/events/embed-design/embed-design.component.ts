@@ -243,5 +243,16 @@ export class EmbedDesignComponent implements OnDestroy {
     this.dataService.embed_config = shuffled[0];
     this.dataService.embed_config.color_code = '#' +
       Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+
+    // Set a random emoji from guild emojis if available
+    if (this.dataService.guild_emojis && this.dataService.guild_emojis.length >= 20) {
+      if (Math.random() < 0.1) { // 10% chance to not set an emoji
+        this.dataService.embed_config.emoji_reaction = null;
+      } else {
+        const randomIndex: number = Math.floor(Math.random() * this.dataService.guild_emojis.length);
+        const randomEmoji: Emoji = this.dataService.guild_emojis[randomIndex] as Emoji;
+        this.verifyEmbedEmoji(randomEmoji);
+      }
+    }
   }
 }
