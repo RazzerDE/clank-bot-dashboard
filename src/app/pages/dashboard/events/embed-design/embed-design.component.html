@@ -1,5 +1,4 @@
 <dashboard-layout>
-  <!-- TODO: Kreuz icon in jedem input-Feld  -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -53,11 +52,18 @@
                   <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
                 </div>
                 <div class="flex-0 flex flex-col w-full">
-                  <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
+                  <input type="text" class="w-full py-2 pl-14 pr-9 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white "
                          placeholder="https://bl4cklist.de/my-img.gif" (input)="verifyEmbedImage($event, true)"
                          [(ngModel)]="this.dataService.embed_config.banner_url" id="embed_banner" />
+                  @if (this.dataService.embed_config.banner_url) {
+                    <div class="absolute right-2 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
+                                justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
+                         (click)="this.dataService.embed_config.banner_url = null">
+                      <fa-icon [icon]="faXmark" class="text-gray-400" />
+                    </div>
+                  }
                   <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                     {{ 'PLACEHOLDER_EVENT_DESIGN_BANNER_INFO' | translate }}</div>
                 </div>
@@ -77,11 +83,18 @@
                   <div class="h-6 w-px bg-gray-300 dark:bg-gray-500 transition-colors duration-300"></div>
                 </div>
                 <div class="flex-0 flex flex-col w-full">
-                  <input type="text" class="w-full py-2 pl-14 pr-10 bg-gray-50 border border-gray-300 text-gray-900
+                  <input type="text" class="w-full py-2 pl-14 pr-9 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                          placeholder="https://bl4cklist.de/my-img.gif" (input)="verifyEmbedImage($event, false)"
                          [(ngModel)]="this.dataService.embed_config.thumbnail_url" id="embed_thumbnail" />
+                  @if (this.dataService.embed_config.thumbnail_url) {
+                    <div class="absolute right-2 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
+                                justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
+                         (click)="this.dataService.embed_config.thumbnail_url = null">
+                      <fa-icon [icon]="faXmark" class="text-gray-400" />
+                    </div>
+                  }
                   <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                     {{ 'PLACEHOLDER_EVENT_DESIGN_THUMBNAIL_INFO' | translate }}
                   </div>
@@ -112,13 +125,21 @@
                 </div>
                 <div class="flex-0 flex flex-col w-full">
                   <div class="flex flex-col">
-                    <input type="text" class="w-full py-2 pl-14 pr-11 bg-gray-50 border border-gray-300 text-gray-900
+                    <input type="text" class="w-full py-2 pl-14 pr-16 bg-gray-50 border border-gray-300 text-gray-900
                                           rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white"
                          placeholder="<a:present:873708141085343764>" [(ngModel)]="this.dataService.embed_config.emoji_reaction" id="embed_emoji" />
+                    @if (this.dataService.embed_config.emoji_reaction) {
+                      <div class="absolute right-10 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
+                                justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
+                           (click)="this.dataService.embed_config.emoji_reaction = null">
+                        <fa-icon [icon]="faXmark" class="text-gray-400" />
+                      </div>
+                    }
                     <div class="absolute right-1.5 top-1.5 w-6 h-6 border-0 p-3 cursor-pointer rounded-lg flex items-center
                                 justify-center transition-colors duration-200 focus:bg-gray-700"
-                         [ngClass]="{'bg-gray-700': this.dataService.showEmojiPicker, 'hover:bg-gray-700': !this.dataService.showEmojiPicker}"
+                         [ngClass]="{'bg-gray-200 dark:bg-gray-700': this.dataService.showEmojiPicker,
+                                     'hover:bg-gray-200 dark:hover:bg-gray-700': !this.dataService.showEmojiPicker}"
                          (click)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker">
                       <span class="text-white drop-shadow-xl text-xl">🌟</span>
                     </div>
@@ -154,6 +175,13 @@
                                         dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white uppercase"
                            min="1" max="7" maxlength="7" placeholder="#706fd3" id="embed_color"
                            [(ngModel)]="this.dataService.embed_config.color_code" (input)="verifyEmbedColor($event)" />
+                    @if (this.dataService.embed_config.color_code) {
+                      <div class="absolute right-10 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
+                                justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
+                           (click)="this.dataService.embed_config.color_code = null">
+                        <fa-icon [icon]="faXmark" class="text-gray-400" />
+                      </div>
+                    }
                     <input type="color" class="absolute right-3 inset-y-2.5 w-6 h-6 border-0 p-0 cursor-pointer"
                            value="#706fd3" id="embed_color_pick" [(ngModel)]="this.dataService.embed_config.color_code" />
                   </div>

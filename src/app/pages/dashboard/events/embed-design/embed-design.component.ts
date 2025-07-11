@@ -16,7 +16,7 @@ import {faBrush} from "@fortawesome/free-solid-svg-icons/faBrush";
 import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
 import {faShuffle} from "@fortawesome/free-solid-svg-icons/faShuffle";
 import {ApiService} from "../../../../services/api/api.service";
-import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Subscription} from "rxjs";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {ComService} from "../../../../services/discord-com/com.service";
@@ -117,9 +117,11 @@ export class EmbedDesignComponent implements OnDestroy {
     const { thumbnail_invalid, banner_invalid, ...send_config }: EmbedConfig = { ...embed_config };
     send_config.guild_id = this.dataService.active_guild.id;
     send_config.enabled = true; // always enable the giveaway system when saving the config
-    send_config.color_code = parseInt(embed_config.color_code!.toString().replace('#', ''), 16);
-    this.disableSendBtn = true;
+    if (send_config.color_code) {
+      send_config.color_code = parseInt(send_config.color_code.toString().replace('#', ''), 16);
+    }
 
+    this.disableSendBtn = true;
     const saved_config: Subscription = this.apiService.saveEmbedConfig(send_config)
       .subscribe({
         next: (changed_config: EmbedConfig): void => {
@@ -132,7 +134,7 @@ export class EmbedDesignComponent implements OnDestroy {
             changed_config.color_code = `#${changed_config.color_code.toString(16).padStart(6, '0')}`;
           }
           this.dataService.embed_config = changed_config;
-          this.disableSendBtn = false;
+          setTimeout(() => { this.disableSendBtn = false; }, 3000);
           localStorage.setItem('gift_config', JSON.stringify(this.dataService.embed_config));
           saved_config.unsubscribe();
         },
@@ -140,7 +142,7 @@ export class EmbedDesignComponent implements OnDestroy {
           this.dataService.error_color = 'red';
           saved_config.unsubscribe();
 
-          if (error.status == 404) {
+          if (error.status == 404 || error.status == 400) {
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_TITLE'),
               this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_DESC'));
           } else if (error.status == 429) {
@@ -255,4 +257,6 @@ export class EmbedDesignComponent implements OnDestroy {
       }
     }
   }
+
+  protected readonly faXmark = faXmark;
 }
