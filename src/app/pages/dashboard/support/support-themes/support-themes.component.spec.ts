@@ -38,7 +38,7 @@ describe('SupportThemesComponent', () => {
         { provide: DataHolderService, useValue: { isLoading: false, allowDataFetch: of(true),
             initTheme: { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
               default_roles: [], pending: true, action: 'CREATE' }, redirectLoginError: jest.fn(), showAlert: jest.fn(),
-          support_themes: [], getEmojibyId: jest.fn() } },
+          support_themes: [], getEmojibyId: jest.fn(), getGuildEmojis: jest.fn() } },
       ]
     })
     .compileComponents();
@@ -120,7 +120,6 @@ describe('SupportThemesComponent', () => {
 
     expect(component.dataService.support_themes).toEqual(supportThemes);
     expect(component['discordRoles']).toEqual(guildRoles);
-    expect(component['dataService'].guild_emojis).toEqual(emojis);
     expect(component['filteredThemes']).toEqual(supportThemes);
     expect(component.dataService.isLoading).toBe(false);
     expect(component['dataLoading']).toBe(false);

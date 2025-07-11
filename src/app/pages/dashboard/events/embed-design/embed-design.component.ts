@@ -171,9 +171,7 @@ export class EmbedDesignComponent implements OnDestroy {
     value = value.replace(/[^a-zA-Z0-9#]/g, '');
 
     // Ensure value starts with '#'
-    if (!value.startsWith('#')) {
-      value = '#' + value.replace(/^#+/, '');
-    }
+    value = '#' + value.replace(/^#+/, '');
 
     input.value = value;
   }

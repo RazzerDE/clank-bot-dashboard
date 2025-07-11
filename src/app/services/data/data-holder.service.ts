@@ -205,6 +205,7 @@ export class DataHolderService {
    * @returns {void}
    */
   getEventConfig(apiService: ApiService, comService: ComService, no_cache?: boolean): void {
+    if (!this.active_guild) { return; }
     this.isFetching = true;
 
     // check if guilds are already stored in local storage (30 seconds cache)

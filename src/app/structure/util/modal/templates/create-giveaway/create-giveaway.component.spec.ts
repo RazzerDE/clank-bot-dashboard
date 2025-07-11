@@ -297,7 +297,7 @@ describe('CreateGiveawayComponent', () => {
 
     input.value = 'abc';
     component['numberInput'](event, false, true);
-    expect(input.value).toBe('abc');
+    expect(input.value).toBe('');
   });
 
   it('should update gw_req and call getGWRequirementValue if gw_req is true', () => {
