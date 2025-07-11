@@ -58,6 +58,7 @@ export class EmbedDesignComponent implements OnDestroy {
   protected readonly faSave: IconDefinition = faSave;
   protected readonly faShuffle: IconDefinition = faShuffle;
   protected readonly faRefresh: IconDefinition = faRefresh;
+  protected readonly faXmark: IconDefinition = faXmark;
 
   constructor(protected dataService: DataHolderService, private comService: ComService, private apiService: ApiService,
               private translate: TranslateService) {
@@ -255,6 +256,4 @@ export class EmbedDesignComponent implements OnDestroy {
       }
     }
   }
-
-  protected readonly faXmark = faXmark;
 }
