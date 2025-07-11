@@ -28,7 +28,7 @@ export interface EventCard {
   title: string;
   description: string;
   obj_list: Role[] | Channel[];
-  color: 'red' | 'green' | 'yellow' | 'blue' | 'gray' | 'purple';
+  color: 'red' | 'green' | 'yellow' | 'blue' | 'gray' | 'purple' | 'orange' | 'rosa';
 }
 
 export const event_cards: EventCard[] = [
@@ -230,6 +230,56 @@ export const event_cards: EventCard[] = [
         tags: { bot_id: null, integration_id: null, premium_subscriber: null },
         flags: 0,
         support_level: 4
+      }
+    ]
+  },
+  {
+    title: 'EVENTS_TAB_BLACKLIST_TITLE',
+    description: 'EVENTS_TAB_BLACKLIST_CHANNEL_DESC',
+    color: 'orange',
+    obj_list: [
+      {
+        id: '123456789012345678',
+        name: 'blacklist-logs',
+        type: 0, // Textkanal
+        position: 1,
+        permission_overwrites: [],
+        parent_id: null,
+        nsfw: false
+      },
+      {
+        id: '234567890123456789',
+        name: 'banned-voice',
+        type: 2, // Sprachkanal
+        position: 2,
+        permission_overwrites: [],
+        parent_id: null,
+        nsfw: false
+      }
+    ]
+  },
+  {
+    title: 'EVENTS_TAB_INVITE_TITLE',
+    description: 'EVENTS_TAB_INVITE_DESC',
+    color: 'rosa',
+    obj_list: [
+      {
+        id: '345678901234567890',
+        name: 'invite-only',
+        type: 0, // Textkanal
+        position: 3,
+        permission_overwrites: [],
+        parent_id: null,
+        nsfw: false
+      },
+      {
+        id: '456789012345678901',
+        name: 'vip-lounge',
+        type: 2, // Sprachkanal
+        position: 4,
+        permission_overwrites: [],
+        parent_id: null,
+        nsfw: false
       }
     ]
   }

@@ -205,6 +205,7 @@
 
   "EVENTS_TAB_BLACKLIST_TITLE": "❌ ~ AUSGESCHLOSSEN",
   "EVENTS_TAB_BLACKLIST_DESC": "› Diese Rollen dürfen <strong>nicht</strong> an Gewinnspielen teilnehmen, unabhängig davon ob sie die Teilnahme-Bedingung erfüllen.",
+  "EVENTS_TAB_BLACKLIST_CHANNEL_DESC": "› Diese Kanäle werden von der <strong>Statistik ausgeschlossen</strong>, dass bedeutet z.B. die Anzahl der Nachrichten wird hier nicht gezählt.",
   "EVENTS_TAB_WHITELIST_TITLE": "✅ ~ VIP",
   "EVENTS_TAB_WHITELIST_DESC": "› Diese Rollen müssen die jeweilige Teilnahme-Bedingung <strong>nicht</strong> erfüllen, um an erstellten Gewinnspielen teilzunehmen.",
   "EVENTS_TAB_BONUS_TITLE": "🏆 ~ BONUS",
@@ -215,6 +216,8 @@
   "EVENTS_TAB_MENTION_DESC": "› Diese Rollen werden direkt zum <strong>Start eines Gewinnspiels erwähnt</strong>, um die jeweiligen User darauf aufmerksam zu machen.",
   "EVENTS_TAB_MANAGER_TITLE": "👮‍♀️ ~ MANAGER",
   "EVENTS_TAB_MANAGER_DESC": "› Diese Rollen erhalten Zugriff auf die <strong>Verwaltung von Gewinnspielen</strong> & können diese erstellen, bearbeiten und löschen.",
+  "EVENTS_TAB_INVITE_TITLE": "🔗 ~ EINLADUNGEN",
+  "EVENTS_TAB_INVITE_DESC": "› Innerhalb dieses Kanals werden Willkommensnachrichten gepostet mit der Info, wie der User dem <strong>Server beigetreten</strong> ist.",
 
   "EVENTS_TAB_NAV_ROLES": "📂 ~ Server-Rollen",
   "EVENTS_TAB_NAV_CHANNELS": "🔗 ~ Server-Kanäle",
@@ -604,7 +607,6 @@
   "PLACEHOLDER_NO_FORUM_CHANNELS": "Keine Forenkanäle gefunden..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Erstelle einen Forum-Kanal (Anleitung <a href=\"https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">hier</a>) auf deinem Discord-Server oder aktualisiere die Liste.",
 
-  "PLACEHOLDER_BUTTON_DELETE_ALL": "Alle Einträge löschen",
   "PLACEHOLDER_BUTTON_RANDOM": "Zufällige Optionen",
   "PLACEHOLDER_BUTTON_SAVE": "Änderungen speichern",
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Forumkanal ändern",

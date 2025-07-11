@@ -1,11 +1,12 @@
 <dashboard-layout>
   <!-- TODO:
     1. http 304 - nothing modified for embed-design and this api call
-    2. Add a loading spinner while fetching data
+    2. Add a loading spinner while fetching data (for channel and role lists)
     3. Add a confirmation dialog before deleting all entries
     4. Implement save functionality to persist changes
     5. role deletion should remove from the list
-    6. server channel tab should be implemented
+    7. fetch guild channels and roles
+    8. cache refresh butto
   -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
@@ -36,23 +37,34 @@
 
             <div class="flex"> <!-- Tabs -->
               <li class="mr-2 cursor-pointer">
-                <span class="inline-block p-4 border-b-2 border-cyan-600 rounded-t-lg active text-cyan-600
-                             dark:text-cyan-500 dark:border-cyan-500 font-medium text-lg hover:!text-cyan-500
-                             dark:hover:!text-cyan-400 dark:hover:!border-cyan-400 hover:!border-cyan-500
-                             transition-colors duration-200">{{ 'EVENTS_TAB_NAV_ROLES' | translate }}</span>
+                <span class="inline-block p-4 border-b-2 rounded-t-lg font-medium text-lg transition-all duration-200"
+                      (click)="this.activeTab = 'ROLES'"
+                      [ngClass]="this.activeTab === 'ROLES' ? '!border-cyan-600 !text-cyan-600 hover:!text-cyan-500 ' +
+                       'hover:!border-cyan-500 dark:!text-cyan-500 dark:!border-cyan-500 dark:hover:!text-cyan-400 ' +
+                        'dark:hover:!border-cyan-400' : '!border-gray-400 !text-gray-400 hover:!text-gray-600 ' +
+                        'hover:!border-gray-600 dark:!border-gray-500 dark:!text-gray-500 dark:hover:!text-gray-400 ' +
+                        'dark:hover:!border-gray-400'">
+                  {{ 'EVENTS_TAB_NAV_ROLES' | translate }}
+                </span>
               </li>
               <li class="cursor-pointer">
-                <span class="inline-block p-4 border-b-2 rounded-t-lg text-gray-400 dark:text-gray-500
-                           hover:text-gray-600 border-gray-400 hover:border-gray-600 dark:hover:text-gray-400
-                           dark:hover:border-gray-400 transition-colors duration-200 dark:border-gray-500
-                           font-medium text-lg">{{ 'EVENTS_TAB_NAV_CHANNELS' | translate }}</span>
+                <span class="inline-block p-4 border-b-2 rounded-t-lg transition-all duration-200 font-medium text-lg"
+                      (click)="this.activeTab = 'CHANNELS'"
+                      [ngClass]="this.activeTab === 'CHANNELS' ? '!border-cyan-600 !text-cyan-600 hover:!text-cyan-500 ' +
+                       'hover:!border-cyan-500 dark:!text-cyan-500 dark:!border-cyan-500 dark:hover:!text-cyan-400 ' +
+                        'dark:hover:!border-cyan-400' : '!border-gray-400 !text-gray-400 hover:!text-gray-600 ' +
+                        'hover:!border-gray-600 dark:!border-gray-500 dark:!text-gray-500 dark:hover:!text-gray-400 ' +
+                        'dark:hover:!border-gray-400'">
+                  {{ 'EVENTS_TAB_NAV_CHANNELS' | translate }}
+                </span>
               </li>
             </div>
 
-            <li> <!-- Delete All Button -->
-              <button class="inline-block p-3 tflex items-center justify-center bg-red-700 hover:bg-red-800
-                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600">
-                <fa-icon [icon]="faTrashAlt" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_DELETE_ALL' | translate }}
+            <li> <!-- Refresh Button -->
+              <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
+                           to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
+                           text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none">
+                <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
               </button>
             </li>
           </ul>
@@ -63,7 +75,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
 
             <!-- Item Cards -->
-            @for (item of event_cards; track $index) {
+            @for (item of activeTab === 'CHANNELS' ? event_cards.slice(-2) : event_cards.slice(0, -2); track $index) {
               <div class="border-l-[5px] rounded-lg shadow p-4 from-white bg-gradient-to-bl via-slate-50 to-blue-50
                       dark:from-slate-700/50 dark:via-slate-700/50 dark:to-slate-800 transition-colors duration-200"
                    [ngClass]="{'border-red-400 dark:!border-red-500': item.color === 'red',
@@ -71,7 +83,9 @@
                             'border-blue-400 dark:!border-blue-500': item.color === 'blue',
                             'border-yellow-400 dark:!border-yellow-500': item.color === 'yellow',
                             'border-purple-400 dark:!border-purple-500': item.color === 'purple',
-                            'border-gray-400 dark:!border-gray-500': item.color === 'gray'}">
+                            'border-pink-400 dark:!border-pink-500': item.color === 'rosa',
+                            'border-red-600 dark:!border-red-700': item.color === 'orange',
+                            'border-gray-400 dark:!border-gray-500': item.color === 'gray'}" [@zoomAnimation]>
                 <div class="flex justify-start items-center mb-1">
                   <h3 class="text-lg font-medium mb-0 mr-2 text-gray-700 dark:text-white
                            transition-colors duration-200"> {{ item.title | translate }}</h3>
@@ -92,23 +106,27 @@
                 @if (item.obj_list.length > 0) {
                   <div class="space-y-2 max-h-[124px] overflow-y-auto pr-1" [ngClass]="{'w-[calc(100%+5px)]': item.obj_list.length <= 2}">
                     @for (obj of item.obj_list; track $index) {
-                      @if (!isRoleType(obj)) {} @else {
-                        <div class="flex items-center justify-between bg-gray-300 dark:bg-gray-700 transition-colors
-                              duration-200 rounded-md pl-3 pr-1 py-2 text-gray-700 dark:text-gray-300">
-                          <div class="flex items-center">
+                      <div class="flex items-center justify-between bg-gray-300 dark:bg-gray-700 transition-colors
+                            duration-200 rounded-md pl-3 pr-1 py-2 text-gray-700 dark:text-gray-300">
+                        <div class="flex items-center">
+                          @if (isRoleType(obj)) {
                             <span [style.background-color]="'#' + obj.color.toString(16).padStart(6, '0')"
                                   class="h-3 w-3 rounded-full mr-2"></span>
-                            <span>{{ obj.name }}</span>
-                          </div>
-                          <div class="flex items-center justify-center">
-                            <span class="text-xs text-gray-500 dark:text-gray-500 mr-1">{{ obj.id }}</span>
-                            <button class="hover:text-red-500 text-red-600 hover:bg-gray-400 dark:hover:bg-gray-600
-                                     p-1 px-2 rounded-full transition-colors duration-200">
-                              <fa-icon [icon]="faTrashAlt" class="text-lg "></fa-icon>
-                            </button>
-                          </div>
+                          } @else {
+                            <fa-icon [icon]="faHashtag" class="h-3 w-3 rounded-full mr-2 -mt-3 text-gray-400
+                                                             dark:text-gray-500 transition-colors duration-200" />
+                          }
+
+                          <span>{{ obj.name }}</span>
                         </div>
-                      }
+                        <div class="flex items-center justify-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-500 mr-1">{{ obj.id }}</span>
+                          <button class="hover:text-red-500 text-red-600 hover:bg-gray-400 dark:hover:bg-gray-600
+                                   p-1 px-2 rounded-full transition-colors duration-200">
+                            <fa-icon [icon]="faTrashAlt" class="text-lg "></fa-icon>
+                          </button>
+                        </div>
+                      </div>
                     }
                   </div>
                 }

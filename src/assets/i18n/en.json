@@ -205,6 +205,7 @@
 
   "EVENTS_TAB_BLACKLIST_TITLE": "❌ ~ BLACKLISTED",
   "EVENTS_TAB_BLACKLIST_DESC": "› These roles are <strong>not</strong> allowed to participate in giveaways, regardless of whether they meet the participation requirements.",
+  "EVENTS_TAB_BLACKLIST_CHANNEL_DESC": "› These channels are <strong>excluded from statistics</strong>, which means, for example, the number of messages is not counted here.",
   "EVENTS_TAB_WHITELIST_TITLE": "✅ ~ WHITELISTED",
   "EVENTS_TAB_WHITELIST_DESC": "› These roles <strong>do not</strong> have to meet the respective participation requirements to participate in created giveaways.",
   "EVENTS_TAB_BONUS_TITLE": "🏆 ~ BONUS",
@@ -215,6 +216,8 @@
   "EVENTS_TAB_MENTION_DESC": "› These roles are mentioned directly at the <strong>start of a giveaway</strong> to draw the respective users' attention.",
   "EVENTS_TAB_MANAGER_TITLE": "👮‍♀️ ~ MANAGER",
   "EVENTS_TAB_MANAGER_DESC": "› These roles have access to the <strong>management of giveaways</strong> and can create, edit, and delete them.",
+  "EVENTS_TAB_INVITE_TITLE": "🔗 ~ INVITES",
+  "EVENTS_TAB_INVITE_DESC": "› Welcome messages are posted in this channel with information on how the user <strong>joined the server</strong>.",
 
   "EVENTS_TAB_NAV_ROLES": "📂 ~ Server-Roles",
   "EVENTS_TAB_NAV_CHANNELS": "🔗 ~ Server-Channels",
@@ -604,7 +607,6 @@
   "PLACEHOLDER_NO_FORUM_CHANNELS": "No forum channels found..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Create a forum channel (Instructions <a href=\"https://support.discord.com/hc/en-us/articles/6208479917079-Forum-Channels-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">here</a>) on your Discord server or refresh the list.",
 
-  "PLACEHOLDER_BUTTON_DELETE_ALL": "Delete all entries",
   "PLACEHOLDER_BUTTON_RANDOM": "Shuffle Options",
   "PLACEHOLDER_BUTTON_SAVE": "Save changes",
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Edit forum channel",
