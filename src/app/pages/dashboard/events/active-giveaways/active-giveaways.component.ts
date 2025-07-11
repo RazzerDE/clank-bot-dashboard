@@ -7,7 +7,7 @@ import {faPlay, faSearch, faStop, faXmark, IconDefinition} from "@fortawesome/fr
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faGift} from "@fortawesome/free-solid-svg-icons/faGift";
-import {EmbedConfig, TableConfig} from "../../../../services/types/Config";
+import {TableConfig} from "../../../../services/types/Config";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
 import {Giveaway} from "../../../../services/types/Events";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
