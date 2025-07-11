@@ -1,0 +1,124 @@
+<dashboard-layout>
+  <!-- TODO:
+    1. http 304 - nothing modified for embed-design and this api call
+    2. Add a loading spinner while fetching data
+    3. Add a confirmation dialog before deleting all entries
+    4. Implement save functionality to persist changes
+    5. role deletion should remove from the list
+    6. server channel tab should be implemented
+  -->
+  <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_EVENTS_EFFECTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_EFFECTS_TITLE' | translate"
+                [color]="'cyan'" [desc]="'PAGE_EVENTS_EFFECTS_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
+    <!-- Content Container -->
+    <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-19rem)] gap-4 p-4 overflow-y-hidden">
+      <div class="w-full bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
+            dark:via-slate-800 dark:to-slate-900 rounded-lg shadow-md dark:shadow-xl
+              transition-colors duration-200 !border-gray-300 dark:!border-gray-700 border-1 flex flex-col">
+        <!-- Tabs Navigation -->
+        <div class="border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 px-6">
+          <ul class="flex -mb-px justify-between w-full items-center">
+            <li> <!-- Save Button -->
+              <button class="inline-block p-3 tflex items-center justify-center bg-indigo-600 hover:bg-indigo-700
+                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600">
+                <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+              </button>
+            </li>
+
+            <div class="flex"> <!-- Tabs -->
+              <li class="mr-2 cursor-pointer">
+                <span class="inline-block p-4 border-b-2 border-cyan-600 rounded-t-lg active text-cyan-600
+                             dark:text-cyan-500 dark:border-cyan-500 font-medium text-lg hover:!text-cyan-500
+                             dark:hover:!text-cyan-400 dark:hover:!border-cyan-400 hover:!border-cyan-500
+                             transition-colors duration-200">{{ 'EVENTS_TAB_NAV_ROLES' | translate }}</span>
+              </li>
+              <li class="cursor-pointer">
+                <span class="inline-block p-4 border-b-2 rounded-t-lg text-gray-400 dark:text-gray-500
+                           hover:text-gray-600 border-gray-400 hover:border-gray-600 dark:hover:text-gray-400
+                           dark:hover:border-gray-400 transition-colors duration-200 dark:border-gray-500
+                           font-medium text-lg">{{ 'EVENTS_TAB_NAV_CHANNELS' | translate }}</span>
+              </li>
+            </div>
+
+            <li> <!-- Delete All Button -->
+              <button class="inline-block p-3 tflex items-center justify-center bg-red-700 hover:bg-red-800
+                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600">
+                <fa-icon [icon]="faTrashAlt" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_DELETE_ALL' | translate }}
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tab Content - Scrollbar -->
+        <div class="role-tab overflow-y-auto flex-1">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+
+            <!-- Item Cards -->
+            @for (item of event_cards; track $index) {
+              <div class="border-l-[5px] rounded-lg shadow p-4 from-white bg-gradient-to-bl via-slate-50 to-blue-50
+                      dark:from-slate-700/50 dark:via-slate-700/50 dark:to-slate-800 transition-colors duration-200"
+                   [ngClass]="{'border-red-400 dark:!border-red-500': item.color === 'red',
+                            'border-green-400 dark:!border-green-500': item.color === 'green',
+                            'border-blue-400 dark:!border-blue-500': item.color === 'blue',
+                            'border-yellow-400 dark:!border-yellow-500': item.color === 'yellow',
+                            'border-purple-400 dark:!border-purple-500': item.color === 'purple',
+                            'border-gray-400 dark:!border-gray-500': item.color === 'gray'}">
+                <div class="flex justify-start items-center mb-1">
+                  <h3 class="text-lg font-medium mb-0 mr-2 text-gray-700 dark:text-white
+                           transition-colors duration-200"> {{ item.title | translate }}</h3>
+                  <span class="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full px-2
+                             py-1 text-xs transition-colors duration-200">{{ item.obj_list.length }}</span>
+                </div>
+
+                <div class="flex justify-start w-full py-2">
+                  <div class="w-5/6 h-px bg-gray-300 dark:bg-gray-700 transition-colors duration-200"></div>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200 mb-3"
+                   [innerHTML]="item.description | translate"></p>
+
+                <!-- Role Selector -->
+                <div class="mb-3"><template-select [type]="'EVENTS_EFFECTS'"/></div>
+
+                <!-- Selected Roles -->
+                @if (item.obj_list.length > 0) {
+                  <div class="space-y-2 max-h-[124px] overflow-y-auto pr-1" [ngClass]="{'w-[calc(100%+5px)]': item.obj_list.length <= 2}">
+                    @for (obj of item.obj_list; track $index) {
+                      @if (!isRoleType(obj)) {} @else {
+                        <div class="flex items-center justify-between bg-gray-300 dark:bg-gray-700 transition-colors
+                              duration-200 rounded-md pl-3 pr-1 py-2 text-gray-700 dark:text-gray-300">
+                          <div class="flex items-center">
+                            <span [style.background-color]="'#' + obj.color.toString(16).padStart(6, '0')"
+                                  class="h-3 w-3 rounded-full mr-2"></span>
+                            <span>{{ obj.name }}</span>
+                          </div>
+                          <div class="flex items-center justify-center">
+                            <span class="text-xs text-gray-500 dark:text-gray-500 mr-1">{{ obj.id }}</span>
+                            <button class="hover:text-red-500 text-red-600 hover:bg-gray-400 dark:hover:bg-gray-600
+                                     p-1 px-2 rounded-full transition-colors duration-200">
+                              <fa-icon [icon]="faTrashAlt" class="text-lg "></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</dashboard-layout>

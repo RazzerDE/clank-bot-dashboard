@@ -152,6 +152,9 @@
   "PAGE_EVENTS_DESIGN_SUBTITLE": "🎊 ~ GESTALTE DEINE EIGENEN GEWINNSPIELE",
   "PAGE_EVENTS_DESIGN_TITLE": "Gewinnspiel-Design",
   "PAGE_EVENTS_DESIGN_DESC": "› Auf dieser Seite kannst du das Design von Embeds anpassen, welche in Gewinnspiel-Nachrichten vorhanden sind und von Clank erstellt werden.",
+  "PAGE_EVENTS_EFFECTS_SUBTITLE": "🎊 ~ LEGE BESONDERE ROLLEN & KANÄLE FEST",
+  "PAGE_EVENTS_EFFECTS_TITLE": "Kanal-& Rollen-Effekte",
+  "PAGE_EVENTS_EFFECTS_DESC": "› Auf dieser Seite kannst du Kanal- & Rollen-Effekte festlegen, die beeinflussen wie User an Gewinnspielen teilnehmen können oder Statistiken gezählt werden.",
 
   "PAGE_EVENTS_TABLE_PRICE": "🎁 ~ Preis",
   "PAGE_EVENTS_TABLE_END_DATE": "⏰ ~ Endet..",
@@ -199,6 +202,22 @@
   "WISHLIST_FEATURE_DESC_6": "› User können sich als \"abwesend\" markieren, wodurch für andere Mitglieder klarer sichtbar ist, wer gerade Zeit hat.",
   "WISHLIST_FEATURE_NAME_7": "Bewerbungs-System",
   "WISHLIST_FEATURE_DESC_7": "› Server-Mitglieder können sich als Teammitglied deines Servers bewerben & das Team kann diese verwalten.",
+
+  "EVENTS_TAB_BLACKLIST_TITLE": "❌ ~ AUSGESCHLOSSEN",
+  "EVENTS_TAB_BLACKLIST_DESC": "› Diese Rollen dürfen <strong>nicht</strong> an Gewinnspielen teilnehmen, unabhängig davon ob sie die Teilnahme-Bedingung erfüllen.",
+  "EVENTS_TAB_WHITELIST_TITLE": "✅ ~ VIP",
+  "EVENTS_TAB_WHITELIST_DESC": "› Diese Rollen müssen die jeweilige Teilnahme-Bedingung <strong>nicht</strong> erfüllen, um an erstellten Gewinnspielen teilzunehmen.",
+  "EVENTS_TAB_BONUS_TITLE": "🏆 ~ BONUS",
+  "EVENTS_TAB_BONUS_DESC": "› Diese Rollen erhalten einen <strong>x2 Bonus</strong> auf Statistiken die gezählt werden, wie z.B. Anzahl der Nachrichten, Sprachchat, etc.",
+  "EVENTS_TAB_WIN_TITLE": "👑 ~ GLÜCKSPILZE",
+  "EVENTS_TAB_WIN_DESC": "› Diese Rollen werden an Server-Mitgliedern vergeben, welche an Gewinnspielen teilnehmen und <strong>dieses gewinnen</strong>.",
+  "EVENTS_TAB_MENTION_TITLE": "🔔 ~ ERWÄHNUNGEN",
+  "EVENTS_TAB_MENTION_DESC": "› Diese Rollen werden direkt zum <strong>Start eines Gewinnspiels erwähnt</strong>, um die jeweiligen User darauf aufmerksam zu machen.",
+  "EVENTS_TAB_MANAGER_TITLE": "👮‍♀️ ~ MANAGER",
+  "EVENTS_TAB_MANAGER_DESC": "› Diese Rollen erhalten Zugriff auf die <strong>Verwaltung von Gewinnspielen</strong> & können diese erstellen, bearbeiten und löschen.",
+
+  "EVENTS_TAB_NAV_ROLES": "📂 ~ Server-Rollen",
+  "EVENTS_TAB_NAV_CHANNELS": "🔗 ~ Server-Kanäle",
 
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login abgelaufen!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Melde dich erneut an, um das Dashboard verwenden zu können.",
@@ -585,6 +604,7 @@
   "PLACEHOLDER_NO_FORUM_CHANNELS": "Keine Forenkanäle gefunden..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Erstelle einen Forum-Kanal (Anleitung <a href=\"https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">hier</a>) auf deinem Discord-Server oder aktualisiere die Liste.",
 
+  "PLACEHOLDER_BUTTON_DELETE_ALL": "Alle Einträge löschen",
   "PLACEHOLDER_BUTTON_RANDOM": "Zufällige Optionen",
   "PLACEHOLDER_BUTTON_SAVE": "Änderungen speichern",
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Forumkanal ändern",

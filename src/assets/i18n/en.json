@@ -152,6 +152,10 @@
   "PAGE_EVENTS_DESIGN_SUBTITLE": "🎊 ~ DESIGN YOUR OWN GIVEAWAYS",
   "PAGE_EVENTS_DESIGN_TITLE": "Giveaway Design",
   "PAGE_EVENTS_DESIGN_DESC": "› On this page, you can customize the design of embeds that are present in giveaway messages and created by Clank.",
+  "PAGE_EVENTS_EFFECTS_SUBTITLE": "🎊 ~ SET SPECIAL ROLES & CHANNELS",
+  "PAGE_EVENTS_EFFECTS_TITLE": "Channel & Role Effects",
+  "PAGE_EVENTS_EFFECTS_DESC": "› On this page, you can define channel & role effects that influence how users can participate in giveaways or how statistics are counted.",
+
   "PAGE_EVENTS_TABLE_PRICE": "🎁 ~ Prize",
   "PAGE_EVENTS_TABLE_END_DATE": "⏰ ~ Ends..",
   "PAGE_EVENTS_TABLE_REQUIREMENT": "🎀 ~ Participation Requirement",
@@ -198,6 +202,22 @@
   "WISHLIST_FEATURE_DESC_6": "› Users can mark themselves as \"away\", making it clearer to other members who is currently available.",
   "WISHLIST_FEATURE_NAME_7": "Application System",
   "WISHLIST_FEATURE_DESC_7": "› Server members can apply to become a team member of your server & the team can manage these.",
+
+  "EVENTS_TAB_BLACKLIST_TITLE": "❌ ~ BLACKLISTED",
+  "EVENTS_TAB_BLACKLIST_DESC": "› These roles are <strong>not</strong> allowed to participate in giveaways, regardless of whether they meet the participation requirements.",
+  "EVENTS_TAB_WHITELIST_TITLE": "✅ ~ WHITELISTED",
+  "EVENTS_TAB_WHITELIST_DESC": "› These roles <strong>do not</strong> have to meet the respective participation requirements to participate in created giveaways.",
+  "EVENTS_TAB_BONUS_TITLE": "🏆 ~ BONUS",
+  "EVENTS_TAB_BONUS_DESC": "› These roles receive a <strong>x2 bonus</strong> on statistics that are counted, such as number of messages, voice chat, etc.",
+  "EVENTS_TAB_WIN_TITLE": "👑 ~ LUCKY ONES",
+  "EVENTS_TAB_WIN_DESC": "› These roles are assigned to server members who participate in giveaways and <strong>win them</strong>.",
+  "EVENTS_TAB_MENTION_TITLE": "🔔 ~ MENTIONS",
+  "EVENTS_TAB_MENTION_DESC": "› These roles are mentioned directly at the <strong>start of a giveaway</strong> to draw the respective users' attention.",
+  "EVENTS_TAB_MANAGER_TITLE": "👮‍♀️ ~ MANAGER",
+  "EVENTS_TAB_MANAGER_DESC": "› These roles have access to the <strong>management of giveaways</strong> and can create, edit, and delete them.",
+
+  "EVENTS_TAB_NAV_ROLES": "📂 ~ Server-Roles",
+  "EVENTS_TAB_NAV_CHANNELS": "🔗 ~ Server-Channels",
 
   "ERROR_LOGIN_EXPIRED_TITLE": "🔓 ~ Login expired!",
   "ERROR_LOGIN_EXPIRED_DESC": "› Please log in again to use the dashboard.",
@@ -584,6 +604,7 @@
   "PLACEHOLDER_NO_FORUM_CHANNELS": "No forum channels found..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Create a forum channel (Instructions <a href=\"https://support.discord.com/hc/en-us/articles/6208479917079-Forum-Channels-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">here</a>) on your Discord server or refresh the list.",
 
+  "PLACEHOLDER_BUTTON_DELETE_ALL": "Delete all entries",
   "PLACEHOLDER_BUTTON_RANDOM": "Shuffle Options",
   "PLACEHOLDER_BUTTON_SAVE": "Save changes",
   "PLACEHOLDER_BUTTON_CHANNEL_EDIT": "Edit forum channel",
