@@ -516,6 +516,23 @@ describe('ApiService', () => {
     req.flush(mockResponse);
   });
 
+  it('should save the embed config for a specific guild', () => {
+    const embedConfig: EmbedConfig = { color_code: 16777215, thumbnail_url: 'https://example.com/thumbnail.png',
+      banner_url: null, emoji_reaction: null } as EmbedConfig;
+
+    const mockResponse: EmbedConfig = { ...embedConfig };
+
+    service.saveEmbedConfig(embedConfig).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/config?guild_id=${embedConfig.guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(embedConfig);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
   it('should fetch event embed configuration for a specific guild', () => {
     const guild_id = '12345';
     const mockResponse: EmbedConfig = {

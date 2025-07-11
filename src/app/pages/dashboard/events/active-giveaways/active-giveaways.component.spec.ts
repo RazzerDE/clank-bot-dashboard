@@ -35,7 +35,7 @@ describe('ActiveGiveawaysComponent', () => {
 
   it('should return early if no active_guild is set', () => {
     component['dataService'].active_guild = null;
-    const spy = jest.spyOn(component as any, 'getEventConfig');
+    const spy = jest.spyOn(component['dataService'], 'getEventConfig');
     (component as any).getGuildEvents();
     expect(spy).not.toHaveBeenCalled();
   });
@@ -45,7 +45,7 @@ describe('ActiveGiveawaysComponent', () => {
     localStorage.setItem('active_events', JSON.stringify(mockEvents));
     localStorage.setItem('active_events_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    const spy = jest.spyOn(component as any, 'getEventConfig');
+    const spy = jest.spyOn(component['dataService'], 'getEventConfig');
 
     (component as any).getGuildEvents();
 
@@ -64,7 +64,7 @@ describe('ActiveGiveawaysComponent', () => {
       channel_id: null, end_date: new Date(), winner_count: 1, participants: 0, start_date: null }] as unknown as Giveaway[];
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
     const apiSpy = jest.spyOn(component['apiService'], 'getGuildEvents').mockReturnValue(defer(() => Promise.resolve(mockEvents)));
-    const configSpy = jest.spyOn(component as any, 'getEventConfig');
+    const configSpy = jest.spyOn(component['dataService'], 'getEventConfig');
 
     (component as any).getGuildEvents();
     tick(600);
@@ -126,75 +126,6 @@ describe('ActiveGiveawaysComponent', () => {
     tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
-  }));
-
-  it('should use cached config if available and not expired', () => {
-    const mockConfig = { color_code: '#fff', thumbnail_url: 'url', banner_url: null, emoji_reaction: ':test:' };
-    localStorage.setItem('gift_config', JSON.stringify(mockConfig));
-    localStorage.setItem('gift_config_timestamp', Date.now().toString());
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-
-    (component as any).getEventConfig();
-
-    expect(component['embed_config']).toEqual(mockConfig);
-    expect(component['dataService'].isLoading).toBe(false);
-    expect(component['startLoading']).toBe(false);
-  });
-
-  it('should fetch config from API if cache is expired or no_cache is true', fakeAsync(() => {
-    localStorage.setItem('gift_config', JSON.stringify({}));
-    localStorage.setItem('gift_config_timestamp', (Date.now() - 31000).toString());
-    const mockConfig = { color_code: '#000', thumbnail_url: 'url2', banner_url: null, emoji_reaction: ':api:' };
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    const apiSpy = jest.spyOn(component['apiService'], 'getEventConfig').mockReturnValue(defer(() => Promise.resolve(mockConfig)));
-
-    (component as any).getEventConfig();
-    tick();
-
-    expect(apiSpy).toHaveBeenCalledWith('guild1');
-    expect(component['embed_config']).toEqual(mockConfig);
-    expect(component['dataService'].isLoading).toBe(false);
-    expect(component['startLoading']).toBe(false);
-    expect(localStorage.getItem('gift_config')).toEqual(JSON.stringify(mockConfig));
-  }));
-
-  it('should handle API error 429 and call redirectLoginError with REQUESTS', fakeAsync(() => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    jest.spyOn(component['apiService'], 'getEventConfig').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
-
-    (component as any).getEventConfig(true);
-    tick();
-
-    expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
-    expect(component['dataService'].isLoading).toBe(false);
-    expect(component['startLoading']).toBe(false);
-  }));
-
-  it('should handle API error 0 and call redirectLoginError with OFFLINE', fakeAsync(() => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    jest.spyOn(component['apiService'], 'getEventConfig').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 0 }))));
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
-
-    (component as any).getEventConfig(true);
-    tick();
-
-    expect(redirectSpy).toHaveBeenCalledWith('OFFLINE');
-    expect(component['dataService'].isLoading).toBe(false);
-    expect(component['startLoading']).toBe(false);
-  }));
-
-  it('should handle unknown API error and call redirectLoginError with UNKNOWN', fakeAsync(() => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    jest.spyOn(component['apiService'], 'getEventConfig').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
-    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
-
-    (component as any).getEventConfig(true);
-    tick();
-
-    expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
-    expect(component['dataService'].isLoading).toBe(false);
-    expect(component['startLoading']).toBe(false);
   }));
 
   it('should return early if no active_guild or profile is set', () => {

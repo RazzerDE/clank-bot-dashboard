@@ -47,7 +47,7 @@
           </div>
 
           <!-- Embed Content -->
-          <div class="bg-[#2f3136] rounded border-l-4 p-3 mt-1" [style.border-color]="getEventEmbedColor(this.embed_config.color_code)">
+          <div class="bg-[#2f3136] rounded border-l-4 p-3 mt-1" [style.border-color]="getEventEmbedColor(dataService.embed_config.color_code)">
             <div class="flex">
               <div class="flex-1 pr-3">
                 <div class="text-white font-semibold text-base mb-2">
@@ -119,31 +119,49 @@
               </div>
 
               <!-- Right column for the gift image -->
-              @if (embed_config.thumbnail_url != null) {
+              @if (dataService.embed_config.thumbnail_url != null) {
                 <div class="flex items-start justify-center">
-                  @if (!this.invalidImg) {
+                  @if (!this.dataService.embed_config.thumbnail_invalid) {
                     <div class="w-20 h-20 flex items-center justify-center">
-                      <img height="80" width="80" [ngSrc]="embed_config.thumbnail_url" alt="Embed-Avatar ~ Clank Discord-Bot"
-                           (error)="this.invalidImg = true;"/>
+                      <img height="80" width="80" [ngSrc]="dataService.embed_config.thumbnail_url" alt="Embed-Avatar ~ Clank Discord-Bot"
+                           (error)="dataService.embed_config.thumbnail_invalid = true;" class="rounded-xl"/>
                     </div>
                   } @else {
-                    <div class="w-20 h-20 rounded bg-gray-600 flex items-center justify-center">
+                    <div class="w-20 h-20 bg-gray-600 flex items-center justify-center rounded-xl">
                       <span class="text-2xl">:)</span>
                     </div>
                   }
                 </div>
               }
             </div>
+
+            <!-- Banner image below content -->
+            @if (dataService.embed_config.banner_url != null && type === 'EVENTS_DESIGN') {
+              <div class="mt-2 w-full">
+                @if (!this.dataService.embed_config.banner_invalid) {
+                  <div class="w-full flex items-center justify-center mt-2">
+                    <img [ngSrc]="dataService.embed_config.banner_url" alt="Embed-Banner ~ Clank Discord-Bot"
+                         (error)="dataService.embed_config.banner_invalid = true;"
+                         width="440" height="120" class="rounded w-full object-cover" />
+                  </div>
+                } @else {
+                  <div class="w-full h-20 bg-gray-600 flex items-center justify-center rounded mt-2">
+                    <span class="text-sm text-gray-300">:)</span>
+                  </div>
+                }
+              </div>
+            }
           </div>
 
           <div class="mt-2">
-            <button class="bg-[#5865f2] text-white border-none rounded-xl px-4 py-1.5 text-sm font-medium flex items-center">
-              @if ((embed_config.emoji_reaction && embed_config.emoji_reaction.startsWith('<')) || !embed_config.emoji_reaction) {
+            <button class="bg-[#5865f2] text-white border-none rounded-lg px-3 py-2 text-sm font-medium flex items-center">
+              @if ((dataService.embed_config.emoji_reaction && dataService.embed_config.emoji_reaction.startsWith('<')) ||
+                    !dataService.embed_config.emoji_reaction || dataService.embed_config.emoji_reaction.startsWith('https://')) {
                 <img class="inline-block align-middle mt-0 mr-1" height="20" width="20" alt="Participate-Emoji ~ Clank Discord-Bot"
-                     [ngSrc]="this.dataService.getEmojibyId(this.embed_config.emoji_reaction ? this.embed_config.emoji_reaction : '<a:present:873708141085343764>')" />
+                     [ngSrc]="this.dataService.getEmojibyId(dataService.embed_config.emoji_reaction ? dataService.embed_config.emoji_reaction : '<a:present:873708141085343764>')" />
               } @else {
                 <div class="inline-block align-middle mt-0 mr-1">
-                  <span class="emoji" [innerText]="this.embed_config.emoji_reaction"></span>
+                  <span [innerText]="dataService.embed_config.emoji_reaction"></span>
                 </div>
               } {{ 'PLACEHOLDER_GIVEAWAY_EMBED_BUTTON' | translate }}
             </button>

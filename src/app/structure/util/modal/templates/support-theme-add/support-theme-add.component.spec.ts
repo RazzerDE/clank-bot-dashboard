@@ -296,16 +296,6 @@ describe('SupportThemeAddComponent', () => {
     expect(mockInnerHtml.innerHTML).toBe('<b>Test</b>');
   });
 
-  it('should return true if object is of type Emoji', () => {
-    const emoji = {id: '123', name: 'smile'} as unknown as Emoji;
-    expect(component.isEmojiType(emoji)).toBe(true);
-  });
-
-  it('should return false if object is a string', () => {
-    const emojiString = 'smile';
-    expect(component.isEmojiType(emojiString)).toBe(false);
-  });
-
   it('should return false for non-FAQ theme when name and desc are filled', () => {
     component.newTheme.name = 'Test';
     component.newTheme.desc = 'Description';
@@ -366,25 +356,24 @@ describe('SupportThemeAddComponent', () => {
     jest.spyOn(component['dataService'], 'getEmojibyId').mockReturnValue(mockIcon);
     component['dataService'].active_guild = { id: mockGuildId } as any;
     component.newTheme = {} as any;
-    component['showEmojiPicker'] = true;
 
     component.updateThemeIcon(emoji);
 
     expect(component.newTheme.icon).toBe(mockIcon);
     expect(component['dataService'].getEmojibyId).toHaveBeenCalledWith('123', true, true);
     expect(component.newTheme.guild_id).toBe(mockGuildId);
-    expect(component['showEmojiPicker']).toBe(false);
   });
 
-  it('should hide the emoji picker when a document click occurs and showEmojiPicker is true', () => {
-    component['showEmojiPicker'] = true;
-    component.onDocumentClick();
-    expect(component['showEmojiPicker']).toBe(false);
-  });
+  it('should update the theme icon and guild_id, and close the emoji picker (for unicode-emojis)', () => {
+    const emoji = "👺" as string;
+    const mockGuildId = 'guild-1';
+    jest.spyOn(component['dataService'], 'getEmojibyId').mockReturnValue(emoji);
+    component['dataService'].active_guild = { id: mockGuildId } as any;
+    component.newTheme = {} as any;
 
-  it('should not change showEmojiPicker when a document click occurs and showEmojiPicker is false', () => {
-    component['showEmojiPicker'] = false;
-    component.onDocumentClick();
-    expect(component['showEmojiPicker']).toBe(false);
+    component.updateThemeIcon(emoji);
+
+    expect(component.newTheme.icon).toBe(emoji);
+    expect(component.newTheme.guild_id).toBe(mockGuildId);
   });
 });

@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
@@ -11,6 +11,7 @@ import {SupportTheme} from "../../../../../services/types/Tickets";
 import {ApiService} from "../../../../../services/api/api.service";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
+import {EmojiPickerComponent} from "../emoji-picker/emoji-picker.component";
 
 @Component({
   selector: 'template-support-theme-add',
@@ -20,14 +21,14 @@ import {HttpErrorResponse} from "@angular/common/http";
     TranslatePipe,
     SelectComponent,
     NgClass,
-    NgOptimizedImage
+    NgOptimizedImage,
+    EmojiPickerComponent
   ],
   templateUrl: './support-theme-add.component.html',
   styleUrl: './support-theme-add.component.scss'
 })
 export class SupportThemeAddComponent {
   @Input() showFirst: boolean = false;
-  @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() discordRoles: Role[] = [];
   @Input() newTheme: SupportTheme = this.dataService.initTheme;
@@ -35,7 +36,6 @@ export class SupportThemeAddComponent {
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
-  protected showEmojiPicker: boolean = false;
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService,
               private apiService: ApiService) {}
@@ -216,19 +216,6 @@ export class SupportThemeAddComponent {
   }
 
   /**
-   * Type guard to determine if an object is of type Emoji rather than string.
-   *
-   * This function checks if the provided object has an 'id' property defined,
-   * which indicates it's an Emoji object rather than a plain string.
-   *
-   * @param {Emoji | string} obj - The object to check, which could be either an Emoji or a string
-   * @returns {boolean} True if the object is an Emoji, false if it's a string
-   */
-  isEmojiType(obj: Emoji | string): obj is Emoji {
-    return (obj as Emoji).id !== undefined;
-  }
-
-  /**
    * Determines whether the current theme configuration is valid for submission.
    *
    * The method evaluates two main cases:
@@ -250,25 +237,15 @@ export class SupportThemeAddComponent {
   /**
    * Updates the theme's icon with the selected Discord emoji.
    *
-   * @param {Emoji} emoji - The Discord emoji object that was selected by the user
+   * @param {Emoji | string} emoji - The Discord emoji object that was selected by the user
    */
-  updateThemeIcon(emoji: Emoji): void {
-    this.newTheme.icon = this.dataService.getEmojibyId(emoji.id, true, emoji.animated);
-    this.newTheme.guild_id = this.dataService.active_guild!.id;
-    this.showEmojiPicker = false;
-  }
-
-  /**
-   * Listens for any click event on the document.
-   *
-   * This method is used to hide the emoji picker when:
-   * - An emoji is selected (the picker is open and a click occurs)
-   * - The user clicks outside the emoji picker
-   */
-  @HostListener('document:click')
-  onDocumentClick(): void {
-    if (this.showEmojiPicker) {
-      this.showEmojiPicker = false;
+  updateThemeIcon(emoji: Emoji | string): void {
+    if (typeof emoji === 'string') {
+      this.newTheme.icon = emoji; // Unicode emoji
+    } else {
+      this.newTheme.icon = this.dataService.getEmojibyId(emoji.id, true, emoji.animated);
     }
+
+    this.newTheme.guild_id = this.dataService.active_guild!.id;
   }
 }

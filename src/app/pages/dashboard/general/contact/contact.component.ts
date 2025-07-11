@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {NgClass} from "@angular/common";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -82,7 +82,7 @@ import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/d
         ])
     ]
 })
-export class ContactComponent implements AfterViewInit {
+export class ContactComponent implements AfterViewInit, OnDestroy {
   protected current_steps: CurrentStep = { bug_report: 2, idea_suggestion: 1 };
   protected bugReportSent: boolean = false;
   protected ideaSuggestionSent: boolean = false;
@@ -120,6 +120,14 @@ export class ContactComponent implements AfterViewInit {
   constructor(protected dataService: DataHolderService, protected translate: TranslateService,
               private apiService: ApiService) {
     this.dataService.hideGuildSidebar = true;
+  }
+
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   * Resets the `hideGuildSidebar` flag in the `DataHolderService` to show the sidebar again.
+   */
+  ngOnDestroy(): void {
+    this.dataService.hideGuildSidebar = false;
   }
 
   /**

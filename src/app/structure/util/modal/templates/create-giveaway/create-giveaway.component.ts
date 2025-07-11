@@ -7,7 +7,7 @@ import {Giveaway} from "../../../../../services/types/Events";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faTrophy} from "@fortawesome/free-solid-svg-icons/faTrophy";
-import {EmbedConfig, SelectItems} from "../../../../../services/types/Config";
+import {SelectItems} from "../../../../../services/types/Config";
 import {SelectComponent} from "../select/select.component";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 import {ComService} from "../../../../../services/discord-com/com.service";
@@ -42,8 +42,7 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
   protected readonly now: Date = new Date(Date.now());
   protected convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
-  @Input() gift_config: EmbedConfig = { color_code: null, thumbnail_url: null, banner_url: null, emoji_reaction: null };
-  @Input() type: 'EVENTS_CREATE' | 'EVENTS_EDIT' = 'EVENTS_CREATE';
+  @Input() type: 'EVENTS_CREATE' | 'EVENTS_EDIT' | 'EVENTS_DESIGN' = 'EVENTS_CREATE';
   @Input() showFirst: boolean = false;
   @Input() giveaway: Giveaway = this.initGiveaway;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
@@ -134,8 +133,10 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    */
   protected numberInput(event: InputEvent, gw_req?: boolean, sponsor?: boolean): void {
     if (!(event.target instanceof HTMLInputElement)) { return; }
-    const inputValue: number = Number(event.target.value.replace(/[^0-9]/g, ''));
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    const inputValue: number = Number(event.target.value);
     if ((isNaN(inputValue) || inputValue < 1 || inputValue > 1000) && !sponsor) { event.target.value = '1' }
+    else if (sponsor && (isNaN(inputValue) || inputValue < 1)) { event.target.value = ''; this.giveaway.sponsor_id = undefined; return; }
 
     if (gw_req) {
       const prefix: string = this.giveaway.gw_req?.split(/\d/).shift() || '';

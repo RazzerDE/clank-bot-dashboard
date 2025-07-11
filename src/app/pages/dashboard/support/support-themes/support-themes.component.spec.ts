@@ -10,7 +10,7 @@ import {ApiService} from "../../../../services/api/api.service";
 import {defer, of, throwError} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SupportTheme, SupportThemeResponse} from "../../../../services/types/Tickets";
-import {Emoji, Guild, initEmojis, Role} from "../../../../services/types/discord/Guilds";
+import {Guild, Role} from "../../../../services/types/discord/Guilds";
 
 describe('SupportThemesComponent', () => {
   let component: SupportThemesComponent;
@@ -38,7 +38,7 @@ describe('SupportThemesComponent', () => {
         { provide: DataHolderService, useValue: { isLoading: false, allowDataFetch: of(true),
             initTheme: { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
               default_roles: [], pending: true, action: 'CREATE' }, redirectLoginError: jest.fn(), showAlert: jest.fn(),
-          support_themes: [], getEmojibyId: jest.fn() } },
+          support_themes: [], getEmojibyId: jest.fn(), getGuildEmojis: jest.fn() } },
       ]
     })
     .compileComponents();
@@ -120,7 +120,6 @@ describe('SupportThemesComponent', () => {
 
     expect(component.dataService.support_themes).toEqual(supportThemes);
     expect(component['discordRoles']).toEqual(guildRoles);
-    expect(component['emojis']).toEqual(emojis);
     expect(component['filteredThemes']).toEqual(supportThemes);
     expect(component.dataService.isLoading).toBe(false);
     expect(component['dataLoading']).toBe(false);
@@ -271,80 +270,6 @@ describe('SupportThemesComponent', () => {
       'ERROR_UNKNOWN_DESC'
     );
     expect(component['modal'].hideModal).toHaveBeenCalled();
-  }));
-
-  it('should return if no active guild', () => {
-    jest.spyOn(component['discordService'], 'getGuildEmojis');
-
-    component.dataService.active_guild = null;
-    component['getGuildEmojis']();
-    expect(component['discordService']['getGuildEmojis']).not.toHaveBeenCalled();
-  });
-
-  it('should use cache if available and not expired', () => {
-    const emojis = [{ id: '1', animated: false, available: true, managed: false, require_colons: true }] as Emoji[];
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    localStorage.setItem('guild_emojis', JSON.stringify(emojis));
-    localStorage.setItem('support_themes_timestamp', (Date.now()).toString());
-    component.dataService.isLoading = true;
-
-    component['getGuildEmojis']();
-
-    expect(component['emojis']).toEqual(emojis);
-    expect(component.dataService.isLoading).toBe(false);
-  });
-
-  it('should use initEmojis if cache is empty array', () => {
-    localStorage.setItem('guild_emojis', JSON.stringify([]));
-    localStorage.setItem('support_themes_timestamp', (Date.now()).toString());
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-
-    component['getGuildEmojis']();
-
-    expect(component['emojis']).toEqual(initEmojis);
-    expect(component.dataService.isLoading).toBe(false);
-  });
-
-  it('should fetch from API if no cache or cache expired', fakeAsync(() => {
-    const mockEmoji = [{id: '2', name: 'wink'}] as unknown as Emoji[];
-    jest.spyOn(component['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.resolve(mockEmoji)));
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    component['getGuildEmojis'](true);
-    tick();
-
-    expect(component['discordService'].getGuildEmojis).toHaveBeenCalledWith('guild1');
-    expect(component['emojis']).toEqual([{ id: '2', name: 'wink' }]);
-    expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify([{ id: '2', name: 'wink' }]));
-  }));
-
-  it('should handle API error 429 by calling redirectLoginError with REQUESTS', fakeAsync(() => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    jest.spyOn(component['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
-
-    component['getGuildEmojis'](true);
-    tick();
-
-    expect(component['dataService'].redirectLoginError).toHaveBeenCalledWith('REQUESTS');
-  }));
-
-  it('should handle API error 401 by calling redirectLoginError with NO_CLANK', fakeAsync(() => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    jest.spyOn(component['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
-
-    component['getGuildEmojis'](true);
-    tick();
-
-    expect(component['dataService'].redirectLoginError).toHaveBeenCalledWith('NO_CLANK');
-  }));
-
-  it('should handle API error other by calling redirectLoginError with EXPIRED', fakeAsync(() => {
-    component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    jest.spyOn(component['discordService'], 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
-
-    component['getGuildEmojis'](true);
-    tick();
-
-    expect(component['dataService'].redirectLoginError).toHaveBeenCalledWith('EXPIRED');
   }));
 
   it('should filter themes by name (case-insensitive)', () => {

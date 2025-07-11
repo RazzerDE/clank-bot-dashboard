@@ -7,11 +7,13 @@ import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromD
 import {Observable, of, throwError} from "rxjs";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {TranslateModule} from "@ngx-translate/core";
+import {Guild} from "../services/types/discord/Guilds";
 
 
 describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
       TestBed.runInInjectionContext(() => AuthGuard(...guardParameters));
+  let dataService: DataHolderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,7 +23,9 @@ describe('authGuard', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
     ]
-});
+    });
+
+    dataService = TestBed.inject(DataHolderService);
   });
 
   it('should be created', () => {
@@ -32,6 +36,8 @@ describe('authGuard', () => {
     const authService = TestBed.inject(AuthService);
     const route = {queryParams: {code: 'testCode', state: 'testState'}} as unknown as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
+    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
+
     const authSpy = jest.spyOn(authService, 'authenticateUser').mockImplementation(() => {});
 
     const result = executeGuard(route, state);
@@ -52,6 +58,7 @@ describe('authGuard', () => {
     const state = {} as RouterStateSnapshot;
     const loginSpy = jest.spyOn(authService, 'discordLogin').mockImplementation(() => {});
     localStorage.removeItem('access_token');
+    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
 
     const result = executeGuard(route, state);
 
@@ -73,6 +80,7 @@ describe('authGuard', () => {
     const state = {} as RouterStateSnapshot;
     const profile = { id: '123', username: 'testUser' } as any;
     const httpSpy = jest.spyOn(http, 'get').mockReturnValue(of(profile));
+    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
 
     localStorage.setItem('access_token', 'testToken');
 
@@ -99,6 +107,7 @@ describe('authGuard', () => {
     const httpSpy = jest.spyOn(http, 'get').mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 401 })));
     const redirectSpy = jest.spyOn(dataService, 'redirectLoginError');
+    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
 
     localStorage.setItem('access_token', 'testToken');
 
@@ -125,7 +134,8 @@ describe('authGuard', () => {
     const route = { queryParams: {} } as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
     const httpSpy = jest.spyOn(http, 'get').mockReturnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
-    const redirectSpy = jest.spyOn(dataService, 'redirectLoginError');
+    const redirectSpy = jest.spyOn(dataService, 'redirectLoginError').mockImplementation(() => {});
+    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
 
     localStorage.setItem('access_token', 'testToken');
 
@@ -143,6 +153,96 @@ describe('authGuard', () => {
       expect(httpSpy).toHaveBeenCalled();
       expect(localStorage.getItem('access_token')).toBeNull();
       expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
+    }
+  });
+
+  it('should redirect to dashboard if active_guild is not set and path is not dashboard or dashboard/contact', () => {
+    const dataService = TestBed.inject(DataHolderService);
+    const route = {queryParams: {}, routeConfig: { path: 'someOtherPath' }} as unknown as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+    dataService['active_guild'] = null;
+
+    // window.location.href ist in JSDOM nicht implementiert, daher mocken wir es:
+    const originalLocation = window.location;
+    // @ts-ignore
+    delete window.location;
+    // @ts-ignore
+    window.location = { href: '/dashboard/events/view' };
+
+    localStorage.setItem('access_token', 'testToken');
+
+    const result = executeGuard(route, state);
+
+    if (result instanceof Observable) {
+      result.subscribe(res => {
+        expect(res).toBe(false);
+      });
+    }
+    expect(window.location.href).toBe('/dashboard');
+
+    // @ts-ignore
+    window.location = originalLocation;
+  });
+
+  it('should not redirect if active_guild is not set but path is dashboard', () => {
+    const http = TestBed.inject(HttpClient);
+    const dataService = TestBed.inject(DataHolderService);
+    const route = {queryParams: {}, routeConfig: { path: 'dashboard' }} as unknown as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+    const profile = { id: '123', username: 'testUser' } as any;
+    dataService['active_guild'] = null;
+
+    const httpSpy = jest.spyOn(http, 'get').mockReturnValue(of(profile));
+    localStorage.setItem('access_token', 'testToken');
+    const result = executeGuard(route, state);
+
+    expect(httpSpy).toHaveBeenCalled();
+    if (result instanceof Observable) {
+      result.subscribe(res => {
+        expect(res).toBe(true);
+        expect(dataService.profile).toEqual(profile);
+      });
+    }
+  });
+
+  it('should not redirect if active_guild is not set but path is dashboard/contact', () => {
+    const http = TestBed.inject(HttpClient);
+    const dataService = TestBed.inject(DataHolderService);
+    const route = {queryParams: {}, routeConfig: { path: 'dashboard/contact' }} as unknown as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+    const profile = { id: '123', username: 'testUser' } as any;
+    dataService['active_guild'] = null;
+
+    const httpSpy = jest.spyOn(http, 'get').mockReturnValue(of(profile));
+    localStorage.setItem('access_token', 'testToken');
+    const result = executeGuard(route, state);
+
+    expect(httpSpy).toHaveBeenCalled();
+    if (result instanceof Observable) {
+      result.subscribe(res => {
+        expect(res).toBe(true);
+        expect(dataService.profile).toEqual(profile);
+      });
+    }
+  });
+
+  it('should proceed with authentication if active_guild is set', () => {
+    const http = TestBed.inject(HttpClient);
+    const route = {queryParams: {}, routeConfig: { path: 'someOtherPath' }} as unknown as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+    const profile = { id: '123', username: 'testUser' } as any;
+    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
+
+    const httpSpy = jest.spyOn(http, 'get').mockReturnValue(of(profile));
+    localStorage.setItem('access_token', 'testToken');
+    const result = executeGuard(route, state);
+
+    expect(httpSpy).toHaveBeenCalled();
+    if (result instanceof Observable) {
+      result.subscribe(res => {
+        expect(res).toBe(true);
+        expect(dataService.profile).toEqual(profile);
+      });
     }
   });
 });

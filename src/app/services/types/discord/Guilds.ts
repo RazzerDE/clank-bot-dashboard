@@ -52,6 +52,7 @@ export interface Channel {
 
 export interface Emoji {
   id: string;
+  name: string;
   animated: boolean;
   available: boolean;
   managed: boolean;

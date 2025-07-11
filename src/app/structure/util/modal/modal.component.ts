@@ -9,7 +9,7 @@ import {
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {Emoji, Role} from "../../../services/types/discord/Guilds";
+import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -24,7 +24,6 @@ import {BlockedUser} from "../../../services/types/discord/User";
 import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
 import {CreateGiveawayComponent} from "./templates/create-giveaway/create-giveaway.component";
 import {Giveaway} from "../../../services/types/Events";
-import {EmbedConfig} from "../../../services/types/Config";
 
 @Component({
   selector: 'app-modal',
@@ -70,7 +69,6 @@ import {EmbedConfig} from "../../../services/types/Config";
 })
 export class ModalComponent implements AfterContentInit  {
   @Input() discordRoles: Role[] = [];
-  @Input() emojis: Emoji[] | string[] = [];
   @Input() type: string = '';
   @Input() content: string = '';
 
@@ -78,7 +76,6 @@ export class ModalComponent implements AfterContentInit  {
   @Input() obj: TicketSnippet | BlockedUser | Giveaway = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
-  @Input() gift_config: EmbedConfig = { color_code: null, thumbnail_url: null, banner_url: null, emoji_reaction: null };
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};

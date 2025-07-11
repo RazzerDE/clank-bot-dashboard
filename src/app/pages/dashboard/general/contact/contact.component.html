@@ -92,13 +92,13 @@
           <!-- Content of Form -->
           <div class="relative overflow-hidden border-b border-gray-300 dark:!border-gray-700
                         transition-colors duration-500" [style.height]="formContainerHeight">
-            @for (step of getFormStep('IDEA'); track step) {
+            @for (step of getFormStep('IDEA'); track $index) {
               <div [@stepContent] class="mb-3">
                 <!-- Form Description -->
                 <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
 
                 <!-- Form Fields -->
-                @for (field of step.fields; track field) {
+                @for (field of step.fields; track $index) {
                   <form [formGroup]="formGroupIdea" class="space-y-4 pb-3">
                     <div class="relative">
                       <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
@@ -212,7 +212,7 @@
                 <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
 
                 <!-- Form Fields -->
-                @for (field of step.fields; track field) {
+                @for (field of step.fields; track $index) {
                   <form [formGroup]="formGroupBug" class="space-y-4 pb-3">
                     <div class="relative">
                       <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300

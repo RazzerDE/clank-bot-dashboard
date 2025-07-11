@@ -1,0 +1,26 @@
+<div class="absolute bottom-full mb-2 p-2 bg-white dark:!bg-gray-700 border border-gray-300 cursor-default
+            dark:!border-gray-600 rounded-lg shadow-lg z-50 w-48 max-h-36 overflow-y-auto grid grid-cols-6 gap-1"
+     [ngClass]="this.type === 'EVENTS_DESIGN' ? 'right-0' : 'left-0'"
+     (click)="$event.stopPropagation();">
+  @if (dataService.isEmojisLoading) {
+    <div class="flex items-center justify-center h-24 col-span-6 overflow-hidden">
+      <span class="data-loader"></span>
+    </div>
+  } @else {
+    @for (emoji of dataService.guild_emojis; track $index) {
+      @if (isEmojiType(emoji)) {
+        <span (click)="onEmojiSelect(emoji)" class="cursor-pointer flex items-center justify-center h-8 w-8
+                                                  hover:bg-gray-100 dark:hover:bg-gray-600 p-1 rounded">
+          <img ngSrc="{{ this.dataService.getEmojibyId(emoji.id, true, emoji.animated) + '?size=40' }}"
+               width="40" height="40" alt="Emoji ~ Clank Discord-Bot" />
+        </span>
+      } @else {
+        <span (click)="onEmojiSelect(emoji)" class="cursor-pointer flex items-center justify-center h-8 w-8
+                                                  hover:bg-gray-100 dark:hover:bg-gray-600 p-1 rounded"
+              style="filter: brightness(1.2) contrast(1.2); text-shadow: 0 1px 2px #0002;">
+          {{ emoji }}
+        </span>
+      }
+    }
+  }
+</div>

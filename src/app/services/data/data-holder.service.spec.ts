@@ -6,14 +6,16 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import {defer} from "rxjs";
 import {ComService} from "../discord-com/com.service";
-import {Channel, Guild, Role} from "../types/discord/Guilds";
+import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {ApiService} from "../api/api.service";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
   let router: Router;
   let translate: TranslateService;
-  let comService: ComService
+  let comService: ComService;
+  let apiService: ApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,6 +30,7 @@ describe('DataHolderService', () => {
     translate = TestBed.inject(TranslateService);
     service = TestBed.inject(DataHolderService);
     comService = TestBed.inject(ComService);
+    apiService = TestBed.inject(ApiService);
   });
 
   it('should be created', () => {
@@ -399,6 +402,168 @@ describe('DataHolderService', () => {
     tick();
 
     expect(service.handleApiError).toHaveBeenCalledWith(errorResponse);
+  }));
+
+  it('should use cached config if available and not expired', fakeAsync(() => {
+    const mockConfig = { color_code: 16777215, thumbnail_url: 'url', banner_url: null, emoji_reaction: ':test:' };
+    localStorage.setItem('gift_config', JSON.stringify(mockConfig));
+    localStorage.setItem('gift_config_timestamp', Date.now().toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+
+    jest.spyOn(service, 'getGuildEmojis').mockImplementation(() => {});
+
+    service.getEventConfig(apiService, comService, false);
+    tick(150);
+
+    mockConfig.color_code = '#ffffff' as any; // Convert to hex format
+    expect(service.embed_config).toEqual(mockConfig);
+    expect(service.isLoading).toBe(false);
+    expect(service.getGuildEmojis).toHaveBeenCalledWith(comService, false);
+  }));
+
+  it('should fetch config from API if cache is expired or no_cache is true', fakeAsync(() => {
+    localStorage.setItem('gift_config', JSON.stringify({}));
+    localStorage.setItem('gift_config_timestamp', (Date.now() - 31000).toString());
+    const mockConfig = { color_code: 16777215, thumbnail_url: 'url2', banner_url: null, emoji_reaction: ':api:' };
+    service.active_guild = { id: 'guild1' } as Guild;
+    const apiSpy = jest.spyOn(apiService, 'getEventConfig').mockReturnValue(defer(() => Promise.resolve(mockConfig)));
+    jest.spyOn(service, 'getGuildEmojis').mockImplementation(() => {});
+
+    service.getEventConfig(apiService, comService, false);
+    tick(550);
+
+    mockConfig.color_code = '#ffffff' as any; // Convert to hex format
+    expect(apiSpy).toHaveBeenCalledWith('guild1');
+    expect(service.embed_config).toEqual(mockConfig);
+    expect(service.isLoading).toBe(false);
+    expect(service.getGuildEmojis).toHaveBeenCalledWith(comService, false);
+    expect(localStorage.getItem('gift_config')).toEqual(JSON.stringify(mockConfig));
+  }));
+
+  it('should handle API error 429 and call redirectLoginError with REQUESTS', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getEventConfig').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getEventConfig(apiService, comService, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+    expect(service.isLoading).toBe(false);
+  }));
+
+  it('should handle API error 0 and call redirectLoginError with OFFLINE', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getEventConfig').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 0 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getEventConfig(apiService, comService, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('OFFLINE');
+    expect(service.isLoading).toBe(false);
+  }));
+
+  it('should handle unknown API error and call redirectLoginError with UNKNOWN', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getEventConfig').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getEventConfig(apiService, comService, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
+    expect(service.isLoading).toBe(false);
+  }));
+
+  it('should return if no active guild', () => {
+    jest.spyOn(comService, 'getGuildEmojis');
+    service.active_guild = null;
+    service.getEventConfig(apiService, comService, true);
+    expect(comService['getGuildEmojis']).not.toHaveBeenCalled();
+  });
+
+  it('should return if no active guild (guild emojis)', fakeAsync(() => {
+    jest.spyOn(comService, 'getGuildEmojis');
+    service.active_guild = null;
+    service.guild_emojis = [];
+
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(comService['getGuildEmojis']).not.toHaveBeenCalled();
+    expect(service.guild_emojis).toEqual([]);
+  }));
+
+  it('should use cache if available and not expired', fakeAsync(() => {
+    const emojis = [{ id: '1', animated: false, available: true, managed: false, require_colons: true }] as Emoji[];
+    service.active_guild = { id: 'guild1' } as Guild;
+    localStorage.setItem('guild_emojis', JSON.stringify(emojis));
+    localStorage.setItem('support_themes_timestamp', (Date.now()).toString());
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.resolve(emojis)));
+    service.isEmojisLoading = true;
+
+    service.getGuildEmojis(comService);
+    tick();
+
+    expect(service.guild_emojis).toEqual(emojis);
+    expect(service.isEmojisLoading).toBe(false);
+  }));
+
+  it('should use initEmojis if cache is empty array', () => {
+    localStorage.setItem('guild_emojis', JSON.stringify([]));
+    localStorage.setItem('support_themes_timestamp', (Date.now()).toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+
+    service.getGuildEmojis(comService);
+
+    expect(service.guild_emojis).toEqual(initEmojis);
+    expect(service.isLoading).toBe(false);
+  });
+
+  it('should fetch from API if no cache or cache expired', fakeAsync(() => {
+    const mockEmoji = [{id: '2', name: 'wink'}] as unknown as Emoji[];
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.resolve(mockEmoji)));
+    service.active_guild = { id: 'guild1' } as Guild;
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(comService.getGuildEmojis).toHaveBeenCalledWith('guild1');
+    expect(service.guild_emojis).toEqual([{ id: '2', name: 'wink' }]);
+    expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify([{ id: '2', name: 'wink' }]));
+  }));
+
+  it('should handle API error 429 by calling redirectLoginError with REQUESTS', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(service.redirectLoginError).toHaveBeenCalledWith('REQUESTS');
+  }));
+
+  it('should handle API error 401 by calling redirectLoginError with NO_CLANK', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))));
+    jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(service.redirectLoginError).toHaveBeenCalledWith('NO_CLANK');
+  }));
+
+  it('should handle API error other by calling redirectLoginError with EXPIRED', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(service.redirectLoginError).toHaveBeenCalledWith('EXPIRED');
   }));
 
 });

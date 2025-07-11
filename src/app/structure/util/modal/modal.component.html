@@ -57,7 +57,7 @@
               <template-faq-answer [content]="content" [type]="type" />
             }
             @case (type.startsWith('SUPPORT_THEME')) {
-              <template-support-theme-add [showFirst]="true" [emojis]="emojis" [discordRoles]="discordRoles" [type]="type"
+              <template-support-theme-add [showFirst]="true" [discordRoles]="discordRoles" [type]="type"
                                           [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="theme" />
             }
             @case (type.startsWith('SUPPORT_SNIPPET')) {
@@ -94,8 +94,7 @@
       } @else if (type.startsWith('SUPPORT_THEME')) {
         <template-support-theme-add [showFirst]="false" />
       } @else if (type.startsWith('EVENTS_')) {
-        <template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)"
-                                  [gift_config]="this.gift_config" />
+        <template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)" />
       }
 
     }

@@ -136,6 +136,17 @@ export class ApiService {
   }
 
   /**
+   * Saves the embed configuration for the giveaway design in a specific guild.
+   *
+   * @param embed_config - The embed configuration object containing details for the giveaway embed.
+   * @returns An Observable emitting the server's response.
+   */
+  saveEmbedConfig(embed_config: EmbedConfig): Observable<EmbedConfig> {
+    return this.http.post<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${embed_config.guild_id}`, embed_config,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the configuration for discord event embeds in a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the event embed configuration.
