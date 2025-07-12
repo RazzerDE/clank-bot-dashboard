@@ -199,7 +199,7 @@
               <!-- Save Button -->
               <button type="button" class="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700
                                          text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
-                      (click)="saveGiftConfig(this.dataService.embed_config)" [disabled]="this.disableSendBtn">
+                      (click)="saveGiftConfig(this.dataService.embed_config)" [disabled]="this.disableSendBtn || !this.isConfigChanged()">
                 <fa-icon [icon]="faSave" class="mr-2"/> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
               </button>
 

@@ -48,6 +48,7 @@ export class DataHolderService {
   guild_emojis: Emoji[] | string[] = [];
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
+  org_config: EmbedConfig = {...this.embed_config};
   selectedSnippet: TicketSnippet | null = null;
 
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
@@ -216,6 +217,7 @@ export class DataHolderService {
         this.embed_config.color_code = `#${this.embed_config.color_code.toString(16).padStart(6, '0')}`;
       }
 
+      this.org_config = { ...this.embed_config };
       setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 100);
       this.isLoading = false;
       this.isFetching = false;
@@ -230,6 +232,7 @@ export class DataHolderService {
           }
 
           this.embed_config = config;
+          this.org_config = { ...config };
           this.isLoading = false;
           this.isFetching = false;
 

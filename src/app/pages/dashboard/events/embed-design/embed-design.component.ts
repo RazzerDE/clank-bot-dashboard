@@ -256,4 +256,19 @@ export class EmbedDesignComponent implements OnDestroy {
       }
     }
   }
+
+  /**
+   * Checks if the current embed configuration has been changed compared to the original configuration.
+   * Ignores the `banner_invalid` and `thumbnail_invalid` flags during comparison.
+   *
+   * @returns `true` if the configuration has changed, otherwise `false`.
+   */
+  isConfigChanged(): boolean {
+    if (!this.dataService.embed_config) { return false; }
+
+    // Remove banner_invalid und thumbnail_invalid flags from comparison
+    const { banner_invalid, thumbnail_invalid, ...embedConfigClean } = this.dataService.embed_config;
+    const { banner_invalid: orgBannerInvalid, thumbnail_invalid: orgThumbnailInvalid, ...orgConfigClean } = this.dataService.org_config ?? {};
+    return JSON.stringify(embedConfigClean) !== JSON.stringify(orgConfigClean);
+  }
 }

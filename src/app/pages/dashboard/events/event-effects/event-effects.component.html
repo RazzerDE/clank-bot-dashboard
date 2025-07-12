@@ -1,12 +1,7 @@
 <dashboard-layout>
   <!-- TODO:
-    1. http 304 - nothing modified for embed-design and this api call
-    2. Add a loading spinner while fetching data (for channel and role lists)
-    3. Add a confirmation dialog before deleting all entries
     4. Implement save functionality to persist changes
     5. role deletion should remove from the list
-    7. fetch guild channels and roles
-    8. cache refresh butto
   -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
@@ -30,7 +25,8 @@
           <ul class="flex -mb-px justify-between w-full items-center">
             <li> <!-- Save Button -->
               <button class="inline-block p-3 tflex items-center justify-center bg-indigo-600 hover:bg-indigo-700
-                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600">
+                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
+                      [disabled]="!isCardListChanged()">
                 <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
               </button>
             </li>
@@ -63,7 +59,8 @@
             <li> <!-- Refresh Button -->
               <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
                            to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
-                           text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none">
+                           text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                      [disabled]="disabledCacheBtn" (click)="refreshCache()">
                 <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
               </button>
             </li>

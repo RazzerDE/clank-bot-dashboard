@@ -11,7 +11,7 @@ import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
-import {Giveaway} from "../types/Events";
+import {EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig} from "../types/Config";
 
 @Injectable({
@@ -154,6 +154,17 @@ export class ApiService {
    */
   getEventConfig(guild_id: string): Observable<EmbedConfig> {
     return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the configuration for event effects in a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the event effects configuration.
+   * @return An Observable that emits the EventEffects object containing the configuration details.
+   */
+  getEventEffects(guild_id: string): Observable<EventEffectsRaw> {
+    return this.http.get<EventEffectsRaw>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 
