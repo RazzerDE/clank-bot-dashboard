@@ -263,6 +263,15 @@
   "ERROR_THEME_EDIT_CONFLICT": "Thema-Name bereits vergeben",
   "ERROR_THEME_EDIT_CONFLICT_DESC": "Der Themen-Name <strong>{{name}}</strong> existiert bereits oder wird in Kürze vergeben!",
 
+  "SUCCESS_EFFECTS_ROLES_TITLE": "Rolle hinzugefügt",
+  "SUCCESS_EFFECTS_ROLES_DESC": "Die Rolle <strong>{{name}}</strong> wurde zu \"<strong>{{type}}</strong>\" hinzugefügt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
+  "SUCCESS_EFFECTS_CHANNELS_TITLE": "Kanal hinzugefügt",
+  "SUCCESS_EFFECTS_CHANNELS_DESC": "Der Kanal <strong>{{name}}</strong> wurde zu \"<strong>{{type}}</strong>\" hinzugefügt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
+  "SUCCESS_EFFECTS_ROLES_DELETE_TITLE": "Rolle entfernt",
+  "SUCCESS_EFFECTS_ROLES_DELETE_DESC": "Die Rolle <strong>{{name}}</strong> wurde von \"<strong>{{type}}</strong>\" entfernt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
+  "SUCCESS_EFFECTS_CHANNELS_DELETE_TITLE": "Kanal entfernt",
+  "SUCCESS_EFFECTS_CHANNELS_DELETE_DESC": "Der Kanal <strong>{{name}}</strong> wurde von \"<strong>{{type}}</strong>\" entfernt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
+
   "SUCCESS_SNIPPET_CREATION_TITLE": "Snippet erfolgreich erstellt",
   "SUCCESS_SNIPPET_CREATION_DESC": "Das Snippet <strong>{{name}}</strong> wurde erfolgreich erstellt!",
   "SUCCESS_SNIPPET_EDIT_TITLE": "Snippet erfolgreich bearbeitet",

@@ -4,10 +4,10 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {ReactiveFormsModule} from "@angular/forms";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {SelectComponent} from "../../../../structure/util/modal/templates/select/select.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faHashtag, faTrashAlt, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faHashtag, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
 import {event_cards, EventCard, EventEffects, EventEffectsRaw} from "../../../../services/types/Events";
 import {Channel, Role} from "../../../../services/types/discord/Guilds";
@@ -17,6 +17,7 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {ApiService} from "../../../../services/api/api.service";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
+import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons/faVolumeHigh";
 
 @Component({
   selector: 'app-event-effects',
@@ -42,13 +43,23 @@ import {HttpErrorResponse} from "@angular/common/http";
         style({ transform: 'scale(1)', opacity: 1 }),
         animate('200ms ease-in', style({ transform: 'scale(0)', opacity: 0 }))
       ])
-    ])
+    ]),
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('200ms ease-out', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0, transform: 'scale(0.95)' })),
+      ]),
+    ]),
   ]
 })
 export class EventEffectsComponent implements OnDestroy {
-  protected readonly faTrashAlt: IconDefinition = faTrashAlt;
+  protected readonly faVolumeHigh: IconDefinition = faVolumeHigh;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faRefresh: IconDefinition = faRefresh;
+  protected readonly faXmark: IconDefinition = faXmark;
   protected readonly faSave: IconDefinition = faSave;
   protected activeTab: 'ROLES' | 'CHANNELS' = 'ROLES';
 
@@ -57,7 +68,7 @@ export class EventEffectsComponent implements OnDestroy {
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
 
-  constructor(private apiService: ApiService, protected dataService: DataHolderService) {
+  constructor(private apiService: ApiService, protected dataService: DataHolderService, private translate: TranslateService) {
     this.dataService.isLoading = true;
     this.getEventEffects(true); // first call to get the server data
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
@@ -147,37 +158,105 @@ export class EventEffectsComponent implements OnDestroy {
   }
 
   /**
-   * Maps the categories of channel and role effects to their corresponding event cards.
-   * The mapping is based on the category index, which matches the order of event_cards.
+   * Adds a role or channel to the given event card's object list based on the current active tab.
    *
-   * @param effects - The event effects containing channel and role effects.
+   * @param obj_id - The ID of the role or channel to add.
+   * @param card - The event card to which the object should be added.
+   * @param remove - Optional parameter to indicate whether to remove the object instead of adding it.
+   */
+  pushToCardList(obj_id: string, card: EventCard, remove?: boolean): void {
+    let obj: Role | Channel | undefined;
+    if (this.activeTab === 'ROLES') {
+      const role: Role | undefined = this.dataService.guild_roles.find(r => r.id === obj_id);
+      obj = role;
+      if (role) {
+        if (remove) {  // Remove the role from the card's object list
+          card.obj_list = (card.obj_list as Role[]).filter(r => r.id !== role.id);
+        } else {
+          (card.obj_list as Role[]).push(role);
+          (card.obj_list as Role[]).sort((a, b) => b.position - a.position);
+        }
+      }
+    } else {
+      const channel: Channel | undefined = this.dataService.guild_channels.find(c => c.id === obj_id);
+      obj = channel;
+      if (channel) {
+        if (remove) {  // Remove the channel from the card's object list
+          card.obj_list = (card.obj_list as Channel[]).filter(c => c.id !== channel.id);
+        } else {
+          if (card.title === 'EVENTS_TAB_INVITE_TITLE') {  // Invite log category, only one channel allowed
+            card.obj_list = [channel];
+          } else {
+            (card.obj_list as Channel[]).push(channel);
+            (card.obj_list as Channel[]).sort((a, b) => b.position - a.position);
+          }
+        }
+      }
+    }
+
+    this.dataService.error_color = 'green';
+    this.dataService.showAlert(this.translate.instant(`SUCCESS_EFFECTS_${this.activeTab}_${remove ? 'DELETE_' : ''}TITLE`),
+      this.translate.instant(`SUCCESS_EFFECTS_${this.activeTab}_${remove ? 'DELETE_' : ''}DESC`,
+        { name: obj?.name, type: this.translate.instant(card.title).split(' ~ ')[1] }));
+  }
+
+  /**
+   * Returns a filtered list of roles or channels that are not already included in the given event card's object list.
+   *
+   * @param card - The event card to check against.
+   * @returns An array of roles or channels not present in the card's object list.
+   */
+  excludeFromSelect(card: EventCard): Role[] | Channel[] {
+    if (this.activeTab === 'ROLES') {
+      return this.dataService.guild_roles.filter(role =>
+        !(card.obj_list as Role[]).some(selectedRole => selectedRole.id === role.id)
+      );
+    } else {
+      return this.dataService.guild_channels.filter(channel => {
+        if (card.title === 'EVENTS_TAB_INVITE_TITLE' && !this.dataService.isTextChannel(channel)) {
+          return false;  // Invite log category only allows text channels
+        }
+        return !(card.obj_list as Channel[]).some(selectedChannel => selectedChannel.id === channel.id);
+      });
+    }
+  }
+
+  /**
+   * Maps the categories of channel and role effects to their corresponding event cards.
+   * Optimizes the mapping by using a Map for faster lookups of roles and channels.
+   *
+   * @param effects - the EventEffects object containing role and channel effects.
    */
   protected mapEffectsToEventCards(effects: EventEffects): void {
-    this.event_cards.forEach(card => card.obj_list = []);  // Reset obj_list for each card
+    this.event_cards.forEach(card => card.obj_list = []);  // Reset the obj_list for each card
 
-    // Map role effects to event cards by category
+    const roleMap = new Map<string, Role>();
+    const channelMap = new Map<string, Channel>();
+
+    this.dataService.guild_roles.forEach(role => roleMap.set(role.id, role));
+    this.dataService.guild_channels.forEach(channel => channelMap.set(channel.id, channel));
+
     effects.role_effects.forEach(effect => {
-      const card: EventCard = this.event_cards[effect.category];
-      const role: Role | undefined = this.dataService.guild_roles.find(r => r.id === effect.role_id);
-      if (role) {
+      const role = roleMap.get(effect.role_id);
+      if (role && effect.category < this.event_cards.length) {
+        const card = this.event_cards[effect.category];
         (card.obj_list as Role[]).push(role);
       }
     });
 
-    // Map channel effects to event cards by category
+    // Blacklisted -> eventCards[6] | Invite log -> eventCards[7]
+    const channelCategoryMapping = { 0: 6, 6: 7 };
     effects.channel_effects.forEach(effect => {
-      // Channel categories: 0 (Blacklisted) maps to eventCards[6], 6 (invite log) maps to eventCards[7] if exists
-      const cardIdx: 0 | 6 | undefined = effect.category === 0 ? 0 : (effect.category === 6 && this.event_cards.length > 6 ? 6 : undefined);
-      if (cardIdx !== undefined) {
-        const card: EventCard = this.event_cards[cardIdx === 0 ? 6 : 7];
-        const channel: Channel | undefined = this.dataService.guild_channels.find(c => c.id === effect.channel_id);
+      const targetIndex = channelCategoryMapping[effect.category as keyof typeof channelCategoryMapping];
+      if (targetIndex !== undefined && targetIndex < this.event_cards.length) {
+        const channel = channelMap.get(effect.channel_id);
         if (channel) {
-          (card.obj_list as Channel[]).push(channel);
+          (this.event_cards[targetIndex].obj_list as Channel[]).push(channel);
         }
       }
     });
 
-    this.org_event_cards = [...this.event_cards]; // Update original event cards for change detection
+    this.org_event_cards = JSON.parse(JSON.stringify(this.event_cards));
   }
 
   /**
@@ -198,4 +277,5 @@ export class EventEffectsComponent implements OnDestroy {
   isCardListChanged(): boolean {
     return JSON.stringify(this.event_cards) !== JSON.stringify(this.org_event_cards);
   }
+
 }

@@ -55,6 +55,8 @@ export class SelectComponent {
       const selectEl: HTMLSelectElement = this.rolePicker.nativeElement;
       const selectedRoles: string[] = Array.from(selectEl.selectedOptions).map(option => option.value);
       this.selectionChange.emit(selectedRoles);
+
+      if (this.type.startsWith('EVENTS_EFFECTS')) { selectEl.selectedIndex = 0; }
       return;
     }
 

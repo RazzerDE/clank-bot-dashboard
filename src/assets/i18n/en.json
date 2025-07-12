@@ -263,6 +263,15 @@
   "ERROR_THEME_EDIT_CONFLICT": "Theme name already taken",
   "ERROR_THEME_EDIT_CONFLICT_DESC": "The theme name <strong>{{name}}</strong> already exists or will be assigned soon!",
 
+  "SUCCESS_EFFECTS_ROLES_TITLE": "Role added",
+  "SUCCESS_EFFECTS_ROLES_DESC": "The role <strong>{{name}}</strong> was added to \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
+  "SUCCESS_EFFECTS_CHANNEL_TITLE": "Channel added",
+  "SUCCESS_EFFECTS_CHANNEL_DESC": "The channel <strong>{{name}}</strong> was added to \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
+  "SUCCESS_EFFECTS_ROLES_DELETE_TITLE": "Role removed",
+  "SUCCESS_EFFECTS_ROLES_DELETE_DESC": "The role <strong>{{name}}</strong> was removed from \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
+  "SUCCESS_EFFECTS_CHANNEL_DELETE_TITLE": "Channel removed",
+  "SUCCESS_EFFECTS_CHANNEL_DELETE_DESC": "The channel <strong>{{name}}</strong> was removed from \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
+
   "SUCCESS_SNIPPET_CREATION_TITLE": "Snippet successfully created",
   "SUCCESS_SNIPPET_CREATION_DESC": "The snippet <strong>{{name}}</strong> was successfully created!",
   "SUCCESS_SNIPPET_EDIT_TITLE": "Snippet successfully edited",

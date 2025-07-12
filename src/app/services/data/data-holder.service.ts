@@ -452,4 +452,20 @@ export class DataHolderService {
     this.showMobileSidebar = !this.showMobileSidebar;
   }
 
+  /**
+   * Type guard to check if a channel is a TextChannel (not a VoiceChannel).
+   * Assumes TextChannel has type 'text' and VoiceChannel has type 'voice'.
+   */
+  isTextChannel(channel: Channel): boolean {
+    return 'type' in channel && channel.type === 0;
+  }
+
+  /**
+   * Type guard to check if a channel is a TextChannel (not a VoiceChannel).
+   * Assumes TextChannel has type 'text' and VoiceChannel has type 'voice'.
+   */
+  isVoiceChannel(channel: Channel): boolean {
+    return 'type' in channel && (channel.type === 2 || channel.type === 13);
+  }
+
 }

@@ -1,7 +1,6 @@
 <dashboard-layout>
   <!-- TODO:
     4. Implement save functionality to persist changes
-    5. role deletion should remove from the list
   -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
@@ -97,21 +96,26 @@
                    [innerHTML]="item.description | translate"></p>
 
                 <!-- Role Selector -->
-                <div class="mb-3"><template-select [type]="'EVENTS_EFFECTS'"/></div>
+                <div class="mb-3">
+                  <template-select [type]="'EVENTS_EFFECTS'" (selectionChange)="pushToCardList($event[0], item)"
+                                   [options]="excludeFromSelect(item)" [id]="this.activeTab === 'CHANNELS' ? 'channelpicker' : 'rolepicker'"/>
+                </div>
 
                 <!-- Selected Roles -->
                 @if (item.obj_list.length > 0) {
-                  <div class="space-y-2 max-h-[124px] overflow-y-auto pr-1" [ngClass]="{'w-[calc(100%+5px)]': item.obj_list.length <= 2}">
+                  <div class="space-y-2 max-h-[184px] overflow-y-auto pr-1" [ngClass]="{'w-[calc(100%+5px)]': item.obj_list.length <= 2}">
                     @for (obj of item.obj_list; track $index) {
                       <div class="flex items-center justify-between bg-gray-300 dark:bg-gray-700 transition-colors
-                            duration-200 rounded-md pl-3 pr-1 py-2 text-gray-700 dark:text-gray-300">
+                            duration-200 rounded-md pl-3 pr-1 py-2 text-gray-700 dark:text-gray-300" [@fadeInOut]>
                         <div class="flex items-center">
                           @if (isRoleType(obj)) {
                             <span [style.background-color]="'#' + obj.color.toString(16).padStart(6, '0')"
                                   class="h-3 w-3 rounded-full mr-2"></span>
                           } @else {
-                            <fa-icon [icon]="faHashtag" class="h-3 w-3 rounded-full mr-2 -mt-3 text-gray-400
-                                                             dark:text-gray-500 transition-colors duration-200" />
+                            <fa-icon [icon]="this.dataService.isVoiceChannel(obj) ? faVolumeHigh : faHashtag"
+                                     class="h-3 w-3 rounded-full mr-4 -mt-3 text-gray-400 dark:text-gray-500
+                                            transition-colors duration-200"
+                                     [ngClass]="{'!mr-2.5': this.dataService.isVoiceChannel(obj) }"/>
                           }
 
                           <span>{{ obj.name }}</span>
@@ -119,8 +123,9 @@
                         <div class="flex items-center justify-center">
                           <span class="text-xs text-gray-500 dark:text-gray-500 mr-1">{{ obj.id }}</span>
                           <button class="hover:text-red-500 text-red-600 hover:bg-gray-400 dark:hover:bg-gray-600
-                                   p-1 px-2 rounded-full transition-colors duration-200">
-                            <fa-icon [icon]="faTrashAlt" class="text-lg "></fa-icon>
+                                   p-1 px-2 rounded-full transition-colors duration-200"
+                                  (click)="pushToCardList(obj.id, item, true)">
+                            <fa-icon [icon]="faXmark" class="text-lg "></fa-icon>
                           </button>
                         </div>
                       </div>
