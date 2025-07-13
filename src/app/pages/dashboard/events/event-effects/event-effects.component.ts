@@ -184,6 +184,7 @@ export class EventEffectsComponent implements OnDestroy {
             this.translate.instant('SUCCESS_EFFECTS_SAVED_DESC'));
 
           localStorage.setItem('gift_effects', JSON.stringify(effects));
+          this.org_event_cards = JSON.parse(JSON.stringify(this.event_cards));
           setTimeout((): void => { this.disableSendBtn = false; }, 5000);
           saved_effects.unsubscribe();
         },
@@ -324,6 +325,7 @@ export class EventEffectsComponent implements OnDestroy {
       if (role && effect.category < this.event_cards.length) {
         const card = this.event_cards[effect.category];
         (card.obj_list as Role[]).push(role);
+        (card.obj_list as Role[]).sort((a, b) => b.position - a.position);
       }
     });
 
@@ -335,6 +337,7 @@ export class EventEffectsComponent implements OnDestroy {
         const channel = channelMap.get(effect.channel_id);
         if (channel) {
           (this.event_cards[targetIndex].obj_list as Channel[]).push(channel);
+          (this.event_cards[targetIndex].obj_list as Channel[]).sort((a, b) => b.position - a.position);
         }
       }
     });
