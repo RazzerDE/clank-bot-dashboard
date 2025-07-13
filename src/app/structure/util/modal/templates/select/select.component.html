@@ -15,9 +15,9 @@
                    dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400" [class.ps-8]="isChannelList()">
     @if (rolePicker.type === 'select-one' && this.id != 'reqpicker') {
       <option [selected]="!this.activeOption" disabled>
-        @if (this.id == 'channelpicker' && this.dataService.guild_channels.length > 0) {
+        @if (this.id.startsWith('channelpicker') && this.dataService.guild_channels.length > 0) {
           {{ 'PLACEHOLDER_CHANNEL_MODAL_DEFAULT' | translate }}
-        } @else if (this.id == 'channelpicker' && this.dataService.guild_channels.length === 0) {
+        } @else if (this.id.startsWith('channelpicker') && this.dataService.guild_channels.length === 0) {
           {{ 'PLACEHOLDER_CHANNEL_MODAL_NO_CHANNELS' | translate }}
         } @else {
           {{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}
