@@ -13,6 +13,9 @@ import {BlockedUsersComponent} from "./pages/dashboard/support/blocked-users/blo
 import {ActiveGiveawaysComponent} from "./pages/dashboard/events/active-giveaways/active-giveaways.component";
 import {EmbedDesignComponent} from "./pages/dashboard/events/embed-design/embed-design.component";
 import {EventEffectsComponent} from "./pages/dashboard/events/event-effects/event-effects.component";
+import {
+  ModerationRequestsComponent
+} from "./pages/dashboard/security/moderation-requests/moderation-requests.component";
 
 export const routes: Routes = [
   // General pages
@@ -32,6 +35,9 @@ export const routes: Routes = [
   { path: 'dashboard/events/view', component: ActiveGiveawaysComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/events/design', component: EmbedDesignComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/events/channel-roles', component: EventEffectsComponent, canActivate: [AuthGuard] },
+
+  // Security pages
+  { path: 'dashboard/security/moderation-requests', component: ModerationRequestsComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}

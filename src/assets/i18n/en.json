@@ -162,6 +162,10 @@
   "PAGE_EVENTS_TABLE_CREATOR": "👤 ~ Created by",
   "PAGE_EVENTS_TABLE_SPONSOR": "💸 ~ Sponsor",
 
+  "PAGE_SECURITY_REQUESTS_SUBTITLE": "🚨 ~ UNBAN REQUESTS & PAST PUNISHMENTS",
+  "PAGE_SECURITY_REQUESTS_TITLE": "Unban Requests & Punishments",
+  "PAGE_SECURITY_REQUESTS_DESC": "› On this page you can see all open unban requests and user profiles with past punishments.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM ACTIVE - IMPROVEMENTS POSSIBLE!",
@@ -359,7 +363,7 @@
   "SIDEBAR_PAGE_EVENTS": "Ongoing events",
   "SIDEBAR_PAGE_MSG_DESIGN": "Message design",
   "SIDEBAR_PAGE_CHC_ROLES": "Channel & role effects",
-  "SIDEBAR_PAGE_MEMBERS": "Server members",
+  "SIDEBAR_PAGE_MODERATION": "Requests & Punishments",
   "SIDEBAR_PAGE_SHIELD": "Active protections",
   "SIDEBAR_PAGE_BACKUPS": "View backup status",
   "SIDEBAR_PAGE_AUTOMOD": "AutoMod settings",
@@ -377,7 +381,7 @@
   "SIDEBAR_PAGE_EVENTS_DESC": "Shows all ongoing events.",
   "SIDEBAR_PAGE_MSG_DESIGN_DESC": "Customize the design of giveaways.",
   "SIDEBAR_PAGE_CHC_ROLES_DESC": "How to ignore, whitelist & more.",
-  "SIDEBAR_PAGE_MEMBERS_DESC": "View and manage all members.",
+  "SIDEBAR_PAGE_MODERATION_DESC": "View unban requests & review past punishments.",
   "SIDEBAR_PAGE_SHIELD_DESC": "Includes fake accounts, panic mode & more.",
   "SIDEBAR_PAGE_BACKUPS_DESC": "All information about the bot's backup system.",
   "SIDEBAR_PAGE_AUTOMOD_DESC": "Automatically protect your server.",

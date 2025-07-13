@@ -4,9 +4,10 @@ import {
   faHouse, faImage,
   faScrewdriverWrench, faScroll, faServer, faShieldHalved,
   faStar,
-  faTruckMedical, faUserGroup, faWandMagicSparkles,
+  faTruckMedical, faWandMagicSparkles,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
+import {faHandcuffs} from "@fortawesome/free-solid-svg-icons/faHandcuffs";
 
 export interface NavigationPage {
   title: string;
@@ -67,7 +68,7 @@ export const nav_items: NavigationItem[] = [
     color: "red",
     description: "SIDEBAR_CATEGORY_4_DESC",
     pages: [
-      { title: "SIDEBAR_PAGE_MEMBERS", desc: "SIDEBAR_PAGE_MEMBERS_DESC", icon: faUserGroup, redirect_url: "/dashboard/security/members" },
+      { title: "SIDEBAR_PAGE_MODERATION", desc: "SIDEBAR_PAGE_MODERATION_DESC", icon: faHandcuffs, redirect_url: "/dashboard/security/moderation-requests" },
       { title: "SIDEBAR_PAGE_SHIELD", desc: "SIDEBAR_PAGE_SHIELD_DESC", icon: faShieldHalved, redirect_url: "/dashboard/security/shield" },
       { title: "SIDEBAR_PAGE_BACKUPS", desc: "SIDEBAR_PAGE_BACKUPS_DESC", icon: faServer, redirect_url: "/dashboard/security/backups" },
       { title: "SIDEBAR_PAGE_AUTOMOD", desc: "SIDEBAR_PAGE_AUTOMOD_DESC", icon: faFilter, redirect_url: "/dashboard/security/automod" }
@@ -78,7 +79,6 @@ export const nav_items: NavigationItem[] = [
     color: "green",
     description: "SIDEBAR_CATEGORY_5_DESC",
     pages: [
-      // { title: "Embed-Builder", desc: "SIDEBAR_PAGE_EMBED_BUILD_DESC", icon: faPenToSquare, redirect_url: "/dashboard/misc/embed-builder" },
       { title: "Global-Chat", desc: "SIDEBAR_PAGE_GLOBAL_CHAT_DESC", icon: faEarthEurope, redirect_url: "/dashboard/misc/global-chat" },
     ]
   },
