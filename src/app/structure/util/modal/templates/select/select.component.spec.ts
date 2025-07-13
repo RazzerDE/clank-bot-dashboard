@@ -39,7 +39,7 @@ describe('SelectComponent', () => {
   it('should handle role type selection and emit selected roles', () => {
     const mockRole = { id: '1', name: 'Role1' } as Role;
     component.options = [mockRole];
-    component.type = '';
+    component.type = 'EVENTS_EFFECTS';
     component.rolePicker = {
       nativeElement: {
         value: '1',

@@ -5,6 +5,7 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {TranslateModule} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
 import {defer} from "rxjs";
+import {EmbedConfig} from "../../../../services/types/Config";
 
 describe('EmbedDesignComponent', () => {
   let component: EmbedDesignComponent;
@@ -350,6 +351,50 @@ describe('EmbedDesignComponent', () => {
       }
     }
     expect(called).toBe(false);
+  });
+
+  it('should return false when embed_config is null', () => {
+    component['dataService'].embed_config = null as any;
+    expect(component.isConfigChanged()).toBe(false);
+  });
+
+  it('should return true when configs are different', () => {
+    component['dataService'].embed_config = { color_code: '#ff0000', banner_invalid: true, thumbnail_invalid: true } as EmbedConfig;
+    component['dataService'].org_config = { color_code: '#00ff00', banner_invalid: false, thumbnail_invalid: false } as EmbedConfig;
+    expect(component.isConfigChanged()).toBe(true);
+  });
+
+  it('should return false when configs are the same ignoring invalid flags', () => {
+    component['dataService'].embed_config = { color_code: '#ff0000', banner_invalid: true, thumbnail_invalid: true } as EmbedConfig;
+    component['dataService'].org_config = { color_code: '#ff0000', banner_invalid: false, thumbnail_invalid: false } as EmbedConfig;
+    expect(component.isConfigChanged()).toBe(false);
+  });
+
+  it('should return true when org_config is undefined', () => {
+    component['dataService'].embed_config = { color_code: '#ff0000', banner_invalid: false, thumbnail_invalid: false } as EmbedConfig;
+    component['dataService'].org_config = undefined as any;
+    expect(component.isConfigChanged()).toBe(true);
+  });
+
+  it('should properly compare complex configurations', () => {
+    component['dataService'].embed_config = {
+      color_code: '#ff0000',
+      banner_invalid: true,
+      thumbnail_invalid: true,
+      emoji_reaction: '😀',
+      banner_url: 'https://example.com/banner.png'
+    } as EmbedConfig;
+    component['dataService'].org_config = {
+      color_code: '#ff0000',
+      banner_invalid: false,
+      thumbnail_invalid: false,
+      emoji_reaction: '😀',
+      banner_url: 'https://example.com/banner.png'
+    } as EmbedConfig;
+    expect(component.isConfigChanged()).toBe(false);
+
+    component['dataService'].embed_config.emoji_reaction = '🎉';
+    expect(component.isConfigChanged()).toBe(true);
   });
 
 
