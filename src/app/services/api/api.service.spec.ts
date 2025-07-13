@@ -14,7 +14,7 @@ import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {GeneralStats} from "../types/Statistics";
 import {BlockedUser} from "../types/discord/User";
-import {Giveaway} from "../types/Events";
+import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig} from "../types/Config";
 
 describe('ApiService', () => {
@@ -567,6 +567,46 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(giveaway);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch event effects for a specific guild', () => {
+    const guild_id = '12345';
+    const mockResponse: EventEffectsRaw = {
+      effects: [
+        { id: '1', name: 'Effect 1', enabled: true },
+        { id: '2', name: 'Effect 2', enabled: false }
+      ]
+    } as unknown as EventEffectsRaw;
+
+    service.getEventEffects(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/effects?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should save event effects configuration for a specific guild', () => {
+    const guild_id = '12345';
+    const effects: EventEffects = {
+      effects: [
+        { id: '1', name: 'Effect 1', enabled: true },
+        { id: '2', name: 'Effect 2', enabled: false }
+      ]
+    } as unknown as EventEffects;
+    const mockResponse = { success: true };
+
+    service.saveEventEffects(effects, guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/effects?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(effects);
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });

@@ -566,4 +566,28 @@ describe('DataHolderService', () => {
     expect(service.redirectLoginError).toHaveBeenCalledWith('EXPIRED');
   }));
 
+  it('should correctly identify text channels', () => {
+    const textChannel = { id: '1', name: 'test-channel', type: 0 } as Channel;
+    const nonTextChannel1 = { id: '2', name: 'voice-channel', type: 2 } as Channel;
+    const nonTextChannel2 = { id: '3', name: 'stage-channel', type: 13 } as Channel;
+    const invalidChannel = { id: '4', name: 'broken' } as unknown as Channel;
+
+    expect(service.isTextChannel(textChannel)).toBe(true);
+    expect(service.isTextChannel(nonTextChannel1)).toBe(false);
+    expect(service.isTextChannel(nonTextChannel2)).toBe(false);
+    expect(service.isTextChannel(invalidChannel)).toBe(false);
+  });
+
+  it('should correctly identify voice channels', () => {
+    const voiceChannel = { id: '1', name: 'voice-channel', type: 2 } as Channel;
+    const stageChannel = { id: '2', name: 'stage-channel', type: 13 } as Channel;
+    const nonVoiceChannel = { id: '3', name: 'text-channel', type: 0 } as Channel;
+    const invalidChannel = { id: '4', name: 'broken' } as unknown as Channel;
+
+    expect(service.isVoiceChannel(voiceChannel)).toBe(true);
+    expect(service.isVoiceChannel(stageChannel)).toBe(true);
+    expect(service.isVoiceChannel(nonVoiceChannel)).toBe(false);
+    expect(service.isVoiceChannel(invalidChannel)).toBe(false);
+  });
+
 });

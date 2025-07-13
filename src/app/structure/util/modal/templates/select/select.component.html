@@ -5,7 +5,9 @@
   }
   <select #rolePicker [id]="this.id" (change)="changeSelectPicker()"
           [multiple]="type === 'DEFAULT_MENTION' || type.startsWith('SUPPORT_THEME_')"
-          [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed dark:!text-gray-400' : 'cursor-pointer'"
+          [ngClass]="{'cursor-not-allowed dark:!text-gray-400': this.type === 'EVENTS_EDIT',
+                      'cursor-pointer': this.type !== 'EVENTS_EDIT',
+                      '!bg-gray-200 dark:!bg-gray-600 dark:!border-gray-600': this.type === 'EVENTS_EFFECTS'}"
           [disabled]="(type.startsWith('SUPPORT_THEME_') && this.dataService.isFAQ) || type === 'EVENTS_EDIT'"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                    focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
@@ -13,9 +15,9 @@
                    dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400" [class.ps-8]="isChannelList()">
     @if (rolePicker.type === 'select-one' && this.id != 'reqpicker') {
       <option [selected]="!this.activeOption" disabled>
-        @if (this.id == 'channelpicker' && this.dataService.guild_channels.length > 0) {
+        @if (this.id.startsWith('channelpicker') && this.dataService.guild_channels.length > 0) {
           {{ 'PLACEHOLDER_CHANNEL_MODAL_DEFAULT' | translate }}
-        } @else if (this.id == 'channelpicker' && this.dataService.guild_channels.length === 0) {
+        } @else if (this.id.startsWith('channelpicker') && this.dataService.guild_channels.length === 0) {
           {{ 'PLACEHOLDER_CHANNEL_MODAL_NO_CHANNELS' | translate }}
         } @else {
           {{ 'PLACEHOLDER_ROLE_MODAL_DEFAULT' | translate }}

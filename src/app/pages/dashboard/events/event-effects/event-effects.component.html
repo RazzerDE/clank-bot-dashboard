@@ -1,0 +1,141 @@
+<dashboard-layout>
+  <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_EVENTS_EFFECTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_EFFECTS_TITLE' | translate"
+                [color]="'cyan'" [desc]="'PAGE_EVENTS_EFFECTS_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
+    <!-- Content Container -->
+    <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-19rem)] gap-4 p-4 overflow-y-hidden">
+      <div class="w-full bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
+            dark:via-slate-800 dark:to-slate-900 rounded-lg shadow-md dark:shadow-xl
+              transition-colors duration-200 !border-gray-300 dark:!border-gray-700 border-1 flex flex-col">
+        <!-- Tabs Navigation -->
+        <div class="border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 px-6">
+          <ul class="flex -mb-px justify-between w-full items-center">
+            <li> <!-- Save Button -->
+              <button class="inline-block p-3 tflex items-center justify-center bg-indigo-600 hover:bg-indigo-700
+                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
+                      [disabled]="disableSendBtn || !isCardListChanged()" (click)="saveEventEffects(this.event_cards)">
+                <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+              </button>
+            </li>
+
+            <div class="flex"> <!-- Tabs -->
+              <li class="mr-2 cursor-pointer">
+                <span class="inline-block p-4 border-b-2 rounded-t-lg font-medium text-lg transition-all duration-200"
+                      (click)="this.activeTab = 'ROLES'"
+                      [ngClass]="this.activeTab === 'ROLES' ? '!border-cyan-600 !text-cyan-600 hover:!text-cyan-500 ' +
+                       'hover:!border-cyan-500 dark:!text-cyan-500 dark:!border-cyan-500 dark:hover:!text-cyan-400 ' +
+                        'dark:hover:!border-cyan-400' : '!border-gray-400 !text-gray-400 hover:!text-gray-600 ' +
+                        'hover:!border-gray-600 dark:!border-gray-500 dark:!text-gray-500 dark:hover:!text-gray-400 ' +
+                        'dark:hover:!border-gray-400'">
+                  {{ 'EVENTS_TAB_NAV_ROLES' | translate }}
+                </span>
+              </li>
+              <li class="cursor-pointer">
+                <span class="inline-block p-4 border-b-2 rounded-t-lg transition-all duration-200 font-medium text-lg"
+                      (click)="this.activeTab = 'CHANNELS'"
+                      [ngClass]="this.activeTab === 'CHANNELS' ? '!border-cyan-600 !text-cyan-600 hover:!text-cyan-500 ' +
+                       'hover:!border-cyan-500 dark:!text-cyan-500 dark:!border-cyan-500 dark:hover:!text-cyan-400 ' +
+                        'dark:hover:!border-cyan-400' : '!border-gray-400 !text-gray-400 hover:!text-gray-600 ' +
+                        'hover:!border-gray-600 dark:!border-gray-500 dark:!text-gray-500 dark:hover:!text-gray-400 ' +
+                        'dark:hover:!border-gray-400'">
+                  {{ 'EVENTS_TAB_NAV_CHANNELS' | translate }}
+                </span>
+              </li>
+            </div>
+
+            <li> <!-- Refresh Button -->
+              <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
+                           to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
+                           text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                      [disabled]="disabledCacheBtn" (click)="refreshCache()">
+                <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tab Content - Scrollbar -->
+        <div class="role-tab overflow-y-auto flex-1">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+
+            <!-- Item Cards -->
+            @for (item of activeTab === 'CHANNELS' ? event_cards.slice(-2) : event_cards.slice(0, -2); track $index) {
+              <div class="border-l-[5px] rounded-lg shadow p-4 from-white bg-gradient-to-bl via-slate-50 to-blue-50
+                      dark:from-slate-700/50 dark:via-slate-700/50 dark:to-slate-800 transition-colors duration-200"
+                   [ngClass]="{'border-red-400 dark:!border-red-500': item.color === 'red',
+                            'border-green-400 dark:!border-green-500': item.color === 'green',
+                            'border-blue-400 dark:!border-blue-500': item.color === 'blue',
+                            'border-yellow-400 dark:!border-yellow-500': item.color === 'yellow',
+                            'border-purple-400 dark:!border-purple-500': item.color === 'purple',
+                            'border-pink-400 dark:!border-pink-500': item.color === 'rosa',
+                            'border-red-600 dark:!border-red-700': item.color === 'orange',
+                            'border-gray-400 dark:!border-gray-500': item.color === 'gray'}" [@zoomAnimation]>
+                <div class="flex justify-start items-center mb-1">
+                  <h3 class="text-lg font-medium mb-0 mr-2 text-gray-700 dark:text-white
+                           transition-colors duration-200"> {{ item.title | translate }}</h3>
+                  <span class="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full px-2
+                             py-1 text-xs transition-colors duration-200">{{ item.obj_list.length }}</span>
+                </div>
+
+                <div class="flex justify-start w-full py-2">
+                  <div class="w-5/6 h-px bg-gray-300 dark:bg-gray-700 transition-colors duration-200"></div>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200 mb-3"
+                   [innerHTML]="item.description | translate"></p>
+
+                <!-- Role Selector -->
+                <div class="mb-3">
+                  <template-select [type]="'EVENTS_EFFECTS'" (selectionChange)="pushToCardList($event[0], item)"
+                                   [options]="excludeFromSelect(item)" [id]="this.activeTab === 'CHANNELS' ? 'channelpicker-' + $index : 'rolepicker-' + $index"/>
+                </div>
+
+                <!-- Selected Roles -->
+                @if (item.obj_list.length > 0) {
+                  <div class="space-y-2 max-h-[184px] overflow-y-auto pr-1" [ngClass]="{'w-[calc(100%+5px)]': item.obj_list.length <= 2}">
+                    @for (obj of item.obj_list; track $index) {
+                      <div class="flex items-center justify-between bg-gray-300 dark:bg-gray-700 transition-colors
+                            duration-200 rounded-md pl-3 pr-1 py-2 text-gray-700 dark:text-gray-300" [@fadeInOut]>
+                        <div class="flex items-center w-5/6">
+                          @if (isRoleType(obj)) {
+                            <span [style.background-color]="'#' + obj.color.toString(16).padStart(6, '0')"
+                                  class="h-3 w-3 rounded-full mr-2"></span>
+                          } @else {
+                            <fa-icon [icon]="this.dataService.isVoiceChannel(obj) ? faVolumeHigh : faHashtag"
+                                     class="h-3 w-3 rounded-full mr-4 -mt-3 text-gray-400 dark:text-gray-500
+                                            transition-colors duration-200"
+                                     [ngClass]="{'!mr-2.5': this.dataService.isVoiceChannel(obj) }"/>
+                          }
+
+                          <span>{{ obj.name }}</span>
+                        </div>
+                        <div class="flex items-center justify-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-500 mr-1">{{ obj.id }}</span>
+                          <button class="hover:text-red-500 text-red-600 hover:bg-gray-400 dark:hover:bg-gray-600
+                                   p-1 px-2 rounded-full transition-colors duration-200"
+                                  (click)="pushToCardList(obj.id, item, true)">
+                            <fa-icon [icon]="faXmark" class="text-lg "></fa-icon>
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</dashboard-layout>

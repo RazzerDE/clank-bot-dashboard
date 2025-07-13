@@ -12,6 +12,7 @@ import {TicketSnippetsComponent} from "./pages/dashboard/support/ticket-snippets
 import {BlockedUsersComponent} from "./pages/dashboard/support/blocked-users/blocked-users.component";
 import {ActiveGiveawaysComponent} from "./pages/dashboard/events/active-giveaways/active-giveaways.component";
 import {EmbedDesignComponent} from "./pages/dashboard/events/embed-design/embed-design.component";
+import {EventEffectsComponent} from "./pages/dashboard/events/event-effects/event-effects.component";
 
 export const routes: Routes = [
   // General pages
@@ -30,6 +31,7 @@ export const routes: Routes = [
   // Events pages
   { path: 'dashboard/events/view', component: ActiveGiveawaysComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/events/design', component: EmbedDesignComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/events/channel-roles', component: EventEffectsComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}

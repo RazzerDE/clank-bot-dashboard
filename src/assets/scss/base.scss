@@ -24,12 +24,12 @@
 
 /* Custom scrollbar design */
 *::-webkit-scrollbar {
-  @apply w-2;
+  @apply w-1;
 }
 
 *::-webkit-scrollbar-thumb {
   @apply rounded transition-colors duration-500;
-  @apply bg-gray-900 dark:bg-gray-400;
+  @apply bg-gray-500 dark:bg-gray-400;
 }
 
 *::-webkit-scrollbar-track {
