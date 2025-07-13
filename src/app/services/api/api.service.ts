@@ -11,7 +11,7 @@ import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
-import {EventEffectsRaw, Giveaway} from "../types/Events";
+import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig} from "../types/Config";
 
 @Injectable({
@@ -165,6 +165,17 @@ export class ApiService {
    */
   getEventEffects(guild_id: string): Observable<EventEffectsRaw> {
     return this.http.get<EventEffectsRaw>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Saves the event effects configuration for a specific guild.
+   *
+   * @param effects - An array of EventEffects objects containing the effects to be saved.
+   * @param guild_id - The ID of the guild for which to save the event effects.
+   */
+  saveEventEffects(effects: EventEffects, guild_id: string): Observable<Object> {
+    return this.http.post<Object>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`, effects,
       { headers: this.authService.headers });
   }
 

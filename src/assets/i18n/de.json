@@ -271,6 +271,8 @@
   "SUCCESS_EFFECTS_ROLES_DELETE_DESC": "Die Rolle <strong>{{name}}</strong> wurde von \"<strong>{{type}}</strong>\" entfernt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
   "SUCCESS_EFFECTS_CHANNELS_DELETE_TITLE": "Kanal entfernt",
   "SUCCESS_EFFECTS_CHANNELS_DELETE_DESC": "Der Kanal <strong>{{name}}</strong> wurde von \"<strong>{{type}}</strong>\" entfernt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
+  "SUCCESS_EFFECTS_SAVED_TITLE": "Kanal-& Rollen-Effekte gespeichert",
+  "SUCCESS_EFFECTS_SAVED_DESC": "Die Änderungen an den Kanal-& Rollen-Effekten wurden erfolgreich gespeichert!",
 
   "SUCCESS_SNIPPET_CREATION_TITLE": "Snippet erfolgreich erstellt",
   "SUCCESS_SNIPPET_CREATION_DESC": "Das Snippet <strong>{{name}}</strong> wurde erfolgreich erstellt!",

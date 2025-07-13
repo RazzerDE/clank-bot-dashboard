@@ -50,6 +50,7 @@ export interface EventEffectsRaw {
 }
 
 export interface EventCard {
+  id: number;
   title: string;
   description: string;
   obj_list: Role[] | Channel[];
@@ -58,48 +59,56 @@ export interface EventCard {
 
 export const event_cards: EventCard[] = [
   {
+    id: 0,
     title: 'EVENTS_TAB_BLACKLIST_TITLE',
     description: 'EVENTS_TAB_BLACKLIST_DESC',
     color: 'red',
     obj_list: []
   },
   {
+    id: 1,
     title: 'EVENTS_TAB_WHITELIST_TITLE',
     description: 'EVENTS_TAB_WHITELIST_DESC',
     color: 'green',
     obj_list: []
   },
   {
+    id: 2,
     title: 'EVENTS_TAB_BONUS_TITLE',
     description: 'EVENTS_TAB_BONUS_DESC',
     color: 'yellow',
     obj_list: []
   },
   {
+    id: 3,
     title: 'EVENTS_TAB_WIN_TITLE',
     description: 'EVENTS_TAB_WIN_DESC',
     color: 'blue',
     obj_list: []
   },
   {
+    id: 4,
     title: 'EVENTS_TAB_MENTION_TITLE',
     description: 'EVENTS_TAB_MENTION_DESC',
     color: 'gray',
     obj_list: []
   },
   {
+    id: 5,
     title: 'EVENTS_TAB_MANAGER_TITLE',
     description: 'EVENTS_TAB_MANAGER_DESC',
     color: 'purple',
     obj_list: []
   },
   {
+    id: 6,
     title: 'EVENTS_TAB_BLACKLIST_TITLE',
     description: 'EVENTS_TAB_BLACKLIST_CHANNEL_DESC',
     color: 'orange',
     obj_list: []
   },
   {
+    id: 7,
     title: 'EVENTS_TAB_INVITE_TITLE',
     description: 'EVENTS_TAB_INVITE_DESC',
     color: 'rosa',

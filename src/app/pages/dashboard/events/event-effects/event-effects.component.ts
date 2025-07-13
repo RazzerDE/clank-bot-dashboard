@@ -18,6 +18,7 @@ import {ApiService} from "../../../../services/api/api.service";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons/faVolumeHigh";
+import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
 
 @Component({
   selector: 'app-event-effects',
@@ -67,6 +68,8 @@ export class EventEffectsComponent implements OnDestroy {
   private org_event_cards: EventCard[] = [...event_cards]; // Store original event cards for change detection
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
+  protected disableSendBtn: boolean = false;
+  private markdownPipe: MarkdownPipe = new MarkdownPipe();
 
   constructor(private apiService: ApiService, protected dataService: DataHolderService, private translate: TranslateService) {
     this.dataService.isLoading = true;
@@ -158,6 +161,86 @@ export class EventEffectsComponent implements OnDestroy {
   }
 
   /**
+   * Saves the current event effects configuration for the active guild.
+   *
+   * Converts the current event cards to an EventEffects object and sends it to the backend API.
+   * Disables the send button during the request to prevent duplicate submissions.
+   * On success, shows a success alert and re-enables the button after 5 seconds.
+   * On error, shows an error alert and handles specific HTTP error codes (e.g., 429 for rate limiting).
+   *
+   * @param event_cards - The list of event cards representing the current configuration.
+   * @returns void
+   */
+  protected saveEventEffects(event_cards: EventCard[]): void {
+    if (!this.dataService.active_guild || !event_cards) { return; }
+    const effects: EventEffects = this.convertToEffects();
+
+    this.disableSendBtn = true;
+    const saved_effects: Subscription = this.apiService.saveEventEffects(effects, this.dataService.active_guild.id)
+      .subscribe({
+        next: (_: Object): void => {
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant('SUCCESS_EFFECTS_SAVED_TITLE'),
+            this.translate.instant('SUCCESS_EFFECTS_SAVED_DESC'));
+
+          localStorage.setItem('gift_effects', JSON.stringify(effects));
+          setTimeout((): void => { this.disableSendBtn = false; }, 5000);
+          saved_effects.unsubscribe();
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.dataService.error_color = 'red';
+          saved_effects.unsubscribe();
+
+          if (error.status == 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else {
+            this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
+          }
+
+          this.disableSendBtn = false;
+        }
+      });
+  }
+
+  /**
+   * Converts the current list of event cards into an EventEffects object.
+   *
+   * Iterates over each event card and maps its contained roles or channels to the corresponding
+   * role_effects or channel_effects arrays, using the card index as the category.
+   * Handles special category mapping for channels (e.g., Blacklisted and Invite log).
+   *
+   * @returns An EventEffects object containing all role and channel effects for the active guild.
+   */
+  protected convertToEffects(): EventEffects {
+    const effects: EventEffects = { channel_effects: [],  role_effects: [] };
+    this.event_cards.forEach((card, index) => {
+      if (card.obj_list.length === 0) return;
+
+      if (this.isRoleType(card.obj_list[0])) {
+        (card.obj_list as Role[]).forEach(role => {
+          effects.role_effects.push({
+            guild_id: this.dataService.active_guild!.id,
+            role_id: role.id,
+            category: index as 0 | 1 | 2 | 3 | 4 | 5
+          });
+        });
+      } else {
+        const categoryMap: {[key: number]: 0 | 6} = { 6: 0, 7: 6 }; // Blacklisted (6) -> 0, Invite log (7) -> 6
+        (card.obj_list as Channel[]).forEach(channel => {
+          effects.channel_effects.push({
+            guild_id: this.dataService.active_guild!.id,
+            channel_id: channel.id,
+            category: categoryMap[index] || 0
+          });
+        });
+      }
+    });
+
+    return effects;
+  }
+
+  /**
    * Adds a role or channel to the given event card's object list based on the current active tab.
    *
    * @param obj_id - The ID of the role or channel to add.
@@ -197,7 +280,7 @@ export class EventEffectsComponent implements OnDestroy {
     this.dataService.error_color = 'green';
     this.dataService.showAlert(this.translate.instant(`SUCCESS_EFFECTS_${this.activeTab}_${remove ? 'DELETE_' : ''}TITLE`),
       this.translate.instant(`SUCCESS_EFFECTS_${this.activeTab}_${remove ? 'DELETE_' : ''}DESC`,
-        { name: obj?.name, type: this.translate.instant(card.title).split(' ~ ')[1] }));
+        { name: this.markdownPipe.transform(obj?.name), type: this.translate.instant(card.title).split(' ~ ')[1] }));
   }
 
   /**

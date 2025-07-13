@@ -271,6 +271,8 @@
   "SUCCESS_EFFECTS_ROLES_DELETE_DESC": "The role <strong>{{name}}</strong> was removed from \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
   "SUCCESS_EFFECTS_CHANNEL_DELETE_TITLE": "Channel removed",
   "SUCCESS_EFFECTS_CHANNEL_DELETE_DESC": "The channel <strong>{{name}}</strong> was removed from \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
+  "SUCCESS_EFFECTS_SAVED_TITLE": "Channel & role effects saved",
+  "SUCCESS_EFFECTS_SAVED_DESC": "The changes to the channel & role effects have been saved successfully!",
 
   "SUCCESS_SNIPPET_CREATION_TITLE": "Snippet successfully created",
   "SUCCESS_SNIPPET_CREATION_DESC": "The snippet <strong>{{name}}</strong> was successfully created!",
