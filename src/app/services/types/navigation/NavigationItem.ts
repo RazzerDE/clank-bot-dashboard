@@ -70,7 +70,7 @@ export const nav_items: NavigationItem[] = [
     pages: [
       { title: "SIDEBAR_PAGE_MODERATION", desc: "SIDEBAR_PAGE_MODERATION_DESC", icon: faHandcuffs, redirect_url: "/dashboard/security/moderation-requests" },
       { title: "SIDEBAR_PAGE_SHIELD", desc: "SIDEBAR_PAGE_SHIELD_DESC", icon: faShieldHalved, redirect_url: "/dashboard/security/shield" },
-      { title: "SIDEBAR_PAGE_BACKUPS", desc: "SIDEBAR_PAGE_BACKUPS_DESC", icon: faServer, redirect_url: "/dashboard/security/backups" },
+      { title: "Clank's Log-System", desc: "SIDEBAR_PAGE_LOGS_DESC", icon: faServer, redirect_url: "/dashboard/security/logs" },
       { title: "SIDEBAR_PAGE_AUTOMOD", desc: "SIDEBAR_PAGE_AUTOMOD_DESC", icon: faFilter, redirect_url: "/dashboard/security/automod" }
     ]
   },

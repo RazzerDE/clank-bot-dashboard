@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -44,12 +44,13 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
   templateUrl: './embed-design.component.html',
   styleUrl: './embed-design.component.scss'
 })
-export class EmbedDesignComponent implements OnDestroy {
+export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
   protected initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected disableSendBtn: boolean = false;
+  protected dataLoading: boolean = true;
 
   protected readonly faPanorama: IconDefinition = faPanorama;
   protected readonly faCamera: IconDefinition = faCamera;
@@ -62,11 +63,13 @@ export class EmbedDesignComponent implements OnDestroy {
 
   constructor(protected dataService: DataHolderService, private comService: ComService, private apiService: ApiService,
               private translate: TranslateService) {
+    document.title = 'Embed-Design ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.dataService.getEventConfig(this.apiService, this.comService); // first call to get the server data
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
+        this.dataLoading = true;
         this.dataService.getEventConfig(this.apiService, this.comService, true);
       }
     });
@@ -79,6 +82,19 @@ export class EmbedDesignComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     if (this.subscription) { this.subscription.unsubscribe(); }
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   *
+   * This method ensures that the data-loading indicators are properly updated.
+   * If the data is not ready yet, it sets a timeout to update
+   * the loading state asynchronously, allowing the UI to display a data-loader.
+   */
+  ngAfterViewChecked(): void {
+    if (!this.dataService.isLoading && this.dataLoading && this.dataService.embed_config) {
+      setTimeout((): boolean => this.dataLoading = false, 0);
+    }
   }
 
   /**

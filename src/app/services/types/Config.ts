@@ -3,6 +3,7 @@ import {Role} from "./discord/Guilds";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {BlockedUser} from "./discord/User";
 import {Giveaway} from "./Events";
+import {UnbanRequest} from "./Security";
 
 export interface SelectItems {
   value: string;
@@ -22,14 +23,26 @@ export interface ButtonConfig {
 }
 
 export interface TableConfig {
-  type: 'SUPPORT_THEMES' | 'TEAMLIST' | 'SUPPORT_SNIPPETS' | 'BLOCKED_USERS' | 'EVENTS_VIEW';
+  type: 'SUPPORT_THEMES' | 'TEAMLIST' | 'SUPPORT_SNIPPETS' | 'BLOCKED_USERS' | 'EVENTS_VIEW' | 'UNBAN_REQUESTS';
   list_empty: string;
   dataLoading: boolean;
 
   columns: ColumnConfig[];
-  rows: SupportTheme[] | Role[] | TicketSnippet[] | BlockedUser[] | Giveaway[];
+  rows: SupportTheme[] | Role[] | TicketSnippet[] | BlockedUser[] | Giveaway[] | UnbanRequest[];
   action_btn: ButtonConfig[];
   actions: Function[];
+}
+
+export interface SecurityLogSetup {
+  guild_id?: string;                                  // ID of the guild, used for saving changes
+  channel_id: string | null;                          // ID of the Forum channel where security logs will be sent
+  guild_thread_id: string | null;                     // ID of the thread in the Forum channel for server change logs
+  bot_thread_id: string | null;                       // ID of the thread in the Forum channel for bot-related logs
+  channel_roles_thread_id: string | null;             // ID of the thread in the Forum channel for channel role logs
+  message_thread_id: string | null;                   // ID of the thread in the Forum channel for message logs
+  emoji_thread_id: string | null;                     // ID of the thread in the Forum channel for emoji logs
+  join_leave_thread_id: string | null;                // ID of the thread in the Forum channel for join/leave logs
+  unban_thread_id: string | null;                     // ID of the thread in the Forum channel for unban request logs
 }
 
 export interface EmbedConfig {
