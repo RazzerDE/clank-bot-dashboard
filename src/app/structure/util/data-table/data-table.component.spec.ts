@@ -102,12 +102,12 @@ describe('DataTableComponent', () => {
     expect(component.isRoleType(supportTheme)).toBe(false);
   });
 
-  it('ngAfterViewInit should set rowHeight if mainRow is present', () => {
+  it('ngAfterViewChecked should set rowHeight if mainRow is present', () => {
     const mockElement = { clientHeight: 42 } as unknown as HTMLTableCellElement;
     component['mainRow'] = { nativeElement: mockElement } as ElementRef<HTMLTableCellElement>;
 
     jest.useFakeTimers();
-    component.ngAfterViewInit();
+    component.ngAfterViewChecked();
     jest.advanceTimersByTime(1000);
 
     expect(component['rowHeight']).toBe(42)
@@ -230,5 +230,42 @@ describe('DataTableComponent', () => {
     expect(component.isInvalidButtonForIndex(started, 1)).toBe(true);
     expect(component.isInvalidButtonForIndex(started, 2)).toBe(true);
     expect(component.isInvalidButtonForIndex(started, 3)).toBe(true);
+  });
+
+  it('isUnbanRequestType should return true for valid UnbanRequest object', () => {
+    const unbanRequest = {
+      user_id: '1',
+      user_name: 'User',
+      user_avatar: 'avatar.png',
+      staff_id: '2',
+      staff_name: 'Staff',
+      staff_avatar: 'staff.png',
+      end_date: '2024-01-01T00:00:00Z',
+      excuse: 'Sorry'
+    } as any;
+    expect(component.isUnbanRequestType(unbanRequest)).toBe(true);
+  });
+
+  it('isUnbanRequestType should return false if any required property is missing', () => {
+    const base = {
+      user_id: '1',
+      user_name: 'User',
+      user_avatar: 'avatar.png',
+      staff_id: '2',
+      staff_name: 'Staff',
+      staff_avatar: 'staff.png',
+      end_date: '2024-01-01T00:00:00Z',
+      excuse: 'Sorry'
+    } as any;
+    for (const key of Object.keys(base)) {
+      const copy = { ...base };
+      delete copy[key];
+      expect(component.isUnbanRequestType(copy as any)).toBe(false);
+    }
+  });
+
+  it('isUnbanRequestType should return false for unrelated object', () => {
+    const unrelated = { foo: 'bar' };
+    expect(component.isUnbanRequestType(unrelated as any)).toBe(false);
   });
 });

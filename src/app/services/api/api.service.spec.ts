@@ -672,4 +672,73 @@ describe('ApiService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
+
+  it('should fetch the security logs configuration for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = { logs_enabled: true, log_channel: '1234567890' } as any;
+
+    service.getSecurityLogs(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch unban requests for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = [
+      { user_id: '1', guild_id: 'guild123', status: 0 },
+      { user_id: '2', guild_id: 'guild123', status: 1 }
+    ] as any;
+
+    service.getUnbanRequests(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/requests?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update the status of an unban request for a specific guild and user', () => {
+    const guild_id = 'guild123';
+    const user_id = 'user456';
+    const status = 1;
+    const mockResponse = { success: true };
+
+    service.updateUnbanRequest(guild_id, user_id, status).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${service['API_URL']}/guilds/security/requests?guild_id=${guild_id}&user_id=${user_id}&status=${status}`
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update the status of an unban request with status 2 (denied)', () => {
+    const guild_id = 'guild123';
+    const user_id = 'user456';
+    const status = 2;
+    const mockResponse = { success: true };
+
+    service.updateUnbanRequest(guild_id, user_id, status).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${service['API_URL']}/guilds/security/requests?guild_id=${guild_id}&user_id=${user_id}&status=${status}`
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
 });

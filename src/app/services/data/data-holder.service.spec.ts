@@ -9,6 +9,8 @@ import {ComService} from "../discord-com/com.service";
 import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ApiService} from "../api/api.service";
+import {SecurityLogSetup} from "../types/Config";
+import {UnbanRequest} from "../types/Security";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
@@ -589,5 +591,245 @@ describe('DataHolderService', () => {
     expect(service.isVoiceChannel(nonVoiceChannel)).toBe(false);
     expect(service.isVoiceChannel(invalidChannel)).toBe(false);
   });
+
+  it('should return early if no active_guild', () => {
+    service.active_guild = null;
+    service.isFetching = false;
+    service.getSecurityLogs(apiService, false, false);
+    expect(service.isFetching).toBe(false);
+  });
+
+  it('should use cached security_logs if cache is valid and no_cache is false, and call getUnbanRequests if check_unban is true', fakeAsync(() => {
+    const mockLogs = { test: 'log' };
+    localStorage.setItem('security_logs', JSON.stringify(mockLogs));
+    localStorage.setItem('security_logs_timestamp', Date.now().toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, true, false);
+    tick(101);
+
+    expect(service.security_logs).toEqual(mockLogs);
+    expect(service.getUnbanRequests).toHaveBeenCalledWith(apiService, false);
+    expect(service.isLoading).toBe(true);
+    expect(service.isFetching).toBe(true);
+  }));
+
+  it('should use cached security_logs if cache is valid and no_cache is false, and not call getUnbanRequests if check_unban is false', () => {
+    const mockLogs = { test: 'log' };
+    localStorage.setItem('security_logs', JSON.stringify(mockLogs));
+    localStorage.setItem('security_logs_timestamp', Date.now().toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, false, false);
+
+    expect(service.security_logs).toEqual(mockLogs);
+    expect(service.getUnbanRequests).not.toHaveBeenCalled();
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  });
+
+  it('should fetch security_logs from API if cache is invalid and call getUnbanRequests if check_unban is true', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    const mockLogs = { test: 'api-log' } as unknown as SecurityLogSetup;
+    localStorage.setItem('security_logs_timestamp', (Date.now() - 31000).toString());
+    const apiSpy = jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.resolve(mockLogs)));
+    jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, true, true);
+    tick(351);
+
+    expect(apiSpy).toHaveBeenCalledWith('guild1');
+    expect(service.security_logs).toEqual(mockLogs);
+    expect(service.getUnbanRequests).toHaveBeenCalledWith(apiService, true);
+    expect(localStorage.getItem('security_logs')).toEqual(JSON.stringify(mockLogs));
+    expect(localStorage.getItem('security_logs_timestamp')).toBeDefined();
+  }));
+
+  it('should fetch security_logs from API if cache is invalid and set isLoading/isFetching to false if check_unban is false', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    const mockLogs = {test: 'api-log'} as unknown as SecurityLogSetup;
+    localStorage.setItem('security_logs_timestamp', (Date.now() - 31000).toString());
+    const apiSpy = jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.resolve(mockLogs)));
+    jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, false, true);
+    tick();
+
+    expect(apiSpy).toHaveBeenCalledWith('guild1');
+    expect(service.security_logs).toEqual(mockLogs);
+    expect(service.getUnbanRequests).not.toHaveBeenCalled();
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+    expect(localStorage.getItem('security_logs')).toEqual(JSON.stringify(mockLogs));
+    expect(localStorage.getItem('security_logs_timestamp')).toBeDefined();
+  }));
+
+  it('should handle API error 429 and call redirectLoginError with REQUESTS', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, false, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should handle API error 0 and call redirectLoginError with OFFLINE', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 0 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, false, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('OFFLINE');
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should handle unknown API error and call redirectLoginError with UNKNOWN', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getSecurityLogs(apiService, false, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should return early if no active_guild is set', () => {
+    service.active_guild = null;
+    service.unban_requests = [];
+    service.filteredRequests = [];
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getUnbanRequests(apiService, false);
+
+    expect(service.unban_requests).toEqual([]);
+    expect(service.filteredRequests).toEqual([]);
+    expect(service.isLoading).toBe(true);
+    expect(service.isFetching).toBe(true);
+  });
+
+  it('should use cache if available and not expired, and set loading/fetching to false', () => {
+    const mockRequests = [{id: '1'}, {id: '2'}] as unknown as UnbanRequest[];
+    localStorage.setItem('unban_requests', JSON.stringify(mockRequests));
+    localStorage.setItem('unban_requests_timestamp', Date.now().toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getUnbanRequests(apiService, false);
+
+    expect(service.unban_requests).toEqual(mockRequests);
+    expect(service.filteredRequests).toEqual(mockRequests);
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  });
+
+  it('should fetch from API if cache is expired and update state and cache', fakeAsync(() => {
+    const mockRequests = [{id: '3'}] as unknown as UnbanRequest[];
+    localStorage.setItem('unban_requests', JSON.stringify([{ id: 'old' }]));
+    localStorage.setItem('unban_requests_timestamp', (Date.now() - 16000).toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getUnbanRequests').mockReturnValue(defer(() => Promise.resolve(mockRequests)));
+
+    service.getUnbanRequests(apiService, false);
+    tick();
+
+    expect(apiService.getUnbanRequests).toHaveBeenCalledWith('guild1');
+    expect(service.unban_requests).toEqual(mockRequests);
+    expect(service.filteredRequests).toEqual(mockRequests);
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+    expect(localStorage.getItem('unban_requests')).toBe(JSON.stringify(mockRequests));
+    expect(localStorage.getItem('unban_requests_timestamp')).toBeDefined();
+  }));
+
+  it('should fetch from API if no_cache is true, even if cache is valid', fakeAsync(() => {
+    const mockRequests = [{id: '4'}] as unknown as UnbanRequest[];
+    localStorage.setItem('unban_requests', JSON.stringify([{ id: 'old' }]));
+    localStorage.setItem('unban_requests_timestamp', Date.now().toString());
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getUnbanRequests').mockReturnValue(defer(() => Promise.resolve(mockRequests)));
+
+    service.getUnbanRequests(apiService, true);
+    tick();
+
+    expect(apiService.getUnbanRequests).toHaveBeenCalledWith('guild1');
+    expect(service.unban_requests).toEqual(mockRequests);
+    expect(service.filteredRequests).toEqual(mockRequests);
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+    expect(localStorage.getItem('unban_requests')).toBe(JSON.stringify(mockRequests));
+  }));
+
+  it('should handle API error 429 and call redirectLoginError with REQUESTS', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getUnbanRequests').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getUnbanRequests(apiService, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should handle API error 0 and call redirectLoginError with OFFLINE', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getUnbanRequests').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 0 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getUnbanRequests(apiService, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('OFFLINE');
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should handle unknown API error and call redirectLoginError with UNKNOWN', fakeAsync(() => {
+    service.active_guild = { id: 'guild1' } as Guild;
+    jest.spyOn(apiService, 'getUnbanRequests').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isLoading = true;
+    service.isFetching = true;
+
+    service.getUnbanRequests(apiService, true);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
 
 });
