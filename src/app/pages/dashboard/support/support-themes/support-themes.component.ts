@@ -272,6 +272,13 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected openSupportThemeModal(action: 'ADD' | 'EDIT', theme?: SupportTheme): void {
     this.modalType = `SUPPORT_THEME_${action}`;
     if (action === 'ADD') {
+      if (this.dataService.support_themes.length >= 17) {
+        this.dataService.error_color = 'red';
+        this.dataService.showAlert(this.translate.instant('ERROR_THEME_CREATION_LIMIT_TITLE'),
+          this.translate.instant('ERROR_THEME_CREATION_LIMIT_DESC'));
+        return;
+      }
+
       this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
       this.editTheme = this.dataService.initTheme;

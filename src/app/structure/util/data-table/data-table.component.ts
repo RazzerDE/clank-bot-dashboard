@@ -1,4 +1,12 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {TableConfig} from "../../../services/types/Config";
@@ -16,6 +24,7 @@ import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
 import {faChartSimple} from "@fortawesome/free-solid-svg-icons/faChartSimple";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 import {ConvertTimePipe} from "../../../pipes/convert-time.pipe";
+import {UnbanRequest} from "../../../services/types/Security";
 
 @Component({
   selector: 'data-table',
@@ -43,7 +52,7 @@ import {ConvertTimePipe} from "../../../pipes/convert-time.pipe";
     ])
   ]
 })
-export class DataTableComponent implements AfterViewInit {
+export class DataTableComponent implements AfterViewChecked {
     @Input() tconfig: TableConfig = {} as TableConfig;
     @Output() rowClick = new EventEmitter<any>();
     @ViewChild('mainRow') protected mainRow!: ElementRef<HTMLTableCellElement>;
@@ -56,20 +65,22 @@ export class DataTableComponent implements AfterViewInit {
     protected readonly faRobot: IconDefinition = faRobot;
     protected readonly faChartSimple: IconDefinition = faChartSimple;
     protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;
+    private heightSet: boolean = false;
 
     constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
 
     /**
      * Lifecycle hook that is called after the component's view has been fully initialized.
+     *
      * This method calculates the height of the main row element and assigns it to the `rowHeight` property.
      * A `setTimeout` is used to ensure the DOM is fully rendered before accessing the element's height.
      */
-    ngAfterViewInit(): void {
+    ngAfterViewChecked(): void {
       setTimeout((): void => {
-        if (this.mainRow && this.mainRow.nativeElement) {
+        if (this.mainRow && this.mainRow.nativeElement && !this.heightSet) {
           this.rowHeight = this.mainRow.nativeElement.clientHeight;
         }
-      }, 100);
+      }, 0);
     }
 
   /**
@@ -78,7 +89,7 @@ export class DataTableComponent implements AfterViewInit {
    *
    * @param row - The row object that was clicked, which can be of type `SupportTheme`, `Role`, or `TicketSnippet`.
    */
-    onRowClick(row: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): void {
+    onRowClick(row: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): void {
       this.rowClick.emit(row);
     }
 
@@ -89,8 +100,22 @@ export class DataTableComponent implements AfterViewInit {
      * @param obj - The object to check, which can be of type `SupportTheme` or `Role`.
      * @returns `true` if the object is of type `SupportTheme`, otherwise `false`.
      */
-    isSupportType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is SupportTheme {
+    isSupportType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is SupportTheme {
       return (obj as SupportTheme).roles !== undefined;
+    }
+
+    /**
+     * Type guard to check if the given object is of type `UnbanRequest`.
+     * This function ensures that the `excuse` attribute exists, which is specific to `UnbanRequest`.
+     *
+     * @param obj - The object to check, which can be of type `SupportTheme`, `Role`, or `UnbanRequest`.
+     * @returns `true` if the object is of type `UnbanRequest`, otherwise `false`.
+     */
+    isUnbanRequestType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is UnbanRequest {
+      return (obj as UnbanRequest).user_id !== undefined && (obj as UnbanRequest).user_name !== undefined &&
+        (obj as UnbanRequest).user_avatar !== undefined && (obj as UnbanRequest).staff_id !== undefined &&
+        (obj as UnbanRequest).staff_name !== undefined && (obj as UnbanRequest).staff_avatar !== undefined &&
+        (obj as UnbanRequest).end_date !== undefined && (obj as UnbanRequest).excuse !== undefined;
     }
 
     /**
@@ -100,7 +125,7 @@ export class DataTableComponent implements AfterViewInit {
      * @param obj - The object to check, which can be of type `SupportTheme` or `Role`.
      * @returns `true` if the object is of type `Role`, otherwise `false`.
      */
-    isRoleType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is Role {
+    isRoleType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Role {
       return (obj as Role).support_level !== undefined;
     }
 
@@ -111,7 +136,7 @@ export class DataTableComponent implements AfterViewInit {
      * @param obj - The object to check.
      * @returns `true` if the object is of type `BlockedUser`, otherwise `false`.
      */
-    isBlockedUserType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is BlockedUser {
+    isBlockedUserType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is BlockedUser {
       return (obj as BlockedUser).staff_id !== undefined && (obj as BlockedUser).reason !== undefined;
     }
 
@@ -122,7 +147,7 @@ export class DataTableComponent implements AfterViewInit {
      * @param obj - The object to check, which can be of type `SupportTheme`, `Role`, `TicketSnippet`, `BlockedUser`, or `Giveaway`.
      * @returns `true` if the object is of type `Giveaway`, otherwise `false`.
      */
-    isGiveawayType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway): obj is Giveaway {
+    isGiveawayType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Giveaway {
       return (obj as Giveaway).creator_id !== undefined && (obj as Giveaway).prize !== undefined;
     }
 

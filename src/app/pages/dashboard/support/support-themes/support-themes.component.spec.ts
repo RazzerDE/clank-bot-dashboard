@@ -360,6 +360,21 @@ describe('SupportThemesComponent', () => {
     expect(component['modal'].showModal).toHaveBeenCalled();
   });
 
+  it('should show an error and not open modal if the theme limit (17) is reached', () => {
+    component.dataService.support_themes = new Array(17).fill({}); // 17 Themes
+    component.dataService.error_color = '' as any;
+    jest.spyOn(component.dataService, 'showAlert');
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key) => key);
+
+    component['openSupportThemeModal']('ADD');
+
+    expect(component.dataService.error_color).toBe('red');
+    expect(component.dataService.showAlert).toHaveBeenCalledWith(
+      'ERROR_THEME_CREATION_LIMIT_TITLE',
+      'ERROR_THEME_CREATION_LIMIT_DESC'
+    );
+  });
+
   it('should open modal in ADD mode, fetch emojis, reset reloadEmojis and set editTheme to initTheme', () => {
     component['reloadEmojis'] = true;
     (component.dataService as any).initTheme = { name: 'init', faq_answer: '' };

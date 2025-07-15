@@ -33,6 +33,32 @@ describe('EventEffectsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set dataLoading to false asynchronously when dataService.isLoading is false and dataLoading is true', fakeAsync(() => {
+    component['dataService'].isLoading = false;
+    component['dataLoading'] = true;
+    localStorage.setItem('gift_effects', JSON.stringify({ channel_effects: [], role_effects: [] }));
+
+    component.ngAfterViewChecked();
+    tick();
+    expect(component['dataLoading']).toBe(false);
+  }));
+
+  it('should not change dataLoading if dataService.isLoading is true', fakeAsync(() => {
+    component['dataService'].isLoading = true;
+    component['dataLoading'] = true;
+    component.ngAfterViewChecked();
+    tick();
+    expect(component['dataLoading']).toBe(true);
+  }));
+
+  it('should not change dataLoading if dataLoading is already false', fakeAsync(() => {
+    component['dataService'].isLoading = false;
+    component['dataLoading'] = false;
+    component.ngAfterViewChecked();
+    tick();
+    expect(component['dataLoading']).toBe(false);
+  }));
+
   it('should set disabledCacheBtn to true', () => {
     component['disabledCacheBtn'] = false;
     jest.spyOn(component as any, 'getEventEffects');
@@ -911,5 +937,30 @@ describe('EventEffectsComponent', () => {
   it('should correctly identify a complete object with both required properties', () => {
     const customObject = { id: '123', name: 'Custom', hoist: false, color: 12345, extraProp: true } as any;
     expect(component['isRoleType'](customObject)).toBe(true);
+  });
+
+  it('should return true if event_cards and org_event_cards are different', () => {
+    component['event_cards'] = [{ title: 'Card1', obj_list: [] }] as any;
+    component['org_event_cards'] = [{ title: 'Card2', obj_list: [] }] as any;
+    expect(component.isCardListChanged()).toBe(true);
+  });
+
+  it('should return false if event_cards and org_event_cards are equal', () => {
+    const cards = [{ title: 'Card1', obj_list: [] }];
+    component['event_cards'] = JSON.parse(JSON.stringify(cards));
+    component['org_event_cards'] = JSON.parse(JSON.stringify(cards));
+    expect(component.isCardListChanged()).toBe(false);
+  });
+
+  it('should return true if event_cards and org_event_cards have same titles but different obj_list', () => {
+    component['event_cards'] = [{ title: 'Card1', obj_list: [{ id: '1' }] }] as any;
+    component['org_event_cards'] = [{ title: 'Card1', obj_list: [] }] as any;
+    expect(component.isCardListChanged()).toBe(true);
+  });
+
+  it('should return false if both event_cards and org_event_cards are empty arrays', () => {
+    component['event_cards'] = [];
+    component['org_event_cards'] = [];
+    expect(component.isCardListChanged()).toBe(false);
   });
 });

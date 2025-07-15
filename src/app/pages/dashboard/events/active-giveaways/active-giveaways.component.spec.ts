@@ -33,6 +33,30 @@ describe('ActiveGiveawaysComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set dataLoading to false asynchronously when dataService.isLoading is false and dataLoading is true', fakeAsync(() => {
+    component['dataService'].isLoading = false;
+    component['dataLoading'] = true;
+    component.ngAfterViewChecked();
+    tick();
+    expect(component['dataLoading']).toBe(false);
+  }));
+
+  it('should not change dataLoading if dataService.isLoading is true', fakeAsync(() => {
+    component['dataService'].isLoading = true;
+    component['dataLoading'] = true;
+    component.ngAfterViewChecked();
+    tick();
+    expect(component['dataLoading']).toBe(true);
+  }));
+
+  it('should not change dataLoading if dataLoading is already false', fakeAsync(() => {
+    component['dataService'].isLoading = false;
+    component['dataLoading'] = false;
+    component.ngAfterViewChecked();
+    tick();
+    expect(component['dataLoading']).toBe(false);
+  }));
+
   it('should return early if no active_guild is set', () => {
     component['dataService'].active_guild = null;
     const spy = jest.spyOn(component['dataService'], 'getEventConfig');

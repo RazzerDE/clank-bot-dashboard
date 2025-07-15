@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
@@ -56,7 +56,7 @@ import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
     ]),
   ]
 })
-export class EventEffectsComponent implements OnDestroy {
+export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
   protected readonly faVolumeHigh: IconDefinition = faVolumeHigh;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faRefresh: IconDefinition = faRefresh;
@@ -70,13 +70,16 @@ export class EventEffectsComponent implements OnDestroy {
   protected disabledCacheBtn: boolean = false;
   protected disableSendBtn: boolean = false;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
+  protected dataLoading: boolean = true;
 
   constructor(private apiService: ApiService, protected dataService: DataHolderService, private translate: TranslateService) {
+    document.title = 'Event-Effects ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
-    this.getEventEffects(true); // first call to get the server data
+    this.getEventEffects(); // first call to get the server data
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
+        this.dataLoading = true;
         this.getEventEffects(true);
       }
     });
@@ -89,6 +92,19 @@ export class EventEffectsComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     if (this.subscription) { this.subscription.unsubscribe(); }
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   *
+   * This method ensures that the data-loading indicators for snippets and announcements
+   * are properly updated. If the data is not ready yet, it sets a timeout to update
+   * the loading state asynchronously, allowing the UI to display a data-loader.
+   */
+  ngAfterViewChecked(): void {
+    if (!this.dataService.isLoading && this.dataLoading && localStorage.getItem('gift_effects')) {
+      setTimeout((): boolean => this.dataLoading = false, 0);
+    }
   }
 
   /**

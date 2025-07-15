@@ -12,7 +12,8 @@ import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
-import {EmbedConfig} from "../types/Config";
+import {EmbedConfig, SecurityLogSetup} from "../types/Config";
+import {UnbanRequest} from "../types/Security";
 
 @Injectable({
   providedIn: 'root'
@@ -147,6 +148,18 @@ export class ApiService {
   }
 
   /**
+   * Updates the status of an unban request for a specific guild and user.
+   *
+   * @param guild_id - The ID of the guild where the unban request is being updated.
+   * @param user_id - The ID of the user whose unban request is being updated.
+   * @param status - The new status of the unban request (e.g., 0 for pending, 1 for approved, 2 for denied).
+   */
+  updateUnbanRequest(guild_id: string, user_id: string, status: 1 | 2): Observable<Object> {
+    return this.http.put<Object>(`${this.API_URL}/guilds/security/requests?guild_id=${guild_id}&user_id=${user_id}&status=${status}`, {},
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the configuration for discord event embeds in a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the event embed configuration.
@@ -154,6 +167,28 @@ export class ApiService {
    */
   getEventConfig(guild_id: string): Observable<EmbedConfig> {
     return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the security logs configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the security logs configuration.
+   * @return An Observable that emits the SecurityLogSetup object containing the configuration details.
+   */
+  getSecurityLogs(guild_id: string): Observable<SecurityLogSetup> {
+    return this.http.get<SecurityLogSetup>(`${this.API_URL}/guilds/security/logs?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Gets the security logs configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to save the security logs configuration.
+   * @return An Observable that emits the server's response.
+   */
+  getUnbanRequests(guild_id: string): Observable<UnbanRequest[]> {
+    return this.http.get<UnbanRequest[]>(`${this.API_URL}/guilds/security/requests?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

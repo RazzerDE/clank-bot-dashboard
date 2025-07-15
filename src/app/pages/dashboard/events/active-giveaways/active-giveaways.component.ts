@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -34,7 +34,7 @@ import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
   templateUrl: './active-giveaways.component.html',
   styleUrl: './active-giveaways.component.scss'
 })
-export class ActiveGiveawaysComponent implements OnDestroy {
+export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
   private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
   protected readonly faSearch: IconDefinition = faSearch;
@@ -47,6 +47,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
   protected modalType: string = 'EVENTS_CREATE';
   protected modalObj: Giveaway = this.giveaway;
+  protected dataLoading: boolean = true;
 
   protected disableSendBtn: boolean = false;
   protected disabledCacheBtn: boolean = false;
@@ -62,6 +63,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
+        this.dataLoading = true;
         this.getGuildEvents(true);
       }
     });
@@ -74,6 +76,19 @@ export class ActiveGiveawaysComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     if (this.subscription) { this.subscription.unsubscribe(); }
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   *
+   * This method ensures that the data-loading indicators are properly updated.
+   * If the data is not ready yet, it sets a timeout to update
+   * the loading state asynchronously, allowing the UI to display a data-loader.
+   */
+  ngAfterViewChecked(): void {
+    if (!this.dataService.isLoading && this.dataLoading) {
+      setTimeout((): boolean => this.dataLoading = false, 0);
+    }
   }
 
   /**
@@ -470,7 +485,7 @@ export class ActiveGiveawaysComponent implements OnDestroy {
     return {
       type: "EVENTS_VIEW",
       list_empty: 'PLACEHOLDER_EVENT_EMPTY',
-      dataLoading: this.dataService.isFetching,
+      dataLoading: this.dataLoading,
       rows: this.filteredEvents,
       columns: [
         { width: 25, name: 'PAGE_EVENTS_TABLE_PRICE' },

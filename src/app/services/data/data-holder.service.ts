@@ -10,8 +10,9 @@ import {ComService} from "../discord-com/com.service";
 import {TranslateService} from "@ngx-translate/core";
 import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
 import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
-import {EmbedConfig} from "../types/Config";
+import {EmbedConfig, SecurityLogSetup} from "../types/Config";
 import {ApiService} from "../api/api.service";
+import {UnbanRequest} from "../types/Security";
 
 @Injectable({
   providedIn: 'root'
@@ -46,8 +47,12 @@ export class DataHolderService {
   guild_roles: Role[] = [];
   guild_channels: Channel[] = [];
   guild_emojis: Emoji[] | string[] = [];
+  unban_requests: UnbanRequest[] = [];
+  filteredRequests: UnbanRequest[] = this.unban_requests;
+
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
+  security_logs: SecurityLogSetup | null = null;
   org_config: EmbedConfig = {...this.embed_config};
   selectedSnippet: TicketSnippet | null = null;
 
@@ -239,6 +244,125 @@ export class DataHolderService {
           setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 500);
           localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
           localStorage.setItem('gift_config_timestamp', Date.now().toString());
+          sub.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.isLoading = false;
+          this.isFetching = false;
+
+          if (err.status === 429) {
+            this.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.redirectLoginError('UNKNOWN');
+          }
+          sub.unsubscribe();
+        }
+      });
+  }
+
+  /**
+   * Fetches the security log configuration for the current guild.
+   *
+   * This method first checks if a valid configuration is available in localStorage (cached for 30 seconds).
+   * If so, it loads the configuration from the cache. Otherwise, it fetches the configuration from the API,
+   * updates the local cache, and handles loading states. Handles HTTP errors by redirecting to appropriate error pages.
+   *
+   * @param apiService - The service used to communicate with the API.
+   * @param check_unban - If true, checks for unban requests after fetching security logs.
+   * @param no_cache - If true, ignores the cache and fetches fresh data from the API.
+   * @returns void
+   */
+  getSecurityLogs(apiService: ApiService, check_unban?: boolean, no_cache?: boolean): void {
+    if (!this.active_guild) { return; }
+    this.isFetching = true;
+
+    // check if guilds are already stored in local storage (30 seconds cache)
+    if ((localStorage.getItem('security_logs') && localStorage.getItem('security_logs_timestamp') &&
+      Date.now() - Number(localStorage.getItem('security_logs_timestamp')) < 30000 && !no_cache)) {
+      this.security_logs = JSON.parse(localStorage.getItem('security_logs') as string);
+
+      if (check_unban) {
+        setTimeout((): void => { this.getUnbanRequests(apiService, no_cache) }, 100);
+        return;
+      }
+
+      this.isLoading = false;
+      this.isFetching = false;
+      return;
+    }
+
+    const sub: Subscription = apiService.getSecurityLogs(this.active_guild!.id)
+      .subscribe({
+        next: (config: SecurityLogSetup): void => {
+          this.security_logs = config;
+
+          if (check_unban) {
+            setTimeout((): void => { this.getUnbanRequests(apiService, no_cache) }, 350);
+          } else {
+            this.isLoading = false;
+            this.isFetching = false;
+          }
+
+          localStorage.setItem('security_logs', JSON.stringify(this.security_logs));
+          localStorage.setItem('security_logs_timestamp', Date.now().toString());
+          sub.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.isLoading = false;
+          this.isFetching = false;
+
+          if (err.status === 429) {
+            this.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.redirectLoginError('UNKNOWN');
+          }
+          sub.unsubscribe();
+        }
+      });
+  }
+
+  /**
+   * Fetches unban requests for the current guild, using a 15-second cache.
+   *
+   * If cached unban requests exist and are not older than 15 seconds (unless `no_cache` is true),
+   * loads them from localStorage. Otherwise, fetches fresh data from the API and updates the cache.
+   * Handles HTTP errors by redirecting to appropriate error pages.
+   *
+   * @param apiService - Service for API communication.
+   * @param no_cache - If true, bypasses the cache and fetches fresh data.
+   * @returns void
+   */
+  getUnbanRequests(apiService: ApiService, no_cache?: boolean): void {
+    if (!this.active_guild) { return; }
+
+    // check if guilds are already stored in local storage (15 seconds cache)
+    if ((localStorage.getItem('unban_requests') && localStorage.getItem('unban_requests_timestamp') &&
+      Date.now() - Number(localStorage.getItem('unban_requests_timestamp')) < 15000 && !no_cache)) {
+      this.unban_requests = JSON.parse(localStorage.getItem('unban_requests') as string);
+      this.filteredRequests = this.unban_requests;
+      this.isLoading = false;
+      this.isFetching = false;
+      return;
+    }
+
+    const sub: Subscription = apiService.getUnbanRequests(this.active_guild!.id)
+      .subscribe({
+        next: (requests: UnbanRequest[]): void => {
+          this.unban_requests = requests;
+          this.filteredRequests = this.unban_requests;
+          this.isLoading = false;
+          this.isFetching = false;
+
+          localStorage.setItem('unban_requests', JSON.stringify(this.unban_requests));
+          localStorage.setItem('unban_requests_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
         error: (err: HttpErrorResponse): void => {

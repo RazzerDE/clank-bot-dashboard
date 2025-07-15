@@ -162,9 +162,9 @@
   "PAGE_EVENTS_TABLE_CREATOR": "👤 ~ Created by",
   "PAGE_EVENTS_TABLE_SPONSOR": "💸 ~ Sponsor",
 
-  "PAGE_SECURITY_REQUESTS_SUBTITLE": "🚨 ~ UNBAN REQUESTS & PAST PUNISHMENTS",
-  "PAGE_SECURITY_REQUESTS_TITLE": "Unban Requests & Punishments",
-  "PAGE_SECURITY_REQUESTS_DESC": "› On this page you can see all open unban requests and user profiles with past punishments.",
+  "PAGE_SECURITY_REQUESTS_SUBTITLE": "🚨 ~ USERS, THAT WANT TO GET UNBANNED",
+  "PAGE_SECURITY_REQUESTS_TITLE": "Unban Requests",
+  "PAGE_SECURITY_REQUESTS_DESC": "› On this page you can see all open unban requests that users have sent to your Discord server.",
 
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",
@@ -266,6 +266,8 @@
   "ERROR_THEME_DELETION_CONFLICT_DESC": "The theme <strong>{{name}}</strong> is already scheduled for deletion soon!",
   "ERROR_THEME_EDIT_CONFLICT": "Theme name already taken",
   "ERROR_THEME_EDIT_CONFLICT_DESC": "The theme name <strong>{{name}}</strong> already exists or will be assigned soon!",
+  "ERROR_THEME_CREATION_LIMIT_TITLE": "Theme limit reached",
+  "ERROR_THEME_CREATION_LIMIT_DESC": "You have already created <strong>17</strong> themes - please delete one of the themes to create a new one!",
 
   "SUCCESS_EFFECTS_ROLES_TITLE": "Role added",
   "SUCCESS_EFFECTS_ROLES_DESC": "The role <strong>{{name}}</strong> was added to \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",
@@ -312,6 +314,13 @@
   "ERROR_GIVEAWAY_406_DESC": "The sponsor <strong>{{sponsor}}</strong> is invalid - please check the user's ID!",
   "ERROR_GIVEAWAY_CREATION_CONFLICT": "Invalid values",
   "ERROR_GIVEAWAY_CREATION_CONFLICT_DESC": "Invalid data was detected for the giveaway - please check your entries!",
+
+  "SUCCESS_SECURITY_UNBAN_APPROVE_TITLE": "Unban request approved",
+  "SUCCESS_SECURITY_UNBAN_APPROVE_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> will be unbanned shortly and can rejoin the server.",
+  "SUCCESS_SECURITY_UNBAN_DENY_TITLE": "Unban request denied",
+  "SUCCESS_SECURITY_UNBAN_DENY_DESC": "The unban request from <strong>{{user}}</strong> <i>({{user_id}})</i> was denied - the user remains banned.",
+  "ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE": "Unban request not found",
+  "ERROR_SECURITY_UNBAN_NOT_FOUND_DESC": "The unban request could not be found - has it already been processed?",
 
   "SUCCESS_USER_UNBLOCK_TITLE": "User unblocked",
   "SUCCESS_USER_UNBLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can now create tickets on the server again.",
@@ -363,9 +372,8 @@
   "SIDEBAR_PAGE_EVENTS": "Ongoing events",
   "SIDEBAR_PAGE_MSG_DESIGN": "Message design",
   "SIDEBAR_PAGE_CHC_ROLES": "Channel & role effects",
-  "SIDEBAR_PAGE_MODERATION": "Requests & Punishments",
+  "SIDEBAR_PAGE_MODERATION": "Unban requests",
   "SIDEBAR_PAGE_SHIELD": "Active protections",
-  "SIDEBAR_PAGE_BACKUPS": "View backup status",
   "SIDEBAR_PAGE_AUTOMOD": "AutoMod settings",
 
   "SIDEBAR_PAGE_HOME_DESC": "Shows basic information about the dashboard.",
@@ -381,9 +389,9 @@
   "SIDEBAR_PAGE_EVENTS_DESC": "Shows all ongoing events.",
   "SIDEBAR_PAGE_MSG_DESIGN_DESC": "Customize the design of giveaways.",
   "SIDEBAR_PAGE_CHC_ROLES_DESC": "How to ignore, whitelist & more.",
-  "SIDEBAR_PAGE_MODERATION_DESC": "View unban requests & review past punishments.",
+  "SIDEBAR_PAGE_MODERATION_DESC": "View unban requests from discord-users.",
   "SIDEBAR_PAGE_SHIELD_DESC": "Includes fake accounts, panic mode & more.",
-  "SIDEBAR_PAGE_BACKUPS_DESC": "All information about the bot's backup system.",
+  "SIDEBAR_PAGE_LOGS_DESC": "Manage the entire log system of the bot.",
   "SIDEBAR_PAGE_AUTOMOD_DESC": "Automatically protect your server.",
   "SIDEBAR_PAGE_EMBED_BUILD_DESC": "Create your own embeds for your server.",
   "SIDEBAR_PAGE_GLOBAL_CHAT_DESC": "Chat server-wide with other Discord users.",
@@ -457,6 +465,9 @@
   "PLACEHOLDER_SEARCH_TICKET_EMPTY": "No ticket found.. 😞",
   "PLACEHOLDER_SEARCH_TICKET_EMPTY_DESC": "Change your search and try again.",
   "PLACEHOLDER_TYPE_MESSAGE": "Write a message.. ✏️",
+
+  "PLACEHOLDER_UNBAN_SEARCH": "Search for entry.. 🔎",
+  "PLACEHOLDER_REQUESTS_EMPTY": "🥳 ~ There are no open unban requests!",
 
   "PLACEHOLDER_GIVEAWAY_EMBED_INVITE": "🤖 › Invite the bot <a href=\"http://bl4cklist.de/invites/clank\" class=\"text-[#00aff4] hover:underline\">here</a>.",
   "PLACEHOLDER_GIVEAWAY_EMBED_WINNERS": "Winners",
@@ -615,6 +626,10 @@
   "PLACEHOLDER_THEME_PREVIEW_DESC": "Write something in the <strong>empty text field</strong>..",
   "PLACEHOLDER_THEME_PREVIEW_FOOTER": "This ticket was automatically processed by the FAQ module & not forwarded.",
 
+  "PLACEHOLDER_EXCUSE": "✍️ ~ EXCUSE",
+  "PLACEHOLDER_ACCEPT": "✅ ~ Unban User",
+  "PLACEHOLDER_DENY": "📛 ~ Deny Request",
+  "PLACEHOLDER_LAST_UPDATE": "🕰️ ~ UPDATED..",
   "PLACEHOLDER_ROLE_EMPTY": "😭 ~ No roles found..",
   "PLACEHOLDER_ROLE_FIRST": "Few rights",
   "PLACEHOLDER_ROLE_SECOND": "More rights",
