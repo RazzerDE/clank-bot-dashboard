@@ -191,6 +191,10 @@
   "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "Das Backup-System wird automatisch aktiviert, sobald du Premium für Clank erworben hast.",
   "PAGE_SECURITY_SHIELD_NOTHING_SAVED": "Leer..",
 
+  "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALLE SERVER-ÄNDERUNGEN AUF EINEM BLICK",
+  "PAGE_SECURITY_LOGS_TITLE": "Clank's Log-System",
+  "PAGE_SECURITY_LOGS_DESC": "› Auf dieser Seite kannst du unser Log-System einrichten, wodurch du wichtige Ereignisse, die auf deinem Discord-Server stattfinden, jederzeit einsehen.",
+
   "PAGE_SETUP_MODULE_TITLE_0": "MODUL NICHT AKTIV!",
   "PAGE_SETUP_MODULE_DESC_0": "Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.",
   "PAGE_SETUP_MODULE_TITLE_1": "SYSTEM AKTIV - VERBESSERUNGEN MÖGLICH!",

@@ -1,0 +1,15 @@
+<dashboard-layout>
+  <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_SECURITY_LOGS_SUBTITLE' | translate" [title]="'PAGE_SECURITY_LOGS_TITLE' | translate"
+                [color]="'red-pink'" [desc]="'PAGE_SECURITY_LOGS_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
+  </section>
+</dashboard-layout>
