@@ -1,0 +1,254 @@
+<dashboard-layout>
+  <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
+                dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
+
+    <!-- User Modal -->
+    <app-modal [type]="'SECURITY_SHIELDS'" [obj]="{ action: this.modalAction, element: this.modalElement! }"
+               [shield_action]="this.doAction.bind(this)" />
+
+    <!-- Page Thumb -->
+    <page-thumb [subtitle]="'PAGE_SECURITY_SHIELD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_SHIELD_TITLE' | translate"
+                [color]="'red-yellow'" [desc]="'PAGE_SECURITY_SHIELD_DESC' | translate"></page-thumb>
+
+    <!-- Alert Box -->
+    @if (this.dataService.showAlertBox) {
+      <app-alert-box></app-alert-box>
+    }
+
+    <div class="flex w-full gap-6 p-3 mt-3 sm:p-5 min-h-[calc(100%-17rem)]">
+
+      <!-- Security-Tools - Container -->
+      <div class="w-full bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
+                dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
+                dark:!border-gray-700 border-1">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
+                    transition-colors duration-300">
+          <div class="w-4/5">
+            <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
+              {{ 'PAGE_SECURITY_SHIELD_TOOLS_TITLE' | translate }}
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mt-1 mb-0 text-base">
+              {{ 'PAGE_SECURITY_SHIELD_TOOLS_DESC' | translate }}
+            </p>
+          </div>
+          <button class="bg-gradient-to-r from-red-600 via-red-500 to-red-700 hover:from-red-700 shadow-lg
+                       hover:via-red-600 hover:to-red-800 text-white font-semibold px-6 py-2 rounded-lg
+                         transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                  (click)="this.openConfirmModal(0, panicButtonBtn)" #panicButtonBtn>
+            <fa-icon [icon]="faCircleExclamation" class="me-2" /> {{ 'PLACEHOLDER_BUTTON_PANIC' | translate }}
+          </button>
+        </div>
+
+        <!-- Content -->
+        <div class="flex flex-col md:flex-row gap-6 p-3 h-full">
+
+          <!-- Enabled - Container -->
+          <div class="flex-1 bg-gray-100 dark:bg-slate-900 border-2 border-dashed rounded-lg p-4 py-3
+                    dark:border-gray-700 transition-colors duration-200 border-gray-400">
+            <p class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center transition-colors duration-200">
+              {{ 'PAGE_SECURITY_SHIELD_TOOLS_ENABLED' | translate }}
+            </p>
+            <div class="mx-auto w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
+
+            <!-- Angular CDK Drag & Drop List (ENABLED) -->
+            <div class="overflow-y-auto pr-2 space-y-3 h-[calc(100vh-43rem)] py-2 transition-all duration-200"
+                 [cdkDropListData]="enabledFeatures" cdkDropList #enabledList="cdkDropList"
+                 [ngClass]="this.isDragging ? 'cursor-grabbing dark:!bg-blue-950/50 rounded-lg p-3 pt-3' : ''"
+                 [cdkDropListConnectedTo]="[disabledList]" (cdkDropListDropped)="drop($event)" data-container="enabled">
+              @for (item of enabledFeatures; track $index) {
+                <div cdkDrag class="border-l-[5px] rounded-lg p-2 bg-white dark:!bg-slate-800 shadow-sm cursor-move
+                                  border-green-500 dark:!border-green-700 transition-all duration-200 hover:!-translate-y-1"
+                     (cdkDragStarted)="this.dragOrigin = 'enabled'; this.isDragging = true;"
+                     (cdkDragEnded)="this.dragOrigin = null; this.isDragging = false;">
+                  <div class="font-medium text-black dark:!text-white">
+                    {{ 'PAGE_SECURITY_SHIELD_ITEM_' + item.category | translate }}</div>
+                  <div class="text-xs text-gray-600 dark:!text-gray-500">
+                    {{ 'PAGE_SECURITY_SHIELD_ITEM_' + item.category + '_DESC' | translate }}</div>
+                </div>
+              }
+            </div>
+
+          </div>
+
+          <!-- Disabled - Container -->
+          <div class="flex-1 bg-gray-100 dark:bg-slate-900 border-2 border-dashed rounded-lg p-4 py-3
+                    dark:border-gray-700 transition-colors duration-200 border-gray-400">
+            <p class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center transition-colors duration-200">
+              {{ 'PAGE_SECURITY_SHIELD_TOOLS_DISABLED' | translate }}
+            </p>
+            <div class="mx-auto w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
+
+            <!-- Angular CDK Drag & Drop List (DISABLED) -->
+            <div class="overflow-y-auto pr-2 space-y-3 h-[calc(100vh-43rem)] py-2 transition-all duration-200"
+                 [ngClass]="this.isDragging ? 'cursor-grabbing dark:!bg-blue-950/50 p-3 pt-3' : ''" cdkDropList
+                 #disabledList="cdkDropList" [cdkDropListData]="disabledFeatures"
+                 [cdkDropListConnectedTo]="[enabledList]" (cdkDropListDropped)="drop($event)" data-container="disabled">
+              @for (item of disabledFeatures; track $index) {
+                <div cdkDrag class="border-l-[5px] rounded-lg p-2 bg-white dark:!bg-slate-800 shadow-sm cursor-move
+                                  border-red-500 dark:!border-red-700 transition-all duration-200 hover:!-translate-y-1"
+                     (cdkDragStarted)="this.dragOrigin = 'disabled'; this.isDragging = true;"
+                     (cdkDragEnded)="this.dragOrigin = null; this.isDragging = false;">
+                  <div class="font-medium text-black dark:!text-white">
+                    {{ 'PAGE_SECURITY_SHIELD_ITEM_' + item.category | translate }}</div>
+                  <div class="text-xs text-gray-600 dark:!text-gray-500">
+                    {{ 'PAGE_SECURITY_SHIELD_ITEM_' + item.category + '_DESC' | translate }}</div>
+                </div>
+              }
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-between gap-4 p-6 border-t border-gray-200 dark:border-slate-700 ">
+          <button class="inline-block p-3 tflex items-center justify-center bg-indigo-600 hover:bg-indigo-700
+                             text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
+                  (click)="saveSecurityTools(this.security_features)"
+                  [disabled]="!this.hasSecurityFeatureChanges() || this.disabledSendBtn">
+            <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+          </button>
+          <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
+                           to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
+                           text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                  [disabled]="this.disabledCacheBtn" (click)="refreshCache()">
+            <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Backup - Container -->
+      <div class="w-5/12 bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
+                dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
+                dark:!border-gray-700 border-1">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
+                    transition-colors duration-300">
+          <div class="flex items-center w-full justify-between">
+            <div class="w-4/5">
+              <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
+                {{ 'PAGE_SECURITY_SHIELD_BACKUP_TITLE' | translate }}
+              </h2>
+              <p class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mt-1 mb-0 text-base">
+                {{ 'PAGE_SECURITY_SHIELD_BACKUP_DESC' | translate }}
+              </p>
+            </div>
+
+            <div class="flex items-center">
+              <span class="relative flex h-3 w-3 me-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 transition-colors
+                      duration-300" [ngClass]="this.backup_data.backup_date ? 'bg-green-400 dark:bg-green-700' :
+                                                                              'bg-red-400 dark:bg-red-800'"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 " [ngClass]="this.backup_data.backup_date ?
+                      'bg-green-500 dark:bg-green-600' : 'bg-red-500 dark:bg-red-700'"></span>
+              </span>
+              <span class="font-semibold text-base transition-colors duration-300"
+              [ngClass]="this.backup_data.backup_date ? 'text-green-600 dark:text-green-400' : 'text-red-600'">
+                {{ this.backup_data.enabled ? ('PLACEHOLDER_ENABLED' | translate) : ('PLACEHOLDER_DISABLED' | translate) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex flex-col p-3 h-full">
+
+          @if (this.backup_data.enabled) {
+            <!-- Backup Info Section -->
+            <div class="bg-slate-200 dark:bg-slate-900 rounded-lg p-3 flex flex-col gap-2 shadow-md mb-4">
+              <div class="flex justify-between items-center">
+              <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
+                {{ 'PAGE_SECURITY_SHIELD_BACKUP_NEXT' | translate }}</span>
+                <span class="text-green-600 dark:text-green-400 font-semibold transition-colors duration-300 font-mono">
+                {{ getNextBackupDate(this.translate.currentLang) }}
+              </span>
+              </div>
+              <div class="flex justify-between items-center">
+              <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
+                {{ 'PAGE_SECURITY_SHIELD_BACKUP_LAST' | translate }}
+              </span>
+                <span class="text-gray-700 dark:text-gray-200 font-semibold transition-colors duration-300 font-mono">
+                  {{ formatBackupDate(this.backup_data.backup_date!, this.translate.currentLang) }}
+              </span>
+              </div>
+            </div>
+
+            <!-- Restore Button Section -->
+            <div class="flex justify-center flex-col gap-y-6 mb-2">
+              <button class="bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600
+                         hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg
+                           transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                      (click)="this.openConfirmModal(1, restoreBackupBtn)" #restoreBackupBtn>
+                <fa-icon [icon]="faRotateLeft" class="me-2" /> {{ 'PAGE_SECURITY_SHIELD_BACKUP_BUTTON' | translate }}
+              </button>
+
+              <div class="mx-auto mt-2 w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
+            </div>
+
+            <div class="flex flex-row gap-4">
+              <!-- Saved Channels -->
+              <div class="w-1/2">
+                <p class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2 text-center transition-colors duration-200">
+                  {{ 'PAGE_SECURITY_SHIELD_CHANNELS' | translate }}
+                </p>
+                <div class="h-[calc(100vh-47rem)] !border-gray-300 dark:!border-gray-700 border-1 overflow-y-auto
+                        bg-gray-100 dark:bg-slate-900/50 rounded-md p-3 space-y-2 transition-colors duration-200">
+                  @if (this.backup_data.channels.length === 0) {
+                    <div class="flex items-center justify-center h-full">
+                      <span class="text-gray-400 dark:text-gray-500 text-lg font-medium">
+                        {{ 'PAGE_SECURITY_SHIELD_NOTHING_SAVED' | translate }}</span>
+                    </div>
+                  } @else {
+                    @for (channel of this.backup_data.channels; track $index) {
+                      <div class="flex items-center justify-start text-gray-700 dark:text-gray-200
+                                  transition-colors duration-200" [title]="channel.id">
+                        <fa-icon [icon]="this.dataService.isVoiceChannel(channel) ? faVolumeHigh : faHashtag"
+                                 class="text-gray-500" [ngClass]="this.dataService.isVoiceChannel(channel) ? 'me-2' : 'me-[13px]'"/>
+                        <span [class.text-sm]="channel.name.length > 15">{{ channel.name }}</span>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+
+              <!-- Saved Roles -->
+              <div class="w-1/2">
+                <p class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2 text-center transition-colors duration-200">
+                  {{ 'PAGE_SECURITY_SHIELD_ROLES' | translate }}
+                </p>
+                <div class="h-[calc(100vh-47rem)] !border-gray-300 dark:!border-gray-700 border-1 overflow-y-auto
+                        bg-gray-100 dark:bg-slate-900/50 rounded-md p-3 space-y-2 transition-colors duration-200">
+                  @if (this.backup_data.channels.length === 0) {
+                    <div class="flex items-center justify-center h-full">
+                      <span class="text-gray-400 dark:text-gray-500 text-lg font-medium">
+                        {{ 'PAGE_SECURITY_SHIELD_NOTHING_SAVED' | translate }}</span>
+                    </div>
+                  } @else {
+                    @for (role of this.backup_data.roles; track $index) {
+                      <div class="flex items-center justify-start text-gray-700 dark:text-gray-200
+                                  transition-colors duration-200" [title]="role.id">
+                        <fa-icon [icon]="faAt" class="me-[13px] text-gray-500" />
+                        <span [class.text-sm]="role.name.length > 15">{{ role.name }}</span>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="flex flex-col items-center justify-center h-full py-12">
+              <img ngSrc="assets/img/confusion-64x.png" alt="Backup Disabled ~ Clank Discord-Bot"
+                   width="64" height="64" class="mb-6 opacity-50" />
+              <p class="text-md font-medium text-gray-600 dark:text-gray-300 text-center opacity-50">
+                {{ 'PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT' | translate }}
+              </p>
+            </div>
+          }
+
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+</dashboard-layout>

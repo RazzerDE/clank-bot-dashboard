@@ -13,7 +13,7 @@ import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets"
 import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig, SecurityLogSetup} from "../types/Config";
-import {UnbanRequest} from "../types/Security";
+import {BackupData, SecurityFeature, UnbanRequest} from "../types/Security";
 
 @Injectable({
   providedIn: 'root'
@@ -201,6 +201,51 @@ export class ApiService {
   getEventEffects(guild_id: string): Observable<EventEffectsRaw> {
     return this.http.get<EventEffectsRaw>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`,
       { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the security shields configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the security shields configuration.
+   * @return An Observable that emits an array of SecurityFeature objects representing the security shields.
+   */
+  getSecurityShields(guild_id: string): Observable<SecurityFeature[]> {
+    return this.http.get<SecurityFeature[]>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Saves the security shields configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to save the security shields configuration.
+   * @param shields - An Observable that emits an array of SecurityFeature objects representing the security shields to be saved.
+   */
+  saveSecurityShields(guild_id: string, shields: SecurityFeature[]): Observable<Object> {
+    return this.http.post<Object>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`, shields,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the backup data for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the backup data.
+   * @return An Observable that emits the BackupData object containing the backup information.
+   */
+  getBackupData(guild_id: string): Observable<BackupData> {
+    return this.http.get<BackupData>(`${this.API_URL}/guilds/security/backups?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Saves a specific pending action for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to save the security logs configuration.
+   * @param action - The action to be performed (0 for disable, 1 for enable).
+   * @return An Observable that emits the server's response.
+   */
+  insertBotAction(guild_id: string, action: 0 | 1): Observable<Giveaway> {
+    return this.http.put<Giveaway>(`${this.API_URL}/guilds/security/actions?guild_id=${guild_id}&action=${action}`,
+      {}, { headers: this.authService.headers });
   }
 
   /**

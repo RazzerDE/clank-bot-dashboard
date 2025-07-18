@@ -51,6 +51,13 @@ describe('ModalComponent', () => {
     expect(snippetActionSpy).toHaveBeenCalledWith(mockSnippet);
   });
 
+  it('should call shield_action with correct parameters when triggered', () => {
+    const mockElement = document.createElement('button');
+    const spy = jest.spyOn(component, 'shield_action');
+    component.shield_action(1, mockElement);
+    expect(spy).toHaveBeenCalledWith(1, mockElement);
+  });
+
   it('should call snippet_edit with the correct snippet', () => {
     const mockSnippet = { name: 'Edit Snippet', desc: 'Edit Description' } as any;
     const snippetEditSpy = jest.spyOn(component, 'snippet_edit');

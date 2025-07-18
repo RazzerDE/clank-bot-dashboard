@@ -585,9 +585,11 @@ describe('DataHolderService', () => {
     const stageChannel = { id: '2', name: 'stage-channel', type: 13 } as Channel;
     const nonVoiceChannel = { id: '3', name: 'text-channel', type: 0 } as Channel;
     const invalidChannel = { id: '4', name: 'broken' } as unknown as Channel;
+    const alternativeVoiceChannel = {id: '5', name: 'alternative-voice', channel_type: 'voice'} as unknown as Channel;
 
     expect(service.isVoiceChannel(voiceChannel)).toBe(true);
     expect(service.isVoiceChannel(stageChannel)).toBe(true);
+    expect(service.isVoiceChannel(alternativeVoiceChannel)).toBe(true);
     expect(service.isVoiceChannel(nonVoiceChannel)).toBe(false);
     expect(service.isVoiceChannel(invalidChannel)).toBe(false);
   });
@@ -644,7 +646,7 @@ describe('DataHolderService', () => {
     service.isFetching = true;
 
     service.getSecurityLogs(apiService, true, true);
-    tick(351);
+    tick(551);
 
     expect(apiSpy).toHaveBeenCalledWith('guild1');
     expect(service.security_logs).toEqual(mockLogs);
