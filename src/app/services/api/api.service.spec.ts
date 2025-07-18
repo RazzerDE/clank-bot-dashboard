@@ -741,4 +741,70 @@ describe('ApiService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
+
+  it('should fetch security shields for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = [
+      { id: 'shield1', enabled: true },
+      { id: 'shield2', enabled: false }
+    ] as any;
+
+    service.getSecurityShields(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/shields?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should save security shields configuration for a specific guild', () => {
+    const guild_id = 'guild123';
+    const shields = [
+      { id: 'shield1', enabled: true },
+      { id: 'shield2', enabled: false }
+    ] as any;
+    const mockResponse = { success: true };
+
+    service.saveSecurityShields(guild_id, shields).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/shields?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(shields);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch backup data for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = { backup: 'data' } as any;
+
+    service.getBackupData(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/backups?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should insert a bot action for a specific guild', () => {
+    const guild_id = 'guild123';
+    const action = 1;
+    const mockResponse = { success: true };
+
+    service.insertBotAction(guild_id, action).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/actions?guild_id=${guild_id}&action=${action}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
 });
