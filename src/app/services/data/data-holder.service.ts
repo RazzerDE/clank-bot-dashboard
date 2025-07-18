@@ -241,7 +241,7 @@ export class DataHolderService {
           this.isLoading = false;
           this.isFetching = false;
 
-          setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 500);
+          setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 550);
           localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
           localStorage.setItem('gift_config_timestamp', Date.now().toString());
           sub.unsubscribe();
@@ -301,7 +301,7 @@ export class DataHolderService {
           this.security_logs = config;
 
           if (check_unban) {
-            setTimeout((): void => { this.getUnbanRequests(apiService, no_cache) }, 350);
+            setTimeout((): void => { this.getUnbanRequests(apiService, no_cache) }, 550);
           } else {
             this.isLoading = false;
             this.isFetching = false;
@@ -589,7 +589,7 @@ export class DataHolderService {
    * Assumes TextChannel has type 'text' and VoiceChannel has type 'voice'.
    */
   isVoiceChannel(channel: Channel): boolean {
-    return 'type' in channel && (channel.type === 2 || channel.type === 13);
+    return ('type' in channel && (channel.type === 2 || channel.type === 13)) || ('channel_type' in channel && channel.channel_type === 'voice');
   }
 
 }

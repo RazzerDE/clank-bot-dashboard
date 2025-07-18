@@ -24,6 +24,8 @@ import {BlockedUser} from "../../../services/types/discord/User";
 import {BlockedUserComponent} from "./templates/blocked-user/blocked-user.component";
 import {CreateGiveawayComponent} from "./templates/create-giveaway/create-giveaway.component";
 import {Giveaway} from "../../../services/types/Events";
+import {SecurityModal} from "../../../services/types/Security";
+import {ConfirmDialogComponent} from "./templates/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-modal',
@@ -39,6 +41,7 @@ import {Giveaway} from "../../../services/types/Events";
     TicketAnnouncementComponent,
     BlockedUserComponent,
     CreateGiveawayComponent,
+    ConfirmDialogComponent,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
@@ -73,7 +76,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() content: string = '';
 
   @Input() extra: Role[] = [];
-  @Input() obj: TicketSnippet | BlockedUser | Giveaway = {} as TicketSnippet;
+  @Input() obj: TicketSnippet | BlockedUser | Giveaway | SecurityModal = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
@@ -83,6 +86,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
   @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
   @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
+  @Input() shield_action: (action: 0 | 1, element: HTMLButtonElement) => void = (): void => {};
 
   protected isVisible: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;
@@ -134,6 +138,15 @@ export class ModalComponent implements AfterContentInit  {
    */
   isDefaultMentioned(role_id: string): boolean {
     return (this.extra && this.extra.some(extraRole => extraRole.id === role_id))
+  }
+
+  /**
+   * Type guard to check if the modal is a security modal.
+   *
+   * @returns `true` if the object is a SecurityModal, otherwise `false`.
+   */
+  isSecurityModal(obj: TicketSnippet | BlockedUser | Giveaway | SecurityModal): obj is SecurityModal {
+    return obj && 'action' in obj;
   }
 
   /**

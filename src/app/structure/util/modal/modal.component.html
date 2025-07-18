@@ -7,7 +7,7 @@
                         h-[100vh] max-h-full" #roleModal
      [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
   <div class="relative p-4 w-full max-h-[90vh] overflow-auto translate-x-36" id="roleModalContent" #roleModalContent
-       [ngClass]="{'max-w-lg mx-auto ': !showSecondModal(),
+       [ngClass]="{'max-w-lg mx-auto': !showSecondModal(), '!max-w-xl': this.type === 'SECURITY_SHIELDS',
                   'flex justify-center items-center gap-4': showSecondModal()}">
 
     <!-- First Modal (Always visible) -->
@@ -39,6 +39,9 @@
             {{ 'PLACEHOLDER_EVENT_CREATE_MODAL_TITLE' | translate }}
           } @else if (type === 'EVENTS_EDIT') {
             {{ 'PLACEHOLDER_EVENT_EDIT_MODAL_TITLE' | translate }}
+          } @else if (type === 'SECURITY_SHIELDS' && isSecurityModal(obj)) {
+            <!-- 0 = Panic | 1 = Backup restore -->
+            {{ obj.action === 0 ? ('PLACEHOLDER_SECURITY_SHIELD_0_TITLE' | translate) : ('PLACEHOLDER_SECURITY_SHIELD_1_TITLE' | translate) }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -50,7 +53,7 @@
       </div>
 
       <!-- Modal body -->
-      <div class="p-4 md:p-5">
+      <div [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS'}">
         <div class="space-y-4 flex flex-col">
           @switch (true) {
             @case (type === 'SUPPORT_THEME_FAQ') {
@@ -74,6 +77,9 @@
               <template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true" [event_action]="event_action"
                                         [event_edit]="event_edit" [externalMarkdown]="secondGiveawayAdd?.discordMarkdown"
                                         [type]="$any(this.type)" />
+            }
+            @case (type === 'SECURITY_SHIELDS') {
+              <template-confirm-dialog [type]="this.type" [shield_action]="this.shield_action" [obj]="$any(this.obj)" />
             }
             @default { <!-- Default Mention & Teamlist -->
               <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"

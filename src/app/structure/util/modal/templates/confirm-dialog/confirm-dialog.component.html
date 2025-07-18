@@ -1,0 +1,32 @@
+<div class="flex flex-col justify-start w-full text-base">
+  <!-- Content -->
+  <div class="p-4 md:p-5">
+    <p class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mb-2" [class.mb-3]="obj.action === 1">
+      <img [ngSrc]="'assets/img/icons/arrow2.png'" width="16" height="16" class="mb-0.5 inline-block mr-1"
+           alt="Arrow-Emoji ~ Clank Discord-Bot">
+      <span [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_DESC' | translate"></span>
+    </p>
+
+    @if (obj.action === 0) {
+      <p class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mb-2"
+         [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_0_DESC2' | translate"></p>
+    }
+
+    <ul class="list-none pl-4 text-gray-500 dark:text-gray-400 transition-colors duration-300">
+      <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_1' | translate"></li>
+      <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_2' | translate"></li>
+      <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_3' | translate"></li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="border-t dark:border-gray-600 border-gray-200 flex items-center justify-between p-4 md:p-5 mt-1">
+    <button class="bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white px-4 py-2 rounded
+                 hover:from-red-600 hover:via-red-700 hover:to-red-800 transition-colors duration-200"
+            (click)="this.shield_action(obj.action, obj.element)">
+      {{ 'PLACEHOLDER_BUTTON_ACTION' | translate }}
+    </button>
+    <span class="text-gray-500 dark:text-gray-400 text-sm">{{ 'PLACEHOLDER_SURE' | translate }}</span>
+  </div>
+</div>
+
