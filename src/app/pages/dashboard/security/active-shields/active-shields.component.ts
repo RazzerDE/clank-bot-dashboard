@@ -5,18 +5,17 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
-import {faCircleExclamation, faHashtag, faRotateLeft, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
+import {faHashtag, faRotateLeft, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons/faVolumeHigh";
 import {faAt} from "@fortawesome/free-solid-svg-icons/faAt";
 import {BackupData, initFeatures, SecurityFeature} from "../../../../services/types/Security";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
+import {DragNDropComponent} from "../../../../structure/util/drag-n-drop/drag-n-drop.component";
 
 @Component({
   selector: 'app-active-shields',
@@ -28,16 +27,13 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
     FaIconComponent,
     NgClass,
     NgOptimizedImage,
-    CdkDropList,
-    CdkDrag,
     ModalComponent,
+    DragNDropComponent,
   ],
   templateUrl: './active-shields.component.html',
   styleUrl: './active-shields.component.scss'
 })
 export class ActiveShieldsComponent implements OnDestroy {
-  protected readonly faCircleExclamation: IconDefinition = faCircleExclamation;
-  protected readonly faSave: IconDefinition = faSave;
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faRotateLeft: IconDefinition = faRotateLeft;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -50,10 +46,7 @@ export class ActiveShieldsComponent implements OnDestroy {
   protected disabledFeatures: SecurityFeature[] = this.security_features.filter(f => !f.enabled);
   protected backup_data: BackupData = {enabled: true, backup_date: 1752686998, channels: [], roles: []};
 
-  protected isDragging: boolean = false;
   protected disabledSendBtn: boolean = false;
-  protected disabledCacheBtn: boolean = false;
-  protected dragOrigin: 'enabled' | 'disabled' | null = null;
   private readonly subscription: Subscription | null = null;
 
   @ViewChild(ModalComponent) private modal!: ModalComponent;
@@ -82,19 +75,6 @@ export class ActiveShieldsComponent implements OnDestroy {
   }
 
   /**
-   * Refreshes the cache by disabling the cache button, setting the loading state,
-   * and fetching the snippet data with the cache ignored. The cache button is re-enabled
-   * after 30 seconds.
-   */
-  protected refreshCache(): void {
-    this.disabledCacheBtn = true;
-    this.dataService.isLoading = true;
-    this.getSecurityShields(true);
-
-    setTimeout((): void => { this.disabledCacheBtn = false; }, 30000);
-  }
-
-  /**
    * Fetches the security shields for the active guild.
    *
    * Retrieves cached data from localStorage if available and valid (within 60 seconds),
@@ -104,7 +84,7 @@ export class ActiveShieldsComponent implements OnDestroy {
    *
    * @param no_cache Optional flag to ignore cache and force API request.
    */
-  private getSecurityShields(no_cache?: boolean): void {
+  protected getSecurityShields(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     this.dataService.isLoading = true;
 
@@ -360,39 +340,6 @@ export class ActiveShieldsComponent implements OnDestroy {
     if (lang === 'de') formatted += ' Uhr';
 
     return formatted;
-  }
-
-  /**
-   * Handles drag-and-drop events for security features.
-   *
-   * Moves items within the same list or between enabled/disabled lists,
-   * updates the enabled state of the moved item, and refreshes the filtered lists.
-   *
-   * @param event - Drag-and-drop event containing source and destination containers and indices.
-   */
-  protected drop(event: CdkDragDrop<SecurityFeature[]>): void {
-    if (event.previousContainer === event.container) { // move in the same list
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else { // move between lists
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-
-      // change the enabled state of the moved item
-      const movedItem: SecurityFeature = event.container.data[event.currentIndex];
-      movedItem.enabled = event.container.data === this.enabledFeatures;
-    }
-
-    // sort arrays after moving items again
-    this.enabledFeatures = this.security_features.filter(f => f.enabled);
-    this.disabledFeatures = this.security_features.filter(f => !f.enabled);
-  }
-
-  /**
-   * Checks if the current security features differ from the original features.
-   * Uses JSON.stringify for deep comparison.
-   * @returns true if there are differences, false otherwise.
-   */
-  protected hasSecurityFeatureChanges(): boolean {
-    return JSON.stringify(this.security_features) !== JSON.stringify(this.org_features);
   }
 
   /**
