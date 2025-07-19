@@ -180,7 +180,7 @@
   "PAGE_SECURITY_SHIELD_ITEM_2": "📋 ~ Spam-Bots herausfiltern",
   "PAGE_SECURITY_SHIELD_ITEM_2_DESC": "› Alle neuen User die 1:1 das selbe Profil haben, dürfen nicht beitreten.",
   "PAGE_SECURITY_SHIELD_ITEM_3": "📛 ~ Nuke-Schutz",
-  "PAGE_SECURITY_SHIELD_ITEM_3_DESC": "› Wir überwachen Server-Änderungen & halten verdächtige Aktivitäten auf.",
+  "PAGE_SECURITY_SHIELD_ITEM_3_DESC": "› Wir überwachen deinen Server & halten verdächtige Aktivitäten auf.",
   "PAGE_SECURITY_SHIELD_BACKUP_TITLE": "📂 ~ Backup-System",
   "PAGE_SECURITY_SHIELD_BACKUP_DESC": "› Speichert alle Server-Einstellungen.",
   "PAGE_SECURITY_SHIELD_BACKUP_NEXT": "Nächstes Backup:",

@@ -36,16 +36,24 @@
         <div class="flex flex-col p-3 h-full">
 
           <template-select [options]="this.dataService.guild_channels" [type]="'SECURITY_LOGS'" class="w-full mb-4"
-                           [id]="'channelpicker'" />
+                           [id]="'channelpicker'" [activeOption]="this.selectedLog ? selectedLog!.id.toString() : null" />
 
           <!-- Restore Button Section -->
           <div class="flex justify-center flex-col gap-y-6 mb-2">
-            <button class="bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600
-                         hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg
-                           transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
-                    [disabled]="!this.dataService.guild_channels.length">
-              <fa-icon [icon]="faHashtag" class="me-2" /> {{ 'PAGE_SECURITY_LOGS_PICKER_BUTTON' | translate }}
-            </button>
+            <div class="flex gap-2 justify-center">
+              <button class="bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600
+                 hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg w-full
+                 transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                      [disabled]="!this.dataService.guild_channels.length || !this.selectedLog">
+                <fa-icon [icon]="faHashtag" class="me-2" /> {{ 'PAGE_SECURITY_LOGS_PICKER_BUTTON' | translate }}
+              </button>
+              <button class="bg-gradient-to-r from-red-500 via-pink-600 to-red-500 hover:from-red-600
+                 hover:to-pink-700 text-white font-semibold px-3 py-2 rounded-lg shadow-lg
+                 transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                      [disabled]="!this.dataService.guild_channels.length || !this.selectedLog">
+                <fa-icon [icon]="faTrash" />
+              </button>
+            </div>
 
             <div class="mx-auto mt-2 w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
           </div>
@@ -59,14 +67,14 @@
               <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
                 {{ 'PLACEHOLDER_CHANNEL_NAME' | translate }}:</span>
               <span class="text-green-600 dark:text-green-400 font-semibold transition-colors duration-300 font-mono">
-                <code>#›📚┃log-forum</code>
+                <code>{{ this.selectedLog ? this.selectedLog!.name : '-' }}</code>
               </span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
                 {{ 'PLACEHOLDER_CHANNEL_ID' | translate}}:</span>
               <span class="text-gray-700 dark:text-gray-200 font-semibold transition-colors duration-300 font-mono">
-                  <code>1303797166619365418</code>
+                  <code>{{ this.selectedLog ? this.selectedLog!.id : '-' }}</code>
               </span>
             </div>
           </div>
@@ -76,7 +84,8 @@
 
       <!-- Thread Selection - Container -->
       <app-drag-n-drop class="w-full" [type]="'SECURITY_LOGS'" [org_features]="org_logs" [feature_list]="log_list"
-                       [enabledFeatures]="enabledFeatures" [disabledFeatures]="disabledFeatures" />
+                       [enabledFeatures]="enabledFeatures" [disabledFeatures]="disabledFeatures"
+                       [refresh_data_function]="this.getSecurityLogs.bind(this)"/>
 
     </div>
 

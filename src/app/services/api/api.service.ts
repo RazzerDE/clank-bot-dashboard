@@ -12,8 +12,8 @@ import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
-import {EmbedConfig, SecurityLogSetup} from "../types/Config";
-import {BackupData, SecurityFeature, UnbanRequest} from "../types/Security";
+import {EmbedConfig} from "../types/Config";
+import {BackupData, SecurityFeature, SecurityLogs, UnbanRequest} from "../types/Security";
 
 @Injectable({
   providedIn: 'root'
@@ -176,8 +176,19 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to fetch the security logs configuration.
    * @return An Observable that emits the SecurityLogSetup object containing the configuration details.
    */
-  getSecurityLogs(guild_id: string): Observable<SecurityLogSetup> {
-    return this.http.get<SecurityLogSetup>(`${this.API_URL}/guilds/security/logs?guild_id=${guild_id}`,
+  getSecurityLogs(guild_id: string): Observable<SecurityLogs> {
+    return this.http.get<SecurityLogs>(`${this.API_URL}/guilds/security/logs?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the security logs configuration for a specific guild, including pending actions.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the security logs configuration.
+   * @return An Observable that emits the SecurityLogs object containing the configuration details, including pending actions.
+   */
+  getSecurityLogsPending(guild_id: string): Observable<SecurityLogs> {
+    return this.http.get<SecurityLogs>(`${this.API_URL}/guilds/security/logs/pending?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

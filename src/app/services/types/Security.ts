@@ -48,13 +48,29 @@ export interface SecurityModal {
 export interface SecurityLogs {
   guild_id?: string;                  // The ID of the guild where the security logs are stored.
   channel_id: string | null;          // Main channel ID of the forum where the logs are being created.
+  channel_id_pending?: boolean;
+  channel_id_delete?: boolean;
   guild_thread_id: string | null;
+  guild_thread_id_pending?: boolean;
+  guild_thread_id_delete?: boolean;
   bot_thread_id: string | null;
+  bot_thread_id_pending?: boolean;
+  bot_thread_id_delete?: boolean;
   channel_roles_thread_id: string | null;
+  channel_roles_thread_id_pending?: boolean;
+  channel_roles_thread_id_delete?: boolean;
   message_thread_id: string | null;
+  message_thread_id_pending?: boolean;
+  message_thread_id_delete?: boolean;
   emoji_thread_id: string | null;
+  emoji_thread_id_pending?: boolean;
+  emoji_thread_id_delete?: boolean;
   join_leave_thread_id: string | null;
+  join_leave_thread_id_pending?: boolean;
+  join_leave_thread_id_delete?: boolean;
   unban_thread_id: string | null;
+  unban_thread_id_pending?: boolean;
+  unban_thread_id_delete?: boolean;
 }
 
 export const initLogs: LogFeature[] = [

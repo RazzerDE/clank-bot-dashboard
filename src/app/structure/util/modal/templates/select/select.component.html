@@ -28,7 +28,7 @@
       @if (!isSelectItemsType(obj)) { <!-- Discord Role/channel list -->
         <option value="{{ obj.id }}" [selected]="((type === 'DEFAULT_MENTION' || type.startsWith('SUPPORT_THEME_'))
                                                  && isDefaultMentioned(obj.id)) ||
-                                                 (this.type === 'EVENTS_EDIT' && this.activeOption === obj.id)">
+                                                 ((this.type === 'EVENTS_EDIT' || this.type === 'SECURITY_LOGS') && this.activeOption === obj.id)">
           {{ obj.name }}
         </option>
       } @else {

@@ -140,26 +140,13 @@ export class SidebarComponent implements AfterViewInit {
    */
   selectServer(guild: Guild): void {
     if (this.dataService.active_guild && this.dataService.active_guild.id === guild.id && !window.location.href.includes("/dashboard/contact")) {
-      localStorage.removeItem('active_guild');
-      localStorage.removeItem('guild_team');
-      localStorage.removeItem('moduleStatus');
-      localStorage.removeItem('supportSetup');
-      localStorage.removeItem('support_themes');
-      localStorage.removeItem('guild_roles');
-      localStorage.removeItem('guild_channels');
-      localStorage.removeItem('active_events');
+      this.cleanUpStorage(true);
       this.dataService.active_guild = null;
       this.router.navigateByUrl('/dashboard').then();
 
     } else {
       localStorage.setItem('active_guild', JSON.stringify(guild));
-      localStorage.removeItem('guild_team');
-      localStorage.removeItem('moduleStatus');
-      localStorage.removeItem('supportSetup');
-      localStorage.removeItem('support_themes');
-      localStorage.removeItem('guild_roles');
-      localStorage.removeItem('guild_channels');
-      localStorage.removeItem('active_events');
+      this.cleanUpStorage();
       this.dataService.active_guild = guild;
       if (!this.server_picker) return;
 
@@ -180,6 +167,19 @@ export class SidebarComponent implements AfterViewInit {
         this.router.navigateByUrl('/dashboard').then();
       }
     }
+  }
+
+  /**
+   * Removes all keys from localStorage except those considered important.
+   *
+   * @param {boolean} [remove_guild] - If true, 'active_guild' will also be removed; otherwise, it is preserved.
+   */
+  private cleanUpStorage(remove_guild?: boolean): void {
+    const importantKeys = ['access_token', 'dark', 'lang', 'guilds', 'guilds_last_updated'];
+    if (!remove_guild) { importantKeys.push('active_guild'); }
+
+    const keysToRemove = Object.keys(localStorage).filter(key => !importantKeys.includes(key));
+    keysToRemove.forEach(key => localStorage.removeItem(key));
   }
 
   /**

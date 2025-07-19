@@ -10,9 +10,9 @@ import {ComService} from "../discord-com/com.service";
 import {TranslateService} from "@ngx-translate/core";
 import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
 import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
-import {EmbedConfig, SecurityLogSetup} from "../types/Config";
+import {EmbedConfig} from "../types/Config";
 import {ApiService} from "../api/api.service";
-import {UnbanRequest} from "../types/Security";
+import {SecurityLogs, UnbanRequest} from "../types/Security";
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +52,8 @@ export class DataHolderService {
 
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
-  security_logs: SecurityLogSetup | null = null;
+  security_logs: SecurityLogs = {channel_id: null, guild_thread_id: null, bot_thread_id: null, channel_roles_thread_id: null,
+    message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null, unban_thread_id: null}
   org_config: EmbedConfig = {...this.embed_config};
   selectedSnippet: TicketSnippet | null = null;
 
@@ -117,16 +118,25 @@ export class DataHolderService {
    *
    * @param discordService - The service used to communicate with the Discord API.
    * @param no_cache - Optional flag to bypass the cache and fetch fresh data (default: `false`).
+   * @param loading - Optional flag to indicate if the loading state should be set (default: `true`).
+   * @param wish_type - Optional parameter to specify the type of channels to save (default: 'ALL').
    */
-  getGuildChannels(discordService: ComService, no_cache?: boolean): void {
+  getGuildChannels(discordService: ComService, no_cache?: boolean, loading?: boolean, wish_type?: string): void {
     if (!this.active_guild) { return; }
     this.isFetching = true;
 
     // check if guilds are already stored in local storage (one minute cache)
     if ((localStorage.getItem('guild_channels') && localStorage.getItem('guild_channels_timestamp') &&
       Date.now() - Number(localStorage.getItem('guild_channels_timestamp')) < 60000) && !no_cache) {
+      // check if wish type is the same as the one in local storage
+      if (wish_type && localStorage.getItem('guild_channels_type') !== wish_type) {
+        this.getGuildChannels(discordService, true, loading, wish_type);
+        return;
+      }
+
       this.guild_channels = JSON.parse(localStorage.getItem('guild_channels') as string) as Channel[];
       this.isFetching = false;
+      if (loading) { this.isLoading = false; }
       return;
     }
 
@@ -134,9 +144,17 @@ export class DataHolderService {
       const subscription: Subscription = observable.subscribe({
         next: (response: Channel[]): void => {
           this.guild_channels = response;
+
+          if (wish_type && wish_type !== 'ALL') {
+            this.guild_channels = this.guild_channels.filter((channel: Channel) =>
+              channel.type === (wish_type === 'TEXT' ? 0 : wish_type === 'FORUM' ? 15 : 2));
+          }
+
           this.isFetching = false;
+          if (loading) { this.isLoading = false; }
 
           localStorage.setItem('guild_channels', JSON.stringify(this.guild_channels));
+          localStorage.setItem('guild_channels_type', wish_type ? wish_type : "ALL");
           localStorage.setItem('guild_channels_timestamp', Date.now().toString());
           subscription.unsubscribe();
         },
@@ -297,7 +315,7 @@ export class DataHolderService {
 
     const sub: Subscription = apiService.getSecurityLogs(this.active_guild!.id)
       .subscribe({
-        next: (config: SecurityLogSetup): void => {
+        next: (config: SecurityLogs): void => {
           this.security_logs = config;
 
           if (check_unban) {

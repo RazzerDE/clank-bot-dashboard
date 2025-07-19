@@ -102,6 +102,6 @@ export class SelectComponent {
    *          and the `type` string starts with `EVENTS_`; otherwise, `false`.
    */
   isChannelList(): boolean {
-    return this.options.length > 0 && this.isChannelType(this.options[0]) && this.type.startsWith('EVENTS_');
+    return this.options.length > 0 && this.isChannelType(this.options[0]);
   }
 }
