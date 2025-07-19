@@ -19,8 +19,8 @@
 
       <!-- Security-Tools - Container -->
       <app-drag-n-drop [enabledFeatures]="enabledFeatures" [disabledFeatures]="disabledFeatures" [disabledSendBtn]="disabledSendBtn"
-                       [security_features]="security_features" (openConfirmModal)="openConfirmModal($any($event.type), $event.btn)"
-                       (saveAction)="saveSecurityTools($event)" [org_features]="this.org_features"
+                       [feature_list]="security_features" (openConfirmModal)="openConfirmModal($any($event.type), $event.btn)"
+                       (saveAction)="saveSecurityTools($any($event))" [org_features]="this.org_features"
                        [refresh_data_function]="getSecurityShields.bind(this)" class="w-full" />
 
       <!-- Backup - Container -->

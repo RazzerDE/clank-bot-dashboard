@@ -41,7 +41,7 @@ export class ActiveShieldsComponent implements OnDestroy {
   protected readonly faAt: IconDefinition = faAt;
 
   protected security_features: SecurityFeature[] = initFeatures;
-  protected org_features: SecurityFeature[] = [...initFeatures]; // original features for reset functionality
+  protected org_features: SecurityFeature[] = JSON.parse(JSON.stringify(this.security_features));
   protected enabledFeatures: SecurityFeature[] = this.security_features.filter(f => f.enabled);
   protected disabledFeatures: SecurityFeature[] = this.security_features.filter(f => !f.enabled);
   protected backup_data: BackupData = {enabled: true, backup_date: 1752686998, channels: [], roles: []};

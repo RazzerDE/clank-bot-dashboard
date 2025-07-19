@@ -44,3 +44,30 @@ export interface SecurityModal {
   action: 0 | 1,
   element: HTMLButtonElement
 }
+
+export interface SecurityLogs {
+  guild_id?: string;                  // The ID of the guild where the security logs are stored.
+  channel_id: string | null;          // Main channel ID of the forum where the logs are being created.
+  guild_thread_id: string | null;
+  bot_thread_id: string | null;
+  channel_roles_thread_id: string | null;
+  message_thread_id: string | null;
+  emoji_thread_id: string | null;
+  join_leave_thread_id: string | null;
+  unban_thread_id: string | null;
+}
+
+export const initLogs: LogFeature[] = [
+  { category: 'guild_thread_id', enabled: false },
+  { category: 'bot_thread_id', enabled: false },
+  { category: 'channel_roles_thread_id', enabled: false },
+  { category: 'message_thread_id', enabled: false },
+  { category: 'emoji_thread_id', enabled: false },
+  { category: 'join_leave_thread_id', enabled: false },
+  { category: 'unban_thread_id', enabled: false }
+]
+
+export interface LogFeature {
+  category: string;
+  enabled: boolean;
+}

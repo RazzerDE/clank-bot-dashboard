@@ -6,7 +6,7 @@ import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {NgClass} from "@angular/common";
 import {faCircleExclamation, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {SecurityFeature} from "../../../services/types/Security";
+import {LogFeature, SecurityFeature} from "../../../services/types/Security";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 
 @Component({
@@ -22,15 +22,16 @@ import {DataHolderService} from "../../../services/data/data-holder.service";
   styleUrl: './drag-n-drop.component.scss'
 })
 export class DragNDropComponent {
-  @Input() security_features: SecurityFeature[] = [];
-  @Input() enabledFeatures: SecurityFeature[] = [];
-  @Input() disabledFeatures: SecurityFeature[] = [];
-  @Input() org_features: SecurityFeature[] = [];
+  @Input() type: string = 'SECURITY_SHIELD';
+  @Input() feature_list: SecurityFeature[] | LogFeature[] = [];
+  @Input() enabledFeatures: SecurityFeature[] | LogFeature[] = [];
+  @Input() disabledFeatures: SecurityFeature[] | LogFeature[] = [];
+  @Input() org_features: SecurityFeature[] | LogFeature[] = [];
   @Input() disabledSendBtn: boolean = false;
   @Input() refresh_data_function: (no_cache?: boolean) => void = (): void => {};
 
   @Output() openConfirmModal = new EventEmitter<{ type: number, btn: any }>();
-  @Output() saveAction: EventEmitter<SecurityFeature[]> = new EventEmitter<SecurityFeature[]>();
+  @Output() saveAction: EventEmitter<SecurityFeature[] | LogFeature[]> = new EventEmitter<SecurityFeature[] | LogFeature[]>();
 
   protected isDragging: boolean = false;
   protected disabledCacheBtn: boolean = false;
@@ -50,20 +51,20 @@ export class DragNDropComponent {
    *
    * @param event - Drag-and-drop event containing source and destination containers and indices.
    */
-  protected drop(event: CdkDragDrop<SecurityFeature[]>): void {
-    if (event.previousContainer === event.container) { // move in the same list
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else { // move between lists
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+  protected drop(event: CdkDragDrop<SecurityFeature[] | LogFeature[]>): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data as any[], event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data as any[], event.container.data, event.previousIndex, event.currentIndex);
 
       // change the enabled state of the moved item
-      const movedItem: SecurityFeature = event.container.data[event.currentIndex];
+      const movedItem: SecurityFeature | LogFeature = event.container.data[event.currentIndex];
       movedItem.enabled = event.container.data === this.enabledFeatures;
     }
 
     // sort arrays after moving items again
-    this.enabledFeatures = this.security_features.filter(f => f.enabled);
-    this.disabledFeatures = this.security_features.filter(f => !f.enabled);
+    (this.enabledFeatures as any) = this.feature_list.filter(f => f.enabled);
+    (this.disabledFeatures as any) = this.feature_list.filter(f => !f.enabled);
   }
 
   /**
@@ -85,6 +86,6 @@ export class DragNDropComponent {
    * @returns true if there are differences, false otherwise.
    */
   protected hasSecurityFeatureChanges(): boolean {
-    return JSON.stringify(this.security_features) !== JSON.stringify(this.org_features);
+    return JSON.stringify(this.feature_list) !== JSON.stringify(this.org_features);
   }
 }
