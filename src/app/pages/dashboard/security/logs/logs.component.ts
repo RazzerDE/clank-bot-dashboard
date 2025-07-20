@@ -156,8 +156,16 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
    */
   protected updateLogList(): void {
     if (!this.dataService.security_logs) return;
-    this.log_list = this.log_list.map(log => ({...log,
-      enabled: (this.dataService.security_logs as Record<string, any>)[log.category] != null}));
+
+    this.log_list = this.log_list.map(log => {
+      const securityLogs = this.dataService.security_logs as Record<string, any>;
+      const mainValue = securityLogs[log.category];
+      const pendingValue = securityLogs[`${log.category}_pending`];
+      const deleteValue = securityLogs[`${log.category}_delete`];
+
+      // Enabled if (mainValue exists and is not marked for deletion) or (pending and not marked for deletion)
+      return {...log, enabled: (mainValue != null || pendingValue === true) && deleteValue !== true};
+    });
 
     this.enabledFeatures = this.log_list.filter(f => f.enabled);
     this.disabledFeatures = this.log_list.filter(f => !f.enabled);

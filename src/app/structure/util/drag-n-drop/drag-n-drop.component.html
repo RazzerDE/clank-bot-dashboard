@@ -47,9 +47,25 @@
           <div cdkDrag class="border-l-[5px] rounded-lg p-2 bg-white dark:!bg-slate-800 shadow-sm cursor-move
                             border-green-500 dark:!border-green-700 transition-all duration-200 hover:!-translate-y-1"
                (cdkDragStarted)="dragOrigin = 'enabled'; isDragging = true;" (cdkDragEnded)="dragOrigin = null; isDragging = false;">
-            <div class="font-medium text-black dark:!text-white">
-              {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() | translate }}
+            <div class="flex flex-row">
+              <div class="font-medium text-black dark:!text-white">
+                {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() | translate }}
+              </div>
+
+              @if (this.type === 'SECURITY_LOGS' && isPendingForCategory(item.category.toString())) {
+                <!-- Button to show Pending enabled State -->
+                <button class="ml-3 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                               duration-200 inline-block !cursor-help" type="button"
+                        [ngbTooltip]="tooltipEnabledContent" placement="auto" tooltipClass="table-tooltip">
+                  <fa-icon [icon]="faHourglassHalf"></fa-icon>
+                </button>
+
+                <ng-template #tooltipEnabledContent>
+                  <div [innerHTML]="'PAGE_SECURITY_LOGS_ENABLED_TOOLTIP' | translate"></div>
+                </ng-template>
+              }
             </div>
+
             <div class="text-xs text-gray-600 dark:!text-gray-500">
               {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() + '_DESC' | translate }}
             </div>
@@ -76,8 +92,23 @@
           <div cdkDrag class="border-l-[5px] rounded-lg p-2 bg-white dark:!bg-slate-800 shadow-sm cursor-move
                             border-red-500 dark:!border-red-700 transition-all duration-200 hover:!-translate-y-1"
                (cdkDragStarted)="dragOrigin = 'disabled'; isDragging = true;" (cdkDragEnded)="dragOrigin = null; isDragging = false;">
-            <div class="font-medium text-black dark:!text-white">
-              {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() | translate }}
+            <div class="flex flex-row">
+              <div class="font-medium text-black dark:!text-white">
+                {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() | translate }}
+              </div>
+
+              @if (this.type === 'SECURITY_LOGS' && isPendingForCategory(item.category.toString())) {
+                <!-- Button to show Pending disabled State -->
+                <button class="ml-3 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                               duration-200 inline-block !cursor-help" type="button"
+                        [ngbTooltip]="tooltipDisabledContent" placement="auto" tooltipClass="table-tooltip">
+                  <fa-icon [icon]="faHourglassHalf"></fa-icon>
+                </button>
+
+                <ng-template #tooltipDisabledContent>
+                  <div [innerHTML]="'PAGE_SECURITY_LOGS_DISABLED_TOOLTIP' | translate"></div>
+                </ng-template>
+              }
             </div>
             <div class="text-xs text-gray-600 dark:!text-gray-500">
               {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() + '_DESC' | translate }}

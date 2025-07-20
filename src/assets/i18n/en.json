@@ -223,6 +223,8 @@
   "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_DESC": "› As soon as you set a log channel on the left, you can configure all available log events here.",
   "PAGE_SECURITY_LOGS_CHANNEL_PENDING_DESC": "› This process takes a few minutes - afterwards you can configure all log events.",
   "PAGE_SECURITY_LOGS_CHANNEL_DELETION_DESC": "› The log channel will be deleted soon - therefore you cannot configure any log events here.",
+  "PAGE_SECURITY_LOGS_ENABLED_TOOLTIP": "✅ ~ This log event will be automatically enabled soon - it is <strong>not</strong> active yet!",
+  "PAGE_SECURITY_LOGS_DISABLED_TOOLTIP": "❌ ~ This log event will be deleted soon - it is <strong>still</strong> active!",
 
   "PAGE_SETUP_MODULE_TITLE_0": "MODULE NOT ACTIVE!",
   "PAGE_SETUP_MODULE_DESC_0": "Currently, no support tickets can be created on your Discord server.",

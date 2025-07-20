@@ -71,6 +71,8 @@ export interface SecurityLogs {
   unban_thread_id: string | null;
   unban_thread_id_pending?: boolean;
   unban_thread_id_delete?: boolean;
+
+  [key: string]: string | boolean | null | undefined;
 }
 
 export const initLogs: LogFeature[] = [

@@ -6,8 +6,10 @@ import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
 import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {NgClass} from "@angular/common";
 import {faCircleExclamation, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {LogFeature, SecurityFeature} from "../../../services/types/Security";
+import {LogFeature, SecurityFeature, SecurityLogs} from "../../../services/types/Security";
 import {DataHolderService} from "../../../services/data/data-holder.service";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
+import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons/faHourglassHalf";
 
 @Component({
   selector: 'app-drag-n-drop',
@@ -16,7 +18,8 @@ import {DataHolderService} from "../../../services/data/data-holder.service";
     FaIconComponent,
     NgClass,
     CdkDropList,
-    CdkDrag
+    CdkDrag,
+    NgbTooltip
   ],
   templateUrl: './drag-n-drop.component.html',
   styleUrl: './drag-n-drop.component.scss'
@@ -39,6 +42,7 @@ export class DragNDropComponent {
 
   protected readonly faSave: IconDefinition = faSave;
   protected readonly faRefresh: IconDefinition = faRefresh;
+  protected readonly faHourglassHalf: IconDefinition = faHourglassHalf;
   protected readonly faCircleExclamation: IconDefinition = faCircleExclamation;
 
   constructor(protected dataService: DataHolderService) {}
@@ -87,5 +91,19 @@ export class DragNDropComponent {
    */
   protected hasSecurityFeatureChanges(): boolean {
     return JSON.stringify(this.feature_list) !== JSON.stringify(this.org_features);
+  }
+
+  /**
+   * Checks if there are pending security logs for a given category.
+   * Returns true if the corresponding pending key exists and is truthy in the security logs.
+   *
+   * @param category - The category to check for pending logs.
+   * @returns boolean - True if pending logs exist for the category, otherwise false.
+   */
+  isPendingForCategory(category: string): boolean {
+    if (!this.dataService.security_logs) { return false; }
+
+    const pendingKey = `${category}_pending` as keyof SecurityLogs;
+    return Boolean(this.dataService.security_logs[pendingKey]);
   }
 }
