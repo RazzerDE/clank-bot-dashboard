@@ -193,7 +193,10 @@
 
   "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALLE SERVER-ÄNDERUNGEN AUF EINEM BLICK",
   "PAGE_SECURITY_LOGS_TITLE": "Clank's Log-System",
-  "PAGE_SECURITY_LOGS_DESC": "› Auf dieser Seite kannst du unser Log-System einrichten, wodurch du wichtige Ereignisse, die auf deinem Discord-Server stattfinden, jederzeit einsehen.",
+  "PAGE_SECURITY_LOGS_DESC": "› Auf dieser Seite kannst du unser Log-System einrichten, wodurch du wichtige Ereignisse, die auf deinem Discord-Server stattfinden, sofort einsehen kannst.",
+  "PAGE_SECURITY_AUTOMOD_SUBTITLE": "🤖 ~ AUTOMATISCHE MODERATION & ENTSPERRUNGEN",
+  "PAGE_SECURITY_AUTOMOD_TITLE": "Automatische Moderation",
+  "PAGE_SECURITY_AUTOMOD_DESC": "› Auf dieser Seite kannst du die automatische Moderation für deinen Discord-Server aktivieren und eine Entsperrungsmethode für User festlegen.",
 
   "PAGE_SECURITY_SHIELD_LOGS_TITLE": "📚 ~ Unsere unterstützten Log-Events für deinen Server",
   "PAGE_SECURITY_SHIELD_LOGS_DESC": "› Sobald ein Log-Event aktiviert wurde, erstellt der Bot automatisch den jeweiligen Thread in dem Log-Kanal.",

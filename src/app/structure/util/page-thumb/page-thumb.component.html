@@ -1,7 +1,7 @@
 <div class="relative flex-shrink-0 overflow-hidden from-slate-50 via-gray-50 to-blue-50 dark:from-slate-800
             dark:via-gray-800 dark:to-slate-900 px-4 sm:p-10 transition-colors duration-500 shadow-md dark:shadow-2xl"
      [ngClass]="{'bg-gradient-to-r':  color == 'blue'       || color == 'green'       || color == 'red-pink',
-                 'bg-gradient-to-b':  color == 'yellow'     || color == 'red',
+                 'bg-gradient-to-b':  color == 'yellow'     || color == 'red'         || color == 'orange-red',
                  'bg-gradient-to-tr': color == 'red-bright' || color == 'cyan',
                  'bg-gradient-to-br': color == 'purple'     || color == 'orange',
                  'bg-gradient-to-bl': color == 'rosa'       || color == 'red-yellow',
@@ -28,6 +28,7 @@
                     color == 'rosa'       ? 'from-pink-400 via-rose-500 to-fuchsia-600' :
                     color == 'cyan'       ? 'from-cyan-400 via-cyan-500 to-cyan-700' :
                     color == 'orange'     ? 'from-red-600 via-red-500 to-orange-400' :
+                    color == 'orange-red' ? 'from-orange-600 via-orange-500 to-red-500' :
                                             'from-blue-400 via-blue-500 to-blue-700'">
       {{ title }}
     </div>

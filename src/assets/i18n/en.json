@@ -194,6 +194,9 @@
   "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALL SERVER CHANGES AT A GLANCE",
   "PAGE_SECURITY_LOGS_TITLE": "Clank's Log System",
   "PAGE_SECURITY_LOGS_DESC": "› On this page you can set up our log system, allowing you to view important events that have occurred on your Discord server at any time.",
+  "PAGE_SECURITY_AUTOMOD_SUBTITLE": "🤖 ~ AUTOMATIC MODERATION & UNBAN METHODS",
+  "PAGE_SECURITY_AUTOMOD_TITLE": "Automatic Moderation",
+  "PAGE_SECURITY_AUTOMOD_DESC": "› On this page, you can enable automatic moderation for your Discord server and set an unban method for users.",
 
   "PAGE_SECURITY_SHIELD_LOGS_TITLE": "📚 ~ Our supported log events for your server",
   "PAGE_SECURITY_SHIELD_LOGS_DESC": "› Once a log event is enabled, the bot automatically creates the corresponding thread in the log channel.",
