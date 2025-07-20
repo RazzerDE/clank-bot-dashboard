@@ -109,6 +109,11 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('security_logs') && localStorage.getItem('security_logs_timestamp') &&
       Date.now() - Number(localStorage.getItem('security_logs_timestamp')) < 30000 && !no_cache)) {
+      if (localStorage.getItem('security_logs_type') !== 'PENDING') {
+        this.getSecurityLogs(true);  // check if cached logs has the correct type
+        return;
+      }
+
       this.dataService.security_logs = JSON.parse(localStorage.getItem('security_logs') as string);
       this.updateLogList();
 
@@ -124,6 +129,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
           setTimeout((): void => { this.dataService.getGuildChannels(this.comService, no_cache, true, 'FORUM') }, 550);
 
           localStorage.setItem('security_logs', JSON.stringify(this.dataService.security_logs));
+          localStorage.setItem('security_logs_type', 'PENDING');
           localStorage.setItem('security_logs_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
