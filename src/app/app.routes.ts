@@ -17,6 +17,7 @@ import {
   ModerationRequestsComponent
 } from "./pages/dashboard/security/moderation-requests/moderation-requests.component";
 import {ActiveShieldsComponent} from "./pages/dashboard/security/active-shields/active-shields.component";
+import {LogsComponent} from "./pages/dashboard/security/logs/logs.component";
 
 export const routes: Routes = [
   // General pages
@@ -40,6 +41,7 @@ export const routes: Routes = [
   // Security pages
   { path: 'dashboard/security/moderation-requests', component: ModerationRequestsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/security/shield', component: ActiveShieldsComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/security/logs', component: LogsComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}

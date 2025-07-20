@@ -33,18 +33,6 @@ export interface TableConfig {
   actions: Function[];
 }
 
-export interface SecurityLogSetup {
-  guild_id?: string;                                  // ID of the guild, used for saving changes
-  channel_id: string | null;                          // ID of the Forum channel where security logs will be sent
-  guild_thread_id: string | null;                     // ID of the thread in the Forum channel for server change logs
-  bot_thread_id: string | null;                       // ID of the thread in the Forum channel for bot-related logs
-  channel_roles_thread_id: string | null;             // ID of the thread in the Forum channel for channel role logs
-  message_thread_id: string | null;                   // ID of the thread in the Forum channel for message logs
-  emoji_thread_id: string | null;                     // ID of the thread in the Forum channel for emoji logs
-  join_leave_thread_id: string | null;                // ID of the thread in the Forum channel for join/leave logs
-  unban_thread_id: string | null;                     // ID of the thread in the Forum channel for unban request logs
-}
-
 export interface EmbedConfig {
   guild_id?: string;                        // ID of the guild, used for saving changes
   enabled?: boolean;                        // Flag to indicate if the giveaway system is enabled

@@ -7,6 +7,7 @@ import {ActivatedRoute} from "@angular/router";
 import {defer} from "rxjs";
 import {Guild} from "../../../../services/types/discord/Guilds";
 import {UnbanRequest} from "../../../../services/types/Security";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 describe('ModerationRequestsComponent', () => {
   let component: ModerationRequestsComponent;
@@ -14,7 +15,7 @@ describe('ModerationRequestsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ModerationRequestsComponent, TranslateModule.forRoot(), HttpClientTestingModule],
+      imports: [ModerationRequestsComponent, TranslateModule.forRoot(), HttpClientTestingModule, NoopAnimationsModule],
       providers: [
         { provide: ActivatedRoute, useValue: {}}
       ]

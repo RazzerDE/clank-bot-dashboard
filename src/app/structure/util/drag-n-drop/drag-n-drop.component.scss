@@ -1,0 +1,28 @@
+.cdk-drag-preview {
+  transition: none !important; /* Remove Animations to reduce lags */
+}
+
+/* Change Placeholder for Preview Elements in other containers */
+.cdk-drop-list-dragging[data-container="enabled"] .cdk-drag-placeholder {
+  border-left-color: rgb(34 197 94) !important; /* green-500 for enabled placeholder */
+}
+
+.cdk-drop-list-dragging[data-container="disabled"] .cdk-drag-placeholder  {
+  border-left-color: rgb(239 68 68) !important; /* red-500 for disabled placeholder */
+}
+
+@media (prefers-color-scheme: dark) {
+  .cdk-drop-list-dragging[data-container="enabled"] .cdk-drag-placeholder  {
+    border-left-color: rgb(21 128 61) !important; /* green-700 */
+  }
+
+  .cdk-drop-list-dragging[data-container="disabled"] .cdk-drag-placeholder  {
+    border-left-color: rgb(185 28 28) !important; /* red-700 */
+  }
+}
+
+/* prevent style issues if placeholder is below a list item */
+.cdk-drag-placeholder {
+  margin-bottom: 12px !important;
+  z-index: 1000 !important;
+}

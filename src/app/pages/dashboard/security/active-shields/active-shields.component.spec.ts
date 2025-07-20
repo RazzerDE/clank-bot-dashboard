@@ -8,7 +8,6 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {defer} from "rxjs";
 import {Guild} from "../../../../services/types/discord/Guilds";
 import {SecurityFeature} from "../../../../services/types/Security";
-import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
 describe('ActiveShieldsComponent', () => {
   let component: ActiveShieldsComponent;
@@ -35,22 +34,6 @@ describe('ActiveShieldsComponent', () => {
 
     expect(shieldsSpy).toHaveBeenCalled();
   });
-
-  it('should disable cache button, set loading, call getSecurityShields with true, and re-enable cache button after 30s', fakeAsync(() => {
-    const component = fixture.componentInstance;
-    const getSecurityShieldsSpy = jest.spyOn(component as any, 'getSecurityShields').mockImplementation(() => {});
-    component['disabledCacheBtn'] = false;
-    component['dataService'].isLoading = false;
-
-    component['refreshCache']();
-
-    expect(component['disabledCacheBtn']).toBe(true);
-    expect(component['dataService'].isLoading).toBe(true);
-    expect(getSecurityShieldsSpy).toHaveBeenCalledWith(true);
-
-    tick(30001);
-    expect(component['disabledCacheBtn']).toBe(false);
-  }));
 
   it('should not fetch shields if no active guild', () => {
     component['dataService'].active_guild = null;
@@ -498,79 +481,6 @@ describe('ActiveShieldsComponent', () => {
     expect(result).toMatch(/06:00 (AM|PM)/);
     expect(result).toMatch(/AM/);
     jest.useRealTimers();
-  });
-
-  it('should move item within the same list (enabledFeatures)', () => {
-    const feature1 = { enabled: true } as SecurityFeature;
-    const feature2 = { enabled: true } as SecurityFeature;
-    component['security_features'] = [feature1, feature2];
-    component['enabledFeatures'] = [feature1, feature2];
-    const dropList = { data: component['enabledFeatures'] };
-    const event = {
-      previousContainer: dropList,
-      container: dropList,
-      previousIndex: 0,
-      currentIndex: 1
-    } as CdkDragDrop<SecurityFeature[]>;
-
-    (component as any).drop(event);
-
-    expect(component['enabledFeatures'][0]).toStrictEqual(feature2);
-    expect(component['enabledFeatures'][1]).toStrictEqual(feature1);
-    expect(component['disabledFeatures']).toEqual([]);
-  });
-
-  it('should move item from enabledFeatures to disabledFeatures and update enabled state', () => {
-    const feature1 = { enabled: true } as SecurityFeature;
-    const feature2 = { enabled: false } as SecurityFeature;
-    component['security_features'] = [feature1, feature2];
-    component['enabledFeatures'] = [feature1];
-    component['disabledFeatures'] = [feature2];
-    const event = {
-      previousContainer: { data: component['enabledFeatures'] },
-      container: { data: component['disabledFeatures'] },
-      previousIndex: 0,
-      currentIndex: 1
-    } as CdkDragDrop<SecurityFeature[]>;
-
-    (component as any).drop(event);
-
-    expect(feature1.enabled).toBe(false);
-    expect(component['enabledFeatures']).toEqual([]);
-    expect(component['disabledFeatures']).toEqual([feature2, feature1]);
-  });
-
-  it('should move item from disabledFeatures to enabledFeatures and update enabled state', () => {
-    const feature1 = { enabled: false } as SecurityFeature;
-    const feature2 = { enabled: true } as SecurityFeature;
-    component['security_features'] = [feature1, feature2];
-    component['enabledFeatures'] = [feature2];
-    component['disabledFeatures'] = [feature1];
-    const event = {
-      previousContainer: { data: component['disabledFeatures'] },
-      container: { data: component['enabledFeatures'] },
-      previousIndex: 0,
-      currentIndex: 1
-    } as CdkDragDrop<SecurityFeature[]>;
-
-    (component as any).drop(event);
-
-    expect(feature1.enabled).toBe(true);
-    expect(component['enabledFeatures']).toEqual([feature2, feature1]);
-    expect(component['disabledFeatures']).toEqual([]);
-  });
-
-  it('should return true if security_features differ from org_features', () => {
-    component['security_features'] = [{ enabled: true }] as SecurityFeature[];
-    component['org_features'] = [{ enabled: false }] as SecurityFeature[];
-    expect((component as any).hasSecurityFeatureChanges()).toBe(true);
-  });
-
-  it('should return false if security_features are equal to org_features', () => {
-    const features = [{ enabled: true }] as SecurityFeature[];
-    component['security_features'] = features;
-    component['org_features'] = JSON.parse(JSON.stringify(features));
-    expect((component as any).hasSecurityFeatureChanges()).toBe(false);
   });
 
   it('should close modal when clicking on modal_container', () => {

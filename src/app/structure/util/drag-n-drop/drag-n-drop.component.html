@@ -1,0 +1,137 @@
+<div class="w-full from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
+          dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
+          dark:!border-gray-700 border-1" [ngClass]="this.type === 'SECURITY_SHIELD' ? 'bg-gradient-to-tl' : 'bg-gradient-to-br'">
+  <!-- Header -->
+  <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
+              transition-colors duration-300">
+    <div [ngClass]="this.type === 'SECURITY_SHIELD' ? 'w-4/5' : 'w-full'">
+      <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
+        {{ this.type === 'SECURITY_SHIELD' ? ('PAGE_SECURITY_SHIELD_TOOLS_TITLE' | translate) :
+                                              ('PAGE_SECURITY_SHIELD_LOGS_TITLE' | translate) }}
+      </h2>
+      <p class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mt-1 mb-0 text-base">
+        {{ this.type === 'SECURITY_SHIELD' ? ('PAGE_SECURITY_SHIELD_TOOLS_DESC' | translate) :
+                                              ('PAGE_SECURITY_SHIELD_LOGS_DESC' | translate) }}
+      </p>
+    </div>
+
+    @if (this.type === 'SECURITY_SHIELD') {
+      <button class="bg-gradient-to-r from-red-600 via-red-500 to-red-700 hover:from-red-700 shadow-lg
+                 hover:via-red-600 hover:to-red-800 text-white font-semibold px-6 py-2 rounded-lg
+                   transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+              (click)="this.openConfirmModal.emit({ type: 0, btn: panicButtonBtn });" #panicButtonBtn>
+        <fa-icon [icon]="faCircleExclamation" class="me-2" /> {{ 'PLACEHOLDER_BUTTON_PANIC' | translate }}
+      </button>
+    }
+
+  </div>
+
+  <!-- Content -->
+  <div class="flex flex-col md:flex-row gap-6 p-3 h-full">
+
+    <!-- Enabled - Container -->
+    <div class="flex-1 bg-gray-100 dark:bg-slate-900 border-2 border-dashed rounded-lg p-4 py-3
+              dark:border-gray-700 transition-colors duration-200 border-gray-400">
+      <p class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center transition-colors duration-200">
+        {{ this.type === 'SECURITY_SHIELD' ? ('PAGE_SECURITY_SHIELD_TOOLS_ENABLED' | translate) :
+                                              ('PAGE_SECURITY_SHIELD_LOGS_ENABLED' | translate) }}
+      </p>
+      <div class="mx-auto w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
+
+      <!-- Angular CDK Drag & Drop List (ENABLED) -->
+      <div class="overflow-y-auto pr-2 space-y-3 h-[calc(100vh-43rem)] py-2 transition-all duration-200"
+           [cdkDropListData]="enabledFeatures" cdkDropList #enabledList="cdkDropList"
+           [ngClass]="isDragging ? 'cursor-grabbing dark:!bg-blue-950/50 rounded-lg p-3 pt-3' : ''"
+           [cdkDropListConnectedTo]="[disabledList]" (cdkDropListDropped)="drop($event)" data-container="enabled">
+        @for (item of enabledFeatures; track $index) {
+          <div cdkDrag class="border-l-[5px] rounded-lg p-2 bg-white dark:!bg-slate-800 shadow-sm cursor-move
+                            border-green-500 dark:!border-green-700 transition-all duration-200 hover:!-translate-y-1"
+               (cdkDragStarted)="dragOrigin = 'enabled'; isDragging = true;" (cdkDragEnded)="dragOrigin = null; isDragging = false;">
+            <div class="flex flex-row">
+              <div class="font-medium text-black dark:!text-white">
+                {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() | translate }}
+              </div>
+
+              @if (this.type === 'SECURITY_LOGS' && isPendingForCategory(item.category.toString())) {
+                <!-- Button to show Pending enabled State -->
+                <button class="ml-3 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                               duration-200 inline-block !cursor-help" type="button"
+                        [ngbTooltip]="tooltipEnabledContent" placement="auto" tooltipClass="table-tooltip">
+                  <fa-icon [icon]="faHourglassHalf"></fa-icon>
+                </button>
+
+                <ng-template #tooltipEnabledContent>
+                  <div [innerHTML]="'PAGE_SECURITY_LOGS_ENABLED_TOOLTIP' | translate"></div>
+                </ng-template>
+              }
+            </div>
+
+            <div class="text-xs text-gray-600 dark:!text-gray-500">
+              {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() + '_DESC' | translate }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Disabled - Container -->
+    <div class="flex-1 bg-gray-100 dark:bg-slate-900 border-2 border-dashed rounded-lg p-4 py-3
+              dark:border-gray-700 transition-colors duration-200 border-gray-400">
+      <p class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center transition-colors duration-200">
+        {{ this.type === 'SECURITY_SHIELD' ? ('PAGE_SECURITY_SHIELD_TOOLS_DISABLED' | translate) :
+                                             ('PAGE_SECURITY_SHIELD_LOGS_DISABLED' | translate) }}
+      </p>
+      <div class="mx-auto w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
+
+      <!-- Angular CDK Drag & Drop List (DISABLED) -->
+      <div class="overflow-y-auto pr-2 space-y-3 h-[calc(100vh-43rem)] py-2 transition-all duration-200"
+           [ngClass]="isDragging ? 'cursor-grabbing dark:!bg-blue-950/50 p-3 pt-3' : ''" cdkDropList
+           #disabledList="cdkDropList" [cdkDropListData]="disabledFeatures"
+           [cdkDropListConnectedTo]="[enabledList]" (cdkDropListDropped)="drop($event)" data-container="disabled">
+        @for (item of disabledFeatures; track $index) {
+          <div cdkDrag class="border-l-[5px] rounded-lg p-2 bg-white dark:!bg-slate-800 shadow-sm cursor-move
+                            border-red-500 dark:!border-red-700 transition-all duration-200 hover:!-translate-y-1"
+               (cdkDragStarted)="dragOrigin = 'disabled'; isDragging = true;" (cdkDragEnded)="dragOrigin = null; isDragging = false;">
+            <div class="flex flex-row">
+              <div class="font-medium text-black dark:!text-white">
+                {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() | translate }}
+              </div>
+
+              @if (this.type === 'SECURITY_LOGS' && isPendingForCategory(item.category.toString())) {
+                <!-- Button to show Pending disabled State -->
+                <button class="ml-3 text-gray-400 dark:text-gray-500 hover:!text-blue-500 transition-colors
+                               duration-200 inline-block !cursor-help" type="button"
+                        [ngbTooltip]="tooltipDisabledContent" placement="auto" tooltipClass="table-tooltip">
+                  <fa-icon [icon]="faHourglassHalf"></fa-icon>
+                </button>
+
+                <ng-template #tooltipDisabledContent>
+                  <div [innerHTML]="'PAGE_SECURITY_LOGS_DISABLED_TOOLTIP' | translate"></div>
+                </ng-template>
+              }
+            </div>
+            <div class="text-xs text-gray-600 dark:!text-gray-500">
+              {{ 'PAGE_SECURITY_' + this.type.replace('SECURITY_', '') + '_ITEM_' + item.category.toString().toUpperCase() + '_DESC' | translate }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="flex justify-between gap-4 p-6 border-t border-gray-200 dark:border-slate-700 ">
+    <button class="inline-block p-3 tflex items-center justify-center bg-indigo-600 hover:bg-indigo-700
+                       text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
+            (click)="this.saveAction.emit(this.feature_list);"
+            [disabled]="!hasSecurityFeatureChanges() || disabledSendBtn">
+      <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+    </button>
+    <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
+                     to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
+                     text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+            [disabled]="disabledCacheBtn" (click)="refreshCache()">
+      <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+    </button>
+  </div>
+</div>

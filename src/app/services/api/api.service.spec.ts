@@ -807,4 +807,66 @@ describe('ApiService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
+
+  it('should fetch pending security logs for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = { logs_enabled: true, pending_actions: [] } as any;
+
+    service.getSecurityLogsPending(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/pending?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update the log forum for a specific guild', () => {
+    const guild_id = 'guild123';
+    const channel_id = 'channel456';
+    const mockResponse = { success: true };
+
+    service.updateLogForum(guild_id, channel_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update the log forum for a specific guild and delete the log forum if delete_action is true', () => {
+    const guild_id = 'guild123';
+    const channel_id = 'channel456';
+    const mockResponse = { success: true };
+
+    service.updateLogForum(guild_id, channel_id, true).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}&delete=true`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update log threads for a specific guild', () => {
+    const guild_id = 'guild123';
+    const logs = { logs_enabled: true, pending_actions: [] } as any;
+    const mockResponse = { logs_enabled: true, pending_actions: [] };
+
+    service.updateLogThreads(guild_id, logs).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/pending?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(logs);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
 });
