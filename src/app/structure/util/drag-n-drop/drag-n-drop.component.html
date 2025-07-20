@@ -1,6 +1,6 @@
-<div class="w-full bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
+<div class="w-full from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
           dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
-          dark:!border-gray-700 border-1">
+          dark:!border-gray-700 border-1" [ngClass]="this.type === 'SECURITY_SHIELD' ? 'bg-gradient-to-tl' : 'bg-gradient-to-br'">
   <!-- Header -->
   <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
               transition-colors duration-300">

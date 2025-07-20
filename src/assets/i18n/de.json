@@ -217,6 +217,12 @@
   "PAGE_SECURITY_LOGS_PICKER_DESC": "› In diesem Kanal werden alle Ereignisse auf deinem Discord-Server protokolliert.",
   "PAGE_SECURITY_LOGS_PICKER_BUTTON": "Log-Kanal festlegen",
   "PAGE_SECURITY_LOGS_PICKER_ACTIVE_TITLE": "✍️ ~ AKTIVER KANAL",
+  "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_TITLE": "❌ ~ Es wurde noch kein Log-Kanal festgelegt.",
+  "PAGE_SECURITY_LOGS_CHANNEL_PENDING_TITLE": "⏳ ~ Der Log-Kanal wird in Kürze eingerichtet.",
+  "PAGE_SECURITY_LOGS_CHANNEL_DELETION_TITLE": "📛 ~ Log-Kanal wird in Kürze gelöscht.",
+  "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_DESC": "› Sobald du links einen Log-Kanal festgelegt hast, kannst du hier alle verfügbaren Log-Events einrichten.",
+  "PAGE_SECURITY_LOGS_CHANNEL_PENDING_DESC": "› Dieser Vorgang dauert ein paar Minuten - Anschließend kannst du alle Log-Events einrichten.",
+  "PAGE_SECURITY_LOGS_CHANNEL_DELETION_DESC": "› Der Log-Kanal wird in Kürze gelöscht - daher kannst du hier keine Log-Events einrichten.",
 
   "PAGE_SETUP_MODULE_TITLE_0": "MODUL NICHT AKTIV!",
   "PAGE_SETUP_MODULE_DESC_0": "Es können aktuell keine Support-Tickets auf deinem Discord-Server erstellt werden.",

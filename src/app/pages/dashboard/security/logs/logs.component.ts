@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -14,6 +14,8 @@ import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Channel} from "../../../../services/types/discord/Guilds";
+import {NgOptimizedImage} from "@angular/common";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 
 @Component({
   selector: 'app-logs',
@@ -24,12 +26,14 @@ import {Channel} from "../../../../services/types/discord/Guilds";
     TranslatePipe,
     DragNDropComponent,
     FaIconComponent,
-    SelectComponent
+    SelectComponent,
+    NgOptimizedImage
   ],
   templateUrl: './logs.component.html',
   styleUrl: './logs.component.scss'
 })
-export class LogsComponent implements OnDestroy {
+export class LogsComponent implements OnDestroy, AfterViewChecked {
+  protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faTrash: IconDefinition = faTrash;
   private readonly subscription: Subscription | null;
@@ -37,6 +41,7 @@ export class LogsComponent implements OnDestroy {
   // Angular - Drag and Drop feature lists
   protected log_list: LogFeature[] = initLogs;
   protected selectedLog: Channel | null = null;
+  protected tempLog: Channel | null = null;
   protected org_logs: LogFeature[] = JSON.parse(JSON.stringify(this.log_list));
   protected enabledFeatures: LogFeature[] = this.log_list.filter(f => f.enabled);
   protected disabledFeatures: LogFeature[] = this.log_list.filter(f => !f.enabled);
@@ -48,6 +53,10 @@ export class LogsComponent implements OnDestroy {
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
+        this.selectedLog = null;
+        this.tempLog = null;
+        this.dataService.security_logs = {channel_id: null, guild_thread_id: null, bot_thread_id: null, channel_roles_thread_id: null,
+          message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null, unban_thread_id: null}
         this.getSecurityLogs(true);
       }
     });
@@ -60,6 +69,21 @@ export class LogsComponent implements OnDestroy {
    */
   ngOnDestroy(): void {
     if (this.subscription) { this.subscription.unsubscribe(); }
+  }
+
+  /**
+   * Lifecycle hook that is called after the view has been checked.
+   *
+   * If the guild channels and security logs are available and no log is currently selected,
+   * this method sets the selected log based on the channel ID from the security logs.
+   * The assignment is deferred using setTimeout to ensure the view is updated correctly.
+   */
+  ngAfterViewChecked(): void {
+    if (this.dataService.guild_channels && this.dataService.security_logs && this.dataService.security_logs.channel_id && !this.selectedLog) {
+      setTimeout((): void => {
+        this.selectedLog = this.dataService.guild_channels.find((c: Channel) => c.id === this.dataService.security_logs.channel_id) || null;
+      }, 0);
+    }
   }
 
   /**
@@ -114,6 +138,19 @@ export class LogsComponent implements OnDestroy {
   }
 
   /**
+   * Refreshes the cache by disabling the cache button, setting the loading state,
+   * and fetching the snippet data with the cache ignored. The cache button is re-enabled
+   * after 10 seconds.
+   */
+  protected refreshCache(element: HTMLButtonElement): void {
+    element.disabled = true;
+    this.dataService.isLoading = true;
+    this.getSecurityLogs(true);
+
+    setTimeout((): void => { element.disabled = false; }, 10000);
+  }
+
+  /**
    * Synchronizes log_list with the current security_logs data.
    * Each LogFeature.enabled is set to true if the corresponding thread_id in security_logs is not null.
    */
@@ -125,5 +162,16 @@ export class LogsComponent implements OnDestroy {
     this.enabledFeatures = this.log_list.filter(f => f.enabled);
     this.disabledFeatures = this.log_list.filter(f => !f.enabled);
     this.org_logs = JSON.parse(JSON.stringify(this.log_list));
+  }
+
+  /**
+   * Returns the channel object from the guild channels list that matches the given channel ID.
+   * If no channel is found, returns null.
+   *
+   * @param channel_id - The ID of the channel to search for.
+   * @returns The matching Channel object or null if not found.
+   */
+  protected setTempLog(channel_id: string): Channel | null {
+    return this.dataService.guild_channels.find((c: Channel) => c.id === channel_id) || null
   }
 }

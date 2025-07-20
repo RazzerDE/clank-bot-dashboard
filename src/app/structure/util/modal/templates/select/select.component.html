@@ -8,11 +8,12 @@
           [ngClass]="{'cursor-not-allowed dark:!text-gray-400': this.type === 'EVENTS_EDIT',
                       'cursor-pointer': this.type !== 'EVENTS_EDIT',
                       '!bg-gray-200 dark:!bg-gray-600 dark:!border-gray-600': this.type === 'EVENTS_EFFECTS'}"
-          [disabled]="(type.startsWith('SUPPORT_THEME_') && this.dataService.isFAQ) || type === 'EVENTS_EDIT'"
+          [disabled]="(type.startsWith('SUPPORT_THEME_') && this.dataService.isFAQ) || type === 'EVENTS_EDIT' || disabled"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                    focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500
                    dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
-                   dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400" [class.ps-8]="isChannelList()">
+                   dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400
+                   disabled:cursor-not-allowed" [class.ps-8]="isChannelList()">
     @if (rolePicker.type === 'select-one' && this.id != 'reqpicker') {
       <option [selected]="!this.activeOption" disabled>
         @if (this.id.startsWith('channelpicker') && this.dataService.guild_channels.length > 0) {
@@ -43,6 +44,6 @@
 @if (rolePicker.type === 'select-one' ) {
   <div class="relative">
     <fa-icon [icon]="faChevronDown" class="absolute right-3 -top-8 text-gray-500 dark:text-gray-300 pointer-events-none"
-             [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed !text-gray-400' : ''"/>
+             [ngClass]="(this.type === 'EVENTS_EDIT' || rolePicker.disabled) ? 'cursor-not-allowed !text-gray-400' : ''"/>
   </div>
 }

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {booleanAttribute, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -23,6 +23,7 @@ import {NgClass} from "@angular/common";
 export class SelectComponent {
   @Input() id: string = 'rolepicker';
   @Input() type: string = '';
+  @Input({transform: booleanAttribute}) disabled: boolean = false;
   @Input() options: Role[] | Channel[] | SelectItems[] = [];
   @Input() activeOption: string | null = null;
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
