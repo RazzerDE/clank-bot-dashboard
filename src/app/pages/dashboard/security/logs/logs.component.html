@@ -40,19 +40,22 @@
                            (selectionChange)="this.tempLog = setTempLog($event[0])"
                            [disabled]="this.dataService.security_logs.channel_id_delete" />
 
-          <!-- Restore Button Section -->
+          <!-- Buttons for Log-Channel -->
           <div class="flex justify-center flex-col gap-y-6 mb-2">
             <div class="flex gap-2 justify-center">
               <button class="bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600
-                 hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg w-full
-                 transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                           hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg w-full
+                             transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                      (click)="saveLogForum()"
                       [disabled]="!this.dataService.guild_channels.length || (!this.tempLog || this.tempLog.id === this.selectedLog?.id)">
                 <fa-icon [icon]="faHashtag" class="me-2" /> {{ 'PAGE_SECURITY_LOGS_PICKER_BUTTON' | translate }}
               </button>
               <button class="bg-gradient-to-r from-red-500 via-pink-600 to-red-500 hover:from-red-600
-                 hover:to-pink-700 text-white font-semibold px-3 py-2 rounded-lg shadow-lg
-                 transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
-                      [disabled]="!this.dataService.guild_channels.length || (!this.tempLog || this.tempLog.id != this.selectedLog?.id)">
+                             hover:to-pink-700 text-white font-semibold px-3 py-2 rounded-lg shadow-lg
+                             transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                      (click)="saveLogForum(true)"
+                      [disabled]="!this.dataService.guild_channels.length || (!this.selectedLog || this.tempLog != this.selectedLog)
+                                  || this.dataService.security_logs.channel_id_delete">
                 <fa-icon [icon]="faTrash" />
               </button>
             </div>

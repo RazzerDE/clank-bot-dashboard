@@ -2,7 +2,7 @@ import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {DragNDropComponent} from "../../../../structure/util/drag-n-drop/drag-n-drop.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -37,6 +37,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faTrash: IconDefinition = faTrash;
   private readonly subscription: Subscription | null;
+  private refreshState: boolean = false;
 
   // Angular - Drag and Drop feature lists
   protected log_list: LogFeature[] = initLogs;
@@ -46,7 +47,8 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
   protected enabledFeatures: LogFeature[] = this.log_list.filter(f => f.enabled);
   protected disabledFeatures: LogFeature[] = this.log_list.filter(f => !f.enabled);
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService) {
+  constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService,
+              private translate: TranslateService) {
     document.title = 'Security Logs ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSecurityLogs(); // first call to get the server data
@@ -79,9 +81,11 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
    * The assignment is deferred using setTimeout to ensure the view is updated correctly.
    */
   ngAfterViewChecked(): void {
-    if (this.dataService.guild_channels && this.dataService.security_logs && this.dataService.security_logs.channel_id && !this.selectedLog) {
+    if (this.dataService.guild_channels && this.dataService.security_logs && this.dataService.security_logs.channel_id && (!this.selectedLog || this.refreshState)) {
       setTimeout((): void => {
         this.selectedLog = this.dataService.guild_channels.find((c: Channel) => c.id === this.dataService.security_logs.channel_id) || null;
+        this.tempLog = this.selectedLog;
+        this.refreshState = false;
       }, 0);
     }
   }
@@ -95,9 +99,11 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
    *
    * @param no_cache Optional flag to force bypassing the cache and fetch fresh data.
    */
-  getSecurityLogs(no_cache?: boolean): void {
+  protected getSecurityLogs(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     this.dataService.isLoading = true;
+    this.tempLog = null;
+    this.selectedLog = null;
 
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('security_logs') && localStorage.getItem('security_logs_timestamp') &&
@@ -138,6 +144,67 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
+   * Updates the security log forum for the active guild.
+   *
+   * Sends a request to update or delete the log forum channel, depending on the `delete_action` flag.
+   * On success, updates the local security logs state, UI feedback, and localStorage cache.
+   * On error, handles API error responses and updates the loading state.
+   *
+   * @param delete_action Optional flag to indicate if the log forum should be deleted.
+   */
+  protected saveLogForum(delete_action?: boolean): void {
+    if (!this.dataService.active_guild || !this.tempLog) { return; }
+
+    const sub: Subscription = this.apiService.updateLogForum(this.dataService.active_guild!.id, this.tempLog.id, delete_action)
+      .subscribe({
+        next: (_: Object): void => {
+          // channel is now updated, so threads are reset
+          this.dataService.security_logs = {channel_id: null, guild_thread_id: null, bot_thread_id: null,
+            channel_roles_thread_id: null, message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null,
+            unban_thread_id: null, channel_id_pending: true, channel_id_delete: delete_action }
+          this.selectedLog = this.tempLog;
+          this.updateLogList();
+
+          this.dataService.error_color = !delete_action ? 'green' : 'red';
+          this.dataService.showAlert(this.translate.instant(`SUCCESS_SECURITY_FORUM_${delete_action ? 'DELETE' : 'SET'}_TITLE`),
+            this.translate.instant(`SUCCESS_SECURITY_FORUM_${delete_action ? 'DELETE' : 'SET'}_DESC`,
+              { name: this.tempLog?.name, id: this.tempLog?.id }),);
+
+          localStorage.setItem('security_logs', JSON.stringify(this.dataService.security_logs));
+          sub.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.dataService.isLoading = false;
+
+          if (err.status === 404 && delete_action) {
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant('ERROR_SECURITY_FORUM_NOT_FOUND_TITLE'),
+              this.translate.instant('ERROR_SECURITY_FORUM_NOT_FOUND_DESC', { name: this.tempLog?.name, id: this.tempLog?.id }));
+            this.tempLog = null;
+            return;
+          } else if (err.status === 409) {
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant(`ERROR_SECURITY_FORUM_${delete_action ? 'DELETE_' : '_'}CONFLICT_TITLE`),
+              this.translate.instant(`ERROR_SECURITY_FORUM_${delete_action ? 'DELETE_' : '_'}CONFLICT_DESC`, { name: this.tempLog?.name, id: this.tempLog?.id }));
+            this.tempLog = null;
+            return;
+          }
+
+          if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+          sub.unsubscribe();
+        }
+      });
+  }
+
+  /**
    * Refreshes the cache by disabling the cache button, setting the loading state,
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
    * after 10 seconds.
@@ -145,6 +212,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
   protected refreshCache(element: HTMLButtonElement): void {
     element.disabled = true;
     this.dataService.isLoading = true;
+    this.refreshState = true;
     this.getSecurityLogs(true);
 
     setTimeout((): void => { element.disabled = false; }, 10000);

@@ -392,6 +392,17 @@
   "ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE": "Entsperrungs-Antrag nicht gefunden",
   "ERROR_SECURITY_UNBAN_NOT_FOUND_DESC": "Der Entsperrungs-Antrag konnte nicht gefunden werden - wurde er bereits bearbeitet?",
 
+  "SUCCESS_SECURITY_FORUM_SET_TITLE": "Log-Forum festgelegt",
+  "SUCCESS_SECURITY_FORUM_SET_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird in Kürze eingerichtet - warte ein paar Minuten!",
+  "SUCCESS_SECURITY_FORUM_DELETE_TITLE": "Log-Forum entfernt",
+  "SUCCESS_SECURITY_FORUM_DELETE_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird in Kürze entfernt - warte ein paar Minuten!",
+  "ERROR_SECURITY_FORUM_NOT_FOUND_TITLE": "Log-Forum nicht gefunden",
+  "ERROR_SECURITY_FORUM_NOT_FOUND_DESC": "Der Log-Forum-Kanal konnte nicht gefunden werden - wurde er bereits entfernt?",
+  "ERROR_SECURITY_FORUM_CONFLICT_TITLE": "Log-Forum wird bereits eingerichtet",
+  "ERROR_SECURITY_FORUM_CONFLICT_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird bereits in Kürze eingerichtet - warte ein paar Minuten!",
+  "ERROR_SECURITY_FORUM_DELETE_CONFLICT_TITLE": "Log-Forum wird bereits entfernt",
+  "ERROR_SECURITY_FORUM_DELETE_CONFLICT_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird bereits in Kürze entfernt - warte ein paar Minuten!",
+
   "SUCCESS_USER_UNBLOCK_TITLE": "User entsperrt",
   "SUCCESS_USER_UNBLOCK_DESC": "Der User <strong>{{user}}</strong> <i>({{user_id}})</i> kann nun wieder Tickets auf dem Server erstellen.",
   "SUCCESS_USER_BLOCK_TITLE": "User blockiert",

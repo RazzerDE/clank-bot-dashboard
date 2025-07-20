@@ -193,6 +193,19 @@ export class ApiService {
   }
 
   /**
+   * Updates the log-forum for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to update the log forum.
+   * @param channel_id - The ID of the channel to be set as the log forum.
+   * @param delete_action - Optional boolean indicating whether to delete the log forum (default: false).
+   * @return An Observable that emits the server's response.
+   */
+  updateLogForum(guild_id: string, channel_id: string, delete_action?: boolean): Observable<Object> {
+    return this.http.put<Object>(`${this.API_URL}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}` + (delete_action ? '&delete=true' : ''),
+      {}, { headers: this.authService.headers });
+  }
+
+  /**
    * Gets the security logs configuration for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to save the security logs configuration.

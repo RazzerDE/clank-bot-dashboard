@@ -392,6 +392,17 @@
   "ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE": "Unban request not found",
   "ERROR_SECURITY_UNBAN_NOT_FOUND_DESC": "The unban request could not be found - has it already been processed?",
 
+  "SUCCESS_SECURITY_FORUM_SET_TITLE": "Log forum set",
+  "SUCCESS_SECURITY_FORUM_SET_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> will be set up shortly - please wait a few minutes!",
+  "SUCCESS_SECURITY_FORUM_DELETE_TITLE": "Log forum removed",
+  "SUCCESS_SECURITY_FORUM_DELETE_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> will be removed shortly - please wait a few minutes!",
+  "ERROR_SECURITY_FORUM_NOT_FOUND_TITLE": "Log forum not found",
+  "ERROR_SECURITY_FORUM_NOT_FOUND_DESC": "The log forum channel could not be found - has it already been removed?",
+  "ERROR_SECURITY_FORUM_CONFLICT_TITLE": "Log forum is already being set up",
+  "ERROR_SECURITY_FORUM_CONFLICT_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> is already being set up shortly - please wait a few minutes!",
+  "ERROR_SECURITY_FORUM_DELETE_CONFLICT_TITLE": "Log forum is already being removed",
+  "ERROR_SECURITY_FORUM_DELETE_CONFLICT_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> is already being removed shortly - please wait a few minutes!",
+
   "SUCCESS_USER_UNBLOCK_TITLE": "User unblocked",
   "SUCCESS_USER_UNBLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can now create tickets on the server again.",
   "SUCCESS_USER_BLOCK_TITLE": "User blocked",
