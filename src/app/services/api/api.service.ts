@@ -206,6 +206,18 @@ export class ApiService {
   }
 
   /**
+   * Updates the log threads enabled states for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to update the log threads.
+   * @param logs - The SecurityLogs object containing the updated log threads configuration.
+   * @return An Observable that emits the server's response.
+   */
+  updateLogThreads(guild_id: string, logs: SecurityLogs): Observable<SecurityLogs> {
+    return this.http.post<SecurityLogs>(`${this.API_URL}/guilds/security/logs/pending?guild_id=${guild_id}`, logs,
+      { headers: this.authService.headers });
+  }
+
+  /**
    * Gets the security logs configuration for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to save the security logs configuration.

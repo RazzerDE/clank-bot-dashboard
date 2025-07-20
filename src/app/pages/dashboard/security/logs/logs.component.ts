@@ -38,6 +38,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
   protected readonly faTrash: IconDefinition = faTrash;
   private readonly subscription: Subscription | null;
   private refreshState: boolean = false;
+  protected sendState: boolean = false;
 
   // Angular - Drag and Drop feature lists
   protected log_list: LogFeature[] = initLogs;
@@ -190,6 +191,59 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
             return;
           }
 
+          if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+          sub.unsubscribe();
+        }
+      });
+  }
+
+  /**
+   * Saves the current log threads configuration for the active guild.
+   *
+   * Sends an API request to update the log threads using the current security logs.
+   * On success, updates the local security logs state, refreshes the log list, shows a success alert,
+   * and updates the cache in localStorage. Handles API errors and updates the loading state accordingly.
+   */
+  protected saveLogThreads(): void {
+    if (!this.dataService.active_guild || !this.selectedLog) { return; }
+    this.sendState = true;
+
+    this.log_list.forEach((log: LogFeature): void => {
+      if (log.enabled) {  // Set default value if log-thread is enabled (otherwise it is null)
+        this.dataService.security_logs[log.category] = '123';
+      } else { this.dataService.security_logs[log.category] = null; }});
+
+    // Remove all *_pending and *_delete attributes before sending
+    const sanitizedLogs: SecurityLogs = Object.keys(this.dataService.security_logs)
+      .filter(key => !key.endsWith('_pending') && !key.endsWith('_delete'))
+      .reduce((acc, key) =>
+        {acc[key] = this.dataService.security_logs[key]; return acc;}, {} as SecurityLogs);
+
+    this.dataService.security_logs.guild_id = this.dataService.active_guild.id;
+    const sub: Subscription = this.apiService.updateLogThreads(this.dataService.active_guild.id, sanitizedLogs)
+      .subscribe({
+        next: (logs: SecurityLogs): void => {
+          this.dataService.security_logs = logs;
+          this.updateLogList();
+          this.sendState = false;
+
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant("SUCCESS_SECURITY_THREADS_SET_TITLE"),
+            this.translate.instant("SUCCESS_SECURITY_THREADS_SET_DESC"));
+
+          localStorage.setItem('security_logs', JSON.stringify(this.dataService.security_logs));
+          sub.unsubscribe();
+        },
+        error: (err: HttpErrorResponse): void => {
+          this.dataService.isLoading = false;
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

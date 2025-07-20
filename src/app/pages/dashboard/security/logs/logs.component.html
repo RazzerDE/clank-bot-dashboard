@@ -90,8 +90,8 @@
       <!-- Thread Selection - Container -->
       @if (this.dataService.security_logs.channel_id && !this.dataService.security_logs.channel_id_pending) {
         <app-drag-n-drop class="w-full" [type]="'SECURITY_LOGS'" [org_features]="org_logs" [feature_list]="log_list"
-                         [enabledFeatures]="enabledFeatures" [disabledFeatures]="disabledFeatures"
-                         [refresh_data_function]="this.getSecurityLogs.bind(this)"/>
+                         [enabledFeatures]="enabledFeatures" [disabledFeatures]="disabledFeatures" [disabledSendBtn]="this.sendState"
+                         [refresh_data_function]="this.getSecurityLogs.bind(this)" (saveAction)="this.saveLogThreads();"/>
       } @else {
         <!-- No Channel Set - Container -->
         <div class="w-full bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800

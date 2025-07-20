@@ -396,6 +396,8 @@
   "SUCCESS_SECURITY_FORUM_SET_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird in Kürze eingerichtet - warte ein paar Minuten!",
   "SUCCESS_SECURITY_FORUM_DELETE_TITLE": "Log-Forum entfernt",
   "SUCCESS_SECURITY_FORUM_DELETE_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird in Kürze entfernt - warte ein paar Minuten!",
+  "SUCCESS_SECURITY_THREADS_SET_TITLE": "Log-Threads gespeichert",
+  "SUCCESS_SECURITY_THREADS_SET_DESC": "Die Log-Threads wurden erfolgreich gespeichert - sie werden in automatisch Kürze eingerichtet!",
   "ERROR_SECURITY_FORUM_NOT_FOUND_TITLE": "Log-Forum nicht gefunden",
   "ERROR_SECURITY_FORUM_NOT_FOUND_DESC": "Der Log-Forum-Kanal konnte nicht gefunden werden - wurde er bereits entfernt?",
   "ERROR_SECURITY_FORUM_CONFLICT_TITLE": "Log-Forum wird bereits eingerichtet",
@@ -549,7 +551,7 @@
 
   "PLACEHOLDER_UNBAN_SEARCH": "Nach einem Eintrag suchen.. 🔎",
   "PLACEHOLDER_REQUESTS_EMPTY": "🥳 ~ Es gibt keinen offenen Entsperrungs-Antrag!",
-  "PLACEHOLDER_UNBAN_MISSING": "Du musst Clank als Entsperrungsmethode auf deinem Discord-Server festlegen, um diese Funktion verwenden zu können - mehr darüber erfährst du <a href=\"https://clank.dev/security/logs\" class=\"text-[#00aff4] hover:underline\">hier</a>.",
+  "PLACEHOLDER_UNBAN_MISSING": "Du musst Clank als Entsperrungsmethode auf deinem Discord-Server festlegen, um diese Funktion verwenden zu können - mehr darüber erfährst du <a href=\"https://clank.dev/security/automod\" class=\"text-[#00aff4] hover:underline\">hier</a>.",
 
   "PLACEHOLDER_GIVEAWAY_EMBED_INVITE": "🤖 › Lade den Bot <a href=\"http://bl4cklist.de/invites/clank\" class=\"text-[#00aff4] hover:underline\">hier</a> ein.",
   "PLACEHOLDER_GIVEAWAY_EMBED_WINNERS": "Gewinner",

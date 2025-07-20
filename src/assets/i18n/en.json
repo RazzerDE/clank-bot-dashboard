@@ -396,6 +396,8 @@
   "SUCCESS_SECURITY_FORUM_SET_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> will be set up shortly - please wait a few minutes!",
   "SUCCESS_SECURITY_FORUM_DELETE_TITLE": "Log forum removed",
   "SUCCESS_SECURITY_FORUM_DELETE_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> will be removed shortly - please wait a few minutes!",
+  "SUCCESS_SECURITY_THREADS_SET_TITLE": "Log threads saved",
+  "SUCCESS_SECURITY_THREADS_SET_DESC": "The log threads have been saved successfully - they will be set up automatically shortly!",
   "ERROR_SECURITY_FORUM_NOT_FOUND_TITLE": "Log forum not found",
   "ERROR_SECURITY_FORUM_NOT_FOUND_DESC": "The log forum channel could not be found - has it already been removed?",
   "ERROR_SECURITY_FORUM_CONFLICT_TITLE": "Log forum is already being set up",
@@ -549,6 +551,7 @@
 
   "PLACEHOLDER_UNBAN_SEARCH": "Search for entry.. 🔎",
   "PLACEHOLDER_REQUESTS_EMPTY": "🥳 ~ There are no open unban requests!",
+  "PLACEHOLDER_UNBAN_MISSING": "You must set Clank as the unban method on your Discord server to use this feature - you can learn more about it <a href=\"https://clank.dev/security/automod\" class=\"text-[#00aff4] hover:underline\">here</a>.",
 
   "PLACEHOLDER_GIVEAWAY_EMBED_INVITE": "🤖 › Invite the bot <a href=\"http://bl4cklist.de/invites/clank\" class=\"text-[#00aff4] hover:underline\">here</a>.",
   "PLACEHOLDER_GIVEAWAY_EMBED_WINNERS": "Winners",
