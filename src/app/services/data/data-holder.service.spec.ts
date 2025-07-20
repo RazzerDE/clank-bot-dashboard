@@ -9,8 +9,7 @@ import {ComService} from "../discord-com/com.service";
 import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ApiService} from "../api/api.service";
-import {SecurityLogSetup} from "../types/Config";
-import {UnbanRequest} from "../types/Security";
+import {SecurityLogs, UnbanRequest} from "../types/Security";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
@@ -277,29 +276,52 @@ describe('DataHolderService', () => {
 
   it('should use cached channels from localStorage if cache is valid and no_cache is false', () => {
     service.active_guild = { id: 'guild1' } as Guild;
-    const mockChannels = [{ id: 'channel1' }, { id: 'channel2' }] as Channel[];
+    const mockChannels = [{ id: 'channel1', type: 0 }, { id: 'channel2', type: 0 }] as Channel[];
+    jest.spyOn(service, 'getGuildChannels');
 
     localStorage.setItem('guild_channels', JSON.stringify(mockChannels));
+    localStorage.setItem('guild_channels_type', 'TEXT');
     localStorage.setItem('guild_channels_timestamp', Date.now().toString());
 
-    service.getGuildChannels(comService);
+    service.getGuildChannels(comService, false, true, 'TEXT');
 
     expect(service.guild_channels).toEqual(mockChannels);
     expect(service.isFetching).toBe(false);
+
+    // recursive function call if wish_type different
+    service.getGuildChannels(comService, false, true, 'FORUM');
+    expect(service.getGuildChannels).toHaveBeenCalledTimes(3);
   });
 
   it('should fetch channels from API if cache is invalid', fakeAsync(() => {
     service.active_guild = { id: 'guild1' } as Guild;
-    const mockChannels = [{ id: 'channel1' }, { id: 'channel2' }] as Channel[];
+    const mockChannels = [{ id: 'channel1', type: 0 }, { id: 'channel2', type: 0 }] as Channel[];
 
     localStorage.setItem('guild_channels_timestamp', (Date.now() - 120000).toString());  // Set expired cache
     jest.spyOn(comService, 'getGuildChannels').mockResolvedValue(defer(() => Promise.resolve(mockChannels)));
 
-    service.getGuildChannels(comService);
+    // text channel type
+    service.getGuildChannels(comService, false, true, 'TEXT');
     tick();
 
     expect(comService.getGuildChannels).toHaveBeenCalledWith('guild1');
     expect(service.guild_channels).toEqual(mockChannels);
+    expect(service.isFetching).toBe(false);
+
+    // forum channel type
+    service.getGuildChannels(comService, true, true, 'FORUM');
+    tick();
+
+    expect(comService.getGuildChannels).toHaveBeenCalledWith('guild1');
+    expect(service.guild_channels).not.toEqual(mockChannels);
+    expect(service.isFetching).toBe(false);
+
+    // other channel type
+    service.getGuildChannels(comService, true, true, 'OTHER');
+    tick();
+
+    expect(comService.getGuildChannels).toHaveBeenCalledWith('guild1');
+    expect(service.guild_channels).not.toEqual(mockChannels);
     expect(service.isFetching).toBe(false);
   }));
 
@@ -638,7 +660,7 @@ describe('DataHolderService', () => {
 
   it('should fetch security_logs from API if cache is invalid and call getUnbanRequests if check_unban is true', fakeAsync(() => {
     service.active_guild = { id: 'guild1' } as Guild;
-    const mockLogs = { test: 'api-log' } as unknown as SecurityLogSetup;
+    const mockLogs = { test: 'api-log' } as unknown as SecurityLogs;
     localStorage.setItem('security_logs_timestamp', (Date.now() - 31000).toString());
     const apiSpy = jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.resolve(mockLogs)));
     jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
@@ -657,7 +679,7 @@ describe('DataHolderService', () => {
 
   it('should fetch security_logs from API if cache is invalid and set isLoading/isFetching to false if check_unban is false', fakeAsync(() => {
     service.active_guild = { id: 'guild1' } as Guild;
-    const mockLogs = {test: 'api-log'} as unknown as SecurityLogSetup;
+    const mockLogs = {test: 'api-log'} as unknown as SecurityLogs;
     localStorage.setItem('security_logs_timestamp', (Date.now() - 31000).toString());
     const apiSpy = jest.spyOn(apiService, 'getSecurityLogs').mockReturnValue(defer(() => Promise.resolve(mockLogs)));
     jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});

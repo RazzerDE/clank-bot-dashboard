@@ -142,14 +142,6 @@ describe('SelectComponent', () => {
     expect(component.isChannelList()).toBe(false);
   });
 
-  it('should return false if type does not start with EVENTS_', () => {
-    const mockChannel = {parent_id: '1', permission_overwrites: 'x', nsfw: false} as unknown as Channel;
-    component.options = [mockChannel];
-    component.type = 'SOMETHING_ELSE';
-    jest.spyOn(component as any, 'isChannelType').mockReturnValue(true);
-    expect(component.isChannelList()).toBe(false);
-  });
-
   it('should return true if options has Channel and type starts with EVENTS_', () => {
     const mockChannel = {parent_id: '1', permission_overwrites: 'x', nsfw: false} as unknown as Channel;
     component.options = [mockChannel];

@@ -578,7 +578,7 @@ describe('ActiveGiveawaysComponent', () => {
 
     component['openModal']('EVENTS_EDIT', giveaway as any);
 
-    expect(getGuildChannelsSpy).toHaveBeenCalledWith(component['comService']);
+    expect(getGuildChannelsSpy).toHaveBeenCalledWith(component['comService'], false, false, 'TEXT');
     expect(component['modalObj'].prize).toBe('Test Prize');
     expect(component['modalType']).toBe('EVENTS_EDIT');
     expect(showModalSpy).toHaveBeenCalled();
@@ -590,7 +590,7 @@ describe('ActiveGiveawaysComponent', () => {
 
     component['openModal']('EVENTS_CREATE');
 
-    expect(getGuildChannelsSpy).toHaveBeenCalledWith(component['comService']);
+    expect(getGuildChannelsSpy).toHaveBeenCalledWith(component['comService'], false, false, 'TEXT');
     expect(component['modalObj']).toEqual(component['initGiveaway']);
     expect(component['modalType']).toBe('EVENTS_CREATE');
     expect(showModalSpy).toHaveBeenCalled();
