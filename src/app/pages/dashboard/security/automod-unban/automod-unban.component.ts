@@ -43,6 +43,8 @@ export class AutomodUnbanComponent {
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faShieldHalved: IconDefinition = faShieldHalved;
   protected readonly faXmark: IconDefinition = faXmark;
+  protected readonly faTrash: IconDefinition = faTrash;
+  protected readonly faHandcuffs: IconDefinition = faHandcuffs;
 
   protected event_cards: EventCard[] = [
     {title: 'PAGE_SECURITY_AUTOMOD_CONTAINER_ITEM_0_TITLE', color: 'red',
@@ -57,7 +59,4 @@ export class AutomodUnbanComponent {
     document.title = 'AutoMod-Settings - Clank Discord-Bot';
     this.dataService.isLoading = false;
   }
-
-  protected readonly faTrash = faTrash;
-  protected readonly faHandcuffs = faHandcuffs;
 }
