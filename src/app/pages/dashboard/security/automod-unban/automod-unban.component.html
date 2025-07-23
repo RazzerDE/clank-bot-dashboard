@@ -37,11 +37,12 @@
           [innerHTML]="'PAGE_SECURITY_AUTOMOD_CONTAINER_INTRO' | translate">
           </span>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 w-full mt-0">
+          <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 w-full mt-0">
             @for (item of this.event_cards; track $index) {
+              @if ($index == this.event_cards.length - 2) { <div class="w-full h-0"></div> } <!-- Break line on big monitors -->
               <div class="border-l-[5px] rounded-lg shadow py-2 px-3 from-white bg-gradient-to-bl via-slate-50 to-blue-50
                         dark:from-slate-700/50 dark:via-slate-700/50 dark:to-slate-800 transition-all duration-200
-                           hover:-translate-y-1 hover:drop-shadow-lg"
+                          hover:-translate-y-1 hover:drop-shadow-lg"
                    [ngClass]="{'border-red-400 dark:!border-red-500': item.color === 'red',
                                'border-green-400 dark:!border-green-500': item.color === 'green',
                                'border-blue-400 dark:!border-blue-500': item.color === 'blue',
@@ -49,7 +50,8 @@
                                'border-purple-400 dark:!border-purple-500': item.color === 'purple',
                                'border-pink-400 dark:!border-pink-500': item.color === 'rosa',
                                'border-red-600 dark:!border-red-700': item.color === 'orange',
-                               'border-gray-400 dark:!border-gray-500': item.color === 'gray'}">
+                               'border-gray-400 dark:!border-gray-500': item.color === 'gray',
+                               'hidden 2k:block': $index >= this.event_cards.length - 2}">
                 <div class="flex justify-start items-center mb-1">
                   <h3 class="text-base font-medium mb-0 text-gray-700 dark:text-white
                  transition-colors duration-200">{{ item.title | translate }}</h3>
@@ -57,7 +59,7 @@
                 <div class="flex justify-start w-full py-2">
                   <div class="w-5/6 h-px bg-gray-300 dark:bg-gray-700 transition-colors duration-200"></div>
                 </div>
-                <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200 mb-3"
+                <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200 mb-2 w-[19rem]"
                    [innerHTML]="item.description | translate">
                 </p>
               </div>
@@ -76,8 +78,9 @@
             <fa-icon [icon]="faShieldHalved" class="mr-1" /> {{ 'PAGE_SECURITY_AUTOMOD_BUTTON_TITLE' | translate }}
           </button>
           <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
-               to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
-               text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none">
+                       to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
+                       text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                  [disabled]="disabledCacheBtn" (click)="refreshCache()">
             <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
           </button>
         </div>
@@ -106,19 +109,38 @@
         <!-- Content -->
         <div class="flex flex-col p-3 h-full">
 
-          <template-select class="mb-4" />
+          <template-select [id]="'unbanpicker'" class="mb-4" [options]="this.methods_select" [type]="'SECURITY_UNBAN'"
+                           [activeOption]="this.unban_method.method_type" (selectionChange)="setUnbanMethodType($any($event))" />
 
-          <!-- Buttons for Log-Channel -->
+          <!-- Show Input field for specific unban methods -->
+          @if (this.unban_method.method_type === 'FORM' || this.unban_method.method_type === 'INVITE' || this.unban_method.method_type === 'EMAIL') {
+            <div class="mb-4" @fadeInOut>
+              <input [type]="this.unban_method.method_type === 'EMAIL' ? 'email' : 'text'"
+                     [(ngModel)]="this.unban_method.method_extra" id="unban-link-input"
+                     class="w-full p-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm
+                            focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-600 dark:!border-gray-500
+                          dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
+                            dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400
+                            disabled:cursor-not-allowed"
+                     [placeholder]="'PAGE_SECURITY_UNBAN_' + this.unban_method.method_type + '_PLACEHOLDER' | translate" />
+            </div>
+          }
+
+          <!-- Buttons for Unban-Method -->
           <div class="flex justify-center flex-col gap-y-6 mb-2">
             <div class="flex gap-2 justify-center">
               <button class="bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600
                            hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg w-full
-                             transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed">
+                             transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                      [disabled]="!hasMethodChanges() || isInvalidMethodExtra()"
+                      #saveUnban (click)="doAction(0, saveUnban)">
                 <fa-icon [icon]="faHandcuffs" class="me-2" /> {{ 'PAGE_SECURITY_UNBAN_BUTTON_TITLE' | translate }}
               </button>
               <button class="bg-gradient-to-r from-red-500 via-pink-600 to-red-500 hover:from-red-600
                              hover:to-pink-700 text-white font-semibold px-3 py-2 rounded-lg shadow-lg
-                             transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed">
+                             transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                      [disabled]="hasMethodChanges() || !this.unban_method.method_type"
+                      #deleteUnban (click)="doAction(1, deleteUnban)">
                 <fa-icon [icon]="faTrash" />
               </button>
             </div>
@@ -135,7 +157,11 @@
               <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
                 {{ 'PAGE_SECURITY_UNBAN_METHOD' | translate }}</span>
               <span class="text-green-600 dark:text-green-400 font-semibold transition-colors duration-300 font-mono">
-                Clank
+                @if (!this.org_features.method_type) { / }
+                @else if (this.org_features.method_type === 'BOT') { Clank }
+                @else if (this.org_features.method_type === 'FORM') { {{ 'PAGE_SECURITY_UNBAN_METHOD_FORM' | translate }} }
+                @else if (this.org_features.method_type === 'INVITE') { {{ 'PAGE_SECURITY_UNBAN_METHOD_INVITE' | translate }} }
+                @else if (this.org_features.method_type === 'EMAIL') { E-Mail }
               </span>
             </div>
             <div class="flex justify-between items-center w-full">
@@ -143,7 +169,7 @@
                 Link:
               </span>
               <code class="font-semibold font-mono select-all truncate text-right max-w-[14rem]">
-                /
+                {{ this.org_features.method_extra ? this.org_features.method_extra : '/' }}
               </code>
             </div>
           </div>

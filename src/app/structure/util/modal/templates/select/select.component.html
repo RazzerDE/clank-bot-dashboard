@@ -14,7 +14,7 @@
                    dark:placeholder-gray-400 dark:text-white appearance-none dark:focus:ring-primary-500
                    dark:focus:border-primary-500 transition-all duration-300 disabled:!text-gray-400
                    disabled:cursor-not-allowed" [class.ps-8]="isChannelList()">
-    @if (rolePicker.type === 'select-one' && this.id != 'reqpicker') {
+    @if (rolePicker.type === 'select-one' && this.id != 'reqpicker' && this.id != 'unbanpicker') {
       <option [selected]="!this.activeOption" disabled>
         @if (this.id.startsWith('channelpicker') && this.dataService.guild_channels.length > 0) {
           {{ 'PLACEHOLDER_CHANNEL_MODAL_DEFAULT' | translate }}
@@ -33,7 +33,9 @@
           {{ obj.name }}
         </option>
       } @else {
-        <option value="{{ obj.value }}" [selected]="this.type.startsWith('EVENTS_') && (this.activeOption && this.activeOption.startsWith(obj.value))">
+        <option value="{{ obj.value }}" [selected]="(this.type.startsWith('EVENTS_') || this.type === 'SECURITY_UNBAN')
+                                                    && (this.activeOption && this.activeOption.startsWith(obj.value))"
+                [disabled]="option.selected && this.type === 'SECURITY_UNBAN'" #option>
           {{ obj.label | translate }}
         </option>
       }
