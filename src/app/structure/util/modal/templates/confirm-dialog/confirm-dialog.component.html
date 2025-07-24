@@ -10,13 +10,24 @@
     @if (obj.action === 0) {
       <p class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mb-2"
          [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_0_DESC2' | translate"></p>
+    } @else if (obj.action === 2) {
+      <div class="mt-8">
+        <img [ngSrc]="'assets/img/icons/arrow1.png'" width="16" height="16" class="mb-0.5 inline-block mr-1"
+             alt="Arrow-Emoji ~ Clank Discord-Bot">
+        <span class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mb-2"
+              [innerHTML]="'PLACEHOLDER_SECURITY_AUTOMOD_OUTRO' | translate"></span>
+      </div>
+
     }
 
-    <ul class="list-none pl-4 text-gray-500 dark:text-gray-400 transition-colors duration-300">
-      <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_1' | translate"></li>
-      <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_2' | translate"></li>
-      <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_3' | translate"></li>
-    </ul>
+    @if (obj.action != 2) {
+      <ul class="list-none pl-4 text-gray-500 dark:text-gray-400 transition-colors duration-300">
+        <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_1' | translate"></li>
+        <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_2' | translate"></li>
+        <li [innerHTML]="'PLACEHOLDER_SECURITY_SHIELD_' + obj.action + '_ACTION_3' | translate"></li>
+      </ul>
+    }
+
   </div>
 
   <!-- Footer -->

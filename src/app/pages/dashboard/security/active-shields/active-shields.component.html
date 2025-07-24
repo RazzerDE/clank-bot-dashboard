@@ -4,7 +4,7 @@
 
     <!-- User Modal -->
     <app-modal [type]="'SECURITY_SHIELDS'" [obj]="{ action: this.modalAction, element: this.modalElement! }"
-               [shield_action]="this.doAction.bind(this)" />
+               [shield_action]="$any(this.doAction.bind(this))" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_SECURITY_SHIELD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_SHIELD_TITLE' | translate"

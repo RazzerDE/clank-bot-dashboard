@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -24,6 +24,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {SelectItems} from "../../../../services/types/Config";
 import {FormsModule} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 
 @Component({
   selector: 'app-automod-unban',
@@ -36,6 +37,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
     NgClass,
     SelectComponent,
     FormsModule,
+    ModalComponent,
   ],
   templateUrl: './automod-unban.component.html',
   styleUrl: './automod-unban.component.scss',
@@ -61,7 +63,6 @@ export class AutomodUnbanComponent implements OnDestroy {
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected disabledSaveBtn: boolean = false;
-  protected methods_select: SelectItems[] = this.getUnbanMethods();
 
   protected event_cards: EventCard[] = [
     {title: 'PAGE_SECURITY_AUTOMOD_CONTAINER_ITEM_0_TITLE', color: 'red',
@@ -76,6 +77,9 @@ export class AutomodUnbanComponent implements OnDestroy {
       description: 'PAGE_SECURITY_AUTOMOD_CONTAINER_ITEM_4_DESC'}] as EventCard[];
   protected unban_method: UnbanMethod = { method_extra: null, method_type: null };
   protected org_features: UnbanMethod = JSON.parse(JSON.stringify(this.unban_method));
+  protected methods_select: SelectItems[] = this.getUnbanMethods();
+  protected modalElement: HTMLButtonElement | null = null;
+  @ViewChild(ModalComponent) protected modal!: ModalComponent;
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
     document.title = 'AutoMod-Settings - Clank Discord-Bot';
@@ -207,6 +211,54 @@ export class AutomodUnbanComponent implements OnDestroy {
           sub.unsubscribe();
         }
       });
+  }
+
+  /**
+   * Executes the automod setup action for the active guild and handles UI feedback.
+   *
+   * Disables the provided button element, sends the action request via the API,
+   * and re-enables the button after completion. Displays success or error alerts
+   * based on the API response and handles specific HTTP error codes for user feedback.
+   *
+   * @param action - The action to perform (can only be 2).
+   * @param element - The HTML button element triggering the action.
+   */
+  protected startAutoModSetup(action: 0 | 1 | 2, element: HTMLButtonElement): void {
+    if (!this.dataService.active_guild) { return; }
+    if (action !== 2) { action = 2; } // only action 2 is allowed
+
+    element.disabled = true;
+    const sub: Subscription = this.apiService.insertBotAction(this.dataService.active_guild.id, action)
+      .subscribe({
+        next: (_: Object): void => {
+          sub.unsubscribe();
+
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant("SUCCESS_SECURITY_AUTOMOD_TITLE"),
+            this.translate.instant("SUCCESS_SECURITY_AUTOMOD_DESC"));
+          setTimeout((): void => { element.disabled = false; }, 30000);
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 409) {
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant("ERROR_SECURITY_AUTOMOD_TITLE"),
+              this.translate.instant("ERROR_SECURITY_AUTOMOD_DESC"));
+          } else if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+
+          setTimeout((): void => { element.disabled = false; }, 5000);
+          sub.unsubscribe();
+        }
+      });
+
+    this.modal.hideModal();
   }
 
   /**

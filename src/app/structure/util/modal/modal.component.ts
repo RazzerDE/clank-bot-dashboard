@@ -86,7 +86,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
   @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
   @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
-  @Input() shield_action: (action: 0 | 1, element: HTMLButtonElement) => void = (): void => {};
+  @Input() shield_action: (action: 0 | 1 | 2, element: HTMLButtonElement) => void = (): void => {};
 
   protected isVisible: boolean = false;
   protected readonly faXmark: IconDefinition = faXmark;

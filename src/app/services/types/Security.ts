@@ -41,7 +41,7 @@ export const initFeatures: SecurityFeature[] = [
 ]
 
 export interface SecurityModal {
-  action: 0 | 1,
+  action: 0 | 1 | 2;
   element: HTMLButtonElement
 }
 

@@ -15,6 +15,6 @@ import {TranslatePipe} from "@ngx-translate/core";
 export class ConfirmDialogComponent {
   @Input() type: string = '';
   @Input() obj: SecurityModal = {} as SecurityModal;
-  @Input() shield_action: (action: 0 | 1, element: HTMLButtonElement) => void = (): void => {};
+  @Input() shield_action: (action: 0 | 1 | 2, element: HTMLButtonElement) => void = (): void => {};
 
 }
