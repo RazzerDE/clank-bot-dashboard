@@ -276,13 +276,18 @@ export class AutomodUnbanComponent implements OnDestroy {
       return true;
     }
 
-    if (this.unban_method.method_type && this.unban_method.method_type != 'EMAIL') {
+    if (this.unban_method.method_type) {
       if (this.unban_method.method_type === 'INVITE' && !this.unban_method.method_extra?.startsWith('https://discord.gg/')) {
         this.dataService.error_color = 'red';
         this.dataService.showAlert(this.translate.instant('ERROR_SECURITY_UNBAN_METHOD_INVALID_INVITE_TITLE'),
           this.translate.instant('ERROR_SECURITY_UNBAN_METHOD_INVALID_INVITE_DESC'));
         return true;
-      } else {
+      } else if (this.unban_method.method_type === 'EMAIL' && (!this.unban_method.method_extra || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.unban_method.method_extra))) {
+        this.dataService.error_color = 'red';
+        this.dataService.showAlert(this.translate.instant('ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_TITLE'),
+          this.translate.instant('ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_DESC'));
+        return true;
+      } else if (this.unban_method.method_type === 'FORM') {
         const urlPattern: RegExp = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/;
         if (this.unban_method.method_extra && !urlPattern.test(this.unban_method.method_extra)) {
           this.dataService.error_color = 'red';

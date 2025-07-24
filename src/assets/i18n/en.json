@@ -449,6 +449,8 @@
   "ERROR_SECURITY_UNBAN_METHOD_INVALID_INVITE_DESC": "Please provide a valid Discord invite so users can request to be unbanned! (e.g. <code>https://discord.gg/bl4cklist</code>)",
   "ERROR_SECURITY_UNBAN_METHOD_INVALID_URL_TITLE": "Invalid URL",
   "ERROR_SECURITY_UNBAN_METHOD_INVALID_URL_DESC": "Please provide a valid URL so users can request to be unbanned! (e.g. <code>https://bl4cklist.de/unban</code>)",
+  "ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_TITLE": "Invalid email address",
+  "ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_DESC": "Please enter a valid email address that users can use to request unbanning!",
 
   "SUCCESS_USER_UNBLOCK_TITLE": "User unblocked",
   "SUCCESS_USER_UNBLOCK_DESC": "The user <strong>{{user}}</strong> <i>({{user_id}})</i> can now create tickets on the server again.",

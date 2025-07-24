@@ -33,9 +33,9 @@
           {{ obj.name }}
         </option>
       } @else {
-        <option value="{{ obj.value }}" [selected]="(this.type.startsWith('EVENTS_') || this.type === 'SECURITY_UNBAN')
-                                                    && (this.activeOption && this.activeOption.startsWith(obj.value))"
-                [disabled]="option.selected && this.type === 'SECURITY_UNBAN'" #option>
+        <option value="{{ obj.value }}" [disabled]="isSelectDisabled(obj.value)"
+                [selected]="(this.type.startsWith('EVENTS_') || this.type === 'SECURITY_UNBAN')
+                            && (this.activeOption && this.activeOption.startsWith(obj.value))">
           {{ obj.label | translate }}
         </option>
       }

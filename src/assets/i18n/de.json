@@ -449,6 +449,8 @@
   "ERROR_SECURITY_UNBAN_METHOD_INVALID_INVITE_DESC": "Bitte gib eine gültige Discord-Einladung an, damit User sich entsperren können! (z.B. <code>https://discord.gg/bl4cklist</code>)",
   "ERROR_SECURITY_UNBAN_METHOD_INVALID_URL_TITLE": "Ungültige URL",
   "ERROR_SECURITY_UNBAN_METHOD_INVALID_URL_DESC": "Bitte gib eine gültige URL an, damit User sich entsperren können! (z.B. <code>https://bl4cklist.de/unban</code>)",
+  "ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_TITLE": "Ungültige E-Mail-Adresse",
+  "ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_DESC": "Bitte gib eine gültige E-Mail Adresse an, über der User sich entsperren können!",
 
   "SUCCESS_USER_UNBLOCK_TITLE": "User entsperrt",
   "SUCCESS_USER_UNBLOCK_DESC": "Der User <strong>{{user}}</strong> <i>({{user_id}})</i> kann nun wieder Tickets auf dem Server erstellen.",
