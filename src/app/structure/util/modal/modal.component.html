@@ -55,8 +55,7 @@
       </div>
 
       <!-- Modal body -->
-      <div [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS' && this.type !== 'SECURITY_AUTOMOD'}"
-           class="flex flex-col gap-4">
+      <div [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS' && this.type !== 'SECURITY_AUTOMOD'}">
         <div class="space-y-4 flex flex-col">
           @switch (true) {
             @case (type === 'SUPPORT_THEME_FAQ') {
