@@ -42,6 +42,8 @@
           } @else if (type === 'SECURITY_SHIELDS' && isSecurityModal(obj)) {
             <!-- 0 = Panic | 1 = Backup restore -->
             {{ obj.action === 0 ? ('PLACEHOLDER_SECURITY_SHIELD_0_TITLE' | translate) : ('PLACEHOLDER_SECURITY_SHIELD_1_TITLE' | translate) }}
+          } @else if (type === 'SECURITY_AUTOMOD') {
+            {{ 'PLACEHOLDER_SECURITY_AUTOMOD_TITLE' | translate }}
           }
         </p>
         <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:!bg-gray-200
@@ -53,7 +55,7 @@
       </div>
 
       <!-- Modal body -->
-      <div [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS'}">
+      <div [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS' && this.type !== 'SECURITY_AUTOMOD'}">
         <div class="space-y-4 flex flex-col">
           @switch (true) {
             @case (type === 'SUPPORT_THEME_FAQ') {
@@ -78,7 +80,7 @@
                                         [event_edit]="event_edit" [externalMarkdown]="secondGiveawayAdd?.discordMarkdown"
                                         [type]="$any(this.type)" />
             }
-            @case (type === 'SECURITY_SHIELDS') {
+            @case (type === 'SECURITY_SHIELDS' || type === 'SECURITY_AUTOMOD') {
               <template-confirm-dialog [type]="this.type" [shield_action]="this.shield_action" [obj]="$any(this.obj)" />
             }
             @default { <!-- Default Mention & Teamlist -->

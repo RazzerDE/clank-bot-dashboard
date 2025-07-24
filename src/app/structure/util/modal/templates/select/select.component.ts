@@ -105,4 +105,17 @@ export class SelectComponent {
   isChannelList(): boolean {
     return this.options.length > 0 && this.isChannelType(this.options[0]);
   }
+
+  /**
+   * Determines whether a select option should be disabled.
+   *
+   * @param optionValue - The value of the option to check.
+   * @returns `true` if the option is currently selected and the type is 'SECURITY_UNBAN', otherwise `false`.
+   */
+  public isSelectDisabled(optionValue: string): boolean {
+    const isCurrentlySelected: boolean = Boolean(
+      (this.type?.startsWith('EVENTS_') || this.type === 'SECURITY_UNBAN') && this.activeOption?.startsWith(optionValue));
+
+    return isCurrentlySelected && this.type === 'SECURITY_UNBAN';
+  }
 }

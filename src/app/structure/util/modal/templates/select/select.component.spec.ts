@@ -150,4 +150,28 @@ describe('SelectComponent', () => {
     expect(component.isChannelList()).toBe(true);
   });
 
+  it('should return true if option is currently selected and type is SECURITY_UNBAN', () => {
+    component.type = 'SECURITY_UNBAN';
+    component.activeOption = '12345';
+    expect(component.isSelectDisabled('123')).toBe(true);
+  });
+
+  it('should return false if type is not SECURITY_UNBAN', () => {
+    component.type = 'EVENTS_TEST';
+    component.activeOption = '12345';
+    expect(component.isSelectDisabled('123')).toBe(false);
+  });
+
+  it('should return false if activeOption does not start with optionValue', () => {
+    component.type = 'SECURITY_UNBAN';
+    component.activeOption = '99999';
+    expect(component.isSelectDisabled('123')).toBe(false);
+  });
+
+  it('should return false if activeOption is null', () => {
+    component.type = 'SECURITY_UNBAN';
+    component.activeOption = null;
+    expect(component.isSelectDisabled('123')).toBe(false);
+  });
+
 });

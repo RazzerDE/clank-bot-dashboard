@@ -13,7 +13,7 @@ import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets"
 import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig} from "../types/Config";
-import {BackupData, SecurityFeature, SecurityLogs, UnbanRequest} from "../types/Security";
+import {BackupData, SecurityFeature, SecurityLogs, UnbanMethod, UnbanRequest} from "../types/Security";
 
 @Injectable({
   providedIn: 'root'
@@ -240,6 +240,30 @@ export class ApiService {
   }
 
   /**
+   * Fetches the unban method configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the configuration.
+   * @return An Observable that emits an UnbanMethod object representing the related config.
+   */
+  getUnbanMethod(guild_id: string): Observable<UnbanMethod> {
+    return this.http.get<UnbanMethod>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Saves a specific pending action related to unban methods for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to save the unban method.
+   * @param method - The UnbanMethod object containing the details of the unban method to be saved.
+   * @param action - The action to be performed (0 for disable, 1 for enable).
+   * @return An Observable that emits the server's response.
+   */
+  doUnbanAction(guild_id: string, method: UnbanMethod, action: 0 | 1): Observable<Object> {
+    return this.http.post<Object>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}&type=${action}`,
+      method, { headers: this.authService.headers });
+  }
+
+  /**
    * Fetches the security shields configuration for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the security shields configuration.
@@ -276,11 +300,11 @@ export class ApiService {
    * Saves a specific pending action for a specific guild.
    *
    * @param guild_id - The ID of the guild for which to save the security logs configuration.
-   * @param action - The action to be performed (0 for disable, 1 for enable).
+   * @param action - The action to be performed (0 = Panic Mode, 1 = Backup Restore, 2 = AutoMod Setup).
    * @return An Observable that emits the server's response.
    */
-  insertBotAction(guild_id: string, action: 0 | 1): Observable<Giveaway> {
-    return this.http.put<Giveaway>(`${this.API_URL}/guilds/security/actions?guild_id=${guild_id}&action=${action}`,
+  insertBotAction(guild_id: string, action: 0 | 1 | 2): Observable<Object> {
+    return this.http.put<Object>(`${this.API_URL}/guilds/security/actions?guild_id=${guild_id}&action=${action}`,
       {}, { headers: this.authService.headers });
   }
 

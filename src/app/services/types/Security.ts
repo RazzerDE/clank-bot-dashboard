@@ -41,7 +41,7 @@ export const initFeatures: SecurityFeature[] = [
 ]
 
 export interface SecurityModal {
-  action: 0 | 1,
+  action: 0 | 1 | 2;
   element: HTMLButtonElement
 }
 
@@ -88,4 +88,10 @@ export const initLogs: LogFeature[] = [
 export interface LogFeature {
   category: string;
   enabled: boolean;
+}
+
+export interface UnbanMethod {
+  guild_id?: string;                  // The ID of the guild, only used in POST requests.
+  method_type: 'BOT' | 'FORM' | 'EMAIL' | 'INVITE' | null;
+  method_extra: string | null;
 }

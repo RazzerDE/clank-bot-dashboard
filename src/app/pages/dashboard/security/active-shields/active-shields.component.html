@@ -4,7 +4,7 @@
 
     <!-- User Modal -->
     <app-modal [type]="'SECURITY_SHIELDS'" [obj]="{ action: this.modalAction, element: this.modalElement! }"
-               [shield_action]="this.doAction.bind(this)" />
+               [shield_action]="$any(this.doAction.bind(this))" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_SECURITY_SHIELD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_SHIELD_TITLE' | translate"
@@ -61,7 +61,7 @@
 
           @if (this.backup_data.enabled) {
             <!-- Backup Info Section -->
-            <div class="bg-slate-200 dark:bg-slate-900 rounded-lg p-3 flex flex-col gap-2 shadow-md mb-4">
+            <div class="bg-slate-200 dark:bg-slate-900 transition-colors duration-300 rounded-lg p-3 flex flex-col gap-2 shadow-md mb-4">
               <div class="flex justify-between items-center">
               <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
                 {{ 'PAGE_SECURITY_SHIELD_BACKUP_NEXT' | translate }}</span>

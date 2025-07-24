@@ -302,6 +302,10 @@ export class DataHolderService {
     if ((localStorage.getItem('security_logs') && localStorage.getItem('security_logs_timestamp') &&
       Date.now() - Number(localStorage.getItem('security_logs_timestamp')) < 30000 && !no_cache)) {
       this.security_logs = JSON.parse(localStorage.getItem('security_logs') as string);
+      if (localStorage.getItem('security_logs_type') !== 'DEFAULT') {
+        this.getSecurityLogs(apiService, check_unban, true);  // check if cached logs has the correct type
+        return;
+      }
 
       if (check_unban) {
         setTimeout((): void => { this.getUnbanRequests(apiService, no_cache) }, 100);
@@ -326,6 +330,7 @@ export class DataHolderService {
           }
 
           localStorage.setItem('security_logs', JSON.stringify(this.security_logs));
+          localStorage.setItem('security_logs_type', 'DEFAULT');
           localStorage.setItem('security_logs_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
