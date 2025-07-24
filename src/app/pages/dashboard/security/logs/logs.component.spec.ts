@@ -101,6 +101,7 @@ describe('LogsComponent', () => {
   it('should use cached logs from localStorage if available and not older than 30 seconds', fakeAsync(() => {
     const mockLogs = { channel_id: '123' };
     localStorage.setItem('security_logs', JSON.stringify(mockLogs));
+    localStorage.setItem('security_logs_type', 'PENDING');
     localStorage.setItem('security_logs_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as any;
     jest.spyOn(component['dataService'], 'getGuildChannels').mockImplementation();
@@ -110,6 +111,14 @@ describe('LogsComponent', () => {
 
     expect(component['dataService'].security_logs).toEqual(mockLogs);
     expect(component['dataService'].getGuildChannels).toHaveBeenCalledWith(component['comService'], undefined, true, 'FORUM');
+
+    // check "security_logs_type" is set to "PENDING" branch
+    jest.spyOn(component as any, 'getSecurityLogs');
+    localStorage.setItem('security_logs_type', 'FORUM');
+
+    component['getSecurityLogs']();
+
+    expect(component['getSecurityLogs']).toHaveBeenCalledWith(true);
   }));
 
   it('should fetch logs from API if no cache is present', fakeAsync(() => {

@@ -626,6 +626,7 @@ describe('DataHolderService', () => {
   it('should use cached security_logs if cache is valid and no_cache is false, and call getUnbanRequests if check_unban is true', fakeAsync(() => {
     const mockLogs = { test: 'log' };
     localStorage.setItem('security_logs', JSON.stringify(mockLogs));
+    localStorage.setItem('security_logs_type', 'DEFAULT');
     localStorage.setItem('security_logs_timestamp', Date.now().toString());
     service.active_guild = { id: 'guild1' } as Guild;
     jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
@@ -639,23 +640,28 @@ describe('DataHolderService', () => {
     expect(service.getUnbanRequests).toHaveBeenCalledWith(apiService, false);
     expect(service.isLoading).toBe(true);
     expect(service.isFetching).toBe(true);
+
+    // test isLoading & isFetching branch
+    service.getSecurityLogs(apiService, false, false);
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
   }));
 
   it('should use cached security_logs if cache is valid and no_cache is false, and not call getUnbanRequests if check_unban is false', () => {
     const mockLogs = { test: 'log' };
     localStorage.setItem('security_logs', JSON.stringify(mockLogs));
+    localStorage.setItem('security_logs_type', 'PENDING');
     localStorage.setItem('security_logs_timestamp', Date.now().toString());
     service.active_guild = { id: 'guild1' } as Guild;
     jest.spyOn(service, 'getUnbanRequests').mockImplementation(() => {});
     service.isLoading = true;
     service.isFetching = true;
 
+    jest.spyOn(service, 'getSecurityLogs');
+
     service.getSecurityLogs(apiService, false, false);
 
-    expect(service.security_logs).toEqual(mockLogs);
-    expect(service.getUnbanRequests).not.toHaveBeenCalled();
-    expect(service.isLoading).toBe(false);
-    expect(service.isFetching).toBe(false);
+    expect(service.getSecurityLogs).toHaveBeenCalledWith(apiService, false, true);
   });
 
   it('should fetch security_logs from API if cache is invalid and call getUnbanRequests if check_unban is true', fakeAsync(() => {

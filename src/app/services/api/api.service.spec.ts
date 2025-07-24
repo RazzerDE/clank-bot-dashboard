@@ -869,4 +869,35 @@ describe('ApiService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
+
+  it('should fetch the unban method configuration for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = { type: 'manual', enabled: true } as any;
+
+    service.getUnbanMethod(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/unban-method?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should save a specific pending unban method action for a specific guild', () => {
+    const guild_id = 'guild123';
+    const method = { type: 'manual', enabled: false } as any;
+    const action = 1;
+    const mockResponse = { success: true };
+
+    service.doUnbanAction(guild_id, method, action).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/unban-method?guild_id=${guild_id}&type=${action}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(method);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
 });
