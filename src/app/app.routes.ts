@@ -19,6 +19,7 @@ import {
 import {ActiveShieldsComponent} from "./pages/dashboard/security/active-shields/active-shields.component";
 import {LogsComponent} from "./pages/dashboard/security/logs/logs.component";
 import {AutomodUnbanComponent} from "./pages/dashboard/security/automod-unban/automod-unban.component";
+import {GlobalChatComponent} from "./pages/dashboard/misc/global-chat/global-chat.component";
 
 export const routes: Routes = [
   // General pages
@@ -44,6 +45,9 @@ export const routes: Routes = [
   { path: 'dashboard/security/shield', component: ActiveShieldsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/security/logs', component: LogsComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/security/automod', component: AutomodUnbanComponent, canActivate: [AuthGuard] },
+
+  // Miscellaneous pages
+  { path: 'dashboard/misc/global-chat', component: GlobalChatComponent, canActivate: [AuthGuard] },
 
   // Error pages
   { path: 'errors/simple', component: SimpleErrorComponent}

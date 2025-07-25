@@ -171,6 +171,105 @@
     </div>
   }
 
+  <!-- Template for Global-Chat Preview -->
+  @case (type.endsWith('GLOBALCHAT')) {
+    <div class="max-w-2xl mx-auto">
+      <div class="flex items-start space-x-4 py-4 px-0">
+        <!-- Avatar -->
+        <div class="flex-shrink-0">
+          @if (!this.invalidAvatar && this.obj.global_config && this.obj.global_config!.bot_avatar_url) {
+            <img [ngSrc]="this.obj.global_config.bot_avatar_url" alt="Avatar ~ Clank Discord-Bot"
+                 height="40" width="40"  class="w-10 h-10 rounded-full" (error)="this.invalidAvatar = true;">
+          } @else {
+            <img [ngSrc]="'assets/img/icons/clank-40x.png'" alt="Avatar ~ Clank Discord-Bot"
+                 height="40" width="40"  class="w-10 h-10 rounded-full">
+          }
+        </div>
+
+        <!-- Message Content -->
+        <div class="flex-1 min-w-0">
+          <!-- Header -->
+          <div class="flex items-center space-x-2">
+            <span class="font-medium text-gray-800 dark:text-gray-200 transition-colors duration-200 text-base"
+            [innerText]="this.obj.global_config?.bot_name ? this.obj.global_config!.bot_name : 'Clank\'s Global-Chat'"></span>
+            <div class="bg-[#5865f2] text-white text-xs px-1 rounded mr-2 flex items-center">
+              <fa-icon [icon]="faCheck" class="mr-0.5" /> APP
+            </div>
+            <span class="text-gray-400 text-xs">
+              {{ now | date: (this.translate.currentLang === 'en' ? 'h:mm a' : 'HH:mm') }}
+            </span>
+          </div>
+
+          <!-- Embed -->
+          <div class="bg-gray-700 rounded-lg border-l-4 border-green-500 p-3 mt-2 max-w-md">
+            <div class="relative">
+              <!-- Embed Header -->
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-2">
+                  <img class="w-6 h-6 bg-green-500 rounded-full" height="24" width="24"
+                       [ngSrc]="'https://i.imgur.com/RiVxjb2.png'" alt="Server-Owner Icon - Clank Discord-Bot" />
+                  <span class="text-white text-sm font-semibold">{{'PAGE_MISC_GLOBALCHAT_OWNER' | translate}} 🗴 Level - 100</span>
+                </div>
+              </div>
+
+              <!-- Floating Avatar -->
+              <div class="absolute top-0 right-0 w-16 h-16 rounded-full overflow-hidden z-10">
+                <img [ngSrc]="'https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=64'"
+                     alt="User-Avatar - Clank Discord-Bot" width="64" height="64" class="w-full h-full object-cover">
+              </div>
+
+              <!-- User Info -->
+              <div class="mb-2 pr-16 flex justify-start items-center">
+                <span class="bg-gray-800/40 me-1 rounded justify-center text-base">👤</span>
+                <span class="text-blue-400 text-md font-semibold">› Yannic</span>
+              </div>
+
+              <!-- Message Content -->
+              <div class="text-gray-300 text-sm italic mb-3 pr-20 h-8">
+                {{ 'PAGE_MISC_GLOBALCHAT_NEWBIE' | translate }}
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-4">
+              <div class="flex items-center space-x-1 text-gray-400 hover:text-white cursor-pointer">
+                <span class="bg-gray-800/40 text-sm">🤖</span>
+                <span class="text-blue-400 text-sm font-normal">Bot-Invite</span>
+              </div>
+              <div class="flex items-center space-x-1 text-gray-400 hover:text-white cursor-pointer">
+                <span class="bg-gray-800/40 text-sm">📍</span>
+                <span class="text-blue-400 text-sm font-normal">{{ 'PAGE_MISC_GLOBALCHAT_JOIN' | translate }}</span>
+              </div>
+            </div>
+
+            <!-- Footer Stats -->
+            <div class="flex flex-col space-y-1 mt-2 ml-0.5 relative">
+              @if (!this.invalidServerImg && this.dataService.active_guild!.image_url) {
+                <img class="w-6 h-6 rounded-full opacity-75 absolute left-0 top-1/2 transform -translate-y-[calc(50%-2px)]"
+                     height="24" width="24" alt="Server-Footer Icon - Clank Discord-Bot"
+                     [ngSrc]="this.dataService.active_guild!.image_url" (error)="this.invalidServerImg = true;"/>
+              } @else {
+                <div class="w-6 h-6 flex rounded-full opacity-75 absolute left-0 top-1/2 transform text-sm transition-colors
+                            -translate-y-[calc(50%-2px)] bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-white
+                            duration-200 justify-center items-center">
+                  {{ this.dataService.active_guild!.name.charAt(0) + this.dataService.active_guild!.name.charAt(1) }}
+                </div>
+              }
+
+              <div class="flex items-center space-x-1 h-full ml-7">
+                <span class="text-gray-300 text-xs font-medium">{{ this.dataService.active_guild!.name }}</span>
+                <span class="text-gray-300 text-xs">(👥 85 - 📊 14)</span>
+              </div>
+              @if (this.obj.global_desc) {
+                <div class="text-gray-300 text-xs ml-7 tracking-tight">📚 › {{ this.obj.global_desc }}</div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- Discord FAQ-Answer Preview -->
   @default {
     <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full

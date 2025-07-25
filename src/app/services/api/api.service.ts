@@ -14,6 +14,7 @@ import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig} from "../types/Config";
 import {BackupData, SecurityFeature, SecurityLogs, UnbanMethod, UnbanRequest} from "../types/Security";
+import {GlobalChatConfig} from "../types/Misc";
 
 @Injectable({
   providedIn: 'root'
@@ -167,6 +168,17 @@ export class ApiService {
    */
   getEventConfig(guild_id: string): Observable<EmbedConfig> {
     return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Fetches the global chat configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to fetch the global chat configuration.
+   * @returns An Observable that emits the GlobalChatConfig object containing the configuration details.
+   */
+  getGuildGlobalChat(guild_id: string): Observable<GlobalChatConfig> {
+    return this.http.get<GlobalChatConfig>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

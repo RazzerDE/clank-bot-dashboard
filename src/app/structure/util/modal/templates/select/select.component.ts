@@ -25,7 +25,7 @@ export class SelectComponent {
   @Input() type: string = '';
   @Input({transform: booleanAttribute}) disabled: boolean = false;
   @Input() options: Role[] | Channel[] | SelectItems[] = [];
-  @Input() activeOption: string | null = null;
+  @Input() activeOption: string | null | undefined = null;
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
   isRolePickerValid: boolean = false;
   @Output() selectionChange = new EventEmitter<string[] | string>();
@@ -33,6 +33,7 @@ export class SelectComponent {
   @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faHashtag: IconDefinition = faHashtag;
+  protected isFocused: boolean = false;
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService) {}
 
