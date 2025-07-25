@@ -452,6 +452,15 @@
   "ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE": "Unban request not found",
   "ERROR_SECURITY_UNBAN_NOT_FOUND_DESC": "The unban request could not be found - has it already been processed?",
 
+  "SUCCESS_MISC_GLOBAL_CUSTOMIZE_TITLE": "Global Chat design saved",
+  "SUCCESS_MISC_GLOBAL_CUSTOMIZE_DESC": "The design of the global chat was successfully saved and is now active for new messages!",
+  "SUCCESS_MISC_GLOBAL_LOCK_TITLE": "Global Chat closed",
+  "SUCCESS_MISC_GLOBAL_LOCK_DESC": "The global chat was successfully closed - users on your server can no longer send new messages.",
+  "SUCCESS_MISC_GLOBAL_UNLOCK_TITLE": "Global Chat opened",
+  "SUCCESS_MISC_GLOBAL_UNLOCK_DESC": "The global chat was successfully opened - users on your server can now send new messages again.",
+  "ERROR_MISC_GLOBAL_MISSING_TITLE": "Global Chat not set yet",
+  "ERROR_MISC_GLOBAL_MISSING_DESC": "First set the global chat using the right select menu before you can customize the design!",
+
   "SUCCESS_SECURITY_FORUM_SET_TITLE": "Log forum set",
   "SUCCESS_SECURITY_FORUM_SET_DESC": "The log forum channel <strong>{{name}}</strong> <i>({{id}})</i> will be set up shortly - please wait a few minutes!",
   "SUCCESS_SECURITY_FORUM_DELETE_TITLE": "Log forum removed",

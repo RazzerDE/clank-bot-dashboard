@@ -452,6 +452,15 @@
   "ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE": "Entsperrungs-Antrag nicht gefunden",
   "ERROR_SECURITY_UNBAN_NOT_FOUND_DESC": "Der Entsperrungs-Antrag konnte nicht gefunden werden - wurde er bereits bearbeitet?",
 
+  "SUCCESS_MISC_GLOBAL_CUSTOMIZE_TITLE": "Global-Chat Design gespeichert",
+  "SUCCESS_MISC_GLOBAL_CUSTOMIZE_DESC": "Das Design des Global-Chats wurde erfolgreich gespeichert & ist nun aktiv für neue Nachrichten!",
+  "SUCCESS_MISC_GLOBAL_LOCK_TITLE": "Global-Chat geschlossen",
+  "SUCCESS_MISC_GLOBAL_LOCK_DESC": "Der Global-Chat wurde erfolgreich geschlossen - User auf deinem Server können keine neuen Nachrichten mehr senden.",
+  "SUCCESS_MISC_GLOBAL_UNLOCK_TITLE": "Global-Chat geöffnet",
+  "SUCCESS_MISC_GLOBAL_UNLOCK_DESC": "Der Global-Chat wurde erfolgreich geöffnet - User auf deinem Server können nun wieder neue Nachrichten senden.",
+  "ERROR_MISC_GLOBAL_MISSING_TITLE": "Global-Chat noch nicht festgelegt",
+  "ERROR_MISC_GLOBAL_MISSING_DESC": "Lege über das rechte Select-Menü erst den Global-Chat fest, bevor du das Design anpassen kannst!",
+
   "SUCCESS_SECURITY_FORUM_SET_TITLE": "Log-Forum festgelegt",
   "SUCCESS_SECURITY_FORUM_SET_DESC": "Der Log-Forum-Kanal <strong>{{name}}</strong> <i>({{id}})</i> wird in Kürze eingerichtet - warte ein paar Minuten!",
   "SUCCESS_SECURITY_FORUM_DELETE_TITLE": "Log-Forum entfernt",

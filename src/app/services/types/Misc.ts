@@ -1,3 +1,10 @@
+export interface GlobalChatCustomizing {
+  bot_name: null | string;
+  bot_avatar: null | string;
+  lock_reason: null | string;
+  description: null | string;
+}
+
 export interface GlobalChatConfigDetails {
   guild_id?: string;
   channel_id: string | null;

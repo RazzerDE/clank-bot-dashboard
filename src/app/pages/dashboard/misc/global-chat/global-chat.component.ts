@@ -20,7 +20,7 @@ import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
 import {ComService} from "../../../../services/discord-com/com.service";
-import {GlobalChatConfig, GlobalChatConfigDetails} from "../../../../services/types/Misc";
+import {GlobalChatConfig, GlobalChatConfigDetails, GlobalChatCustomizing} from "../../../../services/types/Misc";
 import {NgClass} from "@angular/common";
 import {faUnlock} from "@fortawesome/free-solid-svg-icons/faUnlock";
 import {FormsModule} from "@angular/forms";
@@ -44,8 +44,10 @@ import {FormsModule} from "@angular/forms";
 })
 export class GlobalChatComponent implements OnDestroy {
   protected readonly faCircleQuestion: IconDefinition = faCircleQuestion;
+  protected readonly faUnlock: IconDefinition = faUnlock;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faRefresh: IconDefinition = faRefresh;
+  protected readonly Number: NumberConstructor = Number;
   protected readonly faTrash: IconDefinition = faTrash;
   protected readonly faImage: IconDefinition = faImage;
   protected readonly faUser: IconDefinition = faUser;
@@ -53,6 +55,8 @@ export class GlobalChatComponent implements OnDestroy {
   protected readonly faLock: IconDefinition = faLock;
   private readonly subscription: Subscription | null = null;
   protected isInvalidAvatar: boolean = false;
+  protected disabledSendBtn: boolean = false;
+  protected disabledLockBtn: boolean = false;
 
   private details: GlobalChatConfigDetails = { channel_id: null, message_count: 0, created_at: Date.now(), lock_reason: null,
                                                bot_name: null, bot_avatar_url: null, invite: null };
@@ -91,7 +95,7 @@ export class GlobalChatComponent implements OnDestroy {
    *
    * @param channel_id - The ID of the channel to be set for the global chat.
    */
-  saveGlobalChat(channel_id: string): void {
+  protected saveGlobalChat(channel_id: string): void {
     if (this.global_chat.global_config) { this.global_chat.global_config.channel_id = channel_id;
     } else {
       this.global_chat.global_config = { channel_id: channel_id, message_count: 0, created_at: Date.now(),
@@ -105,6 +109,17 @@ export class GlobalChatComponent implements OnDestroy {
    */
   protected hasChatChanges(): boolean {
     return JSON.stringify(this.org_global_chat.global_config?.channel_id) !== JSON.stringify(this.global_chat.global_config?.channel_id);
+  }
+
+  /**
+   * Checks if there are unsaved customization changes in the global chat configuration.
+   *
+   * @returns {boolean} Whether customization fields have been modified.
+   */
+  protected hasCustomizeChanges(): boolean {
+    return JSON.stringify(this.org_global_chat.global_config?.bot_name) !== JSON.stringify(this.global_chat.global_config?.bot_name) ||
+           JSON.stringify(this.org_global_chat.global_config?.bot_avatar_url) !== JSON.stringify(this.global_chat.global_config?.bot_avatar_url) ||
+           JSON.stringify(this.org_global_chat.global_desc) !== JSON.stringify(this.global_chat.global_desc);
   }
 
   /**
@@ -130,7 +145,7 @@ export class GlobalChatComponent implements OnDestroy {
    *
    * @param event - The input event containing the avatar URL.
    */
-  verifyAvatarURL(event: Event): void {
+  protected verifyAvatarURL(event: Event): void {
     const input: HTMLInputElement = event.target as HTMLInputElement;
     const url: string = input.value.trim();
     if (url.length === 0) { this.global_chat.global_config!.bot_avatar_url = null; this.isInvalidAvatar = true; return; }
@@ -147,6 +162,67 @@ export class GlobalChatComponent implements OnDestroy {
     img.onload = (): void => { this.global_chat.global_config!.bot_avatar_url = url; this.isInvalidAvatar = false; };
     img.onerror = (): void => { this.global_chat.global_config!.bot_avatar_url = null; this.isInvalidAvatar = true; };
     img.src = url;
+  }
+
+  /**
+   * Saves the customizing options for the global chat configuration.
+   *
+   * @param lock Optional. If true, the global chat lock action will be changed
+   */
+  protected saveCustomizing(lock?: boolean): void {
+    if (!this.dataService.active_guild) { return; }
+    if (lock) { this.global_chat.global_config!.lock_reason = this.global_chat.global_config!.lock_reason ? null : '/'; }
+
+    const customizing: GlobalChatCustomizing = {
+      bot_name: this.global_chat.global_config!.bot_name, bot_avatar: this.global_chat.global_config!.bot_avatar_url,
+      lock_reason: this.global_chat.global_config!.lock_reason, description: this.global_chat.global_desc
+    }
+
+    lock ? this.disabledLockBtn = true : this.disabledSendBtn = true;
+    const sub: Subscription = this.apiService.saveGlobalChatCustomizing(this.dataService.active_guild.id, customizing)
+      .subscribe({
+        next: (_: Object): void => {
+          sub.unsubscribe();
+          this.org_global_chat = JSON.parse(JSON.stringify(this.global_chat));
+          localStorage.setItem('misc_globalchat', JSON.stringify(this.global_chat));
+          this.dataService.error_color = 'green';
+
+          if (lock) {
+            if (customizing.lock_reason) {
+              this.dataService.showAlert(this.translate.instant("SUCCESS_MISC_GLOBAL_LOCK_TITLE"),
+                this.translate.instant("SUCCESS_MISC_GLOBAL_LOCK_DESC"));
+            } else {
+              this.dataService.showAlert(this.translate.instant("SUCCESS_MISC_GLOBAL_UNLOCK_TITLE"),
+                this.translate.instant("SUCCESS_MISC_GLOBAL_LOCK_DESC"));
+            }
+
+            setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 5000);
+          } else {
+            this.dataService.showAlert(this.translate.instant("SUCCESS_MISC_GLOBAL_CUSTOMIZE_TITLE"),
+              this.translate.instant("SUCCESS_MISC_GLOBAL_CUSTOMIZE_DESC"));
+          }
+
+        },
+        error: (err: HttpErrorResponse): void => {
+
+          if (err.status === 404) {
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_MISSING_TITLE"),
+              this.translate.instant("ERROR_MISC_GLOBAL_MISSING_DESC"));
+          } else if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+
+          setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 2000);
+          sub.unsubscribe();
+        }
+      });
   }
 
   /**
@@ -204,8 +280,4 @@ export class GlobalChatComponent implements OnDestroy {
         }
       });
   }
-
-
-  protected readonly Number = Number;
-  protected readonly faUnlock = faUnlock;
 }
