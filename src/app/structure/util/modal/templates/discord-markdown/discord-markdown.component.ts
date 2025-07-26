@@ -8,6 +8,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Giveaway} from "../../../../../services/types/Events";
 import {DatePipe as own} from "../../../../../pipes/date/date.pipe";
+import {GlobalChatConfig} from "../../../../../services/types/Misc";
 
 @Component({
   selector: 'template-discord-markdown',
@@ -27,6 +28,8 @@ export class DiscordMarkdownComponent {
   @Input() content: string = '';
   @Input() no_overlay: boolean = false;
   @Input() giveaway: Giveaway | null = null;
+  @Input() invalidAvatar: boolean = false;
+  @Input() obj: GlobalChatConfig = {} as GlobalChatConfig;
 
   // Other Preview Elements
   @ViewChild('faqPreview') faqPreview!: ElementRef<HTMLSpanElement>;
@@ -38,6 +41,8 @@ export class DiscordMarkdownComponent {
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
   protected ownDatePipe: own = new own();
+
+  protected invalidServerImg: boolean = false;
 
   constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
 

@@ -900,4 +900,50 @@ describe('ApiService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
+
+  it('should fetch global chat config for a specific guild', () => {
+    const guild_id = 'guild123';
+    const mockResponse = { enabled: true, channel_id: 'chan456' } as any;
+
+    service.getGuildGlobalChat(guild_id).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/misc/global-chat?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should save global chat customizing for a specific guild', () => {
+    const guild_id = 'guild123';
+    const customize = { theme: 'dark', notifications: true } as any;
+    const mockResponse = { success: true };
+
+    service.saveGlobalChatCustomizing(guild_id, customize).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/misc/global-chat?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(customize);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
+
+  it('should update global chat config for a specific guild', () => {
+    const guild_id = 'guild123';
+    const updated = { enabled: false, channel_id: 'chan789' } as any;
+    const mockResponse = { success: true };
+
+    service.updateGlobalChat(guild_id, updated).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${service['API_URL']}/guilds/misc/global-chat?guild_id=${guild_id}`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(updated);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
+    req.flush(mockResponse);
+  });
 });

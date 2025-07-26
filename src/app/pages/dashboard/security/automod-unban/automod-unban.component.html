@@ -76,14 +76,14 @@
 
         <!-- Footer -->
         <div class="flex justify-between gap-4 p-6 border-t border-gray-200 dark:border-slate-700 ">
-          <button class="inline-block p-3 tflex items-center justify-center bg-gradient-to-r from-orange-600 via-red-600
+          <button class="inline-block p-3 items-center justify-center bg-gradient-to-r from-orange-600 via-red-600
                          to-red-600 hover:from-orange-600 hover:via-red-600 hover:to-red-700 text-white py-2
                          px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600 disabled:!bg-none
                          disabled:cursor-not-allowed"
                   (click)="this.modalElement = autoModBtn; this.modal.showModal();" #autoModBtn>
             <fa-icon [icon]="faShieldHalved" class="mr-1" /> {{ 'PAGE_SECURITY_AUTOMOD_BUTTON_TITLE' | translate }}
           </button>
-          <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
+          <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600
                        to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
                        text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
                   [disabled]="disabledCacheBtn" (click)="refreshCache()">

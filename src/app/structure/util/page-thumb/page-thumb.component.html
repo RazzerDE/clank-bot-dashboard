@@ -2,7 +2,7 @@
             dark:via-gray-800 dark:to-slate-900 px-4 sm:p-10 transition-colors duration-500 shadow-md dark:shadow-2xl"
      [ngClass]="{'bg-gradient-to-r':  color == 'blue'       || color == 'green'       || color == 'red-pink',
                  'bg-gradient-to-b':  color == 'yellow'     || color == 'red'         || color == 'orange-red',
-                 'bg-gradient-to-tr': color == 'red-bright' || color == 'cyan',
+                 'bg-gradient-to-tr': color == 'red-bright' || color == 'cyan'        || color == 'green-yellow',
                  'bg-gradient-to-br': color == 'purple'     || color == 'orange',
                  'bg-gradient-to-bl': color == 'rosa'       || color == 'red-yellow',
                  'sm:!p-4': size === 'less'}">
@@ -18,18 +18,19 @@
     </p>
     <div class="mt-1 text-center text-4xl md:text-5xl font-extrabold !leading-tight tracking-tight
                 transition-colors duration-500 bg-gradient-to-r bg-clip-text text-transparent"
-         [ngClass]="color == 'yellow'     ? 'from-yellow-400 via-orange-500 to-orange-600' :
-                    color == 'red'        ? 'from-red-800 via-red-500 to-red-600' :
-                    color == 'red-bright' ? 'from-red-500 via-rose-500 to-red-700' :
-                    color == 'red-yellow' ? 'from-red-600 via-red-500 to-orange-500' :
-                    color == 'red-pink'   ? 'from-rose-600 via-red-400 to-pink-500' :
-                    color == 'green'      ? 'from-green-300 via-green-500 to-green-700' :
-                    color == 'purple'     ? 'from-purple-400 via-fuchsia-500 to-purple-700' :
-                    color == 'rosa'       ? 'from-pink-400 via-rose-500 to-fuchsia-600' :
-                    color == 'cyan'       ? 'from-cyan-400 via-cyan-500 to-cyan-700' :
-                    color == 'orange'     ? 'from-red-600 via-red-500 to-orange-400' :
-                    color == 'orange-red' ? 'from-orange-600 via-orange-500 to-red-500' :
-                                            'from-blue-400 via-blue-500 to-blue-700'">
+         [ngClass]="color == 'yellow'       ? 'from-yellow-400 via-orange-500 to-orange-600' :
+                    color == 'red'          ? 'from-red-800 via-red-500 to-red-600' :
+                    color == 'red-bright'   ? 'from-red-500 via-rose-500 to-red-700' :
+                    color == 'red-yellow'   ? 'from-red-600 via-red-500 to-orange-500' :
+                    color == 'red-pink'     ? 'from-rose-600 via-red-400 to-pink-500' :
+                    color == 'green'        ? 'from-green-300 via-green-500 to-green-700' :
+                    color == 'green-yellow' ? 'from-lime-400 via-green-400 to-emerald-400' :
+                    color == 'purple'       ? 'from-purple-400 via-fuchsia-500 to-purple-700' :
+                    color == 'rosa'         ? 'from-pink-400 via-rose-500 to-fuchsia-600' :
+                    color == 'cyan'         ? 'from-cyan-400 via-cyan-500 to-cyan-700' :
+                    color == 'orange'       ? 'from-red-600 via-red-500 to-orange-400' :
+                    color == 'orange-red'   ? 'from-orange-600 via-orange-500 to-red-500' :
+                                              'from-blue-400 via-blue-500 to-blue-700'">
       {{ title }}
     </div>
     <div class="text-gray-500 mt-2 text-xl max-w-3xl text-center tracking-tight transition-colors duration-500">

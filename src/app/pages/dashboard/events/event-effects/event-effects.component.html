@@ -26,7 +26,7 @@
           <div class="border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 px-6">
             <ul class="flex -mb-px justify-between w-full items-center">
               <li> <!-- Save Button -->
-                <button class="inline-block p-3 tflex items-center justify-center bg-indigo-600 hover:bg-indigo-700
+                <button class="inline-block p-3 items-center justify-center bg-indigo-600 hover:bg-indigo-700
                              text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600"
                         [disabled]="disableSendBtn || !isCardListChanged()" (click)="saveEventEffects(this.event_cards)">
                   <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
@@ -59,7 +59,7 @@
               </div>
 
               <li> <!-- Refresh Button -->
-                <button class="inline-block p-3 tflex items-center justify-center from-blue-700 via-blue-600
+                <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600
                            to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
                            text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
                         [disabled]="disabledCacheBtn" (click)="refreshCache()">
