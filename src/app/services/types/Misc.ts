@@ -5,6 +5,12 @@ export interface GlobalChatCustomizing {
   description: null | string;
 }
 
+export interface GlobalChatObject {
+  guild_id: string;
+  object_id: string;
+  is_delete: boolean;
+}
+
 export interface GlobalChatConfigDetails {
   guild_id?: string;
   channel_id: string | null;
@@ -21,4 +27,8 @@ export interface GlobalChatConfig {
   channel_count: number;
   total_message_count: number;
   global_desc: null | string;
+
+  // Pending properties
+  global_chat_pending_id?: string | null;
+  global_chat_pending_delete?: boolean;
 }

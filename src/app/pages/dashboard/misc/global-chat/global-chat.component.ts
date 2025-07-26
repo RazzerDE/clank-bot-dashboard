@@ -20,8 +20,13 @@ import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
 import {ComService} from "../../../../services/discord-com/com.service";
-import {GlobalChatConfig, GlobalChatConfigDetails, GlobalChatCustomizing} from "../../../../services/types/Misc";
-import {NgClass} from "@angular/common";
+import {
+  GlobalChatConfig,
+  GlobalChatConfigDetails,
+  GlobalChatCustomizing,
+  GlobalChatObject
+} from "../../../../services/types/Misc";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 import {faUnlock} from "@fortawesome/free-solid-svg-icons/faUnlock";
 import {FormsModule} from "@angular/forms";
 
@@ -37,7 +42,8 @@ import {FormsModule} from "@angular/forms";
     NgbTooltip,
     DiscordMarkdownComponent,
     NgClass,
-    FormsModule
+    FormsModule,
+    NgOptimizedImage
   ],
   templateUrl: './global-chat.component.html',
   styleUrl: './global-chat.component.scss'
@@ -57,6 +63,7 @@ export class GlobalChatComponent implements OnDestroy {
   protected isInvalidAvatar: boolean = false;
   protected disabledSendBtn: boolean = false;
   protected disabledLockBtn: boolean = false;
+  protected disableUpdateBtn: boolean = false;
 
   private details: GlobalChatConfigDetails = { channel_id: null, message_count: 0, created_at: Date.now(), lock_reason: null,
                                                bot_name: null, bot_avatar_url: null, invite: null };
@@ -125,14 +132,14 @@ export class GlobalChatComponent implements OnDestroy {
   /**
    * Refreshes the cache by disabling the cache button, setting the loading state,
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
-   * after 30 seconds.
+   * after 15 seconds.
    */
   protected refreshCache(element: HTMLButtonElement): void {
     element.disabled = true;
     this.dataService.isLoading = true;
     this.getGlobalChat(true);
 
-    setTimeout((): void => { element.disabled = false; }, 30000);
+    setTimeout((): void => { element.disabled = false; }, 15000);
   }
 
   /**
@@ -171,8 +178,14 @@ export class GlobalChatComponent implements OnDestroy {
    */
   protected saveCustomizing(lock?: boolean): void {
     if (!this.dataService.active_guild) { return; }
-    if (lock) { this.global_chat.global_config!.lock_reason = this.global_chat.global_config!.lock_reason ? null : '/'; }
+    if (!this.global_chat.global_config?.bot_avatar_url || this.isInvalidAvatar) {
+      this.dataService.error_color = 'red';
+      this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
+        this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_DESC"));
+      return;
+    }
 
+    if (lock) { this.global_chat.global_config!.lock_reason = this.global_chat.global_config!.lock_reason ? null : '/'; }
     const customizing: GlobalChatCustomizing = {
       bot_name: this.global_chat.global_config!.bot_name, bot_avatar: this.global_chat.global_config!.bot_avatar_url,
       lock_reason: this.global_chat.global_config!.lock_reason, description: this.global_chat.global_desc
@@ -209,6 +222,10 @@ export class GlobalChatComponent implements OnDestroy {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_MISSING_TITLE"),
               this.translate.instant("ERROR_MISC_GLOBAL_MISSING_DESC"));
+          } else if (err.status === 409) {
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
+              this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_DESC"));
           } else if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
@@ -220,6 +237,63 @@ export class GlobalChatComponent implements OnDestroy {
           }
 
           setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 2000);
+          sub.unsubscribe();
+        }
+      });
+  }
+
+  /**
+   * Updates the global chat configuration for the active guild.
+   *
+   * Sends an update request to the backend API to either set or delete the global chat channel,
+   * depending on the `is_delete` flag. Handles success and error responses, updates local state,
+   * and provides user feedback via alerts.
+   *
+   * @param is_delete Optional. If true, deletes the global chat channel; otherwise, sets it.
+   */
+  protected updateGlobalChat(is_delete?: boolean): void  {
+    if (!this.dataService.active_guild || !this.global_chat.global_config?.channel_id) { return; }
+
+    const updated: GlobalChatObject = { guild_id: this.dataService.active_guild.id, is_delete: !!is_delete,
+                                        object_id: this.global_chat.global_config?.channel_id }
+
+    this.disableUpdateBtn = true;
+    const sub: Subscription = this.apiService.updateGlobalChat(this.dataService.active_guild.id, updated)
+      .subscribe({
+        next: (_: Object): void => {
+          sub.unsubscribe();
+
+          this.global_chat.global_chat_pending_id = this.global_chat.global_config!.channel_id;
+          this.global_chat.global_chat_pending_delete = is_delete;
+
+          this.dataService.error_color = 'green';
+          this.dataService.showAlert(this.translate.instant(`SUCCESS_MISC_GLOBAL_${is_delete ? 'DELETE' : 'SET'}_TITLE`),
+            this.translate.instant(`SUCCESS_MISC_GLOBAL_${is_delete ? 'DELETE' : 'SET'}_DESC`));
+
+          this.org_global_chat = JSON.parse(JSON.stringify(this.global_chat));
+          localStorage.setItem('misc_globalchat', JSON.stringify(this.global_chat));
+          this.disableUpdateBtn = false;
+        },
+        error: (err: HttpErrorResponse): void => {
+          if (err.status === 404) {  // channel doesnt exist, no reason to delete it
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_MISSING_TITLE"),
+              this.translate.instant("ERROR_MISC_GLOBAL_MISSING_DESC"));
+          } else if (err.status === 409) { // same channel already set as global chat
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_ALREADY_SET_TITLE"),
+              this.translate.instant("ERROR_MISC_GLOBAL_ALREADY_SET_DESC"));
+          } else if (err.status === 429) {
+            this.dataService.redirectLoginError('REQUESTS');
+            return;
+          } else if (err.status === 0) {
+            this.dataService.redirectLoginError('OFFLINE');
+            return;
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+
+          this.disableUpdateBtn = false;
           sub.unsubscribe();
         }
       });
@@ -255,6 +329,8 @@ export class GlobalChatComponent implements OnDestroy {
             config.global_config = { channel_id: null, message_count: 0, created_at: Date.now(),
               lock_reason: null, bot_name: null, bot_avatar_url: null, invite: null };
           }
+
+          if (config.global_chat_pending_id) { config.global_config.channel_id = config.global_chat_pending_id; }
 
           this.global_chat = config;
           this.org_global_chat = JSON.parse(JSON.stringify(this.global_chat));

@@ -14,7 +14,7 @@ import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
 import {EmbedConfig} from "../types/Config";
 import {BackupData, SecurityFeature, SecurityLogs, UnbanMethod, UnbanRequest} from "../types/Security";
-import {GlobalChatConfig, GlobalChatCustomizing} from "../types/Misc";
+import {GlobalChatConfig, GlobalChatCustomizing, GlobalChatObject} from "../types/Misc";
 
 @Injectable({
   providedIn: 'root'
@@ -191,6 +191,18 @@ export class ApiService {
    */
   saveGlobalChatCustomizing(guild_id: string, customize: GlobalChatCustomizing): Observable<Object> {
     return this.http.post<Object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, customize,
+      { headers: this.authService.headers });
+  }
+
+  /**
+   * Updates the global chat configuration for a specific guild.
+   *
+   * @param guild_id - The ID of the guild for which to update the global chat.
+   * @param updated - The updated GlobalChatObject containing the new configuration.
+   * @returns An Observable emitting the server's response.
+   */
+  updateGlobalChat(guild_id: string, updated: GlobalChatObject): Observable<Object> {
+    return this.http.put<Object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, updated,
       { headers: this.authService.headers });
   }
 

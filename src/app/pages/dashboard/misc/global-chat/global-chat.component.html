@@ -38,19 +38,22 @@
           <div class="flex flex-row items-center gap-3 mb-4 w-full">
             <template-select [options]="this.dataService.guild_channels" [type]="'MISC_GLOBALCHAT'" class="w-full"
                              [id]="'channelpicker'" [activeOption]="this.global_chat.global_config?.channel_id"
-                             (selectionChange)="saveGlobalChat($event[0])" />
+                             (selectionChange)="saveGlobalChat($event[0])" [disabled]="global_chat.global_chat_pending_id" />
 
             <div class="w-2/3 flex flex-row gap-2">
               <button class="bg-green-500 hover:bg-green-600 dark:bg-green-600 hover:dark:bg-green-700 text-white
                              py-2 px-4 rounded-md transition-colors duration-200 w-full disabled:!bg-none
-                           disabled:!bg-gray-700 disabled:cursor-not-allowed"
-                      [disabled]="!this.hasChatChanges()">
+                           disabled:!bg-gray-700 disabled:cursor-not-allowed" (click)="updateGlobalChat(false)"
+                      [disabled]="!this.hasChatChanges() || global_chat.global_chat_pending_id || disabledLockBtn">
                 <fa-icon [icon]="faHashtag" class="me-2" />{{ 'PAGE_MISC_GLOBALCHAT_BUTTON_SET' | translate }}
               </button>
               <button class="bg-gradient-to-r from-red-500 via-pink-600 to-red-500 hover:from-red-600
                              hover:to-pink-700 text-white font-semibold px-3 py-2 rounded-lg shadow-lg w-1/4
                              transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
-                      [disabled]="!this.org_global_chat.global_config || (this.org_global_chat.global_config && !this.org_global_chat.global_config.channel_id)">
+                      (click)="updateGlobalChat(true)"
+                      [disabled]="!this.org_global_chat.global_config || global_chat.global_chat_pending_id ||
+                                  (this.org_global_chat.global_config && !this.org_global_chat.global_config.channel_id)
+                                  || disabledLockBtn">
                 <fa-icon [icon]="faTrash" />
               </button>
             </div>
@@ -84,34 +87,46 @@
           </div>
         </div>
 
-        <!-- Footer -->
-        <div class="flex justify-between gap-4 p-6 border-t border-gray-200 dark:border-slate-700 w-full items-center">
-          <button class="inline-block p-3 items-center justify-center focus:ring-4 bg-gradient-to-r
+
+          <!-- Footer -->
+          <div class="flex gap-4 p-6 border-t border-gray-200 dark:border-slate-700 w-full items-center"
+               [ngClass]="this.org_global_chat.global_config?.channel_id && !this.global_chat.global_chat_pending_id
+                          ? 'justify-between' : 'justify-center'">
+            @if (this.org_global_chat.global_config?.channel_id && !this.global_chat.global_chat_pending_id) {
+              <button class="inline-block p-3 items-center justify-center focus:ring-4 bg-gradient-to-r
                          hover:bg-gradient-to-br text-white py-2 px-4 rounded-md transition-colors duration-200
                          disabled:bg-gray-700 disabled:bg-none" (click)="saveCustomizing(true)" [disabled]="disabledLockBtn"
-          [ngClass]="this.global_chat.global_config?.lock_reason ? 'from-green-700 via-green-600 to-green-500 focus:ring-green-700' :
-                                                                   'from-red-700 via-red-600 to-red-500 focus:ring-red-700'">
-            @if (!this.global_chat.global_config?.lock_reason) {
-              <fa-icon [icon]="faLock" class="me-2" />{{ 'PAGE_MISC_GLOBALCHAT_BUTTON_LOCK' | translate }}
-            } @else {
-              <fa-icon [icon]="faUnlock" class="me-2" />{{ 'PAGE_MISC_GLOBALCHAT_BUTTON_UNLOCK' | translate }}
-            }
+                      [ngClass]="this.global_chat.global_config?.lock_reason ? 'from-green-700 via-green-600 to-green-500 focus:ring-green-700' :
+                                                                               'from-red-700 via-red-600 to-red-500 focus:ring-red-700'">
+                @if (!this.global_chat.global_config?.lock_reason) {
+                  <fa-icon [icon]="faLock" class="me-2" />{{ 'PAGE_MISC_GLOBALCHAT_BUTTON_LOCK' | translate }}
+                } @else {
+                  <fa-icon [icon]="faUnlock" class="me-2" />{{ 'PAGE_MISC_GLOBALCHAT_BUTTON_UNLOCK' | translate }}
+                }
 
-          </button>
-          <span class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mb-0 text-base py-2"
-                [class.cursor-help]="!this.global_chat.global_config?.lock_reason" tooltipClass="table-tooltip"
-                [ngbTooltip]="!this.global_chat.global_config?.lock_reason ? tooltipContent : null" placement="auto">
-            @if (!this.global_chat.global_config?.lock_reason) {
-              {{ 'PAGE_MISC_GLOBALCHAT_BUTTON_TOOLTIP' | translate }} <fa-icon [icon]="faCircleQuestion" class="ml-1" />
-            } @else {
-              {{ 'PAGE_MISC_GLOBALCHAT_BUTTON_TOOLTIP_UNLOCKED' | translate }}
-            }
-          </span>
+              </button>
+              <span class="text-gray-500 dark:text-gray-400 transition-colors duration-300 mb-0 text-base py-2"
+                    [class.cursor-help]="!this.global_chat.global_config?.lock_reason" tooltipClass="table-tooltip"
+                    [ngbTooltip]="!this.global_chat.global_config?.lock_reason ? tooltipContent : null" placement="auto">
+                @if (!this.global_chat.global_config?.lock_reason) {
+                  {{ 'PAGE_MISC_GLOBALCHAT_BUTTON_TOOLTIP' | translate }} <fa-icon [icon]="faCircleQuestion" class="ml-1" />
+                } @else {
+                  {{ 'PAGE_MISC_GLOBALCHAT_BUTTON_TOOLTIP_UNLOCKED' | translate }}
+                }
+              </span>
 
-          <ng-template #tooltipContent>
-            <div [innerText]="'PAGE_MISC_GLOBALCHAT_TOOLTIP_LOCK' | translate"></div>
-          </ng-template>
-        </div>
+              <ng-template #tooltipContent>
+                <div [innerText]="'PAGE_MISC_GLOBALCHAT_TOOLTIP_LOCK' | translate"></div>
+              </ng-template>
+            } @else {
+              <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600
+                       to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
+                       text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                      (click)="this.refreshCache(cacheBtn)" #cacheBtn>
+                <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+              </button>
+            }
+          </div>
       </div>
 
       <!-- Personalize Global-Chat - Container -->
@@ -133,91 +148,118 @@
           </div>
         </div>
 
-        <!-- Content -->
-        <div class="flex flex-col p-3 h-full">
-          <div class="flex flex-row w-full h-full gap-8">
+        @if (this.org_global_chat.global_config?.channel_id && !this.global_chat.global_chat_pending_id) {
+          <!-- Content -->
+          <div class="flex flex-col p-3 h-full">
+            <div class="flex flex-row w-full h-full gap-8">
 
-            <!-- Left Area - Input -->
-            <div class="flex flex-col gap-4 flex-[0.7] max-w-md justify-center">
-              <label class="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200"
-                     for="global-chat-name">
-                <span>{{ 'PAGE_MISC_GLOBALCHAT_NAME_LABEL' | translate }}</span>
+              <!-- Left Area - Input -->
+              <div class="flex flex-col gap-4 flex-[0.7] max-w-md justify-center">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200"
+                       for="global-chat-name">
+                  <span>{{ 'PAGE_MISC_GLOBALCHAT_NAME_LABEL' | translate }}</span>
 
-                <div class="relative mt-2">
-                  <fa-icon [icon]="faUser" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400
+                  <div class="relative mt-2">
+                    <fa-icon [icon]="faUser" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400
                                                 dark:text-gray-300 pointer-events-none transition-colors duration-200" />
-                  @if (this.global_chat.global_config) {
-                    <input type="text" placeholder="Clank's Global-Chat" id="global-chat-name"
-                           [(ngModel)]="this.global_chat.global_config.bot_name" maxlength="32"
-                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
+                    @if (this.global_chat.global_config) {
+                      <input type="text" placeholder="Clank's Global-Chat" id="global-chat-name"
+                             [(ngModel)]="this.global_chat.global_config.bot_name" maxlength="32"
+                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                               focus:border-primary-500 block w-full p-2.5 pl-10 dark:bg-gray-600 dark:!border-gray-500
                               dark:placeholder-gray-400 dark:text-white transition-colors duration-200" />
-                  }
+                    }
 
-                </div>
-              </label>
+                  </div>
+                </label>
 
-              <label class="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200"
-                     for="global-chat-avatar">
-                <span>{{ 'PAGE_MISC_GLOBALCHAT_AVATAR_LABEL' | translate }}</span>
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200"
+                       for="global-chat-avatar">
+                  <span>{{ 'PAGE_MISC_GLOBALCHAT_AVATAR_LABEL' | translate }}</span>
 
-                <div class="relative mt-2">
-                  <fa-icon [icon]="faImage" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400
+                  <div class="relative mt-2">
+                    <fa-icon [icon]="faImage" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400
                                                 dark:text-gray-300 pointer-events-none transition-colors duration-200" />
-                  @if (this.global_chat.global_config) {
-                    <input type="text" placeholder="https://i.imgur.com/WS9wxnB.jpeg" id="global-chat-avatar"
-                           [(ngModel)]="this.global_chat.global_config!.bot_avatar_url" (input)="verifyAvatarURL($event)"
-                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
+                    @if (this.global_chat.global_config) {
+                      <input type="text" placeholder="https://i.imgur.com/WS9wxnB.jpeg" id="global-chat-avatar"
+                             [(ngModel)]="this.global_chat.global_config!.bot_avatar_url" (input)="verifyAvatarURL($event)"
+                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                               focus:border-primary-500 block w-full p-2.5 pl-10 dark:bg-gray-600 dark:!border-gray-500
                               dark:placeholder-gray-400 dark:text-white transition-colors duration-200" />
-                  }
-                </div>
-              </label>
-              <label class="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200"
-                     for="global-chat-desc">
-                <span>{{ 'PAGE_MISC_GLOBALCHAT_DESC_LABEL' | translate }}</span>
+                    }
+                  </div>
+                </label>
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200"
+                       for="global-chat-desc">
+                  <span>{{ 'PAGE_MISC_GLOBALCHAT_DESC_LABEL' | translate }}</span>
 
-                <div class="relative mt-2">
-                  <fa-icon [icon]="faImage" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400
+                  <div class="relative mt-2">
+                    <fa-icon [icon]="faImage" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400
                                                 dark:text-gray-300 pointer-events-none transition-colors duration-200" />
-                  <textarea type="text" [placeholder]="'PAGE_MISC_GLOBALCHAT_DESC_PLACEHOLDER' | translate"
-                                        id="global-chat-desc" minlength="5" maxlength="65"
-                            [(ngModel)]="this.global_chat.global_desc"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                    <textarea type="text" [placeholder]="'PAGE_MISC_GLOBALCHAT_DESC_PLACEHOLDER' | translate"
+                              id="global-chat-desc" minlength="5" maxlength="65"
+                              [(ngModel)]="this.global_chat.global_desc"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                    focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 pl-10
                                    dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400
                                    dark:text-white min-h-8 transition-colors duration-200 resize-none"></textarea>
-                </div>
-              </label>
-            </div>
+                  </div>
+                </label>
+              </div>
 
-            <!-- Divider - Hidden on small screens -->
-            <div class="hidden md:flex items-center">
-              <div class="w-px h-4/5 bg-gray-300 dark:bg-gray-700 transition-colors duration-200"></div>
-            </div>
+              <!-- Divider - Hidden on small screens -->
+              <div class="hidden md:flex items-center">
+                <div class="w-px h-4/5 bg-gray-300 dark:bg-gray-700 transition-colors duration-200"></div>
+              </div>
 
-            <!-- Right Side - Discord Preview -->
-            <div class="flex-1 flex items-center justify-center h-full">
-              <template-discord-markdown [type]="'MISC_GLOBALCHAT'" [obj]="this.global_chat" class="w-full" />
+              <!-- Right Side - Discord Preview -->
+              <div class="flex-1 flex items-center justify-center h-full">
+                <template-discord-markdown [type]="'MISC_GLOBALCHAT'" [obj]="this.global_chat" class="w-full" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Footer -->
-        <div class="flex justify-between gap-4 p-6 border-t border-gray-200 dark:border-slate-700 ">
-          <button class="inline-block p-3 items-center justify-center bg-indigo-600 hover:bg-indigo-700
+          <!-- Footer -->
+          <div class="flex justify-between gap-4 p-6 border-t border-gray-200 dark:border-slate-700 ">
+            <button class="inline-block p-3 items-center justify-center bg-indigo-600 hover:bg-indigo-700
                          text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600
                          disabled:cursor-not-allowed" (click)="this.saveCustomizing()"
-                  [disabled]="!this.hasCustomizeChanges() || disabledSendBtn">
-            <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
-          </button>
-          <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600
+                    [disabled]="!this.hasCustomizeChanges() || disabledSendBtn">
+              <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
+            </button>
+            <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600
                        to-blue-500 focus:ring-blue-700 focus:ring-4 bg-gradient-to-r hover:bg-gradient-to-br
                        text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
-                  (click)="this.refreshCache(cacheBtn)" #cacheBtn>
-            <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
-          </button>
-        </div>
+                    (click)="this.refreshCache(cacheBtn)" #cacheBtn>
+              <fa-icon [icon]="faRefresh" class="me-2" />{{ 'BUTTON_CACHE_REFRESH' | translate }}
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center p-6 h-full">
+            <img [ngSrc]="'assets/img/bg/sleeping.png'" class="animate-float mb-2" width="128" height="128"
+                 alt="Sleeping-Icon ~ Clank Discord-Bot" />
+            <div class="text-center">
+              <h2 class="text-2xl font-medium text-gray-800 dark:text-gray-200 mb-2 transition-colors duration-300">
+                @if (this.global_chat.global_chat_pending_delete) {
+                  {{ 'PAGE_MISC_GLOBALCHAT_DELETION' | translate }}
+                } @else if (this.global_chat.global_chat_pending_id) {
+                  {{ 'PAGE_MISC_GLOBALCHAT_PENDING' | translate }}
+                } @else {
+                  {{ 'PAGE_MISC_GLOBALCHAT_NOT_SET' | translate }}
+                }
+              </h2>
+              <p class="text-gray-500 dark:text-gray-400 text-lg transition-colors duration-300">
+                @if (this.global_chat.global_chat_pending_delete) {
+                  {{ 'PAGE_MISC_GLOBALCHAT_DELETION_DESC' | translate }}
+                } @else if (this.global_chat.global_chat_pending_id) {
+                  {{ 'PAGE_MISC_GLOBALCHAT_PENDING_DESC' | translate }}
+                } @else {
+                  {{ 'PAGE_MISC_GLOBALCHAT_NOT_SET_DESC' | translate }}
+                }
+              </p>
+            </div>
+          </div>
+        }
       </div>
 
     </div>
