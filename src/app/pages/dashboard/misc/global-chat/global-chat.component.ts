@@ -209,12 +209,12 @@ export class GlobalChatComponent implements OnDestroy {
                 this.translate.instant("SUCCESS_MISC_GLOBAL_LOCK_DESC"));
             }
 
-            setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 5000);
           } else {
             this.dataService.showAlert(this.translate.instant("SUCCESS_MISC_GLOBAL_CUSTOMIZE_TITLE"),
               this.translate.instant("SUCCESS_MISC_GLOBAL_CUSTOMIZE_DESC"));
           }
 
+          setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 5000);
         },
         error: (err: HttpErrorResponse): void => {
 
