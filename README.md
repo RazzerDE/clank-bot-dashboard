@@ -52,6 +52,8 @@ It supports following <strong>features</strong>:
   <br /> 
   <li>👥 <strong>Discord-Login</strong>: To log in to the dashboard, the respective user must authenticate with Discord.</li>
   <br /> 
+  <li>📒 <strong>Drag-& Drop</strong>: For some functionalities, we're using Drag-& Drop angular mechanics to make the list management more easier.</li>
+  <br /> 
   <li>🎈 <strong>Catchy Animations</strong>: As soon as an object comes into the user's field of view, a beautiful animation is played if applicable.</li> 
   <br /> 
   <li>🔺 <strong>Work with API-Data</strong>: Here you can see how API data from a REST server could be processed.</li>
