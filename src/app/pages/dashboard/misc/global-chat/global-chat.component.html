@@ -44,7 +44,7 @@
               <button class="bg-green-500 hover:bg-green-600 dark:bg-green-600 hover:dark:bg-green-700 text-white
                              py-2 px-4 rounded-md transition-colors duration-200 w-full disabled:!bg-none
                            disabled:!bg-gray-700 disabled:cursor-not-allowed" (click)="updateGlobalChat(false)"
-                      [disabled]="!this.hasChatChanges() || global_chat.global_chat_pending_id || disabledLockBtn">
+                      [disabled]="!this.hasChatChanges() || global_chat.global_chat_pending_id || disableUpdateBtn">
                 <fa-icon [icon]="faHashtag" class="me-2" />{{ 'PAGE_MISC_GLOBALCHAT_BUTTON_SET' | translate }}
               </button>
               <button class="bg-gradient-to-r from-red-500 via-pink-600 to-red-500 hover:from-red-600
@@ -53,7 +53,7 @@
                       (click)="updateGlobalChat(true)"
                       [disabled]="!this.org_global_chat.global_config || global_chat.global_chat_pending_id ||
                                   (this.org_global_chat.global_config && !this.org_global_chat.global_config.channel_id)
-                                  || disabledLockBtn">
+                                  || disableUpdateBtn">
                 <fa-icon [icon]="faTrash" />
               </button>
             </div>
