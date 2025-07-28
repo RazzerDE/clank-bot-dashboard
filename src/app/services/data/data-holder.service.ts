@@ -10,7 +10,7 @@ import {ComService} from "../discord-com/com.service";
 import {TranslateService} from "@ngx-translate/core";
 import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
 import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
-import {EmbedConfig} from "../types/Config";
+import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
 import {ApiService} from "../api/api.service";
 import {SecurityLogs, UnbanRequest} from "../types/Security";
 
@@ -49,6 +49,7 @@ export class DataHolderService {
   guild_emojis: Emoji[] | string[] = [];
   unban_requests: UnbanRequest[] = [];
   filteredRequests: UnbanRequest[] = this.unban_requests;
+  has_vip: boolean = false;
 
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
@@ -234,8 +235,10 @@ export class DataHolderService {
 
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('gift_config') && localStorage.getItem('gift_config_timestamp') &&
+      localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('gift_config_timestamp')) < 30000 && !no_cache)) {
       this.embed_config = JSON.parse(localStorage.getItem('gift_config') as string);
+      this.has_vip = localStorage.getItem('guild_vip') === 'true';
       if (typeof this.embed_config.color_code === 'number') {
         this.embed_config.color_code = `#${this.embed_config.color_code.toString(16).padStart(6, '0')}`;
       }
@@ -249,18 +252,20 @@ export class DataHolderService {
 
     const sub: Subscription = apiService.getEventConfig(this.active_guild!.id)
       .subscribe({
-        next: (config: EmbedConfig): void => {
-          if (typeof config.color_code === 'number') {
-            config.color_code = `#${config.color_code.toString(16).padStart(6, '0')}`;
+        next: (response: EmbedConfigRaw): void => {
+          if (typeof response.config.color_code === 'number') {
+            response.config.color_code = `#${response.config.color_code.toString(16).padStart(6, '0')}`;
           }
 
-          this.embed_config = config;
-          this.org_config = { ...config };
+          this.embed_config = response.config;
+          this.has_vip = response.has_vip || false;
+          this.org_config = { ...response.config };
           this.isLoading = false;
           this.isFetching = false;
 
           setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 550);
           localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
+          localStorage.setItem('guild_vip', this.has_vip.toString());
           localStorage.setItem('gift_config_timestamp', Date.now().toString());
           sub.unsubscribe();
         },

@@ -178,7 +178,7 @@ export class GlobalChatComponent implements OnDestroy {
    */
   protected saveCustomizing(lock?: boolean): void {
     if (!this.dataService.active_guild) { return; }
-    if (!this.global_chat.global_config?.bot_avatar_url || this.isInvalidAvatar) {
+    if (this.global_chat.global_config?.bot_avatar_url != null && this.isInvalidAvatar) {
       this.dataService.error_color = 'red';
       this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
         this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_DESC"));
@@ -217,11 +217,15 @@ export class GlobalChatComponent implements OnDestroy {
           setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 5000);
         },
         error: (err: HttpErrorResponse): void => {
+          sub.unsubscribe();
 
           if (err.status === 404) {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_MISSING_TITLE"),
               this.translate.instant("ERROR_MISC_GLOBAL_MISSING_DESC"));
+          } else if (err.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_GLOBALCHAT_402_DESC'));
           } else if (err.status === 409) {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
@@ -237,7 +241,6 @@ export class GlobalChatComponent implements OnDestroy {
           }
 
           setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 2000);
-          sub.unsubscribe();
         }
       });
   }
@@ -312,6 +315,7 @@ export class GlobalChatComponent implements OnDestroy {
     if ((localStorage.getItem('misc_globalchat') && localStorage.getItem('misc_globalchat_timestamp') &&
       Date.now() - Number(localStorage.getItem('misc_globalchat_timestamp')) < 30000 && !no_cache)) {
       this.global_chat = JSON.parse(localStorage.getItem('misc_globalchat') as string);
+      this.dataService.has_vip = this.global_chat.has_vip || false;
       if (!this.global_chat.global_config) {  // initialize global_config if it doesn't exist
         this.global_chat.global_config = { channel_id: null, message_count: 0, created_at: Date.now(),
           lock_reason: null, bot_name: null, bot_avatar_url: null, invite: null };
@@ -333,6 +337,7 @@ export class GlobalChatComponent implements OnDestroy {
           if (config.global_chat_pending_id) { config.global_config.channel_id = config.global_chat_pending_id; }
 
           this.global_chat = config;
+          this.dataService.has_vip = config.has_vip || false;
           this.org_global_chat = JSON.parse(JSON.stringify(this.global_chat));
 
           setTimeout((): void => {this.dataService.getGuildChannels(this.comService, no_cache, true, 'TEXT')}, 550);

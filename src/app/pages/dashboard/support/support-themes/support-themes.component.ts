@@ -132,9 +132,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
     // check if guilds are already stored in local storage (one minute cache)
     if ((localStorage.getItem('support_themes') && localStorage.getItem('guild_roles') &&
-      localStorage.getItem('support_themes_timestamp') &&
+      localStorage.getItem('support_themes_timestamp') && localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
+      this.dataService.has_vip = localStorage.getItem('guild_vip') === 'true';
       this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
       this.filteredThemes = this.dataService.support_themes;
       this.dataService.isLoading = false;
@@ -148,6 +149,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         next: (response: SupportThemeResponse): void => {
           this.dataService.support_themes = response.themes;
           this.filteredThemes = this.dataService.support_themes;
+
+          this.dataService.has_vip = response.has_vip;
           this.discordRoles = response.guild_roles;
           this.dataService.isLoading = false;
           this.dataLoading = false;
@@ -155,6 +158,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
+          localStorage.setItem('guild_vip', this.dataService.has_vip.toString());
           localStorage.setItem('support_themes_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {

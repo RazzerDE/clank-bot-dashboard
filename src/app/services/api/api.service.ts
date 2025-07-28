@@ -11,8 +11,8 @@ import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
-import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
-import {EmbedConfig} from "../types/Config";
+import {EventEffects, EventEffectsRaw, Giveaway, GiveawaysRaw} from "../types/Events";
+import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
 import {BackupData, SecurityFeature, SecurityLogs, UnbanMethod, UnbanRequest} from "../types/Security";
 import {GlobalChatConfig, GlobalChatCustomizing, GlobalChatObject} from "../types/Misc";
 
@@ -132,8 +132,8 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to fetch the events.
    * @returns An Observable that emits an array of Giveaway objects.
    */
-  getGuildEvents(guild_id: string): Observable<Giveaway[]> {
-    return this.http.get<Giveaway[]>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
+  getGuildEvents(guild_id: string): Observable<GiveawaysRaw> {
+    return this.http.get<GiveawaysRaw>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 
@@ -164,10 +164,10 @@ export class ApiService {
    * Fetches the configuration for discord event embeds in a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the event embed configuration.
-   * @return An Observable that emits the EmbedConfig object containing the configuration details.
+   * @return An Observable that emits the EmbedConfigRaw object containing the configuration details.
    */
-  getEventConfig(guild_id: string): Observable<EmbedConfig> {
-    return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
+  getEventConfig(guild_id: string): Observable<EmbedConfigRaw> {
+    return this.http.get<EmbedConfigRaw>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
       { headers: this.authService.headers });
   }
 

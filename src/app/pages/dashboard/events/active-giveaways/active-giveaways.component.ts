@@ -9,7 +9,7 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 import {faGift} from "@fortawesome/free-solid-svg-icons/faGift";
 import {TableConfig} from "../../../../services/types/Config";
 import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
-import {Giveaway} from "../../../../services/types/Events";
+import {Giveaway, GiveawaysRaw} from "../../../../services/types/Events";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -106,20 +106,24 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('active_events') && localStorage.getItem('active_events_timestamp') &&
       Date.now() - Number(localStorage.getItem('active_events_timestamp')) < 30000) && !no_cache) {
-      this.events = JSON.parse(localStorage.getItem('active_events') as string);
+      const response: GiveawaysRaw = JSON.parse(localStorage.getItem('active_events') as string);
+      this.dataService.has_vip = response.has_vip;
+      this.events = response.giveaways;
       this.filteredEvents = this.events;
+
       this.dataService.getEventConfig(this.apiService, this.comService, no_cache);
       return;
     }
 
     const sub: Subscription = this.apiService.getGuildEvents(this.dataService.active_guild.id)
       .subscribe({
-        next: (giveaways: Giveaway[]): void => {
-          this.events = giveaways;
+        next: (response: GiveawaysRaw): void => {
+          this.dataService.has_vip = response.has_vip;
+          this.events = response.giveaways;
           this.filteredEvents = this.events;
 
           setTimeout((): void => { this.dataService.getEventConfig(this.apiService, this.comService, no_cache); }, 500);
-          localStorage.setItem('active_events', JSON.stringify(this.events));
+          localStorage.setItem('active_events', JSON.stringify(response));
           localStorage.setItem('active_events_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
@@ -186,7 +190,10 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
 
           if (error.status === 406) { // sponsor not found
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_406'),
-              this.translate.instant('ERROR_GIVEAWAY_406_DESC', { sponsor: giveaway.sponsor_id }));
+              this.translate.instant('ERROR_GIVEAWAY_406_DESC', {sponsor: giveaway.sponsor_id}));
+          } else if (error.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_GIVEAWAY_402_DESC'));
           } else if (error.status === 409) { // already exist / invalid data
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_CREATION_CONFLICT'),
               this.translate.instant('ERROR_GIVEAWAY_CREATION_CONFLICT_DESC'));

@@ -88,6 +88,7 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    * - A giveaway requirement was set but has no value
    * - A server recommendation was set but has no valid discord URL
    * - the start date is bigger than the end date
+   * - The giveaway requirement is set to a value that requires VIP but the user does not have VIP.
    *
    * @returns {boolean} `true` if the giveaway is valid, otherwise `false`.
    */
@@ -97,10 +98,14 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
         ((this.giveaway.gw_req.startsWith('SERVER: ') && this.giveaway.gw_req.includes('://discord.gg/')) ||
           (!this.giveaway.gw_req.startsWith('SERVER: ') && this.giveaway.gw_req.split(': ')[1].trim().length > 0)));
 
+    const hasNoVip: boolean = !this.dataService.has_vip && !!this.giveaway.gw_req && (this.giveaway.gw_req.startsWith('OWN:') ||
+      this.giveaway.gw_req.startsWith('MITGLIED:') || this.giveaway.gw_req.startsWith('no_nitro'));
+
     return !!this.giveaway.prize && !!this.giveaway.end_date && !isNaN(new Date(this.giveaway.end_date).getTime()) &&
       new Date(this.giveaway.end_date).getTime() > Date.now() && !!this.giveaway.channel_id &&
       !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 && this.giveaway.winner_count <= 100 &&
-      hasValidRequirement && (!this.giveaway.start_date || new Date(this.giveaway.start_date).getTime() <= new Date(this.giveaway.end_date).getTime());
+      hasValidRequirement && (!this.giveaway.start_date || new Date(this.giveaway.start_date).getTime() <= new Date(this.giveaway.end_date).getTime())
+      && !hasNoVip;
   }
 
   /**

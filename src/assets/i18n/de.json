@@ -220,7 +220,6 @@
   "PAGE_SECURITY_SHIELD_BACKUP_BUTTON": "Backup wiederherstellen",
   "PAGE_SECURITY_SHIELD_CHANNELS": "🔗 ~ Kanäle",
   "PAGE_SECURITY_SHIELD_ROLES": "📚 ~ Rollen",
-  "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "Das Backup-System wird automatisch aktiviert, sobald du Premium für Clank erworben hast.",
   "PAGE_SECURITY_SHIELD_NOTHING_SAVED": "Leer..",
 
   "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALLE SERVER-ÄNDERUNGEN AUF EINEM BLICK",
@@ -866,5 +865,20 @@
   "DATE_ONE_MINUTE_AGO": "vor 1 Minute",
   "DATE_MINUTES_AGO": "vor {{count}} Minuten",
   "DATE_JUST_NOW": "gerade eben",
-  "DATE_SECONDS_AGO": "vor {{count}} Sekunden"
+  "DATE_SECONDS_AGO": "vor {{count}} Sekunden",
+
+  "PLACEHOLDER_EVENT_VIP_REQUIRED": "💎 › Für diese Bedingung benötigt dein Server <strong>\"Diamond\"</strong> - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "PLACEHOLDER_THEME_VIP_REQUIRED": "💎 › Für FAQ-Antworten benötigt dein Server <strong>\"Diamond\"</strong> - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+
+  "ERROR_TITLE_402": "\"Diamond\" erforderlich",
+  "ERROR_GIVEAWAY_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um diese Bedingung zu verwenden - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_SUPPORT_THEMES_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um FAQ-Antworten festzulegen - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_UNBAN_LOG_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um den \"Entsperrungs-Anträge\"-Log zu erstellen - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_GIVEAWAY_DESIGN_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Gewinnspiel-Design zu bearbeiten - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_GLOBALCHAT_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Design des Global-Chats zu bearbeiten - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+
+  "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "💎 › Das Backup-System wird automatisch aktiviert, sobald du \"Diamond\" für Clank erworben hast.<br /><br />Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "PAGE_MISC_GIVEAWAY_DESIGN_DISABLED": "❌ ~ \"Diamond\" Upgrade erforderlich",
+  "PAGE_MISC_GIVEAWAY_DESIGN_DISABLED_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Gewinnspiel-Design zu bearbeiten.<br/>Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "PAGE_MISC_GLOBALCHAT_DESIGN_DISABLED_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Design des Global-Chats zu bearbeiten.<br/>Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst."
 }

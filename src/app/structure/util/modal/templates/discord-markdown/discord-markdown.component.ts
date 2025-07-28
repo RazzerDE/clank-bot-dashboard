@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
 import {DatePipe, NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -23,13 +23,14 @@ import {GlobalChatConfig} from "../../../../../services/types/Misc";
   templateUrl: './discord-markdown.component.html',
   styleUrl: './discord-markdown.component.scss'
 })
-export class DiscordMarkdownComponent {
+export class DiscordMarkdownComponent implements AfterViewChecked {
   @Input() type: string = '';
   @Input() content: string = '';
   @Input() no_overlay: boolean = false;
   @Input() giveaway: Giveaway | null = null;
   @Input() invalidAvatar: boolean = false;
   @Input() obj: GlobalChatConfig = {} as GlobalChatConfig;
+  protected org_giveaway: Giveaway | null = {...this.giveaway} as Giveaway;
 
   // Other Preview Elements
   @ViewChild('faqPreview') faqPreview!: ElementRef<HTMLSpanElement>;
@@ -41,10 +42,22 @@ export class DiscordMarkdownComponent {
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
   protected ownDatePipe: own = new own();
+  protected giveway_duration: string = '';
 
   protected invalidServerImg: boolean = false;
 
   constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
+
+  /**
+   * Angular lifecycle hook that is called after the view has been checked.
+   * Checks if the giveaway end date has changed compared to the original reference.
+   * If a change is detected, updates the giveaway duration accordingly.
+   */
+  ngAfterViewChecked(): void {
+    if (this.giveaway?.end_date != this.org_giveaway?.end_date) {
+      this.getGiveawayDuration();
+    }
+  }
 
   /**
    * Returns the appropriate emoji file name based on the giveaway prize content
@@ -88,5 +101,23 @@ export class DiscordMarkdownComponent {
     }
 
     return color_code;
+  }
+
+  /**
+   * Calculates and updates the giveaway duration string based on the current giveaway end date.
+   * Uses a timeout to ensure the view is updated after Angular's change detection cycle.
+   *
+   * If a giveaway exists, transforms the end date using the custom date pipe and current language.
+   * If no giveaway is present, sets a default duration string based on the current language.
+   * Also updates the original giveaway reference for change tracking.
+   */
+  getGiveawayDuration(): void {
+    setTimeout((): void => {
+      this.giveway_duration = this.giveaway ?
+        (this.ownDatePipe.transform(this.giveaway.end_date, this.translate.currentLang, 'short')) :
+        this.translate.currentLang === 'de' ? 'in 1 Stunde' : 'in 1 hour'
+
+      this.org_giveaway = {...this.giveaway} as Giveaway;
+    }, 0);
   }
 }

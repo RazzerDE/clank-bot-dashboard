@@ -162,6 +162,9 @@ export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
           if (error.status == 404 || error.status == 400) {
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_TITLE'),
               this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_DESC'));
+          } else if (error.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_GIVEAWAY_DESIGN_402_DESC'));
           } else if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

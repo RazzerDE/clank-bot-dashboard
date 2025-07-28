@@ -108,6 +108,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
 
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('security_logs') && localStorage.getItem('security_logs_timestamp') &&
+      localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('security_logs_timestamp')) < 30000 && !no_cache)) {
       if (localStorage.getItem('security_logs_type') !== 'PENDING') {
         this.getSecurityLogs(true);  // check if cached logs has the correct type
@@ -115,6 +116,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
       }
 
       this.dataService.security_logs = JSON.parse(localStorage.getItem('security_logs') as string);
+      this.dataService.has_vip = localStorage.getItem('guild_vip') === 'true';
       this.updateLogList();
 
       setTimeout((): void => { this.dataService.getGuildChannels(this.comService, no_cache, true, 'FORUM') }, 100);
@@ -125,10 +127,12 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
       .subscribe({
         next: (config: SecurityLogs): void => {
           this.dataService.security_logs = config;
+          this.dataService.has_vip = config.has_vip || false;
           this.updateLogList();
           setTimeout((): void => { this.dataService.getGuildChannels(this.comService, no_cache, true, 'FORUM') }, 550);
 
           localStorage.setItem('security_logs', JSON.stringify(this.dataService.security_logs));
+          localStorage.setItem('guild_vip', this.dataService.has_vip.toString());
           localStorage.setItem('security_logs_type', 'PENDING');
           localStorage.setItem('security_logs_timestamp', Date.now().toString());
           sub.unsubscribe();
@@ -229,7 +233,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
 
     // Remove all *_pending and *_delete attributes before sending
     const sanitizedLogs: SecurityLogs = Object.keys(this.dataService.security_logs)
-      .filter(key => !key.endsWith('_pending') && !key.endsWith('_delete'))
+      .filter(key => !key.endsWith('_pending') && !key.endsWith('_delete') && !key.endsWith("has_vip"))
       .reduce((acc, key) =>
         {acc[key] = this.dataService.security_logs[key]; return acc;}, {} as SecurityLogs);
 
@@ -250,16 +254,20 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
         },
         error: (err: HttpErrorResponse): void => {
           this.dataService.isLoading = false;
+          sub.unsubscribe();
+
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
+          } else if (err.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_UNBAN_LOG_402_DESC'));
           } else if (err.status === 0) {
             this.dataService.redirectLoginError('OFFLINE');
             return;
           } else {
             this.dataService.redirectLoginError('UNKNOWN');
           }
-          sub.unsubscribe();
         }
       });
   }
