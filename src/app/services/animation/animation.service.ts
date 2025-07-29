@@ -1,18 +1,21 @@
-import {HostListener, Injectable, OnDestroy} from '@angular/core';
+import {HostListener, Inject, Injectable, OnDestroy, PLATFORM_ID} from '@angular/core';
 import {CanvasAnimation} from "../types/animation/CanvasAnimation";
 import {Firefly} from "../types/animation/FireFly";
 import {Star} from "../types/animation/Star";
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnimationService implements OnDestroy {
   private canvases: { [id: string]: CanvasAnimation } = {};
-  private fpsInterval = 1000 / 60; // 60 FPS
+  private fpsInterval: number = 1000 / 60; // 60 FPS
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     // load animations like fadeInUp, fadeInDown, etc.
-    document.addEventListener('DOMContentLoaded', (): void => this.loadAnimations());
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('DOMContentLoaded', (): void => this.loadAnimations());
+    }
   }
 
   /**

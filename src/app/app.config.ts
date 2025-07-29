@@ -6,6 +6,7 @@ import {HttpClient, provideHttpClient, withFetch} from '@angular/common/http';
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -22,5 +23,5 @@ export const appConfig: ApplicationConfig = {
         deps: [HttpClient],
       },
     })]),
-    importProvidersFrom([BrowserAnimationsModule])]
+    importProvidersFrom([BrowserAnimationsModule]), provideClientHydration(withEventReplay())]
 };

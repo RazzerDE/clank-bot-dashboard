@@ -24,6 +24,9 @@ import {GlobalChatComponent} from "./pages/dashboard/misc/global-chat/global-cha
 export const routes: Routes = [
   // General pages
   { path: '', component: LandingPageComponent },
+  { path: 'de', component: LandingPageComponent },  // only used for SEO
+
+  // Dashboard default pages
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/contact', component: ContactComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/wishlist', component: WishlistComponent, canActivate: [AuthGuard] },

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
@@ -13,12 +13,13 @@ import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
 import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
 import {ApiService} from "../api/api.service";
 import {SecurityLogs, UnbanRequest} from "../types/Security";
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataHolderService {
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   isEmojisLoading: boolean = true;
   isDarkTheme: boolean = false;
   isFetching: boolean = false;
@@ -61,7 +62,19 @@ export class DataHolderService {
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
   private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
-  constructor(private router: Router, private translate: TranslateService) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private translate: TranslateService) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeFromLocalStorage();
+    }
+  }
+
+  /**
+   * Initializes the active guild state from localStorage.
+   *
+   * Loads the active guild from localStorage if available and sets the sidebar logo visibility.
+   * This method should be called during service initialization to restore persisted state.
+   */
+  private initializeFromLocalStorage(): void {
     const temp_guild: string | null = localStorage.getItem('active_guild');
     if (temp_guild) {
       this.showSidebarLogo = true;

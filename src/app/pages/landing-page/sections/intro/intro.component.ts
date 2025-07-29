@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
+import {isPlatformBrowser, NgClass, NgOptimizedImage} from "@angular/common";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
 import {AnimationService} from "../../../../services/animation/animation.service";
 import {TranslatePipe} from "@ngx-translate/core";
@@ -19,9 +19,9 @@ import { HttpErrorResponse } from "@angular/common/http";
     templateUrl: './intro.component.html',
     styleUrl: './intro.component.scss'
 })
-export class IntroComponent implements AfterViewInit, OnDestroy {
+export class IntroComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('slider') protected slider!: ElementRef<HTMLDivElement>;
-  protected readonly window: Window = window;
+  protected readonly window?: Window;
   protected slider_items: SliderItems[] = [];
   protected duplicatedItems: SliderItems[] = [];  // show duplicated items in slider for infinite loop
 
@@ -33,9 +33,11 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
   private slidingInterval: any;  // datatype can't be imported
   private subscription: Subscription | undefined;
 
-  constructor(private animations: AnimationService, private apiService: ApiService,
-              protected dataService: DataHolderService) {
-    this.getBotStats();
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private animations: AnimationService,
+              private apiService: ApiService, protected dataService: DataHolderService) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.window = window;
+    }
   }
 
   /**
@@ -45,9 +47,29 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    * - Initiates the star animation for the intro section.
    */
   ngAfterViewInit(): void {
-    // start star animation for intro
-    this.animations.setCanvasID('intro-canvas', 'star');
-    this.animations.startAnimation('intro-canvas');
+    if (isPlatformBrowser(this.platformId)) {
+      // start star animation for intro
+      this.animations.setCanvasID('intro-canvas', 'star');
+      this.animations.startAnimation('intro-canvas');
+    }
+  }
+
+  /**
+   * Angular lifecycle hook that is called after the component is initialized.
+   *
+   * Sets the loading state and fetches bot statistics only in the browser environment.
+   * If running on the server, sets placeholder statistics and disables the loader.
+   */
+  ngOnInit(): void {
+    this.dataService.isLoading = true;
+
+    // only fetch bot stats if we are in the browser environment
+    if (isPlatformBrowser(this.platformId)) {
+      this.getBotStats();
+    } else {
+      this.setPlaceholderStats();
+      this.dataService.isLoading = false;
+    }
   }
 
   /**
@@ -60,15 +82,13 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
       clearInterval(this.slidingInterval);
     }
 
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   /**
    * Fetches general bot statistics and also some famous guilds from the API and updates the placeholder data correctly.
    */
-  getBotStats(): void {
+  private getBotStats(): void {
     // Fetch both general stats and guild usage
     this.subscription = forkJoin({guildUsage: this.apiService.getGuildUsage(25),
                                   generalStats: this.apiService.getGeneralStats()})
@@ -99,11 +119,24 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Sets placeholder statistics for server-side rendering (SSR).
+   *
+   * This method assigns default placeholder values to the bot statistics
+   * to ensure the UI displays consistent data when actual API calls are not possible.
+   */
+  private setPlaceholderStats(): void {
+    this.dataService.bot_stats = {
+      user_count: '87.265', guild_count: '736', giveaway_count: '715', ticket_count: '1.382',
+      punish_count: '521', global_verified_count: '16.767'
+    };
+  }
+
+  /**
    * Starts the sliding animation for the slider.
    * - Sets an interval to continuously call the `slide` method.
    * - Pauses the sliding when `isPaused` is true.
    */
-  startSliding(): void {
+  private startSliding(): void {
     this.slidingInterval = setInterval(() => {
       if (!this.isPaused) { this.slide(); }
     }, this.transitionSpeed);
@@ -116,7 +149,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    * - Resets the position to avoid a visual jump when the slider has moved past the first set of items.
    * - Uses `setTimeout` to re-enable smooth transition after resetting the position.
    */
-  slide(): void {
+  private slide(): void {
     const sliderWidth = this.slider_items.length * (50 + 30); // icon width + gap
     // Move slider to the left
     this.currentTranslate -= 1;
@@ -139,7 +172,9 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
    *
    * @param event - The mouse event triggered by entering or leaving a slider item.
    */
-  activeSlide(event: MouseEvent): void {
+  protected activeSlide(event: MouseEvent): void {
+    if (!isPlatformBrowser(this.platformId)) { return; } // only run in browser
+
     const sliderItems: NodeListOf<HTMLDivElement> = this.slider.nativeElement.querySelectorAll('.slider-item');
     sliderItems.forEach((item: Element) => {
       if (event.type == 'mouseenter') {
@@ -148,5 +183,17 @@ export class IntroComponent implements AfterViewInit, OnDestroy {
         (item as HTMLElement).style.filter = 'none';
       }
     });
+  }
+
+  /**
+   * Checks the visibility of a slider element and returns the appropriate TailwindCSS width class.
+   * Only runs in the browser environment.
+   *
+   * @param element - The HTMLDivElement to check for visibility.
+   * @returns A TailwindCSS width class based on the element's visibility.
+   */
+  protected checkVisibilityForSlider(element: HTMLDivElement): string {
+    if (!isPlatformBrowser(this.platformId)) { return ''; } // only run in browser
+    return element.checkVisibility() ? '!w-1/2' : '!w-full';
   }
 }

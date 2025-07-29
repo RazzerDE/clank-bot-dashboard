@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
@@ -6,6 +6,7 @@ import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {DataHolderService} from "../data/data-holder.service";
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,11 @@ export class AuthService {
   private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router,
-              private dataService: DataHolderService) {
-    if (localStorage.getItem('access_token')) {
-      this.headers = this.setAuthorizationHeader(localStorage.getItem('access_token')!);
+              private dataService: DataHolderService, @Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) { // only run in browser
+      if (localStorage.getItem('access_token')) {
+        this.headers = this.setAuthorizationHeader(localStorage.getItem('access_token')!);
+      }
     }
   }
 

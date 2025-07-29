@@ -7,7 +7,7 @@ import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {TranslatePipe} from "@ngx-translate/core";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
-import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
+import {LNavigationItem, nav_items} from '../../../services/types/landing-page/LNavigationItem';
 
 @Component({
     selector: 'landing-header',
@@ -26,7 +26,7 @@ export class HeaderComponent {
 
   protected faDiscord: IconDefinition = faDiscord;
   protected faCode: IconDefinition = faCode;
-  protected readonly nav_items = nav_items;
+  protected readonly nav_items: LNavigationItem[] = nav_items;
 
   constructor(private renderer: Renderer2) {}
 
@@ -37,7 +37,7 @@ export class HeaderComponent {
    *
    * @param close - Optional boolean to force close the menu.
    */
-  toggleMobileMenu(close?: boolean): void {
+  protected toggleMobileMenu(close?: boolean): void {
     this.mobileMenuExpanded = !this.mobileMenuExpanded;
     if (this.mobileMenuExpanded && !close) {
       this.renderer.addClass(document.body, 'nav-expanded');

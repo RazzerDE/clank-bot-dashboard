@@ -12,7 +12,7 @@
 
 <h4 align="center">
   <a href="https://angular.dev">
-    <img src="https://img.shields.io/badge/Angular-20.1.0-27ae60?style=for-the-badge" alt="angular version" style="height: 25px;">
+    <img src="https://img.shields.io/badge/Angular-20.1.3-27ae60?style=for-the-badge" alt="angular version" style="height: 25px;">
   </a>
   <a href="https://tailwindcss.com">
     <img src="https://img.shields.io/badge/Tailwind-3.4.17-27ae60?style=for-the-badge" alt="tailwind version" style="height: 25px;">
@@ -45,6 +45,8 @@ It supports following <strong>features</strong>:
   <li>🖼️ <strong>Creative & beautiful design</strong>: We have put a lot of thought into the design of the website and wanted it to be something unique - we have put a lot of love and attention to detail into it.</li>
   <br /> 
   <li>💚 <strong>100% Unit-Test Coverage</strong>: Software testing is an important point when programming professionally for clients - we have tested all our TypeScript code, and you may be able to learn something from it.</li> 
+  <br /> 
+  <li>⚙️ <strong>Server-Side-Rendering</strong>: The landing page inside this little dashboard is using Angular's SSR to be optimized for Google and as fast as possible.</li> 
   <br /> 
   <li>🚩 <strong>Language Switcher</strong>: Our website automatically detects the language of your browser and displays English/German accordingly, alternatively the user can switch via button click.</li> 
   <br /> 
