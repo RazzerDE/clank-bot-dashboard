@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
-import {AuthService} from "../auth/auth.service";
 import {Channel, Guild, Role} from "../types/discord/Guilds";
 import {SupportThemeResponse} from "../types/Tickets";
 
@@ -10,36 +9,8 @@ import {SupportThemeResponse} from "../types/Tickets";
   providedIn: 'root'
 })
 export class ComService {
-  private isInitialized: boolean = false;
-  private readonly initPromise: Promise<void> = Promise.resolve();
 
-  constructor(private http: HttpClient, private authService: AuthService) {
-    // ensure that every HTTP request inside this file has the correct authorization header
-    // is necessary after the first discord login, redirect to dashboard
-    if (!localStorage.getItem('access_token')) {
-      this.initPromise = new Promise<void>((resolve) => {
-        window.addEventListener('storage', (_event: StorageEvent): void => {
-          this.authService.headers = this.authService.setAuthorizationHeader(localStorage.getItem('access_token')!);
-          this.isInitialized = true;
-          resolve();
-        });
-      });
-    }
-  }
-
-  /**
-   * Ensures that the service is initialized before making any requests.
-   *
-   * This method checks if the service is initialized. If not, it waits for the initialization
-   * promise to resolve, ensuring that the authorization headers are set correctly.
-   *
-   * @returns {Promise<void>} A promise that resolves when the service is initialized.
-   */
-  private async ensureInitialized(): Promise<void> {
-    if (!this.isInitialized) {
-      await this.initPromise;
-    }
-  }
+  constructor(private http: HttpClient) {}
 
   /**
    * Retrieves the list of guilds the user is a member of.
@@ -50,8 +21,7 @@ export class ComService {
    * @returns {Promise<Observable<Guild[]>>} A promise that resolves to an observable of the list of guilds.
    */
   async getGuilds(): Promise<Observable<Guild[]>> {
-    await this.ensureInitialized();
-    return this.http.get<Guild[]>(`${config.api_url}/guilds`, { headers: this.authService.headers });
+    return this.http.get<Guild[]>(`${config.api_url}/guilds`, { withCredentials: true });
   }
 
   /**
@@ -64,9 +34,8 @@ export class ComService {
    * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the list of emojis.
    */
   async getGuildEmojis(guild_id: string): Promise<Observable<any>> {
-    await this.ensureInitialized();
     return this.http.get<any>(`${config.api_url}/guilds/emojis?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -79,9 +48,8 @@ export class ComService {
    * @returns {Promise<Observable<Role[]>>} A promise that resolves to an observable of the list of roles.
    */
   async getGuildRoles(guild_id: string): Promise<Observable<Role[]>> {
-    await this.ensureInitialized();
     return this.http.get<Role[]>(`${config.api_url}/guilds/roles?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -94,9 +62,8 @@ export class ComService {
    * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the list of channels.
    */
   async getGuildChannels(guild_id: string): Promise<Observable<Channel[]>> {
-    await this.ensureInitialized();
     return this.http.get<Channel[]>(`${config.api_url}/guilds/channels?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -108,9 +75,8 @@ export class ComService {
    * @returns {Promise<Observable<SupportThemeResponse>>} A promise that resolves to an observable of the list of guilds.
    */
   async getSupportThemes(guild_id: string): Promise<Observable<SupportThemeResponse>> {
-    await this.ensureInitialized();
     return this.http.get<SupportThemeResponse>(`${config.api_url}/guilds/support-themes?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
 
@@ -124,9 +90,8 @@ export class ComService {
    * @returns {Promise<Observable<Role[]>>} A promise that resolves to an observable of the list of team roles.
    */
   async getTeamRoles(guild_id: string): Promise<Observable<any>> {
-    await this.ensureInitialized();
     return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -141,9 +106,8 @@ export class ComService {
    * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
    */
   async removeTeamRole(guild_id: string, role_id: string): Promise<Observable<any>> {
-    await this.ensureInitialized();
     return this.http.delete(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -159,9 +123,8 @@ export class ComService {
    * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
    */
   async addTeamRole(guild_id: string, role_id: string, level: string): Promise<Observable<any>> {
-    await this.ensureInitialized();
     return this.http.post(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`, {},
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -176,9 +139,8 @@ export class ComService {
    * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
    */
   async changeDefaultMention(guild_id: string, role_ids: string[]): Promise<Observable<any>> {
-    await this.ensureInitialized();
     return this.http.post(`${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`, { role_ids },
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -193,8 +155,7 @@ export class ComService {
    * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
    */
   async setSupportForum(guild_id: string, channel_id: string): Promise<Observable<any>> {
-    await this.ensureInitialized();
     return this.http.post(`${config.api_url}/guilds/support-forum?guild_id=${guild_id}&channel_id=${channel_id}`, {},
-      {headers: this.authService.headers});
+      { withCredentials: true });
   }
 }

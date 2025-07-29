@@ -14,12 +14,15 @@ import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
 import {ApiService} from "../api/api.service";
 import {SecurityLogs, UnbanRequest} from "../types/Security";
 import {isPlatformBrowser} from "@angular/common";
+import {AuthService} from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataHolderService {
   isLoading: boolean = true;
+  isLoginLoading: boolean = false;
+
   isEmojisLoading: boolean = true;
   isDarkTheme: boolean = false;
   isFetching: boolean = false;
@@ -45,6 +48,7 @@ export class DataHolderService {
   readonly initTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
                                     default_roles: [], pending: true, action: 'CREATE' };
   support_themes: SupportTheme[] = [];
+  servers: Guild[] = [];
   guild_roles: Role[] = [];
   guild_channels: Channel[] = [];
   guild_emojis: Emoji[] | string[] = [];
@@ -80,6 +84,71 @@ export class DataHolderService {
       this.showSidebarLogo = true;
       this.active_guild = JSON.parse(temp_guild) as Guild;
     }
+  }
+
+  /**
+   * Fetches the list of guilds (servers) from the Discord API and updates the local storage.
+   *
+   * If the guilds are already stored in local storage and were updated within the last 10 minutes,
+   * the cached guilds are used instead of making a new API request.
+   *
+   * The function filters the guilds to include only those where the user has administrator permissions
+   * or is the owner, and the guild has the "COMMUNITY" feature. It also formats the member and presence
+   * counts for display and sorts the guilds by name.
+   *
+   * If the API request fails, the user is redirected to the login error page.
+   *
+   * @param comService - The service used to communicate with the Discord API.
+   * @param authService - The service used to check user permissions and roles.
+   */
+  getGuilds(comService: ComService, authService: AuthService): void {
+    this.isFetching = true;
+
+    // check if guilds are already stored in local storage
+    if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
+      Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000) {
+      this.servers = JSON.parse(localStorage.getItem('guilds') as string);
+      if (!this.active_guild) { this.isLoading = false; }
+      return;
+    }
+
+    comService.getGuilds().then((observable) => observable.subscribe({
+      next: (guilds: Guild[]): void => {
+        this.servers = guilds
+          .filter((guild: Guild): boolean =>
+            // check if user has admin perms and if guild is public
+            (authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))
+          .map((guild: Guild): Guild => {
+            if (guild.icon !== null) {  // add image url if guild has an icon
+              guild.image_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}${guild.icon.startsWith('a_') ? '.gif' : '.png'}`;
+            }
+
+            // format thousand approximate_member_count with dot
+            guild.approximate_member_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_member_count));
+            guild.approximate_presence_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_presence_count));
+
+            return guild;
+          }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
+
+        localStorage.setItem('guilds', JSON.stringify(this.servers));
+        localStorage.setItem('guilds_last_updated', Date.now().toString());
+        if (!this.active_guild) { this.isLoading = false; }
+        this.isFetching = false;
+      },
+      error: (err: HttpErrorResponse): void => {
+        if (err.status === 429) {
+          this.redirectLoginError('REQUESTS');
+          // this.dataService.isLoading = false;
+        } else if (err.status === 401) {
+          // do nothing because header is weird af
+        } else {
+          this.redirectLoginError('EXPIRED');
+          // this.dataService.isLoading = false;
+        }
+
+        this.isFetching = false;
+      }
+    }));
   }
 
   /**

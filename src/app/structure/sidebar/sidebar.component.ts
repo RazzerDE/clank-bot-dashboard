@@ -9,7 +9,6 @@ import {DataHolderService} from "../../services/data/data-holder.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {TranslatePipe} from "@ngx-translate/core";
 import {ComService} from "../../services/discord-com/com.service";
-import { HttpErrorResponse } from "@angular/common/http";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 import {Guild} from "../../services/types/discord/Guilds";
 
@@ -82,7 +81,6 @@ import {Guild} from "../../services/types/discord/Guilds";
 export class SidebarComponent implements AfterViewInit {
   protected readonly localStorage: Storage = localStorage;
   protected navigation: NavigationItem[] = nav_items;
-  protected servers: Guild[] = [];
 
   @ViewChild('discordServerPicker') private server_picker!: ElementRef<HTMLDivElement>;
 
@@ -108,8 +106,10 @@ export class SidebarComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const observer = new MutationObserver((): void => {
       if (this.server_picker.nativeElement.style.width > '0' || this.server_picker.nativeElement.style.width === '') {
-        // call getGuilds() when server picker is visible only
-        this.getGuilds();
+        // call getGuilds() when server picker is visible only (& login call is done)
+        if (!this.dataService.isLoginLoading) {
+          this.dataService.getGuilds(this.discordService, this.authService);
+        }
       }
     });
 
@@ -117,7 +117,9 @@ export class SidebarComponent implements AfterViewInit {
 
     // first time call
     setTimeout((): void => {
-      if (this.server_picker.nativeElement.style.width === '') { this.getGuilds(); }
+      if (this.server_picker.nativeElement.style.width === '' && !this.dataService.isLoginLoading) {
+        this.dataService.getGuilds(this.discordService, this.authService);
+      }
     }, 25);
   }
 
@@ -175,68 +177,11 @@ export class SidebarComponent implements AfterViewInit {
    * @param {boolean} [remove_guild] - If true, 'active_guild' will also be removed; otherwise, it is preserved.
    */
   private cleanUpStorage(remove_guild?: boolean): void {
-    const importantKeys = ['access_token', 'dark', 'lang', 'guilds', 'guilds_last_updated'];
+    const importantKeys: string[] = ['access_token', 'dark', 'lang', 'guilds', 'guilds_last_updated'];
     if (!remove_guild) { importantKeys.push('active_guild'); }
 
-    const keysToRemove = Object.keys(localStorage).filter(key => !importantKeys.includes(key));
+    const keysToRemove: string[] = Object.keys(localStorage).filter(key => !importantKeys.includes(key));
     keysToRemove.forEach(key => localStorage.removeItem(key));
-  }
-
-  /**
-   * Fetches the list of guilds (servers) from the Discord API and updates the local storage.
-   *
-   * If the guilds are already stored in local storage and were updated within the last 10 minutes,
-   * the cached guilds are used instead of making a new API request.
-   *
-   * The function filters the guilds to include only those where the user has administrator permissions
-   * or is the owner, and the guild has the "COMMUNITY" feature. It also formats the member and presence
-   * counts for display and sorts the guilds by name.
-   *
-   * If the API request fails, the user is redirected to the login error page.
-   */
-  getGuilds(): void {
-    // check if guilds are already stored in local storage
-    if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
-        Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000) {
-      this.servers = JSON.parse(localStorage.getItem('guilds') as string);
-      if (!this.dataService.active_guild) { this.dataService.isLoading = false; }
-      return;
-    }
-
-    this.discordService.getGuilds().then((observable) => observable.subscribe({
-      next: (guilds: Guild[]): void => {
-        this.servers = guilds
-          .filter((guild: Guild): boolean =>
-            // check if user has admin perms and if guild is public
-            (this.authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))
-          .map((guild: Guild): Guild => {
-            if (guild.icon !== null) {  // add image url if guild has an icon
-              guild.image_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}${guild.icon.startsWith('a_') ? '.gif' : '.png'}`;
-            }
-
-            // format thousand approximate_member_count with dot
-            guild.approximate_member_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_member_count));
-            guild.approximate_presence_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_presence_count));
-
-            return guild;
-          }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
-
-        localStorage.setItem('guilds', JSON.stringify(this.servers));
-        localStorage.setItem('guilds_last_updated', Date.now().toString());
-        if (!this.dataService.active_guild) { this.dataService.isLoading = false; }
-      },
-      error: (err: HttpErrorResponse): void => {
-        if (err.status === 429) {
-          this.dataService.redirectLoginError('REQUESTS');
-          // this.dataService.isLoading = false;
-        } else if (err.status === 401) {
-          // do nothing because header is weird af
-        } else {
-          this.dataService.redirectLoginError('EXPIRED');
-          // this.dataService.isLoading = false;
-        }
-      }
-    }));
   }
 
 }
