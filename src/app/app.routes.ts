@@ -53,5 +53,6 @@ export const routes: Routes = [
   { path: 'dashboard/misc/global-chat', component: GlobalChatComponent, canActivate: [AuthGuard] },
 
   // Error pages
-  { path: 'errors/simple', component: SimpleErrorComponent}
+  { path: 'errors/simple', component: SimpleErrorComponent },
+  { path: '**', component: SimpleErrorComponent } // catch-all for undefined routes
 ];

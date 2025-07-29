@@ -378,6 +378,8 @@
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
   "ERROR_SUPPORT_BUTTON": "Support Server",
+  "ERROR_PAGE_404_TITLE": "😢 ~ Seite nicht gefunden..",
+  "ERROR_PAGE_404_DESC": "› Die Seite die du aufgerufen hast, konnte nicht gefunden werden - hast du dich vielleicht vertippt?",
 
   "SUCCESS_THEME_EDIT_TITLE": "Thema zur Bearbeitung eingereicht",
   "SUCCESS_THEME_EDIT_DESC": "Das Thema <strong>{{name}}</strong> wird in den nächsten Minuten automatisch bearbeitet!",
