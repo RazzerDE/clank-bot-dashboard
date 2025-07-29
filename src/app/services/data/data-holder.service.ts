@@ -19,7 +19,7 @@ import {isPlatformBrowser} from "@angular/common";
   providedIn: 'root'
 })
 export class DataHolderService {
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   isEmojisLoading: boolean = true;
   isDarkTheme: boolean = false;
   isFetching: boolean = false;
