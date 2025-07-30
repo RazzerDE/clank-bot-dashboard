@@ -7,7 +7,7 @@ import {
   faTruckMedical, faWandMagicSparkles,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
-import {faHandcuffs} from "@fortawesome/free-solid-svg-icons/faHandcuffs";
+import {faHandcuffs} from "@fortawesome/free-solid-svg-icons";
 
 export interface NavigationPage {
   title: string;

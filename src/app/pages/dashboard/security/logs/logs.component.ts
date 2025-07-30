@@ -15,7 +15,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Channel} from "../../../../services/types/discord/Guilds";
 import {NgOptimizedImage} from "@angular/common";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-logs',

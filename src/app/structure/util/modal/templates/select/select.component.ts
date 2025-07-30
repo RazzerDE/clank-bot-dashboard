@@ -2,7 +2,7 @@ import {booleanAttribute, Component, ElementRef, EventEmitter, Input, Output, Vi
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import {faHashtag, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Channel, Role} from "../../../../../services/types/discord/Guilds";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";

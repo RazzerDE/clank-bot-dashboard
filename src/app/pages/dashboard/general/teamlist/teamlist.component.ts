@@ -5,15 +5,15 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Role, TeamList} from "../../../../services/types/discord/Guilds";
 import {Router} from "@angular/router";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {Subscription} from "rxjs";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {TableConfig} from "../../../../services/types/Config";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";

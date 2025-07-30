@@ -2,14 +2,14 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {NgClass} from "@angular/common";
 import {faCircleExclamation, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {LogFeature, SecurityFeature, SecurityLogs} from "../../../services/types/Security";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
-import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons/faHourglassHalf";
+import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-drag-n-drop',

@@ -14,10 +14,10 @@ import {
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import {UnbanMethod} from "../../../../services/types/Security";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {SelectComponent} from "../../../../structure/util/modal/templates/select/select.component";
 import {EventCard} from "../../../../services/types/Events";
-import {faHandcuffs} from "@fortawesome/free-solid-svg-icons/faHandcuffs";
+import {faHandcuffs} from "@fortawesome/free-solid-svg-icons";
 import {Subscription} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {HttpErrorResponse} from "@angular/common/http";

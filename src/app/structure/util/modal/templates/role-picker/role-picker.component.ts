@@ -3,7 +3,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {SelectComponent} from "../select/select.component";
 import {NgClass} from "@angular/common";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons/faTrashCan";
+import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Role} from "../../../../../services/types/discord/Guilds";
 

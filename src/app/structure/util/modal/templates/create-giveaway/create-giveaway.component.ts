@@ -6,14 +6,14 @@ import {DatePipe, NgClass} from "@angular/common";
 import {Giveaway} from "../../../../../services/types/Events";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faTrophy} from "@fortawesome/free-solid-svg-icons/faTrophy";
+import {faTrophy} from "@fortawesome/free-solid-svg-icons";
 import {SelectItems} from "../../../../../services/types/Config";
 import {SelectComponent} from "../select/select.component";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 import {ComService} from "../../../../../services/discord-com/com.service";
 import {RequirementFieldComponent} from "./req-field/req-field.component";
 import {ConvertTimePipe} from "../../../../../pipes/convert-time.pipe";
-import {faUser} from "@fortawesome/free-solid-svg-icons/faUser";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'template-create-giveaway',

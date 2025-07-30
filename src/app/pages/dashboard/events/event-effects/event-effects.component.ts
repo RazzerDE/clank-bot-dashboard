@@ -8,16 +8,16 @@ import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {SelectComponent} from "../../../../structure/util/modal/templates/select/select.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faHashtag, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {event_cards, EventCard, EventEffects, EventEffectsRaw} from "../../../../services/types/Events";
 import {Channel, Role} from "../../../../services/types/discord/Guilds";
 import {NgClass} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {ApiService} from "../../../../services/api/api.service";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
-import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons/faVolumeHigh";
+import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons";
 import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
 
 @Component({

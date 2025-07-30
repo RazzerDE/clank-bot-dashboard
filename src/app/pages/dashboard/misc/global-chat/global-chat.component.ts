@@ -7,12 +7,12 @@ import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {SelectComponent} from "../../../../structure/util/modal/templates/select/select.component";
 import {faHashtag, faImage, faTrash, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
-import {faLock} from "@fortawesome/free-solid-svg-icons/faLock";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
+import {faLock} from "@fortawesome/free-solid-svg-icons";
 import {faCircleQuestion} from "@fortawesome/free-regular-svg-icons";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
-import {faUser} from "@fortawesome/free-solid-svg-icons/faUser";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {
   DiscordMarkdownComponent
 } from "../../../../structure/util/modal/templates/discord-markdown/discord-markdown.component";
@@ -27,7 +27,7 @@ import {
   GlobalChatObject
 } from "../../../../services/types/Misc";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {faUnlock} from "@fortawesome/free-solid-svg-icons/faUnlock";
+import {faUnlock} from "@fortawesome/free-solid-svg-icons";
 import {FormsModule} from "@angular/forms";
 
 @Component({

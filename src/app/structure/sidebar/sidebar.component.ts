@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
+import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";

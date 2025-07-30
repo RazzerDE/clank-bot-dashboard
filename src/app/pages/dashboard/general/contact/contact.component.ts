@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {NgClass} from "@angular/common";
-import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
+import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";

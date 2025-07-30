@@ -3,7 +3,7 @@ import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
 import {DatePipe, NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
-import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
+import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Giveaway} from "../../../../../services/types/Events";

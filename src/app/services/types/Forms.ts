@@ -1,6 +1,6 @@
 import {faBomb, faComments, faLightbulb, faHeading, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
-import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons/faClipboardCheck";
+import {faBug} from "@fortawesome/free-solid-svg-icons";
+import {faClipboardCheck} from "@fortawesome/free-solid-svg-icons";
 import {faFolderOpen} from "@fortawesome/free-regular-svg-icons";
 import {DiscordUser} from "./discord/User";
 

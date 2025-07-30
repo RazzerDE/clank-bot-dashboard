@@ -5,7 +5,7 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {
   faBullhorn,
   faExclamationCircle, faExclamationTriangle,
@@ -15,7 +15,7 @@ import {
   faXmark,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {TableConfig} from "../../../../services/types/Config";
 import {TicketAnnouncement, TicketSnippet} from "../../../../services/types/Tickets";
 import {NgClass, NgOptimizedImage} from "@angular/common";

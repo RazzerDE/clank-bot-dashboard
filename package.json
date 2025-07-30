@@ -9,7 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --runInBand",
-    "serve:ssr:clank-dashboard": "node dist/clank-dashboard/server/server.mjs"
+    "serve:ssr:clank-dashboard": "node dist/clank-dashboard/server/server.mjs",
+    "serve:prod": "ng serve --configuration=production",
+    "build:prod": "ng build --configuration=production"
   },
   "private": true,
   "dependencies": {

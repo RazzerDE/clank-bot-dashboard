@@ -13,6 +13,7 @@ import {Meta, Title} from "@angular/platform-browser";
     styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  // start builded project with "node dist/clank-dashboard/server/server.mjs" and visit http://localhost:4000
 
   constructor(private langService: LanguageSwitcherService, private dataService: DataHolderService,
               @Inject(PLATFORM_ID) private platformId: Object, private title: Title, private meta: Meta) {
