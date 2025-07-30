@@ -5,67 +5,7 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://clank.dev/dashboard</loc>
+    <loc>https://clank.dev/invite</loc>
     <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/contact</loc>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/teamlist</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/support/setup</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/support/themes</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/support/snippets</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/support/blocked-users</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/events/view</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/events/design</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/events/channel-roles</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/security/members</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/security/shield</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/security/backups</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/security/automod</loc>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/misc/global-chat</loc>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://clank.dev/dashboard/errors/simple</loc>
-    <priority>0.20</priority>
   </url>
 </urlset>
