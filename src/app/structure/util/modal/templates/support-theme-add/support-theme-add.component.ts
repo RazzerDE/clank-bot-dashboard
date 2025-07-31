@@ -232,13 +232,14 @@ export class SupportThemeAddComponent {
    * @returns {boolean} Returns true if the theme is INVALID
    */
   isThemeInvalid(): boolean {
-    if (this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && !this.dataService.isFAQ) {
+    if (this.newTheme.name.trim().length > 0 && this.newTheme.desc.trim().length > 0 && !this.dataService.isFAQ) {
       return false; // Non-FAQ Theme
     }
 
     // FAQ theme with content
     this.newTheme.faq_answer = this.dataService.faq_answer;
-    return !(this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && (this.dataService.isFAQ && this.newTheme.faq_answer && this.newTheme.faq_answer!.length > 0));
+    return !(this.newTheme.name.trim().length > 0 && this.newTheme.desc.trim().length > 0 &&
+      (this.dataService.isFAQ && this.newTheme.faq_answer && this.newTheme.faq_answer!.trim().length > 0));
   }
 
   /**

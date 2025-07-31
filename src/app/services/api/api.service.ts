@@ -56,19 +56,20 @@ export class ApiService {
    * This function also caches the module status for 1 minute, to avoid ratelimits.
    *
    * @param guild_id - The ID of the guild for which to fetch the module status.
+   * @param no_cache - Optional parameter to bypass the cache and always fetch the latest status from the server.
    * @returns An Observable that emits the status of the modules.
    */
-  getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
+  getModuleStatus(guild_id: string, no_cache?: boolean): Observable<TasksCompletionList> {
     const moduleStatusTimestamp: string | null = localStorage.getItem('moduleStatusTimestamp');
     const moduleStatus: string | null = localStorage.getItem('moduleStatus');
 
     try {
-      if (moduleStatusTimestamp && moduleStatus) {
+      if (moduleStatusTimestamp && moduleStatus && !no_cache) {
         const timestamp: number = parseInt(moduleStatusTimestamp);
         const module: TasksCompletionList = JSON.parse(moduleStatus);
 
-        // check if module status cache is younger than 1 minute
-        if (Date.now() - timestamp < 60000 && module['task_1'].guild_id === guild_id) {
+        // check if module status cache is younger than 5 minutes
+        if (Date.now() - timestamp < 300000 && module['task_1'].guild_id === guild_id) {
           module['task_1'].cached = true;
           return of(module);
         }

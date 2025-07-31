@@ -23,7 +23,8 @@
 
     <tbody class="overflow-y-auto">
       <!-- Table is empty -->
-      @if (tconfig.rows.length == 0 && !tconfig.dataLoading && (tconfig.type === 'UNBAN_REQUESTS' && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
+      @if ((tconfig.type != 'UNBAN_REQUESTS' && tconfig.rows.length == 0 && !tconfig.dataLoading) ||
+           (tconfig.type === 'UNBAN_REQUESTS' && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
         <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
           <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">{{ tconfig.list_empty | translate }}</td>
         </tr>
@@ -38,7 +39,7 @@
               <div class="flex flex-col items-center justify-center w-full">
                 <img [ngSrc]="'assets/img/icons/error-big.png'" class="animate-float mb-2"
                      width="128" height="128" alt="Error-Big ~ Clank Discord-Bot"/>
-                <span class="text-red-500 dark:text-red-400 w-2/4 text-xl transition-colors duration-300"
+                <span class="text-red-500 dark:text-red-400 w-2/4 text-xl transition-colors duration-300 text-center"
                       [innerHTML]="'PLACEHOLDER_UNBAN_MISSING' | translate"></span>
               </div>
             } @else if (tconfig.type === 'SUPPORT_SNIPPETS') {  <!-- use div for snippets because it shows custom layout -->

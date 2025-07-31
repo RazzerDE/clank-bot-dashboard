@@ -121,7 +121,7 @@ export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
    */
   protected saveGiftConfig(embed_config: EmbedConfig): void {
     if (!this.dataService.active_guild) { return; }
-    if (embed_config.thumbnail_invalid || embed_config.banner_invalid) {
+    if ((embed_config.thumbnail_invalid && embed_config.thumbnail_url) || (embed_config.banner_invalid && embed_config.banner_url)) {
       this.dataService.error_color = 'red';
       this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_IMAGE_TITLE'),
         this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_IMAGE_DESC'));

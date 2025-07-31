@@ -39,6 +39,7 @@ export class DiscordMarkdownComponent implements AfterViewChecked {
   // giveaway Preview Eelements
   @ViewChild('reqElement') reqElement!: ElementRef<HTMLDivElement>;
 
+  protected readonly Number = Number;
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
   protected ownDatePipe: own = new own();

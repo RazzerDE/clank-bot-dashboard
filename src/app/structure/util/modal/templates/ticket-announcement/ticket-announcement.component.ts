@@ -135,7 +135,8 @@ export class TicketAnnouncementComponent {
    * @returns {boolean} Returns true if the theme is INVALID
    */
   protected isAnnounceInvalid(): boolean {
-    return this.activeAnnounce.level == null || this.activeAnnounce.description == null;
+    return this.activeAnnounce.level == null || this.activeAnnounce.description == null ||
+      this.activeAnnounce.description.trim().length === 0;
   }
 
   /**

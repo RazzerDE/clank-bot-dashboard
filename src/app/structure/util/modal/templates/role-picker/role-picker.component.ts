@@ -6,6 +6,7 @@ import {NgClass} from "@angular/common";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Role} from "../../../../../services/types/discord/Guilds";
+import {DataHolderService} from "../../../../../services/data/data-holder.service";
 
 @Component({
   selector: 'template-role-picker',
@@ -26,6 +27,7 @@ export class RolePickerComponent {
 
   public activeTab: number = 0;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
-
   @ViewChild(SelectComponent, { static: true }) selectComponent!: SelectComponent;
+
+  constructor(protected dataService: DataHolderService) {}
 }

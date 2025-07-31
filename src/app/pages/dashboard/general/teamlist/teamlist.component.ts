@@ -253,6 +253,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
    */
   addRole(options: HTMLCollectionOf<HTMLOptionElement>): void {
     if (!this.dataService.active_guild) { return; }
+    this.dataService.isDisabledSpamBtn = true;
     const option: HTMLOptionElement = options.item(0)!
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
     found_role.support_level = this.getActiveTab();
@@ -273,6 +274,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modalComponent.hideModal();
+            setTimeout((): void => { this.dataService.isDisabledSpamBtn = false; }, 250);
             if (subscription) { subscription.unsubscribe(); }
           },
           error: (err: HttpErrorResponse): void => {
@@ -294,6 +296,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modalComponent.hideModal();
+            setTimeout((): void => { this.dataService.isDisabledSpamBtn = false; }, 250);
           }
         });
     });

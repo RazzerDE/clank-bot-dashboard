@@ -32,6 +32,7 @@ export class DataHolderService {
   showEmojiPicker: boolean = false;
   hideGuildSidebar: boolean = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
+  isDisabledSpamBtn: boolean = false;
 
   // error handler related
   error_title: string = 'ERROR_UNKNOWN_TITLE';
@@ -100,13 +101,16 @@ export class DataHolderService {
    *
    * @param comService - The service used to communicate with the Discord API.
    * @param authService - The service used to check user permissions and roles.
+   * @param cache_btn - Optional button element to indicate that the cache is being used (default: `undefined`).
+   *
    */
-  getGuilds(comService: ComService, authService: AuthService): void {
+  getGuilds(comService: ComService, authService: AuthService, cache_btn?: HTMLButtonElement): void {
     this.isFetching = true;
+    if (cache_btn) { this.isLoading = true; cache_btn.disabled = true; }
 
     // check if guilds are already stored in local storage
     if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
-      Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000) {
+      Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000 && !cache_btn) {
       this.servers = JSON.parse(localStorage.getItem('guilds') as string);
       if (!this.active_guild) { this.isLoading = false; }
       return;
@@ -132,7 +136,10 @@ export class DataHolderService {
 
         localStorage.setItem('guilds', JSON.stringify(this.servers));
         localStorage.setItem('guilds_last_updated', Date.now().toString());
-        if (!this.active_guild) { this.isLoading = false; }
+        if (!this.active_guild || cache_btn) {
+          this.isLoading = false;
+          if (cache_btn) { setTimeout((): void => { cache_btn.disabled = false }, 10000); }
+        }
         this.isFetching = false;
       },
       error: (err: HttpErrorResponse): void => {
@@ -147,6 +154,7 @@ export class DataHolderService {
         }
 
         this.isFetching = false;
+        if (cache_btn) { this.isLoading = false; setTimeout((): void => { cache_btn.disabled = false }, 10000); }
       }
     }));
   }
@@ -196,7 +204,7 @@ export class DataHolderService {
    * Fetches the channels of the active guild from the Discord API.
    *
    * This method checks if the channels are cached in local storage and uses the cache
-   * if it is valid (less than one minute old). If the cache is invalid or `no_cache`
+   * if it is valid (less than 5m old). If the cache is invalid or `no_cache`
    * is set to `true`, it fetches the channels from the API and updates the cache.
    *
    * @param discordService - The service used to communicate with the Discord API.
@@ -208,9 +216,9 @@ export class DataHolderService {
     if (!this.active_guild) { return; }
     this.isFetching = true;
 
-    // check if guilds are already stored in local storage (one minute cache)
+    // check if guilds are already stored in local storage (5m cache)
     if ((localStorage.getItem('guild_channels') && localStorage.getItem('guild_channels_timestamp') &&
-      Date.now() - Number(localStorage.getItem('guild_channels_timestamp')) < 60000) && !no_cache) {
+      Date.now() - Number(localStorage.getItem('guild_channels_timestamp')) < 300000) && !no_cache) {
       // check if wish type is the same as the one in local storage
       if (wish_type && localStorage.getItem('guild_channels_type') !== wish_type) {
         this.getGuildChannels(discordService, true, loading, wish_type);
@@ -634,6 +642,8 @@ export class DataHolderService {
    * @param {string} desc - The description of the alert box.
    */
   showAlert(title: string, desc: string): void {
+    if (this.router.url === '/errors/simple') { return; } // do not show alert on error page
+
     this.error_title = title;
     this.error_desc = desc;
     this.showAlertBox = true;

@@ -89,8 +89,8 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
 
   protected wizard_bug_steps: WizardStep[] = [
     { title: 'WIZARD_STEP_FIRST', isEmpty: () => this.formGroupBug.get('bugName')?.value === '' },
-    { title: 'WIZARD_STEP_SECOND', isEmpty: () => this.formGroupBug.get('bugExpected')!.value === '' ||
-                                                           this.formGroupBug.get('bugActual')!.value === '' },
+    { title: 'WIZARD_STEP_SECOND', isEmpty: () => this.formGroupBug.get('bugExpected')?.value === '' ||
+                                                           this.formGroupBug.get('bugActual')?.value === '' },
     { title: 'WIZARD_STEP_THIRD', isEmpty: () => this.formGroupBug.get('bugSteps')?.value === '' },
   ];
   protected wizard_idea_suggestion: WizardStep[] = [
@@ -99,8 +99,8 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
     { title: 'WIZARD_STEP_THIRD_IDEA', isEmpty: () => this.formGroupIdea.get('ideaCategory')?.value === '' },
   ];
 
-  protected form_bug_steps = bug_steps;
-  protected form_idea_steps = idea_steps;
+  protected form_bug_steps: FormStep[] = bug_steps;
+  protected form_idea_steps: FormStep[] = idea_steps;
   protected formGroupBug: FormGroup = new FormGroup({ bugName: new FormControl('', [Validators.required]),
     bugSteps: new FormControl('', [Validators.required]), bugExpected: new FormControl('', [Validators.required]),
     bugActual: new FormControl('', [Validators.required])
@@ -160,7 +160,8 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
         // send bug report
         this.bugReportSent = true;
 
-        const bug_report: Subscription = this.apiService.sendBugReport(this.formGroupBug.value).subscribe({
+        const form_data = { ...this.formGroupBug.value, profile: this.dataService.profile };
+        const bug_report: Subscription = this.apiService.sendBugReport(form_data).subscribe({
           next: (_data: any): void => { bug_report.unsubscribe(); },
           error: (_error: HttpErrorResponse): void => {
             this.bugReportInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');

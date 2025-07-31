@@ -155,7 +155,8 @@ export class ModalComponent implements AfterContentInit  {
    * @returns `true` if a second modal should be displayed, otherwise `false`.
    */
   protected showSecondModal(): boolean {
-    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) ||
-      this.type.startsWith('EVENTS_') && !this.type.includes('TEAMLIST')
+    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT'))
+      || this.type.startsWith('EVENTS_') && !this.type.includes('TEAMLIST')
+      || this.type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
   }
 }

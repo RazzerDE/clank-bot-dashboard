@@ -652,7 +652,9 @@
 
   "PLACEHOLDER_UNBAN_SEARCH": "Search for entry.. 🔎",
   "PLACEHOLDER_REQUESTS_EMPTY": "🥳 ~ There are no open unban requests!",
-  "PLACEHOLDER_UNBAN_MISSING": "You must set Clank as the unban method on your Discord server to use this feature - you can learn more about it <a href=\"https://clank.dev/security/automod\" class=\"text-[#00aff4] hover:underline\">here</a>.",
+  "PLACEHOLDER_UNBAN_MISSING": "You must set Clank as the unban method on your Discord server to use this feature - you can learn more about it <a href=\"https://clank.dev/dashboard/security/automod\" class=\"text-[#00aff4] hover:underline\">here</a>.",
+  "PLACEHOLDER_SUPPORTFORUM_MISSING": "You must first set a support forum on your Discord server to use this feature – you can learn more about it <a href=\"https://clank.dev/dashboard/support/setup\" class=\"text-[#00aff4] hover:underline\">here</a>.",
+  "PLACEHOLDER_THEMES_TOOLTIP_EMPTY": "❌ ~ You can set default roles once at least one support theme has been created.",
 
   "PLACEHOLDER_GIVEAWAY_EMBED_INVITE": "🤖 › Invite the bot <a href=\"http://bl4cklist.de/invites/clank\" class=\"text-[#00aff4] hover:underline\">here</a>.",
   "PLACEHOLDER_GIVEAWAY_EMBED_WINNERS": "Winners",

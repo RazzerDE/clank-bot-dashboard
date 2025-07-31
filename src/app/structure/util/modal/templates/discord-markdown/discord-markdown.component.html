@@ -3,8 +3,16 @@
   @case (type.startsWith('SUPPORT_SNIPPET')) {
     <div class="discord-embed mb-0 h-fit">
       <div class="author">
-        <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
-        <span>Mr.Supercool ~ ADMINISTRATOR</span>
+        @if (this.dataService.profile!.avatar) {
+          <img
+            ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile!.id}}/{{this.dataService.profile!.avatar}}{{this.dataService.profile!.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=24"
+            class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="24" height="24"
+            (error)="this.dataService.profile!.avatar = null">
+        } @else {
+          <img [ngSrc]="'https://cdn.discordapp.com/embed/avatars/' + (Number(this.dataService.profile!.id) % 6) + '.png'"
+               class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="24" height="24">
+        }
+        <span>{{ this.dataService.profile!.username }} ~ Administrator</span>
       </div>
 
       <div class="description" #ticketPreview
@@ -12,7 +20,15 @@
 
       <div class="footer">
         @if (this.dataService.active_guild) {
-          <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
+          @if (this.dataService.active_guild.image_url) {
+            <img [ngSrc]="this.dataService.active_guild.image_url" (error)="this.dataService.active_guild.image_url = undefined"
+              class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (Guild Avatar)" width="24" height="24">
+          } @else {
+            <div class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-white/10 text-gray-800
+                      dark:text-white text-md transition-colors duration-200 rounded-full me-1">
+              {{ this.dataService.active_guild.name.charAt(0) + this.dataService.active_guild.name.charAt(1) }}
+            </div>
+          }
           <span>{{ this.dataService.active_guild.name }}</span>
         }
       </div>
@@ -117,7 +133,7 @@
               </div>
 
               <!-- Right column for the gift image -->
-              @if (dataService.embed_config.thumbnail_url != null) {
+              @if (dataService.embed_config.thumbnail_url != null && dataService.embed_config.thumbnail_url.length > 0) {
                 <div class="flex items-start justify-center">
                   @if (!this.dataService.embed_config.thumbnail_invalid) {
                     <div class="w-20 h-20 flex items-center justify-center">
@@ -134,7 +150,8 @@
             </div>
 
             <!-- Banner image below content -->
-            @if (dataService.embed_config.banner_url != null && type === 'EVENTS_DESIGN') {
+            @if (dataService.embed_config.banner_url != null && type === 'EVENTS_DESIGN' &&
+                 dataService.embed_config.banner_url.length > 0) {
               <div class="mt-2 w-full">
                 @if (!this.dataService.embed_config.banner_invalid) {
                   <div class="w-full flex items-center justify-center mt-2">
@@ -212,14 +229,21 @@
 
               <!-- Floating Avatar -->
               <div class="absolute top-0 right-0 w-16 h-16 rounded-full overflow-hidden z-10">
-                <img [ngSrc]="'https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=64'"
-                     alt="User-Avatar - Clank Discord-Bot" width="64" height="64" class="w-full h-full object-cover">
+                @if (this.dataService.profile!.avatar) {
+                  <img
+                    ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile!.id}}/{{this.dataService.profile!.avatar}}{{this.dataService.profile!.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
+                    class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64"
+                    (error)="this.dataService.profile!.avatar = null">
+                } @else {
+                  <img [ngSrc]="'https://cdn.discordapp.com/embed/avatars/' + (Number(this.dataService.profile!.id) % 6) + '.png'"
+                       class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64">
+                }
               </div>
 
               <!-- User Info -->
               <div class="mb-2 pr-16 flex justify-start items-center">
                 <span class="bg-gray-800/40 me-1 rounded justify-center text-base">👤</span>
-                <span class="text-blue-400 text-md font-semibold">› Yannic</span>
+                <span class="text-blue-400 text-md font-semibold">› {{ this.dataService.profile!.username }}</span>
               </div>
 
               <!-- Message Content -->

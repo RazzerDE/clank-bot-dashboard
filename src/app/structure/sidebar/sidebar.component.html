@@ -1,7 +1,7 @@
 <div class="flex justify-center">
   <!-- Pick Server Sidebar -->
   <div class="w-[74px] bg-gray-100 dark:bg-[rgb(18,26,43,1)] h-screen flex-shrink-0 flex flex-col items-center gap-2
-              overflow-hidden pb-2 duration-500 ease-in-out transition-all transform z-[100] shadow-lg"
+              overflow-hidden pb-2 duration-500 ease-in-out transition-all transform z-[100] shadow-lg overflow-x-hidden"
        id="discord-server-picker" #discordServerPicker
        [style.width.px]="this.dataService.showSidebarLogo && !this.dataService.showMobileSidebar ? '0' : ''">
     <a routerLink="/dashboard" (click)="this.dataService.allowDataFetch.next(true);"
@@ -13,7 +13,7 @@
 
     <div class="w-8 h-0.5 bg-gray-300 dark:bg-gray-700 rounded-full mb-2 transition-colors duration-200"></div>
 
-    <div class="flex flex-col items-center gap-2 overflow-y-auto scrollbar-hide">
+    <div class="flex flex-col items-center gap-2 overflow-y-auto scrollbar-hide flex-1">
       @if (this.dataService.servers.length === 0) {
         <div class="w-12 h-12 bg-transparent rounded-3xl transition-all duration-200 overflow-hidden">
           <img ngSrc="assets/img/icons/sidebar/loading.svg" class="w-full h-full object-cover" width="48" height="48"
@@ -37,6 +37,18 @@
           </div>
         </div>
       }
+    </div>
+
+    <!-- Cache Refresh for Guild list -->
+    <div class="group relative mt-auto mb-2 flex flex-col items-center">
+      <div class="w-8 h-0.5 bg-gray-300 dark:bg-gray-700 rounded-full mb-3 mt-1 transition-colors duration-200"></div>
+      <button class="w-12 h-12 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 focus:ring-4 rounded-3xl
+                     transition-all duration-200 cursor-pointer overflow-hidden group-hover:scale-105 hover:-translate-y-1
+                     flex items-center justify-center text-gray-600 dark:text-gray-300 text-xl
+                     disabled:opacity-50 disabled:cursor-not-allowed"
+              (click)="this.dataService.getGuilds(comService, authService, cacheRefreshButton);" #cacheRefreshButton>
+        <fa-icon [icon]="faRefresh" />
+      </button>
     </div>
   </div>
 

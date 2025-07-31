@@ -224,7 +224,7 @@
             <button class="inline-block p-3 items-center justify-center bg-indigo-600 hover:bg-indigo-700
                          text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600
                          disabled:cursor-not-allowed" (click)="this.saveCustomizing()"
-                    [disabled]="!this.hasCustomizeChanges() || disabledSendBtn">
+                    [disabled]="!this.hasCustomizeChanges() || disabledSendBtn || isInvalidInput()">
               <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
             </button>
             <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600

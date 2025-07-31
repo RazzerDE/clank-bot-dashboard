@@ -19,6 +19,9 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 import {Role} from "../../../../services/types/discord/Guilds";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {ApiService} from "../../../../services/api/api.service";
+import {TasksCompletionList} from "../../../../services/types/Tasks";
+import {NgOptimizedImage} from "@angular/common";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-support-themes',
@@ -29,7 +32,9 @@ import {ApiService} from "../../../../services/api/api.service";
     FaIconComponent,
     DataTableComponent,
     ModalComponent,
-    AlertBoxComponent
+    AlertBoxComponent,
+    NgOptimizedImage,
+    NgbTooltip
   ],
   templateUrl: './support-themes.component.html',
   styleUrl: './support-themes.component.scss'
@@ -44,6 +49,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected disabledCacheBtn: boolean = false;
   private readonly subscription: Subscription | null = null;
   private reloadEmojis: boolean = false;
+  protected isForumMissing: boolean = false;
 
   private startLoading: boolean = false;
   protected modalType: string = 'SUPPORT_THEME_ADD';
@@ -132,12 +138,17 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
     // check if guilds are already stored in local storage (one minute cache)
     if ((localStorage.getItem('support_themes') && localStorage.getItem('guild_roles') &&
+      localStorage.getItem('moduleStatus') &&
       localStorage.getItem('support_themes_timestamp') && localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
+      const moduleStatus: TasksCompletionList = JSON.parse(localStorage.getItem('moduleStatus') as string);
+      this.isForumMissing = !moduleStatus['task_1'].subtasks[0].finished;
+
       this.dataService.has_vip = localStorage.getItem('guild_vip') === 'true';
       this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
       this.filteredThemes = this.dataService.support_themes;
+
       this.dataService.isLoading = false;
       this.dataLoading = false;
       return;
@@ -152,10 +163,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
           this.dataService.has_vip = response.has_vip;
           this.discordRoles = response.guild_roles;
-          this.dataService.isLoading = false;
-          this.dataLoading = false;
           if (subscription) { subscription.unsubscribe(); }
 
+          setTimeout((): void => { this.getModuleStatus(); }, 550);
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
           localStorage.setItem('guild_vip', this.dataService.has_vip.toString());
@@ -173,6 +183,32 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         }
       });
     });
+  }
+
+  /**
+   * Fetches the module status for the active guild and updates the local state.
+   *
+   * This method retrieves the module status from the API, stores it in localStorage,
+   * and sets the `isForumMissing` flag if the required forum task is not finished.
+   * Unsubscribes from the observable after completion to prevent memory leaks.
+   *
+   * @param {boolean} [no_cache] - Optional flag to bypass cache when fetching module status.
+   */
+  private getModuleStatus(no_cache?: boolean): void {
+    let subscription: Subscription | null = null;
+    subscription = this.apiService.getModuleStatus(this.dataService.active_guild!.id, no_cache)
+      .subscribe({
+        next: (moduleStatus: TasksCompletionList): void => {
+          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
+          this.isForumMissing = !moduleStatus['task_1'].subtasks[0].finished;
+
+          this.dataService.isLoading = false;
+          this.dataLoading = false;
+          if (subscription) { subscription.unsubscribe(); }
+        }, error: (error: HttpErrorResponse): void => {
+          if (subscription) { subscription.unsubscribe(); }
+          this.dataService.handleApiError(error) }
+      });
   }
 
   /**

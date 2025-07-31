@@ -384,7 +384,7 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
    * @param {Giveaway} [giveaway] - Optional giveaway data to pre-fill the modal
    */
   protected openModal(type: 'EVENTS_CREATE' | 'EVENTS_EDIT', giveaway?: Giveaway): void {
-    this.dataService.getGuildChannels(this.comService, false, false, 'TEXT');  // fetch guild channels for the select dropdown
+    this.dataService.isFetching = true;
     if (giveaway && type != 'EVENTS_CREATE') {
       const event: Giveaway = { ...giveaway };
       event.prize = event.prize.replace(/<a?:\w+:\d+>/g, '').trim();
@@ -395,6 +395,10 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
 
     this.modalType = type;
     this.modal.showModal();
+
+    setTimeout((): void => {  // fetch guild channels for the select dropdown
+      this.dataService.getGuildChannels(this.comService, false, false, 'TEXT');
+    }, 1000);
   }
 
   /**

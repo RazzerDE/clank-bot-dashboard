@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {faChevronRight, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
@@ -86,10 +86,11 @@ export class SidebarComponent implements AfterViewInit {
 
   protected readonly window: Window = window;
   protected expandedGroups: { [key: string]: boolean } = {};
+  protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
 
   constructor(protected authService: AuthService, protected dataService: DataHolderService,
-              private discordService: ComService, private router: Router) {
+              private discordService: ComService, private router: Router, protected comService: ComService) {
     // initialize navigation pages to allow expanding/collapsing & automatically expand group if the third (or later) page is in that group
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = group.pages.slice(2).some(page =>
@@ -183,5 +184,4 @@ export class SidebarComponent implements AfterViewInit {
     const keysToRemove: string[] = Object.keys(localStorage).filter(key => !importantKeys.includes(key));
     keysToRemove.forEach(key => localStorage.removeItem(key));
   }
-
 }

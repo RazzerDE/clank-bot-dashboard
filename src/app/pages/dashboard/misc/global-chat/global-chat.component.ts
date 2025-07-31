@@ -130,6 +130,19 @@ export class GlobalChatComponent implements OnDestroy {
   }
 
   /**
+   * Checks if the input fields for bot name or global description are invalid.
+   *
+   * Returns true if the bot name is set but empty (only whitespace), or if the global description is set but empty.
+   * Used to validate user input before saving or submitting the form.
+   *
+   * @returns {boolean} True if input is invalid, otherwise false.
+   */
+  protected isInvalidInput(): boolean {
+    return (!!this.global_chat.global_config?.bot_name && this.global_chat.global_config.bot_name.trim().length === 0) ||
+      (!!this.global_chat.global_desc && this.global_chat.global_desc.trim().length === 0);
+  }
+
+  /**
    * Refreshes the cache by disabling the cache button, setting the loading state,
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
    * after 15 seconds.
