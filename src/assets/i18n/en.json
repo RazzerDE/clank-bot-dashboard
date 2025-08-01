@@ -880,6 +880,7 @@
   "ERROR_UNBAN_LOG_402_DESC": "You need <strong>\"Diamond\"</strong> to create the \"Unban Requests\" log - purchase it by right-clicking the Discord bot (Clank) and selecting \"<strong>Store</strong>\".",
   "ERROR_GIVEAWAY_DESIGN_402_DESC": "You need <strong>\"Diamond\"</strong> to edit the giveaway design - purchase it by right-clicking the Discord bot (Clank) and selecting \"<strong>Store</strong>\".",
   "ERROR_GLOBALCHAT_402_DESC": "You need <strong>\"Diamond\"</strong> to edit the global chat design - purchase it by right-clicking the Discord bot (Clank) and selecting \"<strong>Store</strong>\".",
+  "ERROR_CLANK_UNBAN_402_DESC": "You need <strong>\"Diamond\"</strong> to be able to set the Clank method – purchase it by right-clicking the Discord bot (Clank) and selecting \"<strong>Store</strong>\".",
 
   "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "💎 › The backup system will be automatically enabled as soon as you have purchased \"Diamond\" for Clank.<br /><br />Purchase it by right-clicking the Discord bot (Clank) and selecting \"<strong>Store</strong>\".",
   "PAGE_MISC_GIVEAWAY_DESIGN_DISABLED": "❌ ~ \"Diamond\" upgrade required",

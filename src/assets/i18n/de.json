@@ -880,6 +880,7 @@
   "ERROR_UNBAN_LOG_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um den \"Entsperrungs-Anträge\"-Log zu erstellen - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
   "ERROR_GIVEAWAY_DESIGN_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Gewinnspiel-Design zu bearbeiten - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
   "ERROR_GLOBALCHAT_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Design des Global-Chats zu bearbeiten - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_CLANK_UNBAN_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um die Clank Methode festlegen zu können - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
 
   "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "💎 › Das Backup-System wird automatisch aktiviert, sobald du \"Diamond\" für Clank erworben hast.<br /><br />Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
   "PAGE_MISC_GIVEAWAY_DESIGN_DISABLED": "❌ ~ \"Diamond\" Upgrade erforderlich",

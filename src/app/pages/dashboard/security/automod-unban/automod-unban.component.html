@@ -115,8 +115,14 @@
         <!-- Content -->
         <div class="flex flex-col p-3 h-full">
 
-          <template-select [id]="'unbanpicker'" class="mb-4" [options]="this.methods_select" [type]="'SECURITY_UNBAN'"
-                           [activeOption]="this.unban_method.method_type" (selectionChange)="setUnbanMethodType($any($event))" />
+          <div class="mb-4">
+            <template-select [id]="'unbanpicker'" [options]="this.methods_select" [type]="'SECURITY_UNBAN'"
+                             [activeOption]="this.unban_method.method_type" (selectionChange)="setUnbanMethodType($any($event))" />
+            @if (!this.dataService.has_vip && this.unban_method.method_type === 'BOT') {
+              <span class="text-xs text-red-500 mt-1" @fadeInOut
+                    [innerHTML]="'PLACEHOLDER_EVENT_VIP_REQUIRED' | translate"></span>
+            }
+          </div>
 
           <!-- Show Input field for specific unban methods -->
           @if (this.unban_method.method_type === 'FORM' || this.unban_method.method_type === 'INVITE' || this.unban_method.method_type === 'EMAIL') {
@@ -138,7 +144,8 @@
               <button class="bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600
                            hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg w-full
                              transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
-                      [disabled]="!hasMethodChanges() || isInvalidMethodExtra()"
+                      [disabled]="!hasMethodChanges() || isInvalidMethodExtra() || (!this.dataService.has_vip &&
+                                  this.unban_method.method_type && this.unban_method.method_type === 'BOT')"
                       #saveUnban (click)="doAction(0, saveUnban)">
                 <fa-icon [icon]="faHandcuffs" class="me-2" /> {{ 'PAGE_SECURITY_UNBAN_BUTTON_TITLE' | translate }}
               </button>

@@ -91,6 +91,11 @@ export interface LogFeature {
   enabled: boolean;
 }
 
+export interface UnbanMethodRaw {
+  unban_method: UnbanMethod;
+  has_vip: boolean;
+}
+
 export interface UnbanMethod {
   guild_id?: string;                  // The ID of the guild, only used in POST requests.
   method_type: 'BOT' | 'FORM' | 'EMAIL' | 'INVITE' | null;
