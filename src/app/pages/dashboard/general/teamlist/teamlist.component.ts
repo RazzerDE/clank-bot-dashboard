@@ -62,6 +62,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = true;
+        this.dataService.isLoading = true;
         this.getTeamRoles();
       }
     });

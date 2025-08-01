@@ -165,6 +165,7 @@
                     @if (this.global_chat.global_config) {
                       <input type="text" placeholder="Clank's Global-Chat" id="global-chat-name"
                              [(ngModel)]="this.global_chat.global_config.bot_name" maxlength="32"
+                             (input)="this.global_chat.global_config.bot_name?.length === 0 ? this.global_chat.global_config.bot_name = null : null"
                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                               focus:border-primary-500 block w-full p-2.5 pl-10 dark:bg-gray-600 dark:!border-gray-500
                               dark:placeholder-gray-400 dark:text-white transition-colors duration-200" />
@@ -199,6 +200,7 @@
                     <textarea type="text" [placeholder]="'PAGE_MISC_GLOBALCHAT_DESC_PLACEHOLDER' | translate"
                               id="global-chat-desc" minlength="5" maxlength="65"
                               [(ngModel)]="this.global_chat.global_desc"
+                              (input)="this.global_chat.global_desc?.length === 0 ? this.global_chat.global_desc = null : null"
                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                    focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 pl-10
                                    dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400

@@ -29,6 +29,7 @@ export class DiscordMarkdownComponent implements AfterViewChecked {
   @Input() no_overlay: boolean = false;
   @Input() giveaway: Giveaway | null = null;
   @Input() invalidAvatar: boolean = false;
+  @Input() announce_level: number | null = null;
   @Input() obj: GlobalChatConfig = {} as GlobalChatConfig;
   protected org_giveaway: Giveaway | null = {...this.giveaway} as Giveaway;
 
@@ -39,7 +40,7 @@ export class DiscordMarkdownComponent implements AfterViewChecked {
   // giveaway Preview Eelements
   @ViewChild('reqElement') reqElement!: ElementRef<HTMLDivElement>;
 
-  protected readonly Number = Number;
+  protected readonly Number: NumberConstructor = Number;
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
   protected ownDatePipe: own = new own();

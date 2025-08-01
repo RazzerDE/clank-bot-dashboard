@@ -298,12 +298,17 @@
                   text-gray-300 font-sans mt-2 transition-all duration-300"
          [class.opacity-50]="(!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ))
                              && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
-      <div class="absolute top-0 left-0 w-1 h-full rounded-l"
-           [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'bg-[#f98928]' : 'bg-[#5865f2]'"></div>
+      <div class="absolute top-0 left-0 w-1 h-full rounded-l" id="previewBorderColor"
+           [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+                      ? (!this.announce_level || this.announce_level === 1) ? 'bg-[#2cbf68]'
+                      : this.announce_level === 2 ? 'bg-[#f98928]' : 'bg-[#d04130]' : 'bg-[#5865f2]'"></div>
       <div class="pl-3 w-full">
         <div class="flex items-center font-bold text-sm text-white mb-0">
           <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
-          <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/faq_answer_theme.gif'"
+          <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+                        ?  (!this.announce_level || this.announce_level === 1) ? 'assets/img/icons/green_mark.gif' :
+                           this.announce_level === 2 ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/alarm.gif'
+                        : 'assets/img/icons/faq_answer_theme.gif'" id="previewIcon"
                alt="Clank-Icon ~ Clank Discord-Bot" class="w-5 h-5" height="40" width="40"
                [ngClass]="!type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'mx-2' : 'ml-2 mx-0.5'">
           <span>~ {{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')

@@ -139,7 +139,7 @@ export class GlobalChatComponent implements OnDestroy {
    */
   protected isInvalidInput(): boolean {
     return (!!this.global_chat.global_config?.bot_name && this.global_chat.global_config.bot_name.trim().length === 0) ||
-      (!!this.global_chat.global_desc && this.global_chat.global_desc.trim().length === 0);
+      (!!this.global_chat.global_desc && this.global_chat.global_desc.trim().length === 0) || this.isInvalidAvatar;
   }
 
   /**
@@ -168,7 +168,7 @@ export class GlobalChatComponent implements OnDestroy {
   protected verifyAvatarURL(event: Event): void {
     const input: HTMLInputElement = event.target as HTMLInputElement;
     const url: string = input.value.trim();
-    if (url.length === 0) { this.global_chat.global_config!.bot_avatar_url = null; this.isInvalidAvatar = true; return; }
+    if (url.length === 0) { this.global_chat.global_config!.bot_avatar_url = null; this.isInvalidAvatar = false; return; }
 
     // Only allow http(s) URLs and basic image extensions
     const isValidUrl: boolean = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(url.split('?')[0]);
@@ -191,7 +191,7 @@ export class GlobalChatComponent implements OnDestroy {
    */
   protected saveCustomizing(lock?: boolean): void {
     if (!this.dataService.active_guild) { return; }
-    if (this.global_chat.global_config?.bot_avatar_url != null && this.isInvalidAvatar) {
+    if (this.isInvalidAvatar) {
       this.dataService.error_color = 'red';
       this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
         this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_DESC"));

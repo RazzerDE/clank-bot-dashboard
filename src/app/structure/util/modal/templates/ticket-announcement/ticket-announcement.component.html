@@ -20,7 +20,7 @@
           <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                          focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:!border-gray-500 cursor-pointer
                          dark:placeholder-gray-400 dark:text-white pr-10 appearance-none"
-                  [(ngModel)]="activeAnnounce.level" id="announcementlevel">
+                  [(ngModel)]="activeAnnounce.level" id="announcementlevel" (input)="changeAnnouncementPreview($event)">
             <option disabled [value]="null">{{ 'ANNOUNCEMENT_LEVEL_PLACEHOLDER' | translate }}</option>
             <option [value]="1">{{ 'ANNOUNCEMENT_LEVEL_LOW' | translate }}</option>
             <option [value]="2">{{ 'ANNOUNCEMENT_LEVEL_MEDIUM' | translate }}</option>
@@ -53,7 +53,7 @@
                    dark:focus:ring-green-800 text-sm px-5" [disabled]="isAnnounceInvalid()" (click)="submitAnnouncement()">
         {{ type === 'SUPPORT_TICKET_ANNOUNCEMENT_SET' ? ('PLACEHOLDER_BUTTON_ANNOUNCEMENT_SET' | translate) : ('PLACEHOLDER_BUTTON_ANNOUNCEMENT_EDIT' | translate) }}
       </button>
-      @if (type === 'SUPPORT_TICKET_ANNOUNCEMENT_EDIT') {
+      @if (type === 'SUPPORT_TICKET_ANNOUNCEMENT_EDIT' && org_activeAnnounce === activeAnnounce) {
         <button class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white rounded-lg
                        p-2.5 flex items-center justify-center focus:ring-4 focus:outline-none focus:ring-red-300
                        dark:focus:ring-red-800" (click)="deleteAnnouncement()">
@@ -78,7 +78,8 @@
       <p class="text-gray-400 dark:text-gray-500 text-sm mb-2" [innerHTML]="'PLACEHOLDER_ANNOUNCEMENT_MODAL_INFO' | translate"></p>
       <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800 mb-4">
 
-      <template-discord-markdown [type]="this.type" class="!mt-0" [content]="activeAnnounce.description!" [no_overlay]="true" />
+      <template-discord-markdown [type]="this.type" class="!mt-0" [content]="activeAnnounce.description!"
+                                 [announce_level]="this.activeAnnounce.level!" [no_overlay]="true" />
     </div>
   </div>
 }

@@ -43,7 +43,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected filteredThemes: SupportTheme[] = this.dataService.support_themes;
   protected selectedOptions: string[] = [];
   protected modalExtra: Role[] = [];
-  protected editTheme: SupportTheme = this.dataService.initTheme;
+  protected editTheme: SupportTheme = { ...this.dataService.initTheme };
   protected discordRoles: Role[] = [];
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
@@ -321,7 +321,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
       this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
-      this.editTheme = this.dataService.initTheme;
+      this.editTheme = { ...this.dataService.initTheme };
     } else {
       theme!.guild_id = this.dataService.active_guild!.id;
       // remove default mention roles (show only role-specific)
@@ -445,9 +445,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * @param role_id - The ID of the role to check.
    * @returns A string containing the translated placeholder if the role ID is found in the default roles or selectedOptions, otherwise an empty string.
    */
-  isDefaultMentioned(default_roles: Role[], role_id: string): string {
-    const isDefault = default_roles.some(r => r.id === role_id);
-    const isSelected = this.modalType === 'DEFAULT_MENTION' && this.selectedOptions.includes(role_id);
+  private isDefaultMentioned(default_roles: Role[], role_id: string): string {
+    const isDefault: boolean = default_roles.some(r => r.id === role_id);
+    const isSelected: boolean = this.modalType === 'DEFAULT_MENTION' && this.selectedOptions.includes(role_id);
 
     return (isDefault || isSelected) ? '(' + this.translate.instant("PLACEHOLDER_DEFAULT") + ')' : '';
   }

@@ -24,7 +24,7 @@
     <tbody class="overflow-y-auto">
       <!-- Table is empty -->
       @if ((tconfig.type != 'UNBAN_REQUESTS' && tconfig.rows.length == 0 && !tconfig.dataLoading) ||
-           (tconfig.type === 'UNBAN_REQUESTS' && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
+           (tconfig.type === 'UNBAN_REQUESTS' && tconfig.rows.length == 0 && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
         <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
           <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">{{ tconfig.list_empty | translate }}</td>
         </tr>
@@ -336,12 +336,13 @@
                 <!-- Show all Buttons, except Edit Button for Support-Themes if Pending -->
                 @if (!($index === 0 && isSupportType(obj) && obj.pending === true) && !isGiveawayType(obj)) {
                   <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
-                   focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40
-                   transition-colors duration-300" type="button" (click)="button.action(obj)" id="TableBtn_{{ $index }}"
+                   focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40 disabled:!text-opacity-60
+                   transition-colors duration-300 disabled:!bg-transparent" type="button" [disabled]="dataTableBtnPressed"
+                          (click)="onDataTableBtnClick(button, obj)" id="TableBtn_{{ $index }}"
                           [ngClass]="button.color === 'blue' ? '!text-blue-500' : (button.color === 'green' ?
-                          '!text-green-500' : 'text-red-700 dark:text-red-700')"
-                  [title]="isUnbanRequestType(obj) ? button.color === 'green' ?
-                  ('PLACEHOLDER_ACCEPT' | translate) : ('PLACEHOLDER_DENY' | translate) : null">
+                                     '!text-green-500' : 'text-red-700 dark:text-red-700')"
+                           [title]="isUnbanRequestType(obj) ? button.color === 'green' ?
+                                    ('PLACEHOLDER_ACCEPT' | translate) : ('PLACEHOLDER_DENY' | translate) : ''">
                     <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
                   </button>
                 }
@@ -352,7 +353,8 @@
                   @else { <!-- Show play and delete button for scheduled Giveaways -->
                     <button class="inline-flex items-center p-1.5 py-1 text-sm font-medium text-center rounded-full
                      focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 bg-opacity-40 transition-colors
-                     duration-300" [class.mt-1]="$index === 3" type="button" (click)="button.action(obj)"
+                     disabled:!text-opacity-60 disabled:!bg-transparent duration-300" [class.mt-1]="$index === 3" type="button"
+                            [disabled]="dataTableBtnPressed" (click)="onDataTableBtnClick(button, obj)"
                             id="TableBtn_{{ $index }}" [ngClass]="button.color === 'blue' ? '!text-blue-500' :
                             (button.color === 'green' ? '!text-green-500' : 'text-red-700 dark:text-red-700')">
                       <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>

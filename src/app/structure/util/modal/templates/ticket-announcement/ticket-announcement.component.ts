@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {TicketAnnouncement} from "../../../../../services/types/Tickets";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -31,12 +31,14 @@ export class TicketAnnouncementComponent {
   @Input() type: string = '';
   @Input() showFirst: boolean = false;
 
+  @ViewChild(DiscordMarkdownComponent) markdownComponent!: DiscordMarkdownComponent;
   @Input() activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
+  protected org_activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
   protected readonly today: Date = new Date();
 
-  constructor(private dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {}
+  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {}
 
   /**
    * Submits the current ticket announcement to the server.
@@ -63,6 +65,7 @@ export class TicketAnnouncementComponent {
           this.dataService.showAlert(this.translate.instant('SUCCESS_ANNOUNCEMENT_SET_TITLE'),
             this.translate.instant('SUCCESS_ANNOUNCEMENT_SET_DESC', { date: this.formatEndDate() }));
 
+          this.org_activeAnnounce = { ...this.activeAnnounce };
           localStorage.setItem('ticket_announcement', JSON.stringify(this.activeAnnounce));
           this.hideModal();
           if (sub) { sub.unsubscribe(); }
@@ -103,6 +106,8 @@ export class TicketAnnouncementComponent {
           this.activeAnnounce.level = null;
           this.activeAnnounce.description = null;
           this.activeAnnounce.end_date = null;
+
+          this.org_activeAnnounce = { ...this.activeAnnounce };
           localStorage.setItem('ticket_announcement', JSON.stringify(this.activeAnnounce));
           this.hideModal();
           if (sub1) { sub1.unsubscribe(); }
@@ -177,6 +182,42 @@ export class TicketAnnouncementComponent {
       const hours: number = date.getHours() % 12;
       const period: 'PM' | 'AM' = date.getHours() >= 12 ? 'PM' : 'AM';
       return `${formattedDate}, ${hours}:${date.getMinutes().toString().padStart(2, '0')} ${period}`;
+    }
+  }
+
+  /**
+   * Updates the preview of the ticket announcement based on the selected level.
+   *
+   * Sets the preview border color and icon according to the selected announcement level.
+   * Level 1: Green (default), Level 2: Orange, Level 3: Red.
+   * Updates the preview elements in the DOM to reflect the current selection.
+   *
+   * @param {Event} event - The change event from the level select input.
+   * @returns {void}
+   */
+  changeAnnouncementPreview(event: Event): void {
+    if (!event.target) { return; }
+    let color: number = 0x2cbf68;
+    let icon: string = 'assets/img/icons/green_mark.gif'
+    const value: number = parseInt((event.target as HTMLSelectElement).value, 10);
+    this.activeAnnounce.level = value;
+
+    switch (value) {
+      case 2:
+        color = 0xf98928; // Orange
+        icon = 'assets/img/icons/orange_mark.png';
+        break;
+      case 3:
+        color = 0xd04130; // Red
+        icon = 'assets/img/icons/alarm.gif';
+        break;
+    }
+
+    const previewElement: HTMLDivElement = document.getElementById('previewBorderColor') as HTMLDivElement;
+    const previewIconElement: HTMLImageElement = document.getElementById('previewIcon') as HTMLImageElement;
+    if (previewElement && previewIconElement) {
+      previewElement.style.backgroundColor = `#${color.toString(16).padStart(6, '0')}`;
+      setTimeout((): void => { previewIconElement.src = icon; }, 10);
     }
   }
 
