@@ -79,6 +79,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() obj: TicketSnippet | BlockedUser | Giveaway | SecurityModal = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
+  @Input() org_announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};

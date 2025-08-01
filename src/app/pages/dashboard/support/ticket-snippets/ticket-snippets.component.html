@@ -5,6 +5,7 @@
 
     <!-- Snippet Modal -->
     <app-modal [type]="modalType" [obj]="this.newSnippet" [announcement]="this.currentAnnouncement"
+               [org_announcement]="this.org_currentAnnouncement"
                [snippet_action]="addTextSnippet.bind(this)" [snippet_edit]="editTextSnippet.bind(this)"/>
 
     <!-- Page Thumb -->

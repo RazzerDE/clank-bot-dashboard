@@ -70,7 +70,8 @@
                                     [externalMarkdown]="secondSnippetAdd?.discordMarkdown" [snippet_edit]="snippet_edit" />
             }
             @case (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
-              <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true" />
+              <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true"
+                                            [org_activeAnnounce]="this.org_announcement" />
             }
             @case (type.startsWith('BLOCKED_USER')) {
               <template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />

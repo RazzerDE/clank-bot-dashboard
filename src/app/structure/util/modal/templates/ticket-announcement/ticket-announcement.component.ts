@@ -33,10 +33,11 @@ export class TicketAnnouncementComponent {
 
   @ViewChild(DiscordMarkdownComponent) markdownComponent!: DiscordMarkdownComponent;
   @Input() activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
-  protected org_activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
+  @Input() org_activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
   protected readonly today: Date = new Date();
+  protected readonly JSON = JSON;
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {}
 
@@ -220,5 +221,4 @@ export class TicketAnnouncementComponent {
       setTimeout((): void => { previewIconElement.src = icon; }, 10);
     }
   }
-
 }
