@@ -81,6 +81,7 @@ export class AuthService {
         this.dataService.isLoginLoading = false;
 
         this.dataService.getGuilds(this.comService, this);
+        setTimeout((): void => { this.dataService.allowDataFetch.next(true); }, 500);
         },
       error: (error: HttpErrorResponse): void => {
         this.logout();
