@@ -18,7 +18,6 @@ import {ApiService} from "../../../../services/api/api.service";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons";
-import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
 
 @Component({
   selector: 'app-event-effects',
@@ -69,7 +68,6 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
   private readonly subscription: Subscription | null = null;
   protected disabledCacheBtn: boolean = false;
   protected disableSendBtn: boolean = false;
-  private markdownPipe: MarkdownPipe = new MarkdownPipe();
   protected dataLoading: boolean = true;
 
   constructor(private apiService: ApiService, protected dataService: DataHolderService, private translate: TranslateService) {
@@ -265,10 +263,8 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
    * @param remove - Optional parameter to indicate whether to remove the object instead of adding it.
    */
   pushToCardList(obj_id: string, card: EventCard, remove?: boolean): void {
-    let obj: Role | Channel | undefined;
     if (this.activeTab === 'ROLES') {
       const role: Role | undefined = this.dataService.guild_roles.find(r => r.id === obj_id);
-      obj = role;
       if (role) {
         if (remove) {  // Remove the role from the card's object list
           card.obj_list = (card.obj_list as Role[]).filter(r => r.id !== role.id);
@@ -279,7 +275,6 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
       }
     } else {
       const channel: Channel | undefined = this.dataService.guild_channels.find(c => c.id === obj_id);
-      obj = channel;
       if (channel) {
         if (remove) {  // Remove the channel from the card's object list
           card.obj_list = (card.obj_list as Channel[]).filter(c => c.id !== channel.id);
@@ -293,11 +288,6 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
         }
       }
     }
-
-    this.dataService.error_color = 'green';
-    this.dataService.showAlert(this.translate.instant(`SUCCESS_EFFECTS_${this.activeTab}_${remove ? 'DELETE_' : ''}TITLE`),
-      this.translate.instant(`SUCCESS_EFFECTS_${this.activeTab}_${remove ? 'DELETE_' : ''}DESC`,
-        { name: this.markdownPipe.transform(obj?.name), type: this.translate.instant(card.title).split(' ~ ')[1] }));
   }
 
   /**

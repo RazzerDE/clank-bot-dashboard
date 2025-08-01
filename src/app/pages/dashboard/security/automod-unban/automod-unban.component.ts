@@ -202,6 +202,7 @@ export class AutomodUnbanComponent implements OnDestroy {
           if (err.status === 409 && (this.unban_method.method_type && this.unban_method.method_type != 'BOT')) {
             if (this.isInvalidUnbanMethodInput()) { return; }
           } else if (err.status === 402) {
+            this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
               this.translate.instant('ERROR_CLANK_UNBAN_402_DESC'));
           } else if (err.status === 429) {
