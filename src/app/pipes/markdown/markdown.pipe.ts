@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import sanitizeHtml from 'sanitize-html';
+import sanitize from "dompurify";
 
 @Pipe({
   name: 'markdown',
@@ -64,18 +64,15 @@ export class MarkdownPipe implements PipeTransform {
     text = text.replace(/[&<>"':=]/g, (match) => htmlEscapes[match])
 
     // Sanitize HTML to remove any tags and attributes
-    return sanitizeHtml(text, {
-      allowedTags: [], // Disallow all HTML tags
-      allowedAttributes: {}, // Disallow all attributes
-      disallowedTagsMode: 'escape', // Escape disallowed tags instead of removing them
-    }).replaceAll(/javascript&#0*58|javascript&#x0*3a|javascript:/gi, '')
-      .replaceAll(/data:/gi, '')
-      .replaceAll(/vbscript:/gi, '')
-      .replaceAll(/onerror\s*=/gi, '')
-      .replaceAll(/onclick\s*=/gi, '')
-      .replaceAll(/onload\s*=/gi, '')
-      .replaceAll(/onmouseover\s*=/gi, '')
-      .replaceAll(/onfocus\s*=/gi, '');
+    const sanitized: string = sanitize.sanitize(text);
+    return sanitized.replace(/javascript&#0*58|javascript&#x0*3a|javascript:/gi, '')
+      .replace(/data:/gi, '')
+      .replace(/vbscript:/gi, '')
+      .replace(/onerror\s*=/gi, '')
+      .replace(/onclick\s*=/gi, '')
+      .replace(/onload\s*=/gi, '')
+      .replace(/onmouseover\s*=/gi, '')
+      .replace(/onfocus\s*=/gi, '');
   }
 
   /**

@@ -3,9 +3,9 @@ import { faChevronUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {isPlatformBrowser, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
-import {AnimationService} from "../../../services/animation/animation.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {LNavigationItem, nav_items} from '../../../services/types/landing-page/LNavigationItem';
+import {AnimationService} from "../../../services/animation/animation.service";
 
 @Component({
     selector: 'landing-footer',
@@ -24,7 +24,7 @@ export class FooterComponent implements AfterViewInit {
   protected faChevronUp: IconDefinition = faChevronUp;
   protected readonly nav_items: LNavigationItem[] = nav_items;
 
-  constructor(private animations: AnimationService, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private animationService: AnimationService) {}
 
   /**
    * Lifecycle hook that is called after Angular has fully initialized a component's view.
@@ -33,8 +33,8 @@ export class FooterComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       // start firefly animation for footer
-      this.animations.setCanvasID('footer-canvas', 'firefly');
-      this.animations.startAnimation('footer-canvas');
+        this.animationService.setCanvasID('footer-canvas', 'firefly');
+        this.animationService.startAnimation('footer-canvas');
     }
   }
 

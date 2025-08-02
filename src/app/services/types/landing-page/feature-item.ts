@@ -53,7 +53,7 @@ export const feature_items: FeatureItem[] = [
     ]
   },
   {
-    video_url: 'assets/video/discord-bot-ticket-tool.mp4',
+    video_url: 'assets/video/discord-bot-giveaways.mp4',
     video_id: 'discord-bot-giveaways',
 
     category: 'SECTION_SHOWCASE_ITEM_2_SUBTITLE',

@@ -1,23 +1,23 @@
 import {Component, HostListener, Renderer2} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {TranslatePipe} from "@ngx-translate/core";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
 import {LNavigationItem, nav_items} from '../../../services/types/landing-page/LNavigationItem';
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
     selector: 'landing-header',
-    imports: [
-        NgOptimizedImage,
-        RouterLink,
-        FontAwesomeModule,
-        TranslatePipe,
-        LangSwitchButtonComponent
-    ],
+  imports: [
+    NgOptimizedImage,
+    RouterLink,
+    TranslatePipe,
+    LangSwitchButtonComponent,
+    FaIconComponent
+  ],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })

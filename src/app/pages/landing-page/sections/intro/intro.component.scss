@@ -3,7 +3,7 @@
 /* Welcome Section (Intro) */
 .intro-banner {
   @apply relative z-[1] overflow-hidden pt-44 px-0 pb-56 w-full;
-  background: url("../../../../../assets/img/bg/clank-discord-bot-bg.jpg");
+  //background: url("../../../../../assets/img/bg/clank-discord-bot-bg.avif");
   background-repeat: no-repeat !important;
   background-size: cover !important;
   background-position: bottom !important;
@@ -59,7 +59,7 @@
 
 /* Design of entire Banner for Intro */
 .guild_banner {
-  @apply backdrop-blur-sm h-24 absolute flex items-start justify-center flex-col bottom-0 w-full z-[2];
+  @apply backdrop-blur-sm h-24 absolute flex items-start justify-center flex-col bottom-0 w-full z-10;
   background: rgba(30, 31, 53, 0.8);
 }
 

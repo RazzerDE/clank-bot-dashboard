@@ -5,6 +5,10 @@
     <priority>1.00</priority>
   </url>
   <url>
+    <loc>https://clank.dev/de</loc>
+    <priority>1.00</priority>
+  </url>
+  <url>
     <loc>https://clank.dev/invite</loc>
     <priority>0.80</priority>
   </url>

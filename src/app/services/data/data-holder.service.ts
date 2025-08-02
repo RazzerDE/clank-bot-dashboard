@@ -64,8 +64,8 @@ export class DataHolderService {
   org_config: EmbedConfig = {...this.embed_config};
   selectedSnippet: TicketSnippet | null = null;
 
-  private markdownPipe: MarkdownPipe = new MarkdownPipe();
-  private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
+  private markdownPipe: MarkdownPipe | undefined;
+  private convertTimePipe: ConvertTimePipe | undefined;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private translate: TranslateService) {
     if (isPlatformBrowser(this.platformId)) {
@@ -536,6 +536,8 @@ export class DataHolderService {
     if (!value || value === '') { return ''; }
     const reqElement: HTMLSpanElement = document.getElementById('req_element') as HTMLSpanElement;
     const req_value: string = value.split(': ')[1];
+    this.markdownPipe = this.markdownPipe || new MarkdownPipe();
+    this.convertTimePipe = this.convertTimePipe || new ConvertTimePipe();
 
     switch (true) {
       case value.startsWith('MSG: '):

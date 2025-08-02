@@ -40,9 +40,7 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-            "allowedCommonJsDependencies": [
-              "sanitize-html"
-            ]
+            "allowedCommonJsDependencies": []
           },
           "configurations": {
             "production": {
@@ -55,13 +53,25 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "10000kb",
-                  "maximumError": "50mb"
+                  "maximumWarning": "5000kb",
+                  "maximumError": "10000kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "main",
+                  "maximumWarning": "250kb",
+                  "maximumError": "400kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "vendor",
+                  "maximumWarning": "300kb",
+                  "maximumError": "500kb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20000kb",
-                  "maximumError": "40000kb"
+                  "maximumWarning": "50kb",
+                  "maximumError": "100kb"
                 }
               ],
               "outputHashing": "all",

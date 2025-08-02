@@ -6,8 +6,8 @@
 
 /* Background-Design for Footer */
 .footer-section .footer-area {
-  @apply pt-52 relative bg-cover bg-no-repeat bg-top;
-  background-image: url("/assets/img/bg/clank-discord-bot-footer-bg.jpg");
+  @apply pt-52 relative bg-cover bg-no-repeat bg-top z-[1];
+  //background-image: url("/assets/img/bg/clank-discord-bot-footer-bg.avif");
 
   // Dark Overlay for BG
   &::before {

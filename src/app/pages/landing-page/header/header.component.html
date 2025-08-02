@@ -7,7 +7,7 @@
           <!-- Logo -->
           <div class="mr-14">
             <a routerLink="/">
-              <img ngSrc="assets/img/logo/clank-discord-bot-logo.png" width="70" height="70"
+              <img ngSrc="assets/img/logo/clank-discord-bot-logo.avif" width="70" height="70"
                    alt="Clank ~ Discord-Bot (Logo)" />
             </a>
           </div>
@@ -30,7 +30,7 @@
             <li class="mr-5">
 
               <!-- Mobile Expand Button -->
-              <a (click)="toggleMobileMenu()" class="nav-expander bar" href="#">
+              <a (click)="toggleMobileMenu()" class="nav-expander bar" href="#" aria-label="Toggle mobile menu">
                 <div class="bar">
                   <span class="dot1"></span>
                   <span class="dot2"></span>
@@ -79,12 +79,12 @@
         <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" width="50" height="50"
              alt="Clank ~ Discord-Bot (Logo)">
       </a>
-      <a class="nav-close relative cursor-pointer" (click)="toggleMobileMenu()">
+      <div class="nav-close relative cursor-pointer" (click)="toggleMobileMenu()">
         <div class="line">
           <span class="line1"></span>
           <span class="line2"></span>
         </div>
-      </a>
+      </div>
     </div>
 
     <!-- Mobile Menu Content -->

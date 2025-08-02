@@ -8,12 +8,14 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import {duplicateRequestInterceptor} from "./interceptors/duplicate-request";
+import {AnimationService} from "./services/animation/animation.service";
 
 const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    AnimationService,
     provideRouter(routes),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(withFetch(), withInterceptors([duplicateRequestInterceptor])),

@@ -5,8 +5,8 @@
       <div class="sec-heading">
         <div class="mb-3 a_fadeInUp">
           <span class="sub-title">{{ 'SECTION_FEATURES_SUBTITLE' | translate }}</span>
-          <img class="heading-left-image inline-block" ngSrc="/assets/img/frames/steps.png"
-               height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)"/>
+          <img class="heading-left-image inline-block" ngSrc="/assets/img/frames/steps.webp"
+               height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)" loading="lazy" />
         </div>
         <h2 class="title a_fadeInUp">{{ 'SECTION_FEATURES_TITLE' | translate }}</h2>
       </div>
@@ -14,7 +14,7 @@
       <div class="row a_fadeInLeft">
         <div class="col-md-3 col-sm-6">
           <img ngSrc="/assets/img/icons/features/feature-language-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Language Support Icon)" class="img-fluid" />
+               alt="Clank ~ Discord-Bot (Language Support Icon)" class="img-fluid" loading="lazy" />
 
           <div class="key_feature">
             <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_1_TITLE' | translate }}</h3>
@@ -24,7 +24,7 @@
 
         <div class="col-md-3 col-sm-6">
           <img ngSrc="/assets/img/icons/features/feature-lovetodetail-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Love to Detail Icon)" class="img-fluid" />
+               alt="Clank ~ Discord-Bot (Love to Detail Icon)" class="img-fluid" loading="lazy" />
 
           <div class="key_feature">
             <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_2_TITLE' | translate }}</h3>
@@ -34,7 +34,7 @@
 
         <div class="col-md-3 col-sm-6">
           <img ngSrc="/assets/img/icons/features/feature-wishlist-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" />
+               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" loading="lazy" />
 
           <div class="key_feature">
             <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_3_TITLE' | translate }}</h3>
@@ -44,7 +44,7 @@
 
         <div class="col-md-3 col-sm-6">
           <img ngSrc="/assets/img/icons/features/feature-support-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" />
+               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" loading="lazy" />
 
           <div class="key_feature">
             <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_4_TITLE' | translate }}</h3>
@@ -59,16 +59,17 @@
   <!-- Specific Showcase of Features -->
   <div class="container">
 
-    @for (big_feature of feature_items; track $index) {
+    @for (big_feature of feature_items; track trackByFeature($index, big_feature)) {
       <div class="row" [ngClass]="$index % 2 === 0 ? 'mb-20' : 'mb-40'">
         <!-- Show Video on the left side -->
         @if ($index % 2 === 0) {
           <div class="col-md-6 a_fadeInLeftBig">
-            <video class="img-fluid cursor-pointer rounded-3xl -rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800"
-                   [id]=big_feature.video_id height="1080" width="1920" autoplay loop playsinline [muted]="true"
-                   (click)="toggleFullscreen(big_feature.video_id, $event)"
-                   (fullscreenchange)="toggleFullscreen(big_feature.video_id)">
-              <source src=" {{ big_feature.video_url }} " type="video/mp4">
+            <video class="img-fluid cursor-pointer rounded-3xl -rotate-[0.5deg] hover:shadow-xl
+                        hover:shadow-slate-800 transition-all duration-200"
+                   [id]=big_feature.video_id height="1080" width="1920" loop playsinline [muted]="true"
+                   (click)="toggleFullscreen(big_feature.video_id, $event)" preload="none"
+                   (fullscreenchange)="toggleFullscreen(big_feature.video_id)" #lazyVideo>
+              <source [attr.data-src]="big_feature.video_url" type="video/mp4">
               Dein Browser unterstützt keine HTML-Videos!
             </video>
           </div>
@@ -79,20 +80,20 @@
             <div class="sec-heading">
               <div class="mb-15">
                 <span class="sub-title"> {{ big_feature.category | translate }} </span>
-                <img class="heading-left-image inline-block" ngSrc="assets/img/frames/steps.png"
-                     height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)" />
+                <img class="heading-left-image inline-block" ngSrc="assets/img/frames/steps.webp"
+                     height="11" width="74" alt="Clank ~ Discord-Bot (Step-Icon)" loading="lazy" />
               </div>
-              <h2 class="title mb-0 text-[2rem]"> {{ big_feature.title | translate }}  </h2>
+              <h3 class="title mb-0 text-[2rem] mt-1"> {{ big_feature.title | translate }}  </h3>
             </div>
             <div class="big_feature_content">
               <p [innerHTML]="big_feature.description | translate"></p>
               <div class="big_feature_list">
                 <ul class="w-1/2">
-                  @for (item of big_feature.left_menu_items; track item) {
+                  @for (item of big_feature.left_menu_items; track trackByMenuItem($index, item)) {
                     <li>
                       <span>
                         <img ngSrc="{{ item.icon_url }}" alt="Clank ~ Discord-Bot (Checkmark-Icon)"
-                             class="img-fluid" height="16" width="16" />
+                             class="img-fluid" height="16" width="16" loading="lazy" />
                       </span>
 
                       {{ item.feature_name | translate }}
@@ -101,11 +102,11 @@
                 </ul>
 
                 <ul class="w-1/2 m-0">
-                  @for (item of big_feature.right_menu_items; track item) {
+                  @for (item of big_feature.right_menu_items; track trackByMenuItem($index, item)) {
                     <li>
                       <span>
                         <img ngSrc="{{ item.icon_url }}" alt="Clank ~ Discord-Bot (Checkmark-Icon)"
-                             class="img-fluid" height="16" width="16" />
+                             class="img-fluid" height="16" width="16" loading="lazy" />
                       </span>
 
                       {{ item.feature_name | translate }}
@@ -120,11 +121,12 @@
         <!-- Show Video on the right side -->
         @if ($index % 2 !== 0) {
           <div class="col-md-6 a_fadeInRightBig">
-            <video class="img-fluid cursor-pointer rounded-3xl rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800"
-                   [id]=big_feature.video_id height="1080" width="1920" autoplay loop playsinline [muted]="true"
-                   (click)="toggleFullscreen(big_feature.video_id, $event)"
+            <video class="img-fluid cursor-pointer rounded-3xl rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800
+                          transition-all duration-200"
+                   [id]=big_feature.video_id height="1080" width="1920" loop playsinline [muted]="true"
+                   (click)="toggleFullscreen(big_feature.video_id, $event)" preload="none" #lazyVideo
                    (fullscreenchange)="toggleFullscreen(big_feature.video_id)">
-              <source src=" {{ big_feature.video_url }} " type="video/mp4">
+              <source [attr.data-src]="big_feature.video_url" type="video/mp4">
               Dein Browser unterstützt keine HTML-Videos!
             </video>
           </div>
@@ -135,11 +137,11 @@
   </div>
 
   <span class="frame-top a_fadeInLeft">
-    <img ngSrc="/assets/img/frames/container-frame-top.png" alt="Clank ~ Discord-Bot (Feature-Frame Top)"
-         width="614" height="40" class="img-fluid" />
+    <img ngSrc="/assets/img/frames/container-frame-top.webp" alt="Clank ~ Discord-Bot (Feature-Frame Top)"
+         width="614" height="40" class="img-fluid" loading="lazy" />
   </span>
   <span class="frame-bottom a_fadeInRight">
-    <img ngSrc="/assets/img/frames/container-frame-bottom.png" alt="Clank ~ Discord-Bot (Bottom-Frame Top)"
-         height="40" width="604" class="img-fluid" />
+    <img ngSrc="/assets/img/frames/container-frame-bottom.webp" alt="Clank ~ Discord-Bot (Bottom-Frame Top)"
+         height="40" width="604" class="img-fluid" loading="lazy" />
   </span>
 </div>
