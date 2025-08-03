@@ -146,7 +146,8 @@
               <img ngSrc="assets/img/confusion-64x.png" alt="Backup Disabled ~ Clank Discord-Bot"
                    width="64" height="64" class="mb-6 opacity-50" />
               <p class="text-md font-medium text-gray-600 dark:text-gray-300 text-center opacity-50"
-                 [innerHTML]="'PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT' | translate"></p>
+                 [innerHTML]="this.dataService.has_vip ? ('PAGE_SECURITY_SHIELD_EMPTY_PREMIUM' | translate) :
+                                                    'PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT' | translate"></p>
             </div>
           }
 

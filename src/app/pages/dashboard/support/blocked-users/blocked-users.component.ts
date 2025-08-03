@@ -246,6 +246,9 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
             this.dataService.showAlert(this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_TITLE'),
               this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_DESC', { user: blockedUser.user_name }));
             blockedUser = {} as BlockedUser; // reset blocked user object
+          } else if (error.status === 400) {
+            this.dataService.showAlert(this.translate.instant('ERROR_DATE_PAST_TITLE'),
+              this.translate.instant('ERROR_DATE_PAST_DESC'));
           } else if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

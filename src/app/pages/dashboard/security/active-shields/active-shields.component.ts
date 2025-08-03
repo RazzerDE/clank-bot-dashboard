@@ -9,7 +9,7 @@ import {faHashtag, faRotateLeft, IconDefinition} from "@fortawesome/free-solid-s
 import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons";
 import {faAt} from "@fortawesome/free-solid-svg-icons";
-import {BackupData, initFeatures, SecurityFeature} from "../../../../services/types/Security";
+import {BackupData, initFeatures, SecurityFeature, SecurityFeatureRaw} from "../../../../services/types/Security";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -90,9 +90,11 @@ export class ActiveShieldsComponent implements OnDestroy {
 
     // check if guilds are already stored in local storage (60 seconds cache)
     if ((localStorage.getItem('security_shields') && localStorage.getItem('security_shields_timestamp') &&
+      localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('security_shields_timestamp')) < 60000 && !no_cache)) {
       this.security_features = JSON.parse(localStorage.getItem('security_shields') as string);
       this.org_features = JSON.parse(JSON.stringify(this.security_features));
+      this.dataService.has_vip = localStorage.getItem('guild_vip') === 'true';
       this.enabledFeatures = this.security_features.filter(f => f.enabled);
       this.disabledFeatures = this.security_features.filter(f => !f.enabled);
 
@@ -102,14 +104,16 @@ export class ActiveShieldsComponent implements OnDestroy {
 
     const sub: Subscription = this.apiService.getSecurityShields(this.dataService.active_guild.id)
       .subscribe({
-        next: (shields: SecurityFeature[]): void => {
-          this.security_features = shields;
+        next: (response: SecurityFeatureRaw): void => {
+          this.security_features = response.shields;
+          this.dataService.has_vip = response.has_vip;
           this.org_features = JSON.parse(JSON.stringify(this.security_features));
           this.enabledFeatures = this.security_features.filter(f => f.enabled);
           this.disabledFeatures = this.security_features.filter(f => !f.enabled);
 
           setTimeout((): void => { this.getBackupData(no_cache) }, 550);
-          localStorage.setItem('security_shields', JSON.stringify(shields));
+          localStorage.setItem('security_shields', JSON.stringify(response.shields));
+          localStorage.setItem('guild_vip', this.dataService.has_vip.toString());
           localStorage.setItem('security_shields_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
@@ -119,6 +123,7 @@ export class ActiveShieldsComponent implements OnDestroy {
           if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
+          } else if (err.status === 404) { // intended, no shields found
           } else if (err.status === 0) {
             this.dataService.redirectLoginError('OFFLINE');
             return;

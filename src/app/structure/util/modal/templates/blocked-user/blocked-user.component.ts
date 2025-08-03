@@ -27,10 +27,18 @@ export class BlockedUserComponent {
    * Checks if the `newBlockedUser` object is valid.
    * A user is considered invalid if the `user_id` is missing or if a `reason` is provided.
    *
-   * @returns `true` if the user is invalid, otherwise `false`.
+   * @returns `true` if the user is valid, otherwise `false`.
    */
   protected isBlockedUserValid(): boolean {
-    return (Boolean(this.newBlockedUser.user_id) && Boolean(this.newBlockedUser.reason) && /^\d+$/.test(this.newBlockedUser.user_id));
+    const inputValid: boolean = (Boolean(this.newBlockedUser.user_id) && Boolean(this.newBlockedUser.reason) && /^\d+$/.test(this.newBlockedUser.user_id));
+
+    // check if the end date is set and in the past
+    if (this.newBlockedUser.end_date != null) {
+      const endDate = new Date(this.newBlockedUser.end_date);
+      if (endDate < new Date()) { return false; }
+    }
+
+    return inputValid;
   }
 
   /**

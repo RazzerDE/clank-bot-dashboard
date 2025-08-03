@@ -18,7 +18,6 @@ export class MarkdownPipe implements PipeTransform {
     return safeValue
       .replaceAll(/\n/g, '<br />')                                       // Line break (\n\n)
       .replaceAll(/\*\*(.*?)\*\*/g, '<b>$1</b>')                         // Bold (**)
-      .replaceAll(/__(.*?)__/g, '<u>$1</u>')                             // Underline (__)
       .replaceAll(/\*(.*?)\*/g, '<i>$1</i>')                             // Italic (*)
       .replaceAll(/~~(.*?)~~/g, '<s>$1</s>')                             // Strikethrough (~~)
       .replaceAll(/^### (.*$)/gm, '<h3>$1</h3>')                         // Headline level 3 (###)
@@ -32,16 +31,19 @@ export class MarkdownPipe implements PipeTransform {
       .replaceAll(/`([^`]+)`/g, '<code>$1</code>')                       // Inline-Code (`code`)
 
       // (animated) discord guild emoji
-      .replaceAll(/&lt;a:(.*?):([\d]+)&gt;/g, (match, name, id) => {
+      .replaceAll(/&lt;a&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
         return this.isValidEmojiId(id) ?
           `<img src="https://cdn.discordapp.com/emojis/${id}.gif?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
           match;
       })
-      .replaceAll(/&lt;:(.*?):([\d]+)&gt;/g, (match, name, id) => {
+      .replaceAll(/&lt;&#058;(.*?)&#058;([\d]+)&gt;/g, (match, name, id) => {
         return this.isValidEmojiId(id) ?
           `<img src="https://cdn.discordapp.com/emojis/${id}.png?size=24" width="22" height="22" class="inline-block" alt="${name}">` :
           match;
-      });
+      })
+      .replaceAll(/__(.*?)__/g, '<u>$1</u>')                             // Underline (__)
+      .replaceAll(/_(.*?)_/g, '<i>$1</i>')                               // Italic (_);
+
   }
 
   /**

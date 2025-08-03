@@ -12,7 +12,15 @@ import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets"
 import {BlockedUser} from "../types/discord/User";
 import {EventEffects, EventEffectsRaw, Giveaway, GiveawaysRaw} from "../types/Events";
 import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
-import {BackupData, SecurityFeature, SecurityLogs, UnbanMethod, UnbanMethodRaw, UnbanRequest} from "../types/Security";
+import {
+  BackupData,
+  SecurityFeature,
+  SecurityFeatureRaw,
+  SecurityLogs,
+  UnbanMethod,
+  UnbanMethodRaw,
+  UnbanRequest
+} from "../types/Security";
 import {GlobalChatConfig, GlobalChatCustomizing, GlobalChatObject} from "../types/Misc";
 
 @Injectable({
@@ -305,8 +313,8 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to fetch the security shields configuration.
    * @return An Observable that emits an array of SecurityFeature objects representing the security shields.
    */
-  getSecurityShields(guild_id: string): Observable<SecurityFeature[]> {
-    return this.http.get<SecurityFeature[]>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`,
+  getSecurityShields(guild_id: string): Observable<SecurityFeatureRaw> {
+    return this.http.get<SecurityFeatureRaw>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`,
       { withCredentials: true });
   }
 

@@ -75,6 +75,9 @@ export class TicketAnnouncementComponent {
           this.dataService.error_color = 'red';
           if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
+          } else if (error.status == 400) {
+            this.dataService.showAlert(this.translate.instant('ERROR_DATE_PAST_TITLE'),
+              this.translate.instant('ERROR_DATE_PAST_DESC'));
           } else {
             this.dataService.redirectLoginError('UNKNOWN');
           }
@@ -141,8 +144,16 @@ export class TicketAnnouncementComponent {
    * @returns {boolean} Returns true if the theme is INVALID
    */
   protected isAnnounceInvalid(): boolean {
-    return this.activeAnnounce.level == null || this.activeAnnounce.description == null ||
+    const stringInvalid: boolean = this.activeAnnounce.level == null || this.activeAnnounce.description == null ||
       this.activeAnnounce.description.trim().length === 0;
+
+    // check if the end date is set and in the past
+    if (this.activeAnnounce.end_date != null) {
+      const endDate = new Date(this.activeAnnounce.end_date);
+      if (endDate < new Date()) { return true; }
+    }
+
+    return stringInvalid;
   }
 
   /**

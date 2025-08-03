@@ -221,6 +221,7 @@
   "PAGE_SECURITY_SHIELD_CHANNELS": "🔗 ~ Channels",
   "PAGE_SECURITY_SHIELD_ROLES": "📚 ~ Roles",
   "PAGE_SECURITY_SHIELD_NOTHING_SAVED": "Empty..",
+  "PAGE_SECURITY_SHIELD_EMPTY_PREMIUM": "No backup has been created yet..",
 
   "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALL SERVER CHANGES AT A GLANCE",
   "PAGE_SECURITY_LOGS_TITLE": "Clank's Log System",
@@ -838,6 +839,9 @@
   "PLACEHOLDER_ROLE_THIRD": "Admin rights",
   "PLACEHOLDER_NO_FORUM_CHANNELS": "No forum channels found..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Create a forum channel (Instructions <a href=\"https://support.discord.com/hc/en-us/articles/6208479917079-Forum-Channels-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">here</a>) on your Discord server or refresh the list.",
+
+  "ERROR_DATE_PAST_TITLE": "Invalid end date",
+  "ERROR_DATE_PAST_DESC": "The end date must be in the future - please select a valid date!",
 
   "PLACEHOLDER_BUTTON_PANIC": "Panic-Mode",
   "PLACEHOLDER_BUTTON_RANDOM": "Shuffle Options",

@@ -25,6 +25,11 @@ export interface BackupData {
   roles: Role[];                      // An array of role IDs in the guild.
 }
 
+export interface SecurityFeatureRaw {
+  shields: SecurityFeature[];
+  has_vip: boolean;
+}
+
 export interface SecurityFeature {
   guild_id?: string;                  // The ID of the guild for which the security features are configured.
   category: 0 | 1 | 2 | 3;            // raw api value of the category, used for the API.

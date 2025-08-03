@@ -221,6 +221,7 @@
   "PAGE_SECURITY_SHIELD_CHANNELS": "🔗 ~ Kanäle",
   "PAGE_SECURITY_SHIELD_ROLES": "📚 ~ Rollen",
   "PAGE_SECURITY_SHIELD_NOTHING_SAVED": "Leer..",
+  "PAGE_SECURITY_SHIELD_EMPTY_PREMIUM": "Es wurde noch kein Backup erstellt..",
 
   "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALLE SERVER-ÄNDERUNGEN AUF EINEM BLICK",
   "PAGE_SECURITY_LOGS_TITLE": "Clank's Log-System",
@@ -838,6 +839,9 @@
   "PLACEHOLDER_ROLE_THIRD": "Admin-Rechte",
   "PLACEHOLDER_NO_FORUM_CHANNELS": "Keine Forenkanäle gefunden..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Erstelle einen Forum-Kanal (Anleitung <a href=\"https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">hier</a>) auf deinem Discord-Server oder aktualisiere die Liste.",
+
+  "ERROR_DATE_PAST_TITLE": "Ungültiges End-Datum",
+  "ERROR_DATE_PAST_DESC": "Das End-Datum muss in der Zukunft liegen - bitte wähle ein gültiges Datum aus!",
 
   "PLACEHOLDER_BUTTON_PANIC": "Panik-Modus",
   "PLACEHOLDER_BUTTON_RANDOM": "Zufällige Optionen",
