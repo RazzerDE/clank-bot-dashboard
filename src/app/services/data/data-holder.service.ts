@@ -2,7 +2,7 @@ import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
-import {Subject, Subscription} from "rxjs";
+import {BehaviorSubject, Subject, Subscription} from "rxjs";
 import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SupportTheme, TicketSnippet} from "../types/Tickets";
@@ -32,6 +32,7 @@ export class DataHolderService {
   showEmojiPicker: boolean = false;
   hideGuildSidebar: boolean = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
+  sidebarStateChanged = new BehaviorSubject<boolean>(false);
   isDisabledSpamBtn: boolean = false;
 
   // error handler related
@@ -696,6 +697,7 @@ export class DataHolderService {
    */
   toggleSidebar(): void {
     this.showMobileSidebar = !this.showMobileSidebar;
+    if (this.showMobileSidebar) { this.sidebarStateChanged.next(true); }
   }
 
   /**

@@ -12,16 +12,21 @@ export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _state: 
   const dataService: DataHolderService = inject(DataHolderService);
   const http: HttpClient = inject(HttpClient);
   const router: Router = inject(Router);
-  dataService.isLoginLoading = true;
+
+  if (dataService.isLoginLoading) {
+    return of(false); // Prevent further checks while login is loading
+  }
 
   // Handle Discord callback with code and state
+  dataService.isLoginLoading = true;
   if (route.queryParams['code'] && route.queryParams['state']) {
     authService.authenticateUser(route.queryParams['code'], route.queryParams['state'], true);
     return of(true);
   }
 
   // if no active_guild is set but a logged in page is requested, redirect to the dashboard
-  if (!dataService.active_guild && (!(route.routeConfig?.path?.endsWith('dashboard') || route.routeConfig?.path?.endsWith('dashboard/contact')))) {
+  if (!dataService.active_guild && route.routeConfig?.path && (!(route.routeConfig?.path?.endsWith('dashboard')
+      || route.routeConfig?.path?.endsWith('dashboard/contact')))) {
     router.navigateByUrl('/dashboard').then();
     dataService.isLoginLoading = false;
     return of(false);
