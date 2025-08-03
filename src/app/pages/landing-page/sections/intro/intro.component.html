@@ -17,7 +17,7 @@
       <h1 class="banner-title a_fadeInUp">
         {{ 'SECTION_INTRO_TITLE' | translate }}
       </h1>
-      <div class="description a_fadeInUp">
+      <div class="description !text-base px-4 md:px-0 md:!text-lg a_fadeInUp">
         {{ 'SECTION_INTRO_DESC' | translate }}
       </div>
       <a class="banner-btn black-shape-big a_fadeInUp" href="/invite">
@@ -30,27 +30,27 @@
   </div>
 
   <!-- Small inline Banner -->
-  <div class="guild_banner a_fadeInUp">
+  <div class="guild_banner !h-28 md:!h-24 a_fadeInUp">
     <div class="container">
       <div class="row flex-nowrap">
-        <div class="col-md-6 !w-1/2 lg:w-3/4" >
+        <div class="col-md-6 w-full md:!w-1/2 lg:w-3/4" >
           <div class="guild_info_section">
-            <h2 class="text-lg mb-0">{{ 'SECTION_INTRO_BANNER_TITLE' | translate }}
+            <h2 class="text-lg mb-0 self-center md:self-start">{{ 'SECTION_INTRO_BANNER_TITLE' | translate }}
               <img ngSrc="assets/img/frames/steps.webp" fetchpriority="high" alt="Clank ~ Discord-Bot (Step-Icon)"
                    class="img-fluid inline-block -mt-[2px] ml-2" height="11" width="74"/>
             </h2>
-            <p class="m-0">{{ 'SECTION_INTRO_BANNER_DESC' | translate:
+            <p class="m-0 text-sm text-center md:!text-start md:text-base w-full">{{ 'SECTION_INTRO_BANNER_DESC' | translate:
               {guild_count: dataService.bot_stats.guild_count, user_count: dataService.bot_stats.user_count} }}</p>
           </div>
         </div>
 
         <!-- Little Slider with "Used by" Guilds -->
-        <div class="col-md-6 !w-1/2 lg:w-3/4">
+        <div class="col-md-6 hidden md:block !w-1/2 lg:w-3/4">
           <div class="px-0 py-14">
             <div class="guild_slider_section slide_shadow">
               <div class="slider-inner slide_shadow_content">
 
-                <div class="block" (mouseenter)="this.isPaused = true" (mouseleave)="this.isPaused = false">
+                <div (mouseenter)="this.isPaused = true" (mouseleave)="this.isPaused = false">
                   <div class="slider" #slider [style.transform]="'translateX(' + currentTranslate + 'px)'"
                        [style.transition]="isResetting ? 'none' : 'transform ' + transitionSpeed + 'ms linear'">
 

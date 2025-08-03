@@ -2,7 +2,7 @@ import {Component, HostListener, Renderer2} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
-import { faCode } from '@fortawesome/free-solid-svg-icons';
+import {faCode, faXmark} from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {TranslatePipe} from "@ngx-translate/core";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
@@ -24,8 +24,9 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 export class HeaderComponent {
   protected mobileMenuExpanded: boolean = false;
 
+  protected readonly faCode: IconDefinition = faCode;
   protected faDiscord: IconDefinition = faDiscord;
-  protected faCode: IconDefinition = faCode;
+  protected readonly faXmark: IconDefinition = faXmark;
   protected readonly nav_items: LNavigationItem[] = nav_items;
 
   constructor(private renderer: Renderer2) {}
@@ -68,10 +69,12 @@ export class HeaderComponent {
   @HostListener('document:click', ['$event'])
   onClickOutsideHandler(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    if (['header-buttons', 'bar', 'dot1', 'dot2', 'dot3']
+    if (['mobile_canvas_container', 'mobile_header', 'bar', 'dot1', 'dot2', 'dot3']
       .some(cls => target.id === cls || target.classList.contains(cls))) return;
 
-    this.toggleMobileMenu(true);
+    if (this.mobileMenuExpanded) {
+      this.toggleMobileMenu(true);
+    }
   }
 
   /**

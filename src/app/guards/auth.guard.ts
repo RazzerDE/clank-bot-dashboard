@@ -21,8 +21,9 @@ export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _state: 
   }
 
   // if no active_guild is set but a logged in page is requested, redirect to the dashboard
-  if (!dataService.active_guild && !(route.routeConfig?.path?.endsWith('dashboard') || route.routeConfig?.path?.endsWith('dashboard/contact'))) {
+  if (!dataService.active_guild && (!(route.routeConfig?.path?.endsWith('dashboard') || route.routeConfig?.path?.endsWith('dashboard/contact')))) {
     router.navigateByUrl('/dashboard').then();
+    dataService.isLoginLoading = false;
     return of(false);
   }
 

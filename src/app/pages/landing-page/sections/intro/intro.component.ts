@@ -56,7 +56,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy, OnInit {
    * - Initiates the star animation for the intro section.
    */
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && window.innerWidth > 700 && window.innerHeight > 900) {
         this.animationService.setCanvasID('intro-canvas', 'star');
         this.animationService.startAnimation('intro-canvas');
     }

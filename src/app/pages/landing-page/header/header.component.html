@@ -8,7 +8,9 @@
           <div class="mr-14">
             <a routerLink="/">
               <img ngSrc="assets/img/logo/clank-discord-bot-logo.avif" width="70" height="70"
-                   alt="Clank ~ Discord-Bot (Logo)" />
+                   alt="Clank ~ Discord-Bot (Logo - 70x)" class="hidden lg:block"/>
+              <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.avif" width="50" height="50"
+                   alt="Clank ~ Discord-Bot (Logo - 70x)" class="block lg:hidden"/>
             </a>
           </div>
 
@@ -46,7 +48,7 @@
               <lang-switch-button></lang-switch-button>
             </li>
 
-            <li class="!inline-flex">
+            <li class="hidden md:!inline-flex">
               <a class="font-style-button black-shape" href="https://discord.gg/bl4cklist">
                 <span class="btn-text">Discord-Server </span>
                 <fa-icon [icon]="faDiscord" class="inline-block ml-1" />
@@ -55,7 +57,7 @@
                 <span class="hover-shape3"></span>
               </a>
             </li>
-            <li>
+            <li class="hidden md:!inline-flex">
               <a routerLink="/dashboard">
                 <button type="button" class="w-full font-style-button white-btn hover-shape !px-2">
                   <fa-icon [icon]="faCode" class="inline-block mr-2" />
@@ -73,38 +75,54 @@
   </div>
 
   <!-- Canvas for Mobile Menu -->
-  <nav class="right_menu_togle mobile-navbar-menu h-full top-0">
-    <div class="close-btn !flex justify-between w-9/12 !cursor-default">
-      <a routerLink="/">
-        <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.png" width="50" height="50"
-             alt="Clank ~ Discord-Bot (Logo)">
-      </a>
-      <div class="nav-close relative cursor-pointer" (click)="toggleMobileMenu()">
-        <div class="line">
-          <span class="line1"></span>
-          <span class="line2"></span>
+  <div class="mobile-backdrop" [class.active]="mobileMenuExpanded"></div>
+  <div class="mobile_canvas">
+    <nav class="mobile_canvas_container">
+      <div class="relative py-8 px-6 text-left flex flex-row items-center justify-between mobile_header">
+        <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.avif" height="50" width="50"
+             alt="Mobile Navbar Logo ~ Clank Discord-Bot" class="mobile_header">
+        <div (click)="toggleMobileMenu()">
+          <fa-icon [icon]="faXmark" size="xl" class="text-xl text-[#45f882]" />
         </div>
       </div>
-    </div>
 
-    <!-- Mobile Menu Content -->
-    <ul class="nav-menu p-0">
-      @for (item of nav_items; track item) {
-        <li>
-          <a href="{{item.redirect_url}}">{{item.title | translate }}</a>
-        </li>
-      }
+      <div>
+        <ul class="mobile_navigation">
+          @for (item of nav_items; track item) {
+            <li>
+              <a href="{{item.redirect_url}}">{{item.title | translate }}</a>
+            </li>
+          }
+        </ul>
+      </div>
 
-      <!-- Button -->
-      <li>
-        <button type="button" class="font-style-button black-shape-big mobile-btn-purple">
-          <fa-icon [icon]="faCode" class="inline-block" />
-          <span class="btn-text">{{ 'HEADER_LANDING_ITEM_DASHBOARD_MOBILE' | translate }} </span>
-          <span class="hover-shape1"></span>
-          <span class="hover-shape2"></span>
-          <span class="hover-shape3"></span>
-        </button>
-      </li>
-    </ul>
-  </nav>
+      <div class="mobile_canvas_buttons">
+        <ul class="flex flex-col justify-center">
+          <li>
+            <a href="https://discord.gg/bl4cklist">
+              <button type="button" class="w-full font-style-button white-btn hover-shape !ml-0">
+                <fa-icon [icon]="faDiscord" class="inline-block mr-2" />
+                <span class="btn-text">Discord-Server </span>
+                <span class="hover-shape1"></span>
+                <span class="hover-shape2"></span>
+                <span class="hover-shape3"></span>
+              </button>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/dashboard">
+              <button type="button" class="font-style-button black-shape-big mobile-btn-purple !mt-0">
+                <fa-icon [icon]="faCode" class="inline-block" />
+                <span class="btn-text">{{ 'HEADER_LANDING_ITEM_DASHBOARD_MOBILE' | translate }} </span>
+                <span class="hover-shape1"></span>
+                <span class="hover-shape2"></span>
+                <span class="hover-shape3"></span>
+              </button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
 </header>

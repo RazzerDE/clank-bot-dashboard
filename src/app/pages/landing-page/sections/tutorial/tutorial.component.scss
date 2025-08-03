@@ -5,6 +5,15 @@
   @apply relative flex items-center justify-center pb-36 bg-[#090A1A];
 }
 
+// shadow for the tutorial section
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.text-shadow-none {
+  text-shadow: none;
+}
+
 // Show moon image in the center top of the tutorial section
 .tutorial_section .moon_img_bg {
   @apply absolute top-5;

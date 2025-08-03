@@ -31,10 +31,10 @@ export class FooterComponent implements AfterViewInit {
    * Starts the firefly animation for the footer if running in a browser environment.
    */
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && window.innerWidth > 700 && window.innerHeight > 900) {
       // start firefly animation for footer
-        this.animationService.setCanvasID('footer-canvas', 'firefly');
-        this.animationService.startAnimation('footer-canvas');
+      this.animationService.setCanvasID('footer-canvas', 'firefly');
+      this.animationService.startAnimation('footer-canvas');
     }
   }
 

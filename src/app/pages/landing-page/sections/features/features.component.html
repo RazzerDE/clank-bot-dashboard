@@ -13,41 +13,41 @@
 
       <div class="row a_fadeInLeft">
         <div class="col-md-3 col-sm-6">
-          <img ngSrc="/assets/img/icons/features/feature-language-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Language Support Icon)" class="img-fluid" loading="lazy" />
+          <img ngSrc="/assets/img/icons/features/feature-language-discord-bot.png" height="50" width="50" loading="lazy"
+               alt="Clank ~ Discord-Bot (Language Support Icon)" class="img-fluid justify-self-center md:justify-self-start" />
 
           <div class="key_feature">
-            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_1_TITLE' | translate }}</h3>
+            <h3 class="mb-2 justify-self-center md:justify-self-start">{{ 'SECTION_FEATURES_ITEM_1_TITLE' | translate }}</h3>
             <p [innerHTML]="'SECTION_FEATURES_ITEM_1_DESC' | translate"></p>
           </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-          <img ngSrc="/assets/img/icons/features/feature-lovetodetail-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Love to Detail Icon)" class="img-fluid" loading="lazy" />
+          <img ngSrc="/assets/img/icons/features/feature-lovetodetail-discord-bot.png" height="50" width="50" loading="lazy"
+               alt="Clank ~ Discord-Bot (Love to Detail Icon)" class="img-fluid justify-self-center md:justify-self-start" />
 
           <div class="key_feature">
-            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_2_TITLE' | translate }}</h3>
+            <h3 class="mb-2 justify-self-center md:justify-self-start">{{ 'SECTION_FEATURES_ITEM_2_TITLE' | translate }}</h3>
             <p [innerHTML]="'SECTION_FEATURES_ITEM_2_DESC' | translate"></p>
           </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-          <img ngSrc="/assets/img/icons/features/feature-wishlist-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" loading="lazy" />
+          <img ngSrc="/assets/img/icons/features/feature-wishlist-discord-bot.png" height="50" width="50" loading="lazy"
+               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid justify-self-center md:justify-self-start" />
 
           <div class="key_feature">
-            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_3_TITLE' | translate }}</h3>
+            <h3 class="mb-2 justify-self-center md:justify-self-start">{{ 'SECTION_FEATURES_ITEM_3_TITLE' | translate }}</h3>
             <p [innerHTML]="'SECTION_FEATURES_ITEM_3_DESC' | translate"></p>
           </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-          <img ngSrc="/assets/img/icons/features/feature-support-discord-bot.png" height="50" width="50"
-               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid" loading="lazy" />
+          <img ngSrc="/assets/img/icons/features/feature-support-discord-bot.png" height="50" width="50" loading="lazy"
+               alt="Clank ~ Discord-Bot (Wishlist Icon)" class="img-fluid justify-self-center md:justify-self-start" />
 
           <div class="key_feature">
-            <h3 class="mb-2">{{ 'SECTION_FEATURES_ITEM_4_TITLE' | translate }}</h3>
+            <h3 class="mb-2 justify-self-center md:justify-self-start">{{ 'SECTION_FEATURES_ITEM_4_TITLE' | translate }}</h3>
             <p [innerHTML]="'SECTION_FEATURES_ITEM_4_DESC' | translate"></p>
           </div>
         </div>
@@ -63,9 +63,9 @@
       <div class="row" [ngClass]="$index % 2 === 0 ? 'mb-20' : 'mb-40'">
         <!-- Show Video on the left side -->
         @if ($index % 2 === 0) {
-          <div class="col-md-6 a_fadeInLeftBig">
+          <div class="col-md-6 py-6 md:py-0 a_fadeInLeftBig">
             <video class="img-fluid cursor-pointer rounded-3xl -rotate-[0.5deg] hover:shadow-xl
-                        hover:shadow-slate-800 transition-all duration-200"
+                        hover:shadow-slate-800 transition-all duration-200 bg-gray-700"
                    [id]=big_feature.video_id height="1080" width="1920" loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)" preload="none"
                    (fullscreenchange)="toggleFullscreen(big_feature.video_id)" #lazyVideo>
@@ -120,9 +120,9 @@
 
         <!-- Show Video on the right side -->
         @if ($index % 2 !== 0) {
-          <div class="col-md-6 a_fadeInRightBig">
+          <div class="col-md-6 py-6 md:py-0 a_fadeInRightBig">
             <video class="img-fluid cursor-pointer rounded-3xl rotate-[0.5deg] hover:shadow-xl hover:shadow-slate-800
-                          transition-all duration-200"
+                          transition-all duration-200 bg-gray-700"
                    [id]=big_feature.video_id height="1080" width="1920" loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)" preload="none" #lazyVideo
                    (fullscreenchange)="toggleFullscreen(big_feature.video_id)">
