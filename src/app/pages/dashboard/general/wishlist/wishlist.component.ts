@@ -182,6 +182,8 @@ export class WishlistComponent implements AfterViewInit {
 
         if (error.status == 429) {
           this.dataService.redirectLoginError('REQUESTS');
+        } else if (error.status === 401) {
+          this.dataService.redirectLoginError('NO_CLANK');
         } else {
           this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
         }
