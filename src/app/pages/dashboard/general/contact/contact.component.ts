@@ -113,6 +113,7 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
   @ViewChild('bugReportInfo') protected bugReportInfo!: ElementRef<HTMLParagraphElement>;
   @ViewChild('ideaSuggestionInfo') protected ideaSuggestionInfo!: ElementRef<HTMLParagraphElement>;
   protected formContainerHeight: string = 'auto';
+  protected readonly window = window;
 
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faDiscord: IconDefinition = faDiscord;

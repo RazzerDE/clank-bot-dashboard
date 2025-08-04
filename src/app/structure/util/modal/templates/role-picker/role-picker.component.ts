@@ -30,4 +30,14 @@ export class RolePickerComponent {
   @ViewChild(SelectComponent, { static: true }) selectComponent!: SelectComponent;
 
   constructor(protected dataService: DataHolderService) {}
+
+  /**
+   * Executes the provided action with the selected role options and resets the active tab after 1 second.
+   *
+   * @param options - The collection of selected HTML option elements representing roles.
+   */
+  protected runTeamAction(options: HTMLCollectionOf<HTMLOptionElement>): void {
+    this.action(options);
+    setTimeout((): void => { this.activeTab = 0; }, 1000);
+  }
 }

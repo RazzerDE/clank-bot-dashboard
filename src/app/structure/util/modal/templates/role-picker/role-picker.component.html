@@ -22,9 +22,9 @@
         <input class="hidden" id="levelpicker" />
         <ul class="relative flex flex-wrap py-1.5 list-none">
           @for (_ of [].constructor(3); track $index) {
-            <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300
-                   dark:!border-gray-500 transition-colors duration-75 hover:bg-gray-100
-                   dark:hover:bg-gray-600/30" (click)="activeTab = $index" [id]="activeTab == $index ? 'level_active_' + activeTab : ''"
+            <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300 transition-colors duration-75
+                   dark:!border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600/30" (click)="activeTab = $index"
+                [id]="activeTab == $index ? 'level_active_' + activeTab : ''"
                 [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
                 [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
               <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
@@ -50,7 +50,7 @@
                focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
                py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-100
                dark:focus:ring-blue-800 text-sm px-5 disabled:!cursor-not-allowed"
-            (click)="action(selectComponent.rolePicker.nativeElement.selectedOptions);"
+            (click)="runTeamAction(selectComponent.rolePicker.nativeElement.selectedOptions);"
             [disabled]="!selectComponent.isRolePickerValid || dataService.isDisabledSpamBtn">
       {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
     </button>

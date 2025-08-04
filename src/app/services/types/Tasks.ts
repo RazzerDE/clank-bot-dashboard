@@ -45,10 +45,10 @@ export const tasks: Tasks[] = [
     finished: false,
     title: 'SECTION_BOT_SETUP_TASK_SECURITY',
     subtasks: [
-      { id: 2.1, name: 'SECTION_BOT_SETUP_TASK_SECURITY_1', finished: false, redirect_url: '/dashboard/security/automod' },
+      { id: 2.1, name: 'SECTION_BOT_SETUP_TASK_SECURITY_1', finished: false, redirect_url: '/dashboard/security/logs' },
       { id: 2.2, name: 'SECTION_BOT_SETUP_TASK_SECURITY_2', finished: false, redirect_url: '/dashboard/security/automod' },
-      { id: 2.3, name: 'SECTION_BOT_SETUP_TASK_SECURITY_3', finished: false, redirect_url: '/dashboard/security/shield' },
-      { id: 2.4, name: 'SECTION_BOT_SETUP_TASK_SECURITY_4', finished: false, redirect_url: '/dashboard/security/backups' }
+      { id: 2.3, name: 'SECTION_BOT_SETUP_TASK_SECURITY_3', finished: false, redirect_url: '/dashboard/security/automod' },
+      { id: 2.4, name: 'SECTION_BOT_SETUP_TASK_SECURITY_4', finished: false, redirect_url: '/dashboard/security/shield' }
     ],
   },
   {

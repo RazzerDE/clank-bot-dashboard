@@ -1,5 +1,4 @@
 <dashboard-layout>
-
   <section class="flex flex-auto flex-col bg-gradient-to-tr from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -25,13 +24,14 @@
         </div>
         <div class="mt-2">
           <h2 class="truncate text-3xl font-semibold md:text-4xl tracking-wider mb-0">📡
-            <span class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] bg-clip-text text-transparent">
+            <span class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] bg-clip-text text-transparent
+                         whitespace-normal break-words">
                 {{ 'PAGE_CONTACT_THUMB_TITLE' | translate }}
-              </span>
+            </span>
           </h2>
         </div>
       </div>
-      <div class="flex items-center justify-end">
+      <div class="flex items-center justify-center md:justify-end mt-4 md:!mt-0">
         <a href="https://discord.gg/bl4cklist">
           <button class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] text-white font-bold
                            py-2 pl-3 pr-4 rounded hover:from-[#6a8df5] hover:to-[#6ac1f5]">
@@ -45,10 +45,10 @@
     <!-- Page Content -->
     <div class="flex-auto p-6 sm:p-10 overflow-y-auto pt-4 pb-6 md:pb-1">
       <!-- Site Description -->
-      <div class="flex flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-8">
+      <div class="flex flex-col md:flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-8">
         <p class="mb-2 flex-1" [innerHTML]="'PAGE_CONTACT_DESC_LEFT' | translate"></p>
-        <div class="self-center border-l border-gray-400 dark:!border-gray-700 mx-4 transition-colors duration-500
-                      h-20"></div>
+        <div class="self-center bg-gray-400 dark:!bg-gray-700 transition-colors duration-500
+                    h-px w-20 mx-0 my-4 md:h-20 md:w-px md:mx-4 md:my-0"></div>
         <p class="mb-2 flex-1 text-right" [innerHTML]="'PAGE_CONTACT_DESC_RIGHT' | translate"></p>
       </div>
 
@@ -71,19 +71,24 @@
           <!-- Form-Header -->
           <div class="flex items-center mb-4 w-full justify-center">
             @for (step of wizard_idea_suggestion; track $index) {
-              <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500" (click)="toggleStep($index, 'IDEA')">
-                <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
-                     [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
-                  {{ $index + 1 }}
+              @if ($index === current_steps.idea_suggestion - 1 || window.innerWidth > 700) {
+                <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer
+                            transition-colors duration-500" (click)="toggleStep($index, 'IDEA')">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
+                       [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'bg-blue-600 text-white' :
+                                 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
+                    {{ $index + 1 }}
+                  </div>
+                  <span class="ml-2 transition-colors duration-500"
+                        [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'text-blue-600':
+                                                                'text-gray-600 dark:!text-gray-500'">
+                    {{step.title | translate}}
+                  </span>
                 </div>
-                <span class="ml-2 transition-colors duration-500"
-                      [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
-                  {{step.title | translate}}
-                </span>
-              </div>
+              }
 
               <!-- Divider -->
-              @if ($index < wizard_idea_suggestion.length - 1) {
+              @if ($index < wizard_idea_suggestion.length - 1 && window.innerWidth > 700) {
                 <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
               }
             }
@@ -187,20 +192,25 @@
           <!-- Form-Header -->
           <div class="flex items-center mb-4 w-full justify-center">
             @for (step of wizard_bug_steps; track $index) {
-              <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500" (click)="toggleStep($index, 'BUG')">
-                <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
-                     [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
-                  {{ $index + 1 }}
+              @if ($index === current_steps.bug_report - 1 || window.innerWidth > 700) {
+                <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer
+                            transition-colors duration-500" (click)="toggleStep($index, 'BUG')">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
+                       [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'bg-blue-600 text-white' :
+                                  'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
+                    {{ $index + 1 }}
+                  </div>
+                  <span class="ml-2 transition-colors duration-500"
+                        [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'text-blue-600':
+                                                           'text-gray-600 dark:!text-gray-500'">
+                    {{step.title | translate}}
+                  </span>
                 </div>
-                <span class="ml-2 transition-colors duration-500"
-                      [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
-                  {{step.title | translate}}
-                </span>
-              </div>
 
-              <!-- Divider -->
-              @if ($index < wizard_bug_steps.length - 1) {
-                <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+                <!-- Divider -->
+                @if ($index < wizard_bug_steps.length - 1 && window.innerWidth > 700) {
+                  <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+                }
               }
             }
           </div>

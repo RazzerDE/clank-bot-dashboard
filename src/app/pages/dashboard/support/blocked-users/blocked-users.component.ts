@@ -332,7 +332,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     // two modals are visible; hide if clicked outside of the modal
-    if ((event.target as HTMLElement).id.includes('roleModalContent')) {
+    if ((event.target as HTMLElement).id.includes('roleModalContent') || (event.target as HTMLElement).id.includes('modal_container')) {
       this.modal.hideModal();
       return;
     }

@@ -12,11 +12,11 @@
     }
 
     <!-- Main Content Area -->
-    <div class="flex flex-col lg:flex-row w-full h-[calc(100vh-16rem)] gap-4 p-4">
+    <div class="flex flex-col lg:flex-row w-full lg:h-[calc(100vh-16rem)] gap-4 p-4">
 
       <!-- Left Container - Design Controls -->
       <div class="w-full lg:w-1/2 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
-                dark:via-slate-800 dark:to-slate-900 rounded-lg shadow-md overflow-y-auto dark:shadow-xl
+                dark:via-slate-800 dark:to-slate-900 rounded-lg shadow-md md:overflow-y-auto dark:shadow-xl
                   transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1">
 
         <!-- Header -->
@@ -37,12 +37,12 @@
 
         <!-- Design Form -->
          @if (this.dataLoading) {
-           <div class="px-4 py-3 text-center flex items-center justify-center h-[calc(100%-80px)]">
+           <div class="px-4 py-3 text-center flex items-center justify-center lg:!h-[calc(100%-100px)] 2xl:!h-[calc(100%-80px)]">
              <span class="data-loader"></span>
            </div>
          } @else {
            @if (this.dataService.has_vip) {
-             <div class="flex flex-col h-full max-h-[calc(100%-80px)] overflow-y-auto">
+             <div class="flex flex-col h-auto lg:!h-[calc(100%-100px)] 2xl:!h-[calc(100%-80px)] md:overflow-y-auto">
                <!-- First Row: Banner URL + Thumbnail URL -->
                <div class="flex flex-col md:flex-row gap-4 mb-4 p-6 pb-0">
                  <div class="flex-1">  <!-- Banner URL -->
@@ -162,7 +162,7 @@
                    </div>
                  </div>
 
-                 <div class="w-full md:w-2/5">  <!-- Embed Color -->
+                 <div class="w-full md:w-2/5 mb-3 md:mb-0">  <!-- Embed Color -->
                    <label for="embed_color" class="block text-sm font-medium text-gray-900 dark:text-white mb-1 transition-colors duration-300">
                      {{ 'PLACEHOLDER_EVENT_DESIGN_COLOR_LABEL' | translate }}
                    </label>
@@ -247,9 +247,9 @@
             {{ 'PLACEHOLDER_EVENT_PREVIEW_MODAL_TITLE' | translate }}</h2>
         </div>
 
-        <div class="flex-1 flex items-center justify-center mt-3">
+        <div class="flex-1 flex items-center justify-center mt-3 w-[calc(100%-2rem)] md:w-auto ml-4 md:ml-0">
           @if (this.dataLoading) {
-            <div class="px-4 py-3 text-center flex items-center justify-center h-[calc(100%-80px)]">
+            <div class="px-4 py-3 text-center flex items-center justify-center md:h-[calc(100%-80px)]">
               <span class="data-loader"></span>
             </div>
           } @else {
