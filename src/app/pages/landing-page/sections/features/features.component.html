@@ -58,18 +58,18 @@
 
   <!-- Specific Showcase of Features -->
   <div class="container">
-
     @for (big_feature of feature_items; track trackByFeature($index, big_feature)) {
       <div class="row" [ngClass]="$index % 2 === 0 ? 'mb-20' : 'mb-40'">
         <!-- Show Video on the left side -->
         @if ($index % 2 === 0) {
           <div class="col-md-6 py-6 md:py-0 a_fadeInLeftBig">
             <video class="img-fluid cursor-pointer rounded-3xl -rotate-[0.5deg] hover:shadow-xl
-                        hover:shadow-slate-800 transition-all duration-200 bg-gray-700"
+                        hover:shadow-slate-800 transition-all duration-200 bg-gray-700" style="transform: translateZ(0);"
                    [id]=big_feature.video_id height="1080" width="1920" loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)" preload="none"
                    (fullscreenchange)="toggleFullscreen(big_feature.video_id)" #lazyVideo>
-              <source [attr.data-src]="big_feature.video_url" type="video/mp4">
+              <source [attr.data-preview-src]="big_feature.video_url.replace('.mp4', '-preview.mp4')"
+                      [attr.data-src]="big_feature.video_url" type="video/mp4">
               Dein Browser unterstützt keine HTML-Videos!
             </video>
           </div>
@@ -125,8 +125,9 @@
                           transition-all duration-200 bg-gray-700"
                    [id]=big_feature.video_id height="1080" width="1920" loop playsinline [muted]="true"
                    (click)="toggleFullscreen(big_feature.video_id, $event)" preload="none" #lazyVideo
-                   (fullscreenchange)="toggleFullscreen(big_feature.video_id)">
-              <source [attr.data-src]="big_feature.video_url" type="video/mp4">
+                   (fullscreenchange)="toggleFullscreen(big_feature.video_id)" style="transform: translateZ(0);">
+              <source [attr.data-preview-src]="big_feature.video_url.replace('.mp4', '-preview.mp4')"
+                      [attr.data-src]="big_feature.video_url" type="video/mp4">
               Dein Browser unterstützt keine HTML-Videos!
             </video>
           </div>
