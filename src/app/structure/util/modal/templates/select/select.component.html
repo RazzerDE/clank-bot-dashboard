@@ -45,7 +45,7 @@
   </select>
 </div>
 
-@if (rolePicker.type === 'select-one' ) {
+@if (rolePicker.type === 'select-one' && rolePicker.clientWidth > 257) {
   <div class="relative">
     <fa-icon [icon]="faChevronDown" class="absolute right-3 -top-8 text-gray-500 dark:text-gray-300 pointer-events-none"
              [ngClass]="(this.type === 'EVENTS_EDIT' || rolePicker.disabled) ? 'cursor-not-allowed !text-gray-400' : ''"/>

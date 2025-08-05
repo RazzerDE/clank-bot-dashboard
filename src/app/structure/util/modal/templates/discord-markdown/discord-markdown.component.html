@@ -223,7 +223,7 @@
                 <div class="flex items-center space-x-2">
                   <img class="w-6 h-6 bg-green-500 rounded-full" height="24" width="24"
                        [ngSrc]="'https://i.imgur.com/RiVxjb2.png'" alt="Server-Owner Icon - Clank Discord-Bot" />
-                  <span class="text-white text-sm font-semibold">{{'PAGE_MISC_GLOBALCHAT_OWNER' | translate}} 🗴 Level - 100</span>
+                  <span class="text-white text-sm font-semibold w-1/2 2xl:w-full">{{'PAGE_MISC_GLOBALCHAT_OWNER' | translate}} 🗴 Level - 100</span>
                 </div>
               </div>
 
@@ -280,7 +280,7 @@
 
               <div class="flex items-center space-x-1 h-full ml-7">
                 <span class="text-gray-300 text-xs font-medium">{{ this.dataService.active_guild!.name }}</span>
-                <span class="text-gray-300 text-xs">(👥 85 - 📊 14)</span>
+                <span class="text-gray-300 text-xs xl:hidden 2xl:block">(👥 85 - 📊 14)</span>
               </div>
               @if (this.obj.global_desc) {
                 <div class="text-gray-300 text-xs ml-7 tracking-tight">📚 › {{ this.obj.global_desc }}</div>

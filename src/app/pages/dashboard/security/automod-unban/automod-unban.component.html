@@ -15,7 +15,7 @@
       <app-alert-box></app-alert-box>
     }
 
-    <div class="flex w-full gap-6 p-3 mt-3 sm:p-5 min-h-[calc(100%-17rem)]">
+    <div class="flex flex-col xl:flex-row w-full gap-6 p-3 mt-3 sm:p-5 2xl:min-h-[calc(100%-17rem)]">
 
       <!-- AutoMod - Container -->
       <div class="w-full bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
@@ -41,7 +41,8 @@
           [innerHTML]="'PAGE_SECURITY_AUTOMOD_CONTAINER_INTRO' | translate">
           </span>
 
-          <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 w-full mt-0">
+          <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 w-full my-4 xl:mt-0 h-auto xl:!h-[calc(50vh-24rem)]
+                      2xl:!h-auto xl:overflow-y-auto">
             @for (item of this.event_cards; track $index) {
               @if ($index == this.event_cards.length - 2) { <div class="w-full h-0"></div> } <!-- Break line on big monitors -->
               <div class="border-l-[5px] rounded-lg shadow py-2 px-3 from-white bg-gradient-to-bl via-slate-50 to-blue-50
@@ -94,7 +95,7 @@
       </div>
 
       <!-- Unban-Method - Container -->
-      <div class="w-1/3 bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
+      <div class="w-full xl:w-2/5 2xl:w-1/3 bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
                 dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
                 dark:!border-gray-700 border-1">
         <!-- Header -->
