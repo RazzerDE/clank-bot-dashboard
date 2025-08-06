@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { DiscordMarkdownComponent } from './discord-markdown.component';
 import {TranslateModule} from "@ngx-translate/core";
@@ -21,6 +21,37 @@ describe('DiscordMarkdownComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call getGiveawayDuration if giveaway end_date has changed', () => {
+    component.giveaway = { end_date: new Date('2024-01-01T10:00:00Z') } as any;
+    component['org_giveaway'] = { end_date: new Date('2023-12-31T10:00:00Z') } as any;
+    const spy = jest.spyOn(component, 'getGiveawayDuration');
+
+    component.ngAfterViewChecked();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should not call getGiveawayDuration if giveaway end_date has not changed', () => {
+    const date = new Date('2024-01-01T10:00:00Z');
+    component.giveaway = { end_date: date } as any;
+    component['org_giveaway'] = { end_date: date } as any;
+    const spy = jest.spyOn(component, 'getGiveawayDuration');
+
+    component.ngAfterViewChecked();
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should not call getGiveawayDuration if giveaway is null', () => {
+    component.giveaway = null;
+    component['org_giveaway'] = null;
+    const spy = jest.spyOn(component, 'getGiveawayDuration');
+
+    component.ngAfterViewChecked();
+
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should return "diamond_pink.gif" if giveaway is null', () => {
@@ -81,4 +112,40 @@ describe('DiscordMarkdownComponent', () => {
     expect(component.getEventEmbedColor('#abcdef')).toBe('#abcdef');
     expect(component.getEventEmbedColor('red')).toBe('red');
   });
+
+  it('should set giveway_duration using ownDatePipe if giveaway exists', fakeAsync(() => {
+    const mockGiveaway = { end_date: new Date() } as any;
+    component.giveaway = mockGiveaway;
+    const spy = jest.spyOn(component['ownDatePipe'], 'transform').mockReturnValue('in 2 hours');
+    component['translate'].currentLang = 'en';
+
+    component.getGiveawayDuration();
+    tick();
+
+    expect(spy).toHaveBeenCalledWith(mockGiveaway.end_date, 'en', 'short');
+    expect(component['giveway_duration']).toBe('in 2 hours');
+    expect(component['org_giveaway']).toEqual(mockGiveaway);
+  }));
+
+  it('should set giveway_duration to "in 1 Stunde" if no giveaway and lang is de', fakeAsync(() => {
+    component.giveaway = null;
+    component['translate'].currentLang = 'de';
+
+    component.getGiveawayDuration();
+    tick(2);
+
+    expect(component['giveway_duration']).toBe('in 1 Stunde');
+    expect(component['org_giveaway']).toEqual({});
+  }));
+
+  it('should set giveway_duration to "in 1 hour" if no giveaway and lang is not de', fakeAsync(() => {
+    component.giveaway = null;
+    component['translate'].currentLang = 'en';
+
+    component.getGiveawayDuration();
+    tick(2);
+
+    expect(component['giveway_duration']).toBe('in 1 hour');
+    expect(component['org_giveaway']).toEqual({});
+  }));
 });

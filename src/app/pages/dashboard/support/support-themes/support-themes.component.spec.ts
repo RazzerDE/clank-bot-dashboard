@@ -7,7 +7,7 @@ import {ActivatedRoute} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {ApiService} from "../../../../services/api/api.service";
-import {defer, of, throwError} from "rxjs";
+import {BehaviorSubject, defer, of, throwError} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SupportTheme, SupportThemeResponse} from "../../../../services/types/Tickets";
 import {Guild, Role} from "../../../../services/types/discord/Guilds";
@@ -34,17 +34,19 @@ describe('SupportThemesComponent', () => {
       imports: [SupportThemesComponent, HttpClientTestingModule, TranslateModule.forRoot(), NoopAnimationsModule],
       providers: [
         { provide: ActivatedRoute, useValue: { } },
-        { provide: ApiService, useValue: { deleteSupportTheme: jest.fn() } },
+        { provide: ApiService, useValue: { deleteSupportTheme: jest.fn(), getModuleStatus: jest.fn() } },
         { provide: DataHolderService, useValue: { isLoading: false, allowDataFetch: of(true),
-            initTheme: { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
-              default_roles: [], pending: true, action: 'CREATE' }, redirectLoginError: jest.fn(), showAlert: jest.fn(),
-          support_themes: [], getEmojibyId: jest.fn(), getGuildEmojis: jest.fn() } },
+            initTheme: { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [], default_roles: [],
+              pending: true, action: 'CREATE' }, sidebarStateChanged: new BehaviorSubject<boolean>(false),
+            redirectLoginError: jest.fn(), showAlert: jest.fn(), support_themes: [], getEmojibyId: jest.fn(),
+            getGuildEmojis: jest.fn(), handleApiError: jest.fn() } },
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(SupportThemesComponent);
     component = fixture.componentInstance;
+    component['dataService'].servers = [];
     component['filteredThemes'] = [];
     fixture.detectChanges();
   });
@@ -113,6 +115,8 @@ describe('SupportThemesComponent', () => {
     localStorage.setItem('support_themes', JSON.stringify(supportThemes));
     localStorage.setItem('guild_roles', JSON.stringify(guildRoles));
     localStorage.setItem('guild_emojis', JSON.stringify(emojis));
+    localStorage.setItem('guild_vip', 'true');
+    localStorage.setItem('moduleStatus', JSON.stringify({ task_1: { subtasks: [{ finished: true }] } }));
     localStorage.setItem('support_themes_timestamp', timestamp);
 
     component.dataService.active_guild = { id: 'guild1' } as any;
@@ -129,9 +133,11 @@ describe('SupportThemesComponent', () => {
     component.dataService.active_guild = { id: 'guild1' } as any;
     const mockObject = {
       themes: [{name: 'Theme2', desc: '', roles: [], default_roles: []}],
-      guild_roles: [{id: '2', name: 'Role2'}]
+      guild_roles: [{id: '2', name: 'Role2'}],
+      has_vip: true,
     } as unknown as SupportThemeResponse;
     const getSupportThemesSpy = jest.spyOn(component['discordService'], 'getSupportThemes').mockResolvedValue(defer(() => Promise.resolve(mockObject)));
+    jest.spyOn(component as any, 'getModuleStatus').mockImplementation((): void => {});
 
     component['getSupportThemes'](true);
     tick();
@@ -384,7 +390,7 @@ describe('SupportThemesComponent', () => {
 
     expect(component['modalType']).toBe('SUPPORT_THEME_ADD');
     expect(component['reloadEmojis']).toBe(false);
-    expect(component['editTheme']).toBe(component.dataService.initTheme);
+    expect(component['editTheme']).toStrictEqual(component.dataService.initTheme);
     expect(component.dataService.faq_answer).toBe('');
     expect(component.dataService.isFAQ).toBe(false);
     expect(component['modal'].showModal).toHaveBeenCalled();
@@ -724,4 +730,32 @@ describe('SupportThemesComponent', () => {
     const result = component['tableConfig'].actions[1](default_roles, role_id);
     expect(result).toContain('PLACEHOLDER_DEFAULT');
   });
+
+  it('should store moduleStatus, set isForumMissing, set loading flags to false and unsubscribe on success', fakeAsync(() => {
+    const mockModuleStatus = { task_1: { subtasks: [{ finished: false }] } } as any;
+    const apiServiceSpy = jest.spyOn(component['apiService'], 'getModuleStatus').mockReturnValue(defer(() => Promise.resolve(mockModuleStatus)));
+    component.dataService.active_guild = { id: 'guild1' } as any;
+
+    component['getModuleStatus']();
+    tick();
+
+    expect(localStorage.getItem('moduleStatus')).toBe(JSON.stringify(mockModuleStatus));
+    expect(component['isForumMissing']).toBe(true);
+    expect(component.dataService.isLoading).toBe(false);
+    expect(component['dataLoading']).toBe(false);
+    expect(apiServiceSpy).toHaveBeenCalledWith('guild1', undefined);
+  }));
+
+  it('should unsubscribe and call handleApiError on error', fakeAsync(() => {
+    const error = new HttpErrorResponse({ status: 500 });
+    const apiServiceSpy = jest.spyOn(component['apiService'], 'getModuleStatus').mockReturnValue(defer(() => Promise.reject(error)));
+    const handleApiErrorSpy = jest.spyOn(component.dataService, 'handleApiError');
+    component.dataService.active_guild = { id: 'guild1' } as any;
+
+    component['getModuleStatus']();
+    tick();
+
+    expect(handleApiErrorSpy).toHaveBeenCalledWith(error);
+    expect(apiServiceSpy).toHaveBeenCalledWith('guild1', undefined);
+  }));
 });

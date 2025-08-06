@@ -32,7 +32,7 @@ export class DataHolderService {
   showEmojiPicker: boolean = false;
   hideGuildSidebar: boolean = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
-  sidebarStateChanged = new BehaviorSubject<boolean>(false);
+  sidebarStateChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   isDisabledSpamBtn: boolean = false;
 
   // error handler related

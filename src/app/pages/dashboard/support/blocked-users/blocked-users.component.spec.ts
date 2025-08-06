@@ -238,6 +238,24 @@ describe('BlockedUsersComponent', () => {
     expect(component['disabledAddBtn']).toBe(false);
   }));
 
+  it('should handle 400 error when adding a blocked user', fakeAsync(() => {
+    component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
+    component['dataService'].profile = { id: 'test-profile-id' } as DiscordUser;
+    const mockBlockedUser = { user_id: '123', user_name: 'TestUser' } as BlockedUser;
+    const apiSpy = jest.spyOn(component['apiService'], 'addBlockedUser').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 400 }))));
+    const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
+
+    component['addBlockedUser'](mockBlockedUser);
+    tick();
+
+    expect(apiSpy).toHaveBeenCalledWith(component['dataService'].active_guild.id, mockBlockedUser);
+    expect(alertSpy).toHaveBeenCalledWith(
+      'ERROR_DATE_PAST_TITLE',
+      expect.any(String)
+    );
+    expect(component['disabledAddBtn']).toBe(false);
+  }));
+
   it('should handle 429 error when adding a blocked user', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'test-guild-id' } as Guild;
     component['dataService'].profile = { id: 'test-profile-id' } as DiscordUser;
@@ -378,11 +396,14 @@ describe('BlockedUsersComponent', () => {
 
   it('should hide the modal when clicking outside of it', () => {
     const hideModalSpy = jest.spyOn(component.modal, 'hideModal');
-    const mockEvent = { target: { id: 'roleModalContent' } } as unknown as MouseEvent;
+    let mockEvent = { target: { id: 'roleModalContent' } } as unknown as MouseEvent;
 
     component.onDocumentClick(mockEvent);
-
     expect(hideModalSpy).toHaveBeenCalled();
+
+    mockEvent = { target: { id: 'modal_container' } } as unknown as MouseEvent;
+    component.onDocumentClick(mockEvent);
+    expect(hideModalSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should set the tableConfig button actions correctly', () => {

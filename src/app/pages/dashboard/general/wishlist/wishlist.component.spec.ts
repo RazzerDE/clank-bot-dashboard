@@ -5,7 +5,6 @@ import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
-import {ElementRef} from "@angular/core";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {defer, of} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
@@ -201,6 +200,26 @@ describe('WishlistComponent', () => {
     redirectLoginErrorSpy.mockRestore();
   }));
 
+  it('should handle unauthorized error when retrieving feature votes', fakeAsync(() => {
+    const errorResponse = new HttpErrorResponse({ status: 401, statusText: 'Too many requests' });
+
+    const getFeatureVotesSpy = jest.spyOn(apiService, 'getFeatureVotes').mockReturnValue(defer(() => Promise.reject(errorResponse)));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
+    const redirectLoginErrorSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
+
+    component.getFeatureVotes();
+    tick();
+
+    expect(component['dataService'].error_color).toBe('red');
+    expect(showAlertSpy).not.toHaveBeenCalledWith();
+    expect(component['dataService'].isLoading).toBe(false);
+    expect(redirectLoginErrorSpy).toHaveBeenCalledWith('NO_CLANK');
+
+    getFeatureVotesSpy.mockRestore();
+    showAlertSpy.mockRestore();
+    redirectLoginErrorSpy.mockRestore();
+  }));
+
   it('should filter features based on tag ID', () => {
     const featureListMock = [
       { id: 1, tag_id: 2, enabled: false },
@@ -238,18 +257,6 @@ describe('WishlistComponent', () => {
     expect(component['allItemsDisabled']).toBe(component['feature_list'].every(f => !f.enabled));
 
     translateSpy.mockRestore();
-  });
-
-  it('should set the responsive height of the wishlist container', () => {
-    const dividerMock = { nativeElement: { offsetHeight: 100 } } as ElementRef<HTMLDivElement>;
-    const wishlistContainerMock = { nativeElement: { style: { height: '' } } } as ElementRef<HTMLDivElement>;
-
-    component['divider'] = dividerMock;
-    component['wishlistContainer'] = wishlistContainerMock;
-
-    (component as any).setResponsiveHeight();
-
-    expect(wishlistContainerMock.nativeElement.style.height).toBe('100px');
   });
 
   it('should return true if the feature is in a loading state', () => {

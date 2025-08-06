@@ -43,6 +43,12 @@ describe('BlockedUserComponent', () => {
     expect(component['isBlockedUserValid']()).toBe(true);
   });
 
+  it('should return false if end_date is not null and is in the past', () => {
+    component.newBlockedUser.user_id = "1246575674564335";
+    component.newBlockedUser.end_date = new Date(Date.now() - 1000).toISOString(); // past date
+    expect(component['isBlockedUserValid']()).toBe(false);
+  });
+
   it('should return false when user_id is empty', () => {
     component.newBlockedUser = { user_id: '', reason: 'Valid reason' } as BlockedUser;
     expect(component['isBlockedUserValid']()).toBe(false);

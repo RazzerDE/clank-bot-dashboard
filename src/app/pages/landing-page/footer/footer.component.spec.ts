@@ -39,8 +39,10 @@ describe('FooterComponent', () => {
   });
 
   it('should start firefly animation for footer on ngAfterViewInit', () => {
-    const setCanvasIDSpy = jest.spyOn(component['animations'], 'setCanvasID');
-    const startAnimationSpy = jest.spyOn(component['animations'], 'startAnimation');
+    const setCanvasIDSpy = jest.spyOn(component['animationService'], 'setCanvasID');
+    const startAnimationSpy = jest.spyOn(component['animationService'], 'startAnimation');
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 800 });
+    Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1000 });
 
     component.ngAfterViewInit();
 

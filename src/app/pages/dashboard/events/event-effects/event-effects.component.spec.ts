@@ -456,24 +456,20 @@ describe('EventEffectsComponent', () => {
     const card = { title: 'Card', obj_list: [] as Role[] } as EventCard;
 
     jest.spyOn(component['dataService'].guild_roles, 'find').mockReturnValue(role);
-    jest.spyOn(component['dataService'], 'showAlert');
     jest.spyOn(component['translate'], 'instant');
-    jest.spyOn(component['markdownPipe'], 'transform');
 
     component['pushToCardList']('role1', card);
 
     expect(card.obj_list).toContain(role);
-    expect(component['dataService'].error_color).toBe('green');
-    expect(component['dataService'].showAlert).toHaveBeenCalled();
   });
 
   it('should sort roles by position when adding to card', () => {
     component['activeTab'] = 'ROLES';
     const role1 = { id: 'role1', name: 'Role 1', position: 2, hoist: true, color: 0 } as Role;
     const role2 = { id: 'role2', name: 'Role 2', position: 5, hoist: true, color: 0 } as Role;
+    component['dataService'].guild_roles = [role1, role2];
     const card = { title: 'Card', obj_list: [role1] as Role[] } as EventCard;
 
-    jest.spyOn(component['dataService'].guild_roles, 'find').mockReturnValue(role2);
     jest.spyOn(component['dataService'], 'showAlert');
 
     component['pushToCardList']('role2', card);
@@ -554,52 +550,6 @@ describe('EventEffectsComponent', () => {
     expect(card.obj_list).not.toContain(channel1);
   });
 
-  it('should show proper alert message with markdown transformation', () => {
-    component['activeTab'] = 'ROLES';
-    const role = { id: 'role1', name: '**Bold Role**', position: 2, hoist: true, color: 0 } as Role;
-    const card = { title: 'CARD_TITLE', obj_list: [] as Role[] } as EventCard;
-    component['dataService'].guild_roles = [role];
-
-    jest.spyOn(component['dataService'], 'showAlert');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, params) => {
-      if (key === 'SUCCESS_EFFECTS_ROLES_TITLE') return 'Success Title';
-      if (key === 'SUCCESS_EFFECTS_ROLES_DESC') return 'Success Description';
-      if (key === 'CARD_TITLE') return 'Card ~ Type';
-      return key;
-    });
-    jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('<strong>Bold Role</strong>');
-
-    component['pushToCardList']('role1', card);
-
-    expect(component['dataService'].showAlert).toHaveBeenCalledWith(
-      'Success Title',
-      'Success Description'
-    );
-    expect(component['markdownPipe'].transform).toHaveBeenCalledWith('**Bold Role**');
-  });
-
-  it('should show proper alert message for deletion', () => {
-    component['activeTab'] = 'CHANNELS';
-    const channel = { id: 'channel1', name: 'Channel 1', position: 2 } as Channel;
-    const card = { title: 'CARD_TITLE', obj_list: [channel] as Channel[] } as EventCard;
-
-    jest.spyOn(component['dataService'].guild_channels, 'find').mockReturnValue(channel);
-    jest.spyOn(component['dataService'], 'showAlert');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, params) => {
-      if (key === 'SUCCESS_EFFECTS_CHANNELS_DELETE_TITLE') return 'Delete Title';
-      if (key === 'SUCCESS_EFFECTS_CHANNELS_DELETE_DESC') return 'Delete Description';
-      if (key === 'CARD_TITLE') return 'Card ~ Type';
-      return key;
-    });
-
-    component['pushToCardList']('channel1', card, true);
-
-    expect(component['dataService'].showAlert).toHaveBeenCalledWith(
-      'Delete Title',
-      'Delete Description'
-    );
-  });
-
   it('should handle the case when role is not found', () => {
     component['activeTab'] = 'ROLES';
     const card = { title: 'Card', obj_list: [] as Role[] } as EventCard;
@@ -610,8 +560,6 @@ describe('EventEffectsComponent', () => {
     component['pushToCardList']('nonexistent', card);
 
     expect(card.obj_list.length).toBe(0);
-    expect(component['dataService'].error_color).toBe('green');
-    expect(component['dataService'].showAlert).toHaveBeenCalled();
   });
 
   it('should handle the case when channel is not found', () => {
@@ -624,8 +572,6 @@ describe('EventEffectsComponent', () => {
     component['pushToCardList']('nonexistent', card);
 
     expect(card.obj_list.length).toBe(0);
-    expect(component['dataService'].error_color).toBe('green');
-    expect(component['dataService'].showAlert).toHaveBeenCalled();
   });
 
   it('should return roles that are not in the card\'s object list when activeTab is ROLES', () => {

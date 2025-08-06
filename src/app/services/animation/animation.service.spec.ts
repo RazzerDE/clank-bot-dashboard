@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { AnimationService } from './animation.service';
 import {Firefly} from "../types/animation/FireFly";
@@ -31,11 +31,14 @@ describe('AnimationService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call loadAnimations on DOMContentLoaded', () => {
-    const loadAnimationsSpy = jest.spyOn(service, 'loadAnimations');
+  it('should call loadAnimations on DOMContentLoaded', fakeAsync(() => {
+    const loadAnimationsSpy = jest.spyOn(service, 'loadAnimations').mockImplementation(() => {});
+
     document.dispatchEvent(new Event('DOMContentLoaded'));
+    tick(101);
+
     expect(loadAnimationsSpy).toHaveBeenCalled();
-  });
+  }));
 
   it('should initialize and observe elements with specific animation classes', () => {
     const observerSpy = jest.spyOn(window, 'IntersectionObserver');

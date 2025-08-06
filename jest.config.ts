@@ -19,15 +19,21 @@ const config: import('jest').Config = {
     'src/**/*.ts', // Adjust this pattern to match your source files
     '!src/**/*.spec.ts', // Exclude test files
     '!src/main.ts',
+    '!src/server.ts',
     '!src/app/app.config.ts',
-    '!src/app/app.routes.ts'// You can exclude specific files
+    '!src/app/app.routes.ts',
+    '!src/main.server.ts',
+    '!src/app/app.routes.server.ts',
+    '!src/app/app.config.server.ts',
+    '!src/environments/config.prod.ts',
+    '!src/environments/config.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text', 'lcov'],
   moduleNameMapper: {
     '^@fta/(.*)': '<rootDir>/src/app/$1',
     '^@fta-assets/(.*)': '<rootDir>/src/assets/$1',
-  }
+  },
 
 };
 

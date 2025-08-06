@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {ActivatedRoute, ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot} from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from '@angular/router';
 import {AuthGuard} from "./auth.guard";
 import {AuthService} from "../services/auth/auth.service";
 import {DataHolderService} from "../services/data/data-holder.service";
@@ -32,6 +32,23 @@ describe('authGuard', () => {
     expect(executeGuard).toBeTruthy();
   });
 
+  it("should return false if isLoginLoading is true", () => {
+    const route = {} as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+
+    dataService.isLoginLoading = true;
+
+    const result = executeGuard(route, state);
+
+    if (result instanceof Observable) {
+      result.subscribe(res => {
+        expect(res).toBe(false);
+      });
+    } else {
+      expect(result).toBe(false);
+    }
+  });
+
   it('should handle Discord callback with code and state', () => {
     const authService = TestBed.inject(AuthService);
     const route = {queryParams: {code: 'testCode', state: 'testState'}} as unknown as ActivatedRouteSnapshot;
@@ -49,53 +66,6 @@ describe('authGuard', () => {
       });
     } else {
       expect(result).toEqual(of(true));
-    }
-  });
-
-  it('should redirect to Discord login if no access token', () => {
-    const authService = TestBed.inject(AuthService);
-    const route = { queryParams: {} } as ActivatedRouteSnapshot;
-    const state = {} as RouterStateSnapshot;
-    const loginSpy = jest.spyOn(authService, 'discordLogin').mockImplementation(() => {});
-    localStorage.removeItem('access_token');
-    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
-
-    const result = executeGuard(route, state);
-
-    expect(localStorage.getItem('access_token')).toBeNull();
-    expect(loginSpy).toHaveBeenCalled();
-    if (result instanceof Observable) {
-      result.subscribe(res => {
-        expect(res).toEqual(false);
-      });
-    } else {
-      expect(result).toEqual(of(false));
-    }
-  });
-
-  it('should verify existing token and set profile', () => {
-    const dataService = TestBed.inject(DataHolderService);
-    const http = TestBed.inject(HttpClient);
-    const route = { queryParams: {} } as ActivatedRouteSnapshot;
-    const state = {} as RouterStateSnapshot;
-    const profile = { id: '123', username: 'testUser' } as any;
-    const httpSpy = jest.spyOn(http, 'get').mockReturnValue(of(profile));
-    dataService['active_guild'] = { id: '123', name: 'Test Guild' } as Guild;
-
-    localStorage.setItem('access_token', 'testToken');
-
-    const result = executeGuard(route, state);
-
-    if (result instanceof Observable) {
-      result.subscribe(res => {
-        expect(res).toBe(true);
-        expect(httpSpy).toHaveBeenCalled();
-        expect(dataService.profile).toEqual(profile);
-      });
-    } else {
-      expect(result).toBe(true);
-      expect(httpSpy).toHaveBeenCalled();
-      expect(dataService.profile).toEqual(profile);
     }
   });
 
@@ -158,30 +128,27 @@ describe('authGuard', () => {
 
   it('should redirect to dashboard if active_guild is not set and path is not dashboard or dashboard/contact', () => {
     const dataService = TestBed.inject(DataHolderService);
+    const router = TestBed.inject(Router);
     const route = {queryParams: {}, routeConfig: { path: 'someOtherPath' }} as unknown as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
+
     dataService['active_guild'] = null;
+    dataService['isLoginLoading'] = false;
 
-    // window.location.href ist in JSDOM nicht implementiert, daher mocken wir es:
-    const originalLocation = window.location;
-    // @ts-ignore
-    delete window.location;
-    // @ts-ignore
-    window.location = { href: '/dashboard/events/view' };
-
-    localStorage.setItem('access_token', 'testToken');
+    const routerSpy = jest.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
     const result = executeGuard(route, state);
+
+    expect(routerSpy).toHaveBeenCalledWith('/dashboard');
+    expect(dataService.isLoginLoading).toBe(false);
 
     if (result instanceof Observable) {
       result.subscribe(res => {
         expect(res).toBe(false);
       });
+    } else {
+      expect(result).toBe(false);
     }
-    expect(window.location.href).toBe('/dashboard');
-
-    // @ts-ignore
-    window.location = originalLocation;
   });
 
   it('should not redirect if active_guild is not set but path is dashboard', () => {

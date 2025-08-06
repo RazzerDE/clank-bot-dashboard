@@ -36,30 +36,8 @@ describe('DiscordComService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should initialize the service and set authorization header on storage event', (done) => {
-    const authServiceSpy = jest.spyOn(authService, 'setAuthorizationHeader').mockReturnValue(new HttpHeaders({ 'Authorization': 'Bearer mock_token' }));
-    localStorage.setItem('access_token', 'mock_token');
-
-    const event = new StorageEvent('storage', { key: 'access_token', newValue: 'mock_token' });
-    window.dispatchEvent(event);
-
-    service['initPromise'].then(() => {
-      expect(authServiceSpy).toHaveBeenCalledWith('mock_token');
-      expect(service['isInitialized']).toBe(true);
-      done();
-    });
-  });
-
-  it('should ensure the service is initialized', (done) => {
-    service['isInitialized'] = false;
-    (service as any).ensureInitialized().then(() => {});
-
-    done();
-  });
-
   it('should fetch guilds', async () => {
     const mockGuilds: Guild[] = [{ id: '1', name: 'Guild 1' }, { id: '2', name: 'Guild 2' }] as Guild[];
-    service['isInitialized'] = true;
 
     const result = await service.getGuilds();
 
@@ -74,7 +52,6 @@ describe('DiscordComService', () => {
 
   it('should fetch team roles for a specific guild', async () => {
     const mockRoles: Role[] = [{ id: '1', name: 'Role 1' }, { id: '2', name: 'Role 2' }] as Role[];
-    service['isInitialized'] = true;
 
     const result = await service.getTeamRoles('guild_id');
 
@@ -91,8 +68,6 @@ describe('DiscordComService', () => {
     const guild_id = 'guild_id';
     const role_id = 'role_id';
 
-    service['isInitialized'] = true;
-
     (await service.removeTeamRole(guild_id, role_id)).subscribe(response => {
       expect(response).toBeTruthy();
     });
@@ -107,8 +82,6 @@ describe('DiscordComService', () => {
     const role_id = 'role_id';
     const level = 'level';
 
-    service['isInitialized'] = true;
-
     (await service.addTeamRole(guild_id, role_id, level)).subscribe(response => {
       expect(response).toBeTruthy();
     });
@@ -122,8 +95,6 @@ describe('DiscordComService', () => {
     const guild_id = '123';
     const channel_id = '456';
 
-    service['isInitialized'] = true;
-
     (await service.setSupportForum(guild_id, channel_id)).subscribe(response => {
       expect(response).toBeTruthy();
     });
@@ -135,7 +106,6 @@ describe('DiscordComService', () => {
 
   it('should fetch guild emojis for a specific guild', async () => {
     const mockEmojis = [{ id: '1', name: 'smile' }, { id: '2', name: 'wink' }];
-    service['isInitialized'] = true;
 
     const result = await service.getGuildEmojis('guild_id');
 
@@ -145,13 +115,11 @@ describe('DiscordComService', () => {
 
     const req = httpMock.expectOne(`${config.api_url}/guilds/emojis?guild_id=guild_id`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockEmojis);
   });
 
   it('should fetch guild roles for a specific guild', async () => {
     const mockRoles: Role[] = [{ id: '1', name: 'Role 1' }, { id: '2', name: 'Role 2' }] as Role[];
-    service['isInitialized'] = true;
 
     const result = await service.getGuildRoles('guild_id');
 
@@ -161,28 +129,20 @@ describe('DiscordComService', () => {
 
     const req = httpMock.expectOne(`${config.api_url}/guilds/roles?guild_id=guild_id`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockRoles);
   });
 
   it('should wait for initialization before fetching guild roles', async () => {
-    service['isInitialized'] = false;
-    const ensureInitSpy = jest.spyOn(service as any, 'ensureInitialized');
     const httpGetSpy = jest.spyOn(service['http'], 'get').mockReturnValueOnce({
       subscribe: jest.fn()
     } as any);
 
     await service.getGuildRoles('guild_id');
-    expect(ensureInitSpy).toHaveBeenCalled();
-    expect(httpGetSpy).toHaveBeenCalledWith(
-      `${config.api_url}/guilds/roles?guild_id=guild_id`,
-      { headers: service['authService'].headers }
-    );
+    expect(httpGetSpy).toHaveBeenCalledWith(`${config.api_url}/guilds/roles?guild_id=guild_id`, {withCredentials: true});
   });
 
   it('should fetch guild channels for a specific guild', async () => {
     const mockChannels = [{ id: '1', name: 'Channel 1' }, { id: '2', name: 'Channel 2' }];
-    service['isInitialized'] = true;
 
     const result = await service.getGuildChannels('guild_id');
 
@@ -192,28 +152,20 @@ describe('DiscordComService', () => {
 
     const req = httpMock.expectOne(`${config.api_url}/guilds/channels?guild_id=guild_id`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockChannels);
   });
 
   it('should wait for initialization before fetching guild channels', async () => {
-    service['isInitialized'] = false;
-    const ensureInitSpy = jest.spyOn(service as any, 'ensureInitialized');
     const httpGetSpy = jest.spyOn(service['http'], 'get').mockReturnValueOnce({
       subscribe: jest.fn()
     } as unknown as Observable<Channel[]>);
 
     await service.getGuildChannels('guild_id');
-    expect(ensureInitSpy).toHaveBeenCalled();
-    expect(httpGetSpy).toHaveBeenCalledWith(
-      `${config.api_url}/guilds/channels?guild_id=guild_id`,
-      { headers: service['authService'].headers }
-    );
+    expect(httpGetSpy).toHaveBeenCalledWith(`${config.api_url}/guilds/channels?guild_id=guild_id`, {withCredentials: true});
   });
 
   it('should fetch support themes for a specific guild', async () => {
     const mockSupportThemes: SupportThemeResponse = { themes: [{ id: '1', name: 'Theme 1' }] } as SupportThemeResponse;
-    service['isInitialized'] = true;
 
     const result = await service.getSupportThemes('guild_id');
 
@@ -223,14 +175,12 @@ describe('DiscordComService', () => {
 
     const req = httpMock.expectOne(`${config.api_url}/guilds/support-themes?guild_id=guild_id`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockSupportThemes);
   });
 
   it('should change default mention roles for a specific guild', async () => {
     const guild_id = 'guild_id';
     const role_ids = ['role1', 'role2'];
-    service['isInitialized'] = true;
 
     const httpPostSpy = jest.spyOn(service['http'], 'post');
     const mockResponse = { success: true };
@@ -242,9 +192,7 @@ describe('DiscordComService', () => {
 
     expect(httpPostSpy).toHaveBeenCalledWith(
       `${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`,
-      { role_ids },
-      { headers: service['authService'].headers }
-    );
+      { role_ids }, {withCredentials: true});
 
     result.subscribe((res: any) => {
       expect(res).toEqual(mockResponse);

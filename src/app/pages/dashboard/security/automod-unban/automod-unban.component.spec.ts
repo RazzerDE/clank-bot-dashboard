@@ -39,6 +39,7 @@ describe('AutomodUnbanComponent', () => {
   it('should use cache from localStorage if valid and not no_cache', fakeAsync(() => {
     const mockConfig = { method_extra: 'foo', method_type: 'BAR' };
     localStorage.setItem('unban_method', JSON.stringify(mockConfig));
+    localStorage.setItem('guild_vip', 'true');
     localStorage.setItem('unban_method_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
     component['unban_method'] = { method_extra: null, method_type: null };
@@ -55,8 +56,9 @@ describe('AutomodUnbanComponent', () => {
     localStorage.removeItem('unban_method');
     localStorage.removeItem('unban_method_timestamp');
     const mockConfig = { method_extra: 'foo', method_type: 'BAR' } as unknown as UnbanMethod;
+    const mockResponseRaw = { unban_method: mockConfig, has_vip: true };
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    const apiSpy = jest.spyOn(component['apiService'], 'getUnbanMethod').mockReturnValue(defer(() => Promise.resolve(mockConfig)));
+    const apiSpy = jest.spyOn(component['apiService'], 'getUnbanMethod').mockReturnValue(defer(() => Promise.resolve(mockResponseRaw)));
     component['dataService'].isLoading = false;
 
     component['getUnbanMethod']();
@@ -71,11 +73,12 @@ describe('AutomodUnbanComponent', () => {
   }));
 
   it('should fetch from API if no_cache is true', fakeAsync(() => {
-    const mockConfig = {method_extra: 'test', method_type: 'EMAIL'} as unknown as UnbanMethod;
+    const mockConfig = { method_extra: 'foo', method_type: 'BAR' } as unknown as UnbanMethod;
+    const mockResponseRaw = { unban_method: mockConfig, has_vip: true };
     localStorage.setItem('unban_method', JSON.stringify({ method_extra: 'old', method_type: 'OLD' }));
     localStorage.setItem('unban_method_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    const apiSpy = jest.spyOn(component['apiService'], 'getUnbanMethod').mockReturnValue(defer(() => Promise.resolve(mockConfig)));
+    const apiSpy = jest.spyOn(component['apiService'], 'getUnbanMethod').mockReturnValue(defer(() => Promise.resolve(mockResponseRaw)));
 
     component['getUnbanMethod'](true);
     tick();
@@ -211,6 +214,21 @@ describe('AutomodUnbanComponent', () => {
     tick();
 
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+    expect(btn.disabled).toBe(true);
+  }));
+
+  it('should handle error 402 and call showAlert', fakeAsync(() => {
+    component['dataService'].active_guild = { id: 'guild1' } as Guild;
+    component['unban_method'] = { method_type: 'EMAIL', method_extra: 'test@example.com' };
+    const btn = document.createElement('button');
+    jest.spyOn(component['apiService'], 'doUnbanAction').mockReturnValue(defer(() => Promise.reject({ status: 402 })));
+    const showSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation();
+    jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation();
+
+    component['doAction'](0, btn);
+    tick();
+
+    expect(showSpy).toHaveBeenCalledWith('ERROR_TITLE_402', 'ERROR_CLANK_UNBAN_402_DESC');
     expect(btn.disabled).toBe(true);
   }));
 

@@ -3,7 +3,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import { DashboardComponent } from './dashboard.component';
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
-import {defer, of} from "rxjs";
+import {BehaviorSubject, defer, of} from "rxjs";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DataHolderService} from "../../services/data/data-holder.service";
@@ -12,6 +12,8 @@ import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {Guild} from "../../services/types/discord/Guilds";
 import {tasks} from "../../services/types/Tasks";
+import {dashboardRoutes} from "./dashboard.routes";
+import {AuthGuard} from "../../guards/auth.guard";
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -26,7 +28,8 @@ describe('DashboardComponent', () => {
                     queryParams: { code: 'test_code', state: 'test_state' }
                 },
                 queryParams: of({ code: 'test_code', state: 'test_state' }) } },
-        { provide: DataHolderService, useValue: { redirectLoginError: jest.fn(), allowDataFetch: of(true) } },
+        { provide: DataHolderService, useValue: { redirectLoginError: jest.fn(), allowDataFetch: of(true), servers: [],
+                                                  sidebarStateChanged: new BehaviorSubject<boolean>(false)} },
         { provide: ApiService, useValue: { getGuildUsage: jest.fn(), getModuleStatus: jest.fn() } },
         { provide: tasks, useValue: [] },
           provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
@@ -41,6 +44,34 @@ describe('DashboardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have all dashboard routes defined correctly', () => {
+    expect(dashboardRoutes).toEqual([
+      { path: '', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'contact', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'wishlist', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'teamlist', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'support/setup', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'support/themes', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'support/snippets', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'support/blocked-users', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'events/view', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'events/design', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'events/channel-roles', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'security/moderation-requests', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'security/shield', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'security/logs', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'security/automod', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+      { path: 'misc/global-chat', canActivate: [AuthGuard], loadComponent: expect.any(Function) },
+    ]);
+  });
+
+  it('should lazy load all components in dashboard routes', async () => {
+    for (const route of dashboardRoutes) {
+      const component = await route.loadComponent!();
+      expect(component).toBeDefined();
+    }
   });
 
   it("should disable data loder if data was already loaded", () => {
@@ -254,5 +285,20 @@ describe('DashboardComponent', () => {
     ];
 
     expect(component.totalTasks).toBe(5);
+  });
+
+  it('should return the correct task id in trackByTaskId', () => {
+    const task = { id: 42 } as any;
+    expect(component.trackByTaskId(task)).toBe(42);
+  });
+
+  it('should return subtask id in trackBySubtaskId if present', () => {
+    const subtask = { id: 7 };
+    expect(component.trackBySubtaskId(subtask, 3)).toBe(7);
+  });
+
+  it('should return index in trackBySubtaskId if subtask id is missing', () => {
+    const subtask = {};
+    expect(component.trackBySubtaskId(subtask, 5)).toBe(5);
   });
 });

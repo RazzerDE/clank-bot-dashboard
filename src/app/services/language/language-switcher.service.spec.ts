@@ -3,17 +3,23 @@ import { TestBed } from '@angular/core/testing';
 import { LanguageSwitcherService } from './language-switcher.service';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {nav_items} from "../types/landing-page/LNavigationItem";
+import {Location} from "@angular/common";
+import {PLATFORM_ID} from "@angular/core";
 
 describe('LanguageSwitcherService', () => {
   let service: LanguageSwitcherService;
   let translateService: TranslateService;
+  let loc: Location;
+  let platformId: string = 'browser'; // Simulating a browser platform for testing
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()]
+      imports: [TranslateModule.forRoot()],
+      providers: [Location, { provide: PLATFORM_ID, useValue: platformId }]
     });
     service = TestBed.inject(LanguageSwitcherService);
     translateService = TestBed.inject(TranslateService);
+    loc = TestBed.inject(Location);
   });
 
   it('should be created', () => {
@@ -70,5 +76,34 @@ describe('LanguageSwitcherService', () => {
 
     expect(useSpy).toHaveBeenCalledWith('en');
     expect(localStorage.getItem('lang')).toBe('en');
+  });
+
+  it("should set the language to 'de' if the path ends with 'de' on server-side", () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({imports: [TranslateModule.forRoot()],
+      providers: [Location, { provide: PLATFORM_ID, useValue: 'server' }, { provide: TranslateService, useValue: { use: jest.fn()}}]});
+    service = TestBed.inject(LanguageSwitcherService);
+    loc = TestBed.inject(Location);
+    translateService = TestBed.inject(TranslateService);
+
+    jest.spyOn(loc, 'path').mockReturnValue('/some/path/de');
+
+    TestBed.runInInjectionContext((): void => {
+      service.setLanguage();
+      expect(translateService.use).toHaveBeenCalledWith('de');
+
+      jest.spyOn(loc, 'path').mockReturnValue('/some/path/en');
+      service.setLanguage();
+      expect(translateService.use).toHaveBeenCalledWith('en');
+    });
+  });
+
+  it('should return the current language from the translate service', () => {
+    const mockCurrentLang = 'de';
+    jest.spyOn(translateService, 'currentLang', 'get').mockReturnValue(mockCurrentLang);
+
+    const result = service.getLanguage();
+
+    expect(result).toBe(mockCurrentLang);
   });
 });

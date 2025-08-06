@@ -53,6 +53,6 @@ export const duplicateRequestInterceptor: HttpInterceptorFn = (req: HttpRequest<
  * @param req The outgoing HTTP request.
  * @returns A string key representing the request.
  */
-function getRequestKey(req: HttpRequest<unknown>): string {
+export function getRequestKey(req: HttpRequest<unknown>): string {
   return `${req.method}|${req.urlWithParams}|${JSON.stringify(req.body)}`;
 }

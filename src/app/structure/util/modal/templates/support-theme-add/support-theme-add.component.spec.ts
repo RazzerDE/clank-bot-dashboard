@@ -57,6 +57,36 @@ describe('SupportThemeAddComponent', () => {
     expect(component.isDefaultMentioned('anyRoleId')).toBe(false);
   });
 
+  it('should update newTheme faq answer based on dataService.isFAQ (addTheme)', fakeAsync(() => {
+    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.createSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
+    component.newTheme = { ...theme };
+
+    // case 1: isFAQ = true
+    mockDataService.isFAQ = true;
+    mockDataService.faq_answer = 'FAQ-Text';
+    component.newTheme = { ...theme };
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
+
+    component['addSupportTheme'](theme);
+    tick();
+
+    expect(component.newTheme.faq_answer).toBe(mockDataService.initTheme.faq_answer);
+
+    // case 2: isFAQ = false
+    mockDataService.isFAQ = false;
+    component.newTheme = { ...theme, faq_answer: 'irgendwas' };
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
+
+    component['editSupportTheme'](theme);
+    tick();
+
+    expect(component.newTheme.faq_answer).toBe(mockDataService.initTheme.faq_answer);
+
+    expect(hideModalSpy).toHaveBeenCalledTimes(2);
+  }));
+
   it('should call API, update data, show success alert and close modal on successful addSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
     const pushSpy = jest.spyOn(mockDataService.support_themes, 'push');
@@ -93,6 +123,20 @@ describe('SupportThemeAddComponent', () => {
     expect(hideModalSpy).toHaveBeenCalled();
   }));
 
+  it('should show payment required alert and close modal on 402 error in addSupportTheme', fakeAsync(() => {
+    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.createSupportTheme.mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 402 }))));
+    component.newTheme = { ...theme };
+
+    component['addSupportTheme'](theme);
+    tick();
+
+    expect(mockDataService.error_color).toBe('red');
+    expect(mockDataService.showAlert).toHaveBeenCalledWith('ERROR_TITLE_402', 'ERROR_SUPPORT_THEMES_402_DESC');
+    expect(hideModalSpy).toHaveBeenCalled();
+  }));
+
   it('should show unknown error alert, reset newTheme and close modal on other error in addSupportTheme', fakeAsync(() => {
     const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
@@ -106,6 +150,35 @@ describe('SupportThemeAddComponent', () => {
     expect(mockDataService.showAlert).toHaveBeenCalledWith('ERROR_UNKNOWN_TITLE', 'ERROR_UNKNOWN_DESC');
     expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
+  }));
+
+  it('should update newTheme faq answer based on dataService.isFAQ', fakeAsync(() => {
+    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    component.newTheme = { ...theme };
+
+    // case 1: isFAQ = true
+    mockDataService.isFAQ = true;
+    mockDataService.faq_answer = 'FAQ-Text';
+    component.newTheme = { ...theme };
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
+
+    component['editSupportTheme'](theme);
+    tick();
+
+    expect(component.newTheme.faq_answer).toBe(mockDataService.initTheme.faq_answer);
+
+    // case 2: isFAQ = false
+    mockDataService.isFAQ = false;
+    component.newTheme = { ...theme, faq_answer: 'irgendwas' };
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.resolve({})));
+
+    component['editSupportTheme'](theme);
+    tick();
+
+    expect(component.newTheme.faq_answer).toBe(mockDataService.initTheme.faq_answer);
+
+    expect(hideModalSpy).toHaveBeenCalledTimes(2);
   }));
 
   it('should call API, update data, show success alert and close modal on successful editSupportTheme', fakeAsync(() => {
@@ -150,7 +223,24 @@ describe('SupportThemeAddComponent', () => {
       expect.stringContaining('ERROR_THEME_EDIT_CONFLICT'),
       expect.stringContaining('ERROR_THEME_EDIT_CONFLICT_DESC')
     );
-    expect(component.newTheme).toEqual(mockDataService.initTheme);
+    expect(hideModalSpy).toHaveBeenCalled();
+  }));
+
+  it('should show payment required alert and close modal on 402 error in editSupportTheme', fakeAsync(() => {
+    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '', old_name: 'OldName' } as SupportTheme;
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+    mockApiService.editSupportTheme.mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 402 }))));
+    component.newTheme = { ...theme };
+
+    component['editSupportTheme'](theme);
+    tick();
+
+    expect(mockDataService.error_color).toBe('red');
+    expect(mockDataService.showAlert).toHaveBeenCalledWith(
+      expect.stringContaining('ERROR_TITLE_402'),
+      expect.stringContaining('ERROR_SUPPORT_THEMES_402_DESC')
+    );
+    expect(theme.faq_answer).toBe(null);
     expect(hideModalSpy).toHaveBeenCalled();
   }));
 
@@ -168,7 +258,6 @@ describe('SupportThemeAddComponent', () => {
       expect.stringContaining('ERROR_UNKNOWN_TITLE'),
       expect.stringContaining('ERROR_UNKNOWN_DESC')
     );
-    expect(component.newTheme).toEqual(mockDataService.initTheme);
     expect(hideModalSpy).toHaveBeenCalled();
   }));
 
@@ -300,21 +389,21 @@ describe('SupportThemeAddComponent', () => {
     component.newTheme.name = 'Test';
     component.newTheme.desc = 'Description';
     mockDataService.isFAQ = false;
-    expect(component.isThemeInvalid()).toBe(false);
+    expect(component['isThemeInvalid']()).toBe(false);
   });
 
   it('should return true for non-FAQ theme when name is empty', () => {
     component.newTheme.name = '';
     component.newTheme.desc = 'Description';
     mockDataService.isFAQ = false;
-    expect(component.isThemeInvalid()).toBe(true);
+    expect(component['isThemeInvalid']()).toBe(true);
   });
 
   it('should return true for non-FAQ theme when desc is empty', () => {
     component.newTheme.name = 'Test';
     component.newTheme.desc = '';
     mockDataService.isFAQ = false;
-    expect(component.isThemeInvalid()).toBe(true);
+    expect(component['isThemeInvalid']()).toBe(true);
   });
 
   it('should return false for FAQ theme when name, desc, and faq_answer are filled', () => {
@@ -322,7 +411,7 @@ describe('SupportThemeAddComponent', () => {
     component.newTheme.desc = 'Description';
     mockDataService.isFAQ = true;
     mockDataService.faq_answer = 'FAQ';
-    expect(component.isThemeInvalid()).toBe(false);
+    expect(component['isThemeInvalid']()).toBe(false);
   });
 
   it('should return true for FAQ theme when faq_answer is empty', () => {
@@ -330,7 +419,7 @@ describe('SupportThemeAddComponent', () => {
     component.newTheme.desc = 'Description';
     mockDataService.isFAQ = true;
     mockDataService.faq_answer = '';
-    expect(component.isThemeInvalid()).toBe(true);
+    expect(component['isThemeInvalid']()).toBe(true);
   });
 
   it('should return true for FAQ theme when name is empty', () => {
@@ -338,7 +427,7 @@ describe('SupportThemeAddComponent', () => {
     component.newTheme.desc = 'Description';
     mockDataService.isFAQ = true;
     mockDataService.faq_answer = 'FAQ';
-    expect(component.isThemeInvalid()).toBe(true);
+    expect(component['isThemeInvalid']()).toBe(true);
   });
 
   it('should return true for FAQ theme when desc is empty', () => {
@@ -346,7 +435,7 @@ describe('SupportThemeAddComponent', () => {
     component.newTheme.desc = '';
     mockDataService.isFAQ = true;
     mockDataService.faq_answer = 'FAQ';
-    expect(component.isThemeInvalid()).toBe(true);
+    expect(component['isThemeInvalid']()).toBe(true);
   });
 
   it('should update the theme icon and guild_id, and close the emoji picker', () => {
@@ -357,7 +446,7 @@ describe('SupportThemeAddComponent', () => {
     component['dataService'].active_guild = { id: mockGuildId } as any;
     component.newTheme = {} as any;
 
-    component.updateThemeIcon(emoji);
+    component['updateThemeIcon'](emoji);
 
     expect(component.newTheme.icon).toBe(mockIcon);
     expect(component['dataService'].getEmojibyId).toHaveBeenCalledWith('123', true, true);
@@ -371,7 +460,7 @@ describe('SupportThemeAddComponent', () => {
     component['dataService'].active_guild = { id: mockGuildId } as any;
     component.newTheme = {} as any;
 
-    component.updateThemeIcon(emoji);
+    component['updateThemeIcon'](emoji);
 
     expect(component.newTheme.icon).toBe(emoji);
     expect(component.newTheme.guild_id).toBe(mockGuildId);

@@ -7,7 +7,7 @@ import {ActivatedRoute} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {defer} from "rxjs";
 import {Guild} from "../../../../services/types/discord/Guilds";
-import {SecurityFeature} from "../../../../services/types/Security";
+import {SecurityFeature, SecurityFeatureRaw} from "../../../../services/types/Security";
 
 describe('ActiveShieldsComponent', () => {
   let component: ActiveShieldsComponent;
@@ -47,6 +47,7 @@ describe('ActiveShieldsComponent', () => {
   it('should use cached shields if cache is valid and not ignored', fakeAsync(() => {
     const shields = [{ enabled: true }, { enabled: false }];
     localStorage.setItem('security_shields', JSON.stringify(shields));
+    localStorage.setItem('guild_vip', 'true');
     localStorage.setItem('security_shields_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
     const apiSpy = jest.spyOn(component['apiService'], 'getSecurityShields');
@@ -67,8 +68,9 @@ describe('ActiveShieldsComponent', () => {
     localStorage.removeItem('security_shields_timestamp');
     component['dataService'].active_guild = { id: 'guild2' } as Guild;
     const apiResponse = [{ enabled: true }, { enabled: false }] as SecurityFeature[];
+    const apiResponseRaw = { shields: apiResponse, has_vip: true } as SecurityFeatureRaw;
     jest.spyOn(component['apiService'], 'getSecurityShields').mockImplementation(() =>
-      defer(() => Promise.resolve(apiResponse))
+      defer(() => Promise.resolve(apiResponseRaw))
     );
     const backupSpy = jest.spyOn(component as any, 'getBackupData');
 
@@ -95,6 +97,22 @@ describe('ActiveShieldsComponent', () => {
 
     expect(component['dataService'].isLoading).toBe(false);
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+  }));
+
+  it('should handle API error 404 (no shields found; do nothing)', fakeAsync(() => {
+    localStorage.removeItem('security_shields');
+    localStorage.removeItem('security_shields_timestamp');
+    component['dataService'].active_guild = { id: 'guild3' } as Guild;
+    jest.spyOn(component['apiService'], 'getSecurityShields').mockImplementation(() =>
+      defer(() => Promise.reject({ status: 404 }))
+    );
+    const redirectSpy = jest.spyOn(component['dataService'], 'redirectLoginError').mockImplementation(() => {});
+
+    (component as any).getSecurityShields();
+    tick();
+
+    expect(component['dataService'].isLoading).toBe(false);
+    expect(redirectSpy).not.toHaveBeenCalledWith('REQUESTS');
   }));
 
   it('should handle API error 0 (offline)', fakeAsync(() => {

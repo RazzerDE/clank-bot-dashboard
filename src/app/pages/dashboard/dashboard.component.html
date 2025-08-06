@@ -210,7 +210,9 @@
                   </div>
                 } @else {
                   @if (this.servers.length > 0) {
-                    <div class="relative shadow-md dark:shadow-2xl sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
+                    <div class="relative shadow-md dark:shadow-2xl sm:rounded-lg mt-3 overflow-y-auto max-h-full
+                                border !border-gray-300/60 dark:!border-gray-700/40 transition-colors duration-200"
+                         #serverlistDiv>
                       <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
                         <colgroup>
                           <col span="1" style="width: 50%;">
@@ -219,8 +221,7 @@
                         </colgroup>
 
                         <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
-                                      sticky top-0 transition-colors duration-500 !border-gray-300/60 dark:!border-gray-700/40
-                                      border-t border-l">
+                                      sticky top-0 transition-colors duration-500">
 
                         <tr>
                           <th scope="col" class="px-6 py-3">
