@@ -34,9 +34,9 @@
         </div>
       </div>
 
-      <!-- Divider - nur auf großen Bildschirmen -->
+      <!-- Divider - for big screens -->
       <div class="hidden lg:flex items-center">
-        <div class="h-4/5 w-px bg-gray-300 dark:bg-gray-700" #Divider></div>
+        <div class="h-4/5 w-px bg-gray-300 dark:bg-gray-700"></div>
       </div>
 
       <!-- Main Content -->
@@ -54,7 +54,7 @@
               </div>
             </div>
           </div>
-          <a routerLink="/dashboard/contact">
+          <a routerLink="/dashboard/contact" class="self-center md:self-start">
             <button type="button" class="w-full sm:w-auto text-white bg-gradient-to-r from-yellow-600 via-orange-500
                                to-orange-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-orange-700 focus:outline-none
                                font-medium px-3 py-2.5 text-center rounded-2xl">
@@ -64,8 +64,12 @@
           </a>
         </div>
 
-        <div class="mt-8 md:mt-4 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto h-[460px]
-                      pr-10 pl-5 lg:pl-0 w-[106%] lg:w-full" #WishlistContainer>
+        <div class="flex lg:hidden items-center justify-center">
+          <div class="h-px w-4/5 bg-gray-300 dark:bg-gray-700"></div>
+        </div>
+
+        <div class="mt-8 md:mt-4 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 2xl:grid-cols-3 sm:overflow-y-auto
+                    !h-auto lg:!h-[calc(100vh-440px)] pr-5 md:!pr-10 pl-5 lg:pl-0 w-full md:w-[106%] lg:w-full">
 
           <!-- No items found -->
           @if (this.allItemsDisabled) {
@@ -82,12 +86,12 @@
               <div [@fadeInOut] class="bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800
                                       dark:via-slate-800 dark:to-slate-900 hover:from-blue-50 hover:via-slate-100
                                       hover:to-blue-100 dark:hover:from-slate-700 dark:hover:via-slate-800
-                                      dark:hover:to-slate-800 flex min-h-[380px] flex-col overflow-hidden rounded-2xl
+                                      dark:hover:to-slate-800 flex h-[380px] flex-col overflow-hidden rounded-2xl
                                        shadow transition-colors duration-500 !border-gray-300 dark:!border-gray-700 border-1">
                 <div class="flex flex-col p-6">
                   <!-- Head -->
                   <div class="flex items-center justify-between">
-                    <div class="rounded-full px-3 py-0.5 text-sm font-semibold text-white transition-colors
+                    <div class="rounded-full px-3 py-0.5 text-xs font-semibold text-white transition-colors
                                 duration-500" [style.background-color]="tags[feature.tag_id - 1].color">
                       {{ tags[feature.tag_id - 1].name | translate }}
                     </div>
@@ -99,7 +103,7 @@
                   <div class="mt-4 text-lg font-medium text-black dark:!text-white transition-colors duration-500">
                     {{ feature.name | translate }}
                   </div>
-                  <div class="text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-3 transition-colors duration-500"
+                  <div class="text-gray-600 dark:text-gray-400 mt-0.5 transition-colors duration-500 line-clamp-3"
                        [title]="feature.desc | translate">
                     {{ feature.desc | translate }}
                   </div>

@@ -1,15 +1,15 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {NgClass} from "@angular/common";
 import {faCircleExclamation, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {LogFeature, SecurityFeature, SecurityLogs} from "../../../services/types/Security";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
-import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons/faHourglassHalf";
+import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-drag-n-drop',
@@ -45,7 +45,7 @@ export class DragNDropComponent {
   protected readonly faHourglassHalf: IconDefinition = faHourglassHalf;
   protected readonly faCircleExclamation: IconDefinition = faCircleExclamation;
 
-  constructor(protected dataService: DataHolderService) {}
+  constructor(protected dataService: DataHolderService, private translate: TranslateService) {}
 
   /**
    * Handles drag-and-drop events for security features.
@@ -60,9 +60,18 @@ export class DragNDropComponent {
       moveItemInArray(event.container.data as any[], event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data as any[], event.container.data, event.previousIndex, event.currentIndex);
+      const movedItem: SecurityFeature | LogFeature = event.container.data[event.currentIndex];
+
+      // check if guild has vip and if the moved item is related to unban_thread_id, cancel it then
+      if (this.type === 'SECURITY_LOGS' && movedItem.category === 'unban_thread_id' && !this.dataService.has_vip) {
+        transferArrayItem(event.container.data, event.previousContainer.data as any[], event.currentIndex, event.previousIndex);
+
+        this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+          this.translate.instant('ERROR_UNBAN_LOG_402_DESC'));
+        return;
+      }
 
       // change the enabled state of the moved item
-      const movedItem: SecurityFeature | LogFeature = event.container.data[event.currentIndex];
       movedItem.enabled = event.container.data === this.enabledFeatures;
     }
 

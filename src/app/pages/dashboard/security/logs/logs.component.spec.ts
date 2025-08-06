@@ -102,6 +102,7 @@ describe('LogsComponent', () => {
     const mockLogs = { channel_id: '123' };
     localStorage.setItem('security_logs', JSON.stringify(mockLogs));
     localStorage.setItem('security_logs_type', 'PENDING');
+    localStorage.setItem('guild_vip', 'true');
     localStorage.setItem('security_logs_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as any;
     jest.spyOn(component['dataService'], 'getGuildChannels').mockImplementation();
@@ -397,6 +398,21 @@ describe('LogsComponent', () => {
 
     expect(component['dataService'].isLoading).toBe(false);
     expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+  }));
+
+  it('should handle API error 402 and call redirectLoginError', fakeAsync(() => {
+    component['dataService'].active_guild = { id: 'guild1' } as any;
+    component['selectedLog'] = { id: '123', name: 'TestChannel' } as any;
+    component['log_list'] = [{ category: 'test1', enabled: true } as any];
+    component['dataService'].security_logs = {} as SecurityLogs;
+    jest.spyOn(component['apiService'], 'updateLogThreads').mockReturnValue(defer(() => Promise.reject({ status: 402 })));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation();
+
+    component['saveLogThreads']();
+    tick();
+
+    expect(component['dataService'].isLoading).toBe(false);
+    expect(showAlertSpy).toHaveBeenCalled();
   }));
 
   it('should handle API error 0 and call redirectLoginError', fakeAsync(() => {

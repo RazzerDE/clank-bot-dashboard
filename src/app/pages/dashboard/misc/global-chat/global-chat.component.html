@@ -12,12 +12,12 @@
     }
 
     <!-- Main Grid - 2x2 -->
-    <div class="flex w-full gap-6 p-3 mt-3 sm:p-5 min-h-[calc(100%-17rem)]">
+    <div class="flex flex-col xl:flex-row w-full gap-6 p-3 mt-3 sm:p-5 xl:h-full 2xl:min-h-[calc(100%-17rem)]">
 
       <!-- Active Channel - Container -->
-      <div class="w-3/5 bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
-                dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
-                dark:!border-gray-700 border-1">
+      <div class="w-full xl:w-3/5 bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800
+                dark:via-slate-800 dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors
+                  duration-300 flex flex-col !border-gray-300 dark:!border-gray-700 border-1">
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
                     transition-colors duration-300">
@@ -35,12 +35,12 @@
 
         <!-- Content -->
         <div class="flex flex-col p-3 h-full w-full">
-          <div class="flex flex-row items-center gap-3 mb-4 w-full">
+          <div class="flex flex-col 2xl:flex-row items-center gap-3 mb-4 w-full">
             <template-select [options]="this.dataService.guild_channels" [type]="'MISC_GLOBALCHAT'" class="w-full"
                              [id]="'channelpicker'" [activeOption]="this.global_chat.global_config?.channel_id"
                              (selectionChange)="saveGlobalChat($event[0])" [disabled]="global_chat.global_chat_pending_id" />
 
-            <div class="w-2/3 flex flex-row gap-2">
+            <div class="w-full 2xl:w-2/3 flex flex-row gap-2">
               <button class="bg-green-500 hover:bg-green-600 dark:bg-green-600 hover:dark:bg-green-700 text-white
                              py-2 px-4 rounded-md transition-colors duration-200 w-full disabled:!bg-none
                            disabled:!bg-gray-700 disabled:cursor-not-allowed" (click)="updateGlobalChat(false)"
@@ -58,7 +58,7 @@
               </button>
             </div>
           </div>
-          <div class="w-full mb-2">
+          <div class="w-full mb-2 xl:hidden 2xl:block">
             <div class="bg-slate-300 dark:bg-slate-900 text-blue-600 dark:text-blue-200 p-4 rounded-lg shadow
                         transition-all duration-300 hover:!shadow-xl hover:-translate-y-1">
               {{ 'PAGE_MISC_GLOBALCHAT_INFO' | translate }}
@@ -70,19 +70,19 @@
                         transition-all duration-200 hover:!shadow-xl hover:-translate-y-1">
               <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                 {{ this.global_chat.total_message_count.toLocaleString(this.translate.currentLang) }}</span>
-              <span class="text-gray-600 dark:text-gray-300 text-sm">{{ 'PAGE_MISC_GLOBALCHAT_STATS_MSG' | translate }}</span>
+              <span class="text-center text-gray-600 dark:text-gray-300 text-sm">{{ 'PAGE_MISC_GLOBALCHAT_STATS_MSG' | translate }}</span>
             </div>
             <div class="bg-slate-300 dark:bg-slate-900 rounded-lg shadow p-4 flex flex-col items-center
                         transition-all duration-200 hover:!shadow-xl hover:-translate-y-1">
               <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                 {{ this.global_chat.channel_count.toLocaleString(this.translate.currentLang) }}</span>
-              <span class="text-gray-600 dark:text-gray-300 text-sm">{{ 'PAGE_MISC_GLOBALCHAT_STATS_SERVERS' | translate }}</span>
+              <span class="text-center text-gray-600 dark:text-gray-300 text-sm">{{ 'PAGE_MISC_GLOBALCHAT_STATS_SERVERS' | translate }}</span>
             </div>
             <div class="bg-slate-300 dark:bg-slate-900 rounded-lg shadow p-4 flex flex-col items-center
                         transition-all duration-200 hover:!shadow-xl hover:-translate-y-1">
               <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                 {{ Number("86178").toLocaleString(this.translate.currentLang) }}</span>
-              <span class="text-gray-600 dark:text-gray-300 text-sm">{{ 'PAGE_MISC_GLOBALCHAT_STATS_USERS' | translate }}</span>
+              <span class="text-center text-gray-600 dark:text-gray-300 text-sm">{{ 'PAGE_MISC_GLOBALCHAT_STATS_USERS' | translate }}</span>
             </div>
           </div>
         </div>
@@ -148,10 +148,10 @@
           </div>
         </div>
 
-        @if (this.org_global_chat.global_config?.channel_id && !this.global_chat.global_chat_pending_id) {
+        @if (this.org_global_chat.global_config?.channel_id && !this.global_chat.global_chat_pending_id && this.dataService.has_vip) {
           <!-- Content -->
-          <div class="flex flex-col p-3 h-full">
-            <div class="flex flex-row w-full h-full gap-8">
+          <div class="flex p-3 h-full">
+            <div class="flex flex-col md:flex-row w-full h-full gap-8">
 
               <!-- Left Area - Input -->
               <div class="flex flex-col gap-4 flex-[0.7] max-w-md justify-center">
@@ -165,6 +165,7 @@
                     @if (this.global_chat.global_config) {
                       <input type="text" placeholder="Clank's Global-Chat" id="global-chat-name"
                              [(ngModel)]="this.global_chat.global_config.bot_name" maxlength="32"
+                             (input)="this.global_chat.global_config.bot_name?.length === 0 ? this.global_chat.global_config.bot_name = null : null"
                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500
                               focus:border-primary-500 block w-full p-2.5 pl-10 dark:bg-gray-600 dark:!border-gray-500
                               dark:placeholder-gray-400 dark:text-white transition-colors duration-200" />
@@ -199,6 +200,7 @@
                     <textarea type="text" [placeholder]="'PAGE_MISC_GLOBALCHAT_DESC_PLACEHOLDER' | translate"
                               id="global-chat-desc" minlength="5" maxlength="65"
                               [(ngModel)]="this.global_chat.global_desc"
+                              (input)="this.global_chat.global_desc?.length === 0 ? this.global_chat.global_desc = null : null"
                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                    focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 pl-10
                                    dark:bg-gray-600 dark:!border-gray-500 dark:placeholder-gray-400
@@ -208,7 +210,7 @@
               </div>
 
               <!-- Divider - Hidden on small screens -->
-              <div class="hidden md:flex items-center">
+              <div class="hidden 2xl:flex items-center">
                 <div class="w-px h-4/5 bg-gray-300 dark:bg-gray-700 transition-colors duration-200"></div>
               </div>
 
@@ -224,7 +226,7 @@
             <button class="inline-block p-3 items-center justify-center bg-indigo-600 hover:bg-indigo-700
                          text-white py-2 px-4 rounded-md transition-colors duration-200 disabled:!bg-gray-600
                          disabled:cursor-not-allowed" (click)="this.saveCustomizing()"
-                    [disabled]="!this.hasCustomizeChanges() || disabledSendBtn">
+                    [disabled]="!this.hasCustomizeChanges() || disabledSendBtn || isInvalidInput()">
               <fa-icon [icon]="faSave" class="mr-1" /> {{ 'PLACEHOLDER_BUTTON_SAVE' | translate }}
             </button>
             <button class="inline-block p-3 items-center justify-center from-blue-700 via-blue-600
@@ -236,11 +238,13 @@
           </div>
         } @else {
           <div class="flex flex-col items-center justify-center p-6 h-full">
-            <img [ngSrc]="'assets/img/bg/sleeping.png'" class="animate-float mb-2" width="128" height="128"
-                 alt="Sleeping-Icon ~ Clank Discord-Bot" />
+            <img [ngSrc]="this.dataService.has_vip ? 'assets/img/bg/sleeping.png' : 'assets/img/icons/diamond.png'"
+                 class="animate-float mb-2" width="128" height="128" alt="Sleeping-Icon ~ Clank Discord-Bot" />
             <div class="text-center">
               <h2 class="text-2xl font-medium text-gray-800 dark:text-gray-200 mb-2 transition-colors duration-300">
-                @if (this.global_chat.global_chat_pending_delete) {
+                @if (!this.dataService.has_vip) {
+                  {{ 'PAGE_MISC_GIVEAWAY_DESIGN_DISABLED' | translate }}
+                } @else if (this.global_chat.global_chat_pending_delete) {
                   {{ 'PAGE_MISC_GLOBALCHAT_DELETION' | translate }}
                 } @else if (this.global_chat.global_chat_pending_id) {
                   {{ 'PAGE_MISC_GLOBALCHAT_PENDING' | translate }}
@@ -249,7 +253,9 @@
                 }
               </h2>
               <p class="text-gray-500 dark:text-gray-400 text-lg transition-colors duration-300">
-                @if (this.global_chat.global_chat_pending_delete) {
+                @if (!this.dataService.has_vip) {
+                  <span [innerHTML]="'PAGE_MISC_GLOBALCHAT_DESIGN_DISABLED_DESC' | translate"></span>
+                } @else if (this.global_chat.global_chat_pending_delete) {
                   {{ 'PAGE_MISC_GLOBALCHAT_DELETION_DESC' | translate }}
                 } @else if (this.global_chat.global_chat_pending_id) {
                   {{ 'PAGE_MISC_GLOBALCHAT_PENDING_DESC' | translate }}

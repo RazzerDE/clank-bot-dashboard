@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <title>Das ist Clank ~ Clank Discord-Bot</title>
     <meta property="og:title" content="Das ist Clank ~ Clank Discord-Bot" />
@@ -8,15 +8,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="description" content="Clank ist das Herz deines Discord-Servers: Neben einer kinderleichten Verwendung & wunderschönen Menüs bietet er dir alles, was du brauchst, um deine eigene Community zu schützen, & zu vergrößern." />
-    <meta property="og:description" content="Clank ist das Herz deines Discord-Servers: Neben einer kinderleichten Verwendung & wunderschönen Menüs bietet er dir alles, was du brauchst, um deine eigene Community zu schützen, & zu vergrößern." />
-    <meta name="twitter:description" content="Clank ist das Herz deines Discord-Servers: Neben einer kinderleichten Verwendung & wunderschönen Menüs bietet er dir alles, was du brauchst, um deine eigene Community zu schützen, & zu vergrößern." />
+    <meta name="description" content="Clank ist das Herz deines Discord-Servers: Neben einer kinderleichten Verwendung &amp; wunderschönen Menüs bietet er dir alles, was du brauchst, um deine eigene Community zu schützen, &amp; zu vergrößern."/>
+    <meta property="og:description" content="Clank ist das Herz deines Discord-Servers: Neben einer kinderleichten Verwendung &amp; wunderschönen Menüs bietet er dir alles, was du brauchst, um deine eigene Community zu schützen, &amp; zu vergrößern."/>
+    <meta name="twitter:description" content="Clank ist das Herz deines Discord-Servers: Neben einer kinderleichten Verwendung &amp; wunderschönen Menüs bietet er dir alles, was du brauchst, um deine eigene Community zu schützen, &amp; zu vergrößern."/>
 
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-eval';
+      script-src 'self' https://static.cloudflareinsights.com 'unsafe-eval' 'sha256-7AcVsEOyOE8yFFMDWrYQoomjBEFOMdd7BAy3FH3i5nc=' 'sha256-e9xA0EMyxKosWOH4zGUmA4/GOZNsPHt/+z5b0k2Thlc=' 'sha256-VM2mZqyEQZoLzoTrp5EigFvzQ0+f1wSeBuoOn95WHCg=';
       style-src 'self' 'unsafe-inline';
-      img-src http://localhost:4200 https://* https://cdn.discordapp.com data:;
+      img-src 'self' https://* https://cdn.discordapp.com data:;
       font-src 'self' data:;
       connect-src 'self' https://cdn.discordapp.com https://api.clank.dev http://localhost:8081;
     ">
@@ -34,15 +34,22 @@
     <meta name="twitter:title" content="Das ist Clank ~ Clank Discord-Bot" />
     <meta name="twitter:image" content="https://clank.dev/assets/img/bg/clank-discord-bot-bg.jpg" />
 
+    <link rel="alternate" hreflang="de" href="https://clank.dev/de" />
+    <link rel="alternate" hreflang="en" href="https://clank.dev" />
+    <link rel="canonical" href="https://clank.dev" />
+
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/logo/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/logo/favicon-16x16.png">
     <link rel="manifest" href="assets/img/logo/site.webmanifest">
     <link rel="canonical" href="https://clank.dev/" />
-    <link rel="preconnect" href="https://cdn.discordapp.com">
 
-  </head>
+    <link rel="preconnect" href="https://cdn.discordapp.com">
+    <link rel="preconnect" href="https://api.clank.dev">
+    <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+    <link rel="dns-prefetch" href="https://api.clank.dev">
+</head>
   <body>
     <app-root></app-root>
-  </body>
+</body>
 </html>

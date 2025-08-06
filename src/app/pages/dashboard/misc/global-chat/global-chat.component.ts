@@ -7,12 +7,12 @@ import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {SelectComponent} from "../../../../structure/util/modal/templates/select/select.component";
 import {faHashtag, faImage, faTrash, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
-import {faLock} from "@fortawesome/free-solid-svg-icons/faLock";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
+import {faLock} from "@fortawesome/free-solid-svg-icons";
 import {faCircleQuestion} from "@fortawesome/free-regular-svg-icons";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
-import {faUser} from "@fortawesome/free-solid-svg-icons/faUser";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {
   DiscordMarkdownComponent
 } from "../../../../structure/util/modal/templates/discord-markdown/discord-markdown.component";
@@ -27,7 +27,7 @@ import {
   GlobalChatObject
 } from "../../../../services/types/Misc";
 import {NgClass, NgOptimizedImage} from "@angular/common";
-import {faUnlock} from "@fortawesome/free-solid-svg-icons/faUnlock";
+import {faUnlock} from "@fortawesome/free-solid-svg-icons";
 import {FormsModule} from "@angular/forms";
 
 @Component({
@@ -130,6 +130,19 @@ export class GlobalChatComponent implements OnDestroy {
   }
 
   /**
+   * Checks if the input fields for bot name or global description are invalid.
+   *
+   * Returns true if the bot name is set but empty (only whitespace), or if the global description is set but empty.
+   * Used to validate user input before saving or submitting the form.
+   *
+   * @returns {boolean} True if input is invalid, otherwise false.
+   */
+  protected isInvalidInput(): boolean {
+    return (!!this.global_chat.global_config?.bot_name && this.global_chat.global_config.bot_name.trim().length === 0) ||
+      (!!this.global_chat.global_desc && this.global_chat.global_desc.trim().length === 0) || this.isInvalidAvatar;
+  }
+
+  /**
    * Refreshes the cache by disabling the cache button, setting the loading state,
    * and fetching the snippet data with the cache ignored. The cache button is re-enabled
    * after 15 seconds.
@@ -155,7 +168,7 @@ export class GlobalChatComponent implements OnDestroy {
   protected verifyAvatarURL(event: Event): void {
     const input: HTMLInputElement = event.target as HTMLInputElement;
     const url: string = input.value.trim();
-    if (url.length === 0) { this.global_chat.global_config!.bot_avatar_url = null; this.isInvalidAvatar = true; return; }
+    if (url.length === 0) { this.global_chat.global_config!.bot_avatar_url = null; this.isInvalidAvatar = false; return; }
 
     // Only allow http(s) URLs and basic image extensions
     const isValidUrl: boolean = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(url.split('?')[0]);
@@ -178,7 +191,7 @@ export class GlobalChatComponent implements OnDestroy {
    */
   protected saveCustomizing(lock?: boolean): void {
     if (!this.dataService.active_guild) { return; }
-    if (!this.global_chat.global_config?.bot_avatar_url || this.isInvalidAvatar) {
+    if (this.isInvalidAvatar) {
       this.dataService.error_color = 'red';
       this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
         this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_DESC"));
@@ -217,11 +230,15 @@ export class GlobalChatComponent implements OnDestroy {
           setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 5000);
         },
         error: (err: HttpErrorResponse): void => {
+          sub.unsubscribe();
 
           if (err.status === 404) {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_MISSING_TITLE"),
               this.translate.instant("ERROR_MISC_GLOBAL_MISSING_DESC"));
+          } else if (err.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_GLOBALCHAT_402_DESC'));
           } else if (err.status === 409) {
             this.dataService.error_color = 'red';
             this.dataService.showAlert(this.translate.instant("ERROR_MISC_GLOBAL_INVALID_AVATAR_TITLE"),
@@ -237,7 +254,6 @@ export class GlobalChatComponent implements OnDestroy {
           }
 
           setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 2000);
-          sub.unsubscribe();
         }
       });
   }
@@ -312,6 +328,7 @@ export class GlobalChatComponent implements OnDestroy {
     if ((localStorage.getItem('misc_globalchat') && localStorage.getItem('misc_globalchat_timestamp') &&
       Date.now() - Number(localStorage.getItem('misc_globalchat_timestamp')) < 30000 && !no_cache)) {
       this.global_chat = JSON.parse(localStorage.getItem('misc_globalchat') as string);
+      this.dataService.has_vip = this.global_chat.has_vip || false;
       if (!this.global_chat.global_config) {  // initialize global_config if it doesn't exist
         this.global_chat.global_config = { channel_id: null, message_count: 0, created_at: Date.now(),
           lock_reason: null, bot_name: null, bot_avatar_url: null, invite: null };
@@ -333,6 +350,7 @@ export class GlobalChatComponent implements OnDestroy {
           if (config.global_chat_pending_id) { config.global_config.channel_id = config.global_chat_pending_id; }
 
           this.global_chat = config;
+          this.dataService.has_vip = config.has_vip || false;
           this.org_global_chat = JSON.parse(JSON.stringify(this.global_chat));
 
           setTimeout((): void => {this.dataService.getGuildChannels(this.comService, no_cache, true, 'TEXT')}, 550);

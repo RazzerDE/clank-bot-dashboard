@@ -1,5 +1,10 @@
 import {Channel, Role} from "./discord/Guilds";
 
+export interface GiveawaysRaw {
+  giveaways: Giveaway[];
+  has_vip: boolean;
+}
+
 export interface Giveaway {
   event_id?: string;                  // Unique identifier for the giveaway
   guild_id?: string;                  // Optional

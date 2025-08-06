@@ -116,7 +116,7 @@
   "SECTION_BOT_SETUP_TASK_GLOBAL": "Global-Chat eingerichtet, um serverweit zu chatten",
   "SECTION_BOT_SETUP_TASK_GLOBAL_1": "Kanal für das globale Chatten festgelegt",
 
-  "PAGE_CONTACT_DESC_LEFT": "✏️› Auf dieser Seite zeigen wir dir <strong>einige Kontaktmöglichkeiten</strong>, wie du unser <strong>Entwicklungs-& Support-Team</strong> kinderleicht erreichen kannst. Dies ist nützlich bei dringenden Fällen wie rechtliche Fragen, kritische Fehlermeldungen oder einfach nur um uns deine Ideen für das Dashboard, oder unserem Clank-Bot generell mitzuteilen.",
+  "PAGE_CONTACT_DESC_LEFT": "✏️ › Auf dieser Seite zeigen wir dir <strong>einige Kontaktmöglichkeiten</strong>, wie du unser <strong>Entwicklungs-& Support-Team</strong> kinderleicht erreichen kannst. Dies ist nützlich bei dringenden Fällen wie rechtliche Fragen, kritische Fehlermeldungen oder einfach nur um uns deine Ideen für das Dashboard, oder unserem Clank-Bot generell mitzuteilen.",
   "PAGE_CONTACT_DESC_RIGHT": "⚡ › Unsere Reaktionszeit ist in der Regel <strong>sehr schnell</strong> und erfolgt in wenigen Tagen - wir antworten dir auf deine Anfrage jedoch in den meisten Fällen nur, wenn <strong>weitere Rückfragen</strong> bei deinem Fall aufgekommen sind, wie bei einer Bug-Meldung, wo wir mehr Informationen zum reproduzieren des Fehlers benötigen. ",
   "PAGE_CONTACT_ALERT": "<strong>Ich habe eine Allgemeine Frage:</strong> In diesem Fall solltest du dich mit einem spezielleren Kontaktformular an uns wenden, welches du auf unserer\n<strong><a href=\"https://bl4cklist.de/contact/\">Blacklist.de ~ Discord-Server Webseite</a></strong> findest.",
   "PAGE_CONTACT_THUMB_INFO": "Fehler oder Idee melden",
@@ -220,8 +220,8 @@
   "PAGE_SECURITY_SHIELD_BACKUP_BUTTON": "Backup wiederherstellen",
   "PAGE_SECURITY_SHIELD_CHANNELS": "🔗 ~ Kanäle",
   "PAGE_SECURITY_SHIELD_ROLES": "📚 ~ Rollen",
-  "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "Das Backup-System wird automatisch aktiviert, sobald du Premium für Clank erworben hast.",
   "PAGE_SECURITY_SHIELD_NOTHING_SAVED": "Leer..",
+  "PAGE_SECURITY_SHIELD_EMPTY_PREMIUM": "Es wurde noch kein Backup erstellt..",
 
   "PAGE_SECURITY_LOGS_SUBTITLE": "🧮 ~ ALLE SERVER-ÄNDERUNGEN AUF EINEM BLICK",
   "PAGE_SECURITY_LOGS_TITLE": "Clank's Log-System",
@@ -379,6 +379,8 @@
   "ERROR_PAGE_TITLE": "Fehler aufgetreten ~ Clank Discord-Bot",
   "ERROR_LOGIN_BUTTON": "Zurück zum Dashboard",
   "ERROR_SUPPORT_BUTTON": "Support Server",
+  "ERROR_PAGE_404_TITLE": "😢 ~ Seite nicht gefunden..",
+  "ERROR_PAGE_404_DESC": "› Die Seite die du aufgerufen hast, konnte nicht gefunden werden - hast du dich vielleicht vertippt?",
 
   "SUCCESS_THEME_EDIT_TITLE": "Thema zur Bearbeitung eingereicht",
   "SUCCESS_THEME_EDIT_DESC": "Das Thema <strong>{{name}}</strong> wird in den nächsten Minuten automatisch bearbeitet!",
@@ -651,7 +653,9 @@
 
   "PLACEHOLDER_UNBAN_SEARCH": "Nach einem Eintrag suchen.. 🔎",
   "PLACEHOLDER_REQUESTS_EMPTY": "🥳 ~ Es gibt keinen offenen Entsperrungs-Antrag!",
-  "PLACEHOLDER_UNBAN_MISSING": "Du musst Clank als Entsperrungsmethode auf deinem Discord-Server festlegen, um diese Funktion verwenden zu können - mehr darüber erfährst du <a href=\"https://clank.dev/security/automod\" class=\"text-[#00aff4] hover:underline\">hier</a>.",
+  "PLACEHOLDER_UNBAN_MISSING": "Du musst Clank als Entsperrungsmethode auf deinem Discord-Server festlegen, um diese Funktion verwenden zu können - mehr darüber erfährst du <a href=\"https://clank.dev/dashboard/security/automod\" class=\"text-[#00aff4] hover:underline\">hier</a>.",
+  "PLACEHOLDER_SUPPORTFORUM_MISSING": "Du musst erst ein Support-Forum auf deinem Discord-Server festlegen, um diese Funktion verwenden zu können - mehr darüber erfährst du <a href=\"https://clank.dev/dashboard/support/setup\" class=\"text-[#00aff4] hover:underline\">hier</a>.",
+  "PLACEHOLDER_THEMES_TOOLTIP_EMPTY": "❌ ~ Du kannst Standard-Rollen festlegen, sobald mindestens ein Support-Thema erstellt wurde.",
 
   "PLACEHOLDER_GIVEAWAY_EMBED_INVITE": "🤖 › Lade den Bot <a href=\"http://bl4cklist.de/invites/clank\" class=\"text-[#00aff4] hover:underline\">hier</a> ein.",
   "PLACEHOLDER_GIVEAWAY_EMBED_WINNERS": "Gewinner",
@@ -836,6 +840,9 @@
   "PLACEHOLDER_NO_FORUM_CHANNELS": "Keine Forenkanäle gefunden..",
   "PLACEHOLDER_NO_FORUM_CHANNELS_DESC": "Erstelle einen Forum-Kanal (Anleitung <a href=\"https://support.discord.com/hc/de/articles/6208479917079-Forumskan%C3%A4le-FAQ#h_01JAZAWCX3ESF8G12EZFC6TJ0M\" class=\"text-blue-700 dark:text-blue-400\">hier</a>) auf deinem Discord-Server oder aktualisiere die Liste.",
 
+  "ERROR_DATE_PAST_TITLE": "Ungültiges End-Datum",
+  "ERROR_DATE_PAST_DESC": "Das End-Datum muss in der Zukunft liegen - bitte wähle ein gültiges Datum aus!",
+
   "PLACEHOLDER_BUTTON_PANIC": "Panik-Modus",
   "PLACEHOLDER_BUTTON_RANDOM": "Zufällige Optionen",
   "PLACEHOLDER_BUTTON_SAVE": "Änderungen speichern",
@@ -866,5 +873,21 @@
   "DATE_ONE_MINUTE_AGO": "vor 1 Minute",
   "DATE_MINUTES_AGO": "vor {{count}} Minuten",
   "DATE_JUST_NOW": "gerade eben",
-  "DATE_SECONDS_AGO": "vor {{count}} Sekunden"
+  "DATE_SECONDS_AGO": "vor {{count}} Sekunden",
+
+  "PLACEHOLDER_EVENT_VIP_REQUIRED": "💎 › Für diese Bedingung benötigt dein Server <strong>\"Diamond\"</strong> - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "PLACEHOLDER_THEME_VIP_REQUIRED": "💎 › Für FAQ-Antworten benötigt dein Server <strong>\"Diamond\"</strong> - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+
+  "ERROR_TITLE_402": "\"Diamond\" erforderlich",
+  "ERROR_GIVEAWAY_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um diese Bedingung zu verwenden - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_SUPPORT_THEMES_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um FAQ-Antworten festzulegen - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_UNBAN_LOG_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um den \"Entsperrungs-Anträge\"-Log zu erstellen - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_GIVEAWAY_DESIGN_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Gewinnspiel-Design zu bearbeiten - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_GLOBALCHAT_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Design des Global-Chats zu bearbeiten - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "ERROR_CLANK_UNBAN_402_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um die Clank Methode festlegen zu können - kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+
+  "PAGE_SECURITY_SHIELD_BACKUP_DISABLED_TEXT": "💎 › Das Backup-System wird automatisch aktiviert, sobald du \"Diamond\" für Clank erworben hast.<br /><br />Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "PAGE_MISC_GIVEAWAY_DESIGN_DISABLED": "❌ ~ \"Diamond\" Upgrade erforderlich",
+  "PAGE_MISC_GIVEAWAY_DESIGN_DISABLED_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Gewinnspiel-Design zu bearbeiten.<br/>Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst.",
+  "PAGE_MISC_GLOBALCHAT_DESIGN_DISABLED_DESC": "Du benötigst <strong>\"Diamond\"</strong>, um das Design des Global-Chats zu bearbeiten.<br/>Kaufe dies, in dem du den Discord-Bot (Clank) rechtsklickst und \"<strong>Store</strong>\" auswählst."
 }

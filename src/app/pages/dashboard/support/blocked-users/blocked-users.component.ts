@@ -4,8 +4,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
@@ -14,7 +14,7 @@ import {BlockedUser} from "../../../../services/types/discord/User";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiService} from "../../../../services/api/api.service";
-import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
+import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 import {DatePipe} from "../../../../pipes/date/date.pipe";
 
@@ -246,6 +246,9 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
             this.dataService.showAlert(this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_TITLE'),
               this.translate.instant('ERROR_USER_BLOCK_NOT_FOUND_DESC', { user: blockedUser.user_name }));
             blockedUser = {} as BlockedUser; // reset blocked user object
+          } else if (error.status === 400) {
+            this.dataService.showAlert(this.translate.instant('ERROR_DATE_PAST_TITLE'),
+              this.translate.instant('ERROR_DATE_PAST_DESC'));
           } else if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
@@ -329,7 +332,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     // two modals are visible; hide if clicked outside of the modal
-    if ((event.target as HTMLElement).id.includes('roleModalContent')) {
+    if ((event.target as HTMLElement).id.includes('roleModalContent') || (event.target as HTMLElement).id.includes('modal_container')) {
       this.modal.hideModal();
       return;
     }

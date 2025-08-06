@@ -92,7 +92,9 @@ describe('ModalComponent', () => {
     const removeModalSpy = jest.spyOn(component.roleModal.nativeElement.classList, 'remove');
     const removeBackdropSpy = jest.spyOn(component.roleBackdrop.nativeElement.classList, 'remove');
     component['isVisible'] = false;
+
     component.showModal();
+
     expect(component['isVisible']).toBe(true);
     expect(removeModalSpy).toHaveBeenCalledWith('hidden');
     expect(removeBackdropSpy).toHaveBeenCalledWith('hidden');
@@ -103,7 +105,9 @@ describe('ModalComponent', () => {
     const addModalSpy = jest.spyOn(component.roleModal.nativeElement.classList, 'add');
     const addBackdropSpy = jest.spyOn(component.roleBackdrop.nativeElement.classList, 'add');
     component['isVisible'] = true;
+
     component.hideModal();
+
     expect(component['isVisible']).toBe(false);
     jest.advanceTimersByTime(300);
     expect(addModalSpy).toHaveBeenCalledWith('hidden');
@@ -130,5 +134,45 @@ describe('ModalComponent', () => {
   it('should handle undefined extra in isDefaultMentioned', () => {
     (component as any).extra = undefined;
     expect(component.isDefaultMentioned('any')).toBeFalsy();
+  });
+
+  it('should return true if obj is a SecurityModal (has action property)', () => {
+    const securityModal = { action: jest.fn() } as any;
+    expect(component.isSecurityModal(securityModal)).toBe(true);
+  });
+
+  it('should return false if obj is not a SecurityModal (no action property)', () => {
+    const notSecurityModal = { someProp: 123 } as any;
+    expect(component.isSecurityModal(notSecurityModal)).toBe(false);
+  });
+
+  it('should return true if type ends with ADD', () => {
+    component.type = 'SOMETHING_ADD';
+    expect((component as any).showSecondModal()).toBe(true);
+  });
+
+  it('should return true if type ends with EDIT', () => {
+    component.type = 'SOMETHING_EDIT';
+    expect((component as any).showSecondModal()).toBe(true);
+  });
+
+  it('should return true if type starts with EVENTS_ and does not include TEAMLIST', () => {
+    component.type = 'EVENTS_SOMETHING';
+    expect((component as any).showSecondModal()).toBe(true);
+  });
+
+  it('should return false if type starts with EVENTS_ and includes TEAMLIST', () => {
+    component.type = 'EVENTS_TEAMLIST';
+    expect((component as any).showSecondModal()).toBe(false);
+  });
+
+  it('should return true if type starts with SUPPORT_TICKET_ANNOUNCEMENT', () => {
+    component.type = 'SUPPORT_TICKET_ANNOUNCEMENT_XYZ';
+    expect((component as any).showSecondModal()).toBe(true);
+  });
+
+  it('should return false for unrelated type', () => {
+    component.type = 'RANDOM_TYPE';
+    expect((component as any).showSecondModal()).toBe(false);
   });
 });

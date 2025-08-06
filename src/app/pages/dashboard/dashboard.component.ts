@@ -8,13 +8,13 @@ import { HttpErrorResponse } from "@angular/common/http";
 import {SliderItems} from "../../services/types/landing-page/SliderItems";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {faTruckMedical, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
+import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RouterLink} from "@angular/router";
 import {forkJoin, Subscription} from "rxjs";
 import {SubTasks, Tasks, tasks, TasksCompletionList} from "../../services/types/Tasks";
 import {DashboardLayoutComponent} from "../../structure/dashboard-layout/dashboard-layout.component";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
     selector: 'app-dashboard',
@@ -221,5 +221,28 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
    */
   get totalTasks(): number {
     return this.tasks.length + this.tasks.flatMap(t => t.subtasks).length;
+  }
+
+  /**
+   * TrackBy function for Angular ngFor to optimize rendering of task lists.
+   * Returns the unique ID of the task to help Angular identify items efficiently.
+   *
+   * @param task The task object to track.
+   * @returns The unique ID of the task.
+   */
+  trackByTaskId(task: Tasks): number {
+    return task.id;
+  }
+
+  /**
+   * TrackBy function for Angular ngFor to optimize rendering of subtask lists.
+   * Returns the unique ID of the subtask to help Angular identify items efficiently.
+   *
+   * @param subtask The subtask object to track.
+   * @param index The index of the subtask in the list.
+   * @returns The unique ID of the subtask, or the index if no ID is present.
+   */
+  trackBySubtaskId(subtask: any, index: number): number {
+    return subtask?.id || index;
   }
 }

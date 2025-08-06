@@ -10,6 +10,9 @@ import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ApiService} from "../api/api.service";
 import {SecurityLogs, UnbanRequest} from "../types/Security";
+import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
+import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
+import {EmbedConfigRaw} from "../types/Config";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
@@ -39,6 +42,28 @@ describe('DataHolderService', () => {
 
     translate.use('en');
     expect(service.error_title).not.toBe('');
+  });
+
+  it('should set showSidebarLogo to true and active_guild from localStorage if active_guild exists', () => {
+    const mockGuild = { id: 'guild1', name: 'Test Guild' };
+    localStorage.setItem('active_guild', JSON.stringify(mockGuild));
+
+    (service as any).initializeFromLocalStorage();
+
+    expect(service.showSidebarLogo).toBe(true);
+    expect(service.active_guild).toEqual(mockGuild);
+    localStorage.removeItem('active_guild');
+  });
+
+  it('should not set showSidebarLogo or active_guild if active_guild does not exist in localStorage', () => {
+    localStorage.removeItem('active_guild');
+    service.showSidebarLogo = false;
+    service.active_guild = null;
+
+    (service as any).initializeFromLocalStorage();
+
+    expect(service.showSidebarLogo).toBe(false);
+    expect(service.active_guild).toBeNull();
   });
 
   it('should return the correct CDN URL for emoji ID with isID true and isAnimated true', () => {
@@ -116,7 +141,23 @@ describe('DataHolderService', () => {
     expect(service.error_title).toBe(title);
     expect(service.error_desc).toBe(desc);
     expect(service.showAlertBox).toBeFalsy();
+  });
 
+  it('should return void if router url is /errors/simple', () => {
+    const title = 'Test Title';
+    const desc = 'Test Description';
+    service.showAlertBox = false;
+    service.error_title = '';
+    service.error_desc = '';
+    Object.defineProperty(service['router'], 'url', { value: '/errors/simple' });
+
+    jest.useFakeTimers();
+    service.showAlert(title, desc);
+    jest.advanceTimersByTime(5001);
+
+    expect(service.error_title).toBe('');
+    expect(service.error_desc).toBe('');
+    expect(service.showAlertBox).toBeFalsy();
   });
 
   it('should return true if darkMode is set to "true" in localStorage', () => {
@@ -225,13 +266,24 @@ describe('DataHolderService', () => {
     expect(document.getElementById('req_element')!.innerHTML).toBe('');
   });
 
+  it('should create pipes if they are not already created', () => {
+    document.body.innerHTML = '<span id="req_element"></span>';
+    service['markdownPipe'] = undefined;
+    service['convertTimePipe'] = undefined;
+
+    expect(service.getGWRequirementValue('OWN: test123')).toBe('test123');
+    expect(document.getElementById('req_element')!.innerHTML).toBe('test123');
+  });
+
   it('should handle MSG, VOICE, MITGLIED, SERVER, ROLE_ID, OWN, no_nitro and default cases correctly', () => {
     document.body.innerHTML = '<span id="req_element"></span>';
     const reqElement = document.getElementById('req_element') as HTMLSpanElement;
+    service['markdownPipe'] = new MarkdownPipe();
+    service['convertTimePipe'] = new ConvertTimePipe();
 
-    jest.spyOn(service['markdownPipe'], 'transform').mockImplementation((v) => `md:${v}`);
-    jest.spyOn(service['convertTimePipe'], 'transform').mockImplementation((v) => `t:${v}`);
-    jest.spyOn(service['convertTimePipe'], 'convertToFormattedTime').mockImplementation((v) => `ft:${v}`);
+    jest.spyOn(service['markdownPipe']!, 'transform').mockImplementation((v) => `md:${v}`);
+    jest.spyOn(service['convertTimePipe']!, 'transform').mockImplementation((v) => `t:${v}`);
+    jest.spyOn(service['convertTimePipe']!, 'convertToFormattedTime').mockImplementation((v) => `ft:${v}`);
     jest.spyOn(service['translate'], 'instant').mockImplementation((key, obj) => `${key}:${JSON.stringify(obj)}`);
 
     // MSG
@@ -267,6 +319,178 @@ describe('DataHolderService', () => {
     expect(reqElement.innerHTML).toBe('');
   });
 
+  it('should use cached guilds from localStorage if cache is valid and no cache_btn is provided', () => {
+    const mockGuilds = [{ id: '1', name: 'Guild 1' }, { id: '2', name: 'Guild 2' }];
+    localStorage.setItem('guilds', JSON.stringify(mockGuilds));
+    localStorage.setItem('guilds_last_updated', Date.now().toString());
+    service.active_guild = null;
+    service.isLoading = true;
+
+    service.getGuilds(comService, { isAdmin: jest.fn() } as any);
+
+    expect(service.servers).toEqual(mockGuilds);
+    expect(service.isLoading).toBe(false);
+  });
+
+  it('should fetch guilds from API, filter, map, sort, and update localStorage', fakeAsync(() => {
+    const mockGuilds = [
+      { id: '2', name: 'B', permissions: 8, owner: false, features: ['COMMUNITY'], icon: 'icon2', approximate_member_count: 1000, approximate_presence_count: 100, image_url: undefined },
+      { id: '1', name: 'A', permissions: 0, owner: true, features: ['COMMUNITY'], icon: 'icon1', approximate_member_count: 2000, approximate_presence_count: 200, image_url: undefined },
+      { id: '3', name: 'C', permissions: 0, owner: false, features: [], icon: null, approximate_member_count: 3000, approximate_presence_count: 300 }
+    ];
+    const filteredGuilds = [
+      { ...mockGuilds[1], image_url: `https://cdn.discordapp.com/icons/1/icon1.png`, approximate_member_count: '2.000', approximate_presence_count: '200' },
+      { ...mockGuilds[0], image_url: `https://cdn.discordapp.com/icons/2/icon2.png`, approximate_member_count: '1.000', approximate_presence_count: '100' }
+    ];
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.resolve(mockGuilds)))
+    };
+    const authServiceMock = {
+      isAdmin: jest.fn((perm) => perm === 8)
+    };
+    service.active_guild = null;
+    service.isLoading = true;
+    service.isFetching = false;
+    localStorage.removeItem('guilds');
+
+    service.getGuilds(comServiceMock as any, authServiceMock as any);
+    tick()
+
+    expect(comServiceMock.getGuilds).toHaveBeenCalled();
+    expect(service.servers).toEqual(filteredGuilds.sort((a, b) => a.name.localeCompare(b.name)));
+    expect(localStorage.getItem('guilds')).toBe(JSON.stringify(service.servers));
+    expect(localStorage.getItem('guilds_last_updated')).toBeDefined();
+    expect(service.isLoading).toBe(false);
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should set isLoading to false and re-enable cache_btn after API call if cache_btn is provided', fakeAsync(() => {
+    const mockGuilds = [
+      { id: '1', name: 'A', permissions: 8, owner: false, features: ['COMMUNITY'], icon: 'icon1', approximate_member_count: 100, approximate_presence_count: 10 }
+    ];
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.resolve(mockGuilds)))
+    };
+    const authServiceMock = {
+      isAdmin: jest.fn(() => true)
+    };
+    const cache_btn = document.createElement('button');
+    cache_btn.disabled = false;
+    service.active_guild = null;
+    service.isLoading = false;
+
+    service.getGuilds(comServiceMock as any, authServiceMock as any, cache_btn);
+
+    expect(service.isLoading).toBe(true);
+    expect(cache_btn.disabled).toBe(true);
+
+    tick();
+
+    expect(service.isLoading).toBe(false);
+    // Simulate timeout for re-enabling button
+    tick(10000);
+    expect(cache_btn.disabled).toBe(false);
+  }));
+
+  it('should call getGuilds api and guild icon should be gif with cache_btn set', fakeAsync(() => {
+    const mockGuilds = [
+      { id: '1', name: 'A', permissions: 8, owner: false, features: ['COMMUNITY'], icon: 'a_icon',
+        approximate_member_count: 100, approximate_presence_count: 10 }
+    ];
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.resolve(mockGuilds)))
+    };
+    const authServiceMock = { isAdmin: jest.fn(() => true) };
+    service.active_guild = { id: '1', name: 'A' } as Guild;
+    document.body.innerHTML = '<button id="cache_btn" disabled></button>';
+    const cache_btn = document.getElementById('cache_btn') as HTMLButtonElement;
+    service.isLoading = false;
+
+    service.getGuilds(comServiceMock as any, authServiceMock as any, cache_btn);
+
+    expect(service.isLoading).toBe(true);
+    expect(cache_btn.disabled).toBe(true);
+
+    tick();
+
+    expect(service.isLoading).toBe(false);
+    tick(10000);
+    expect(cache_btn.disabled).toBe(false);
+  }));
+
+  it('should call redirectLoginError with REQUESTS on 429 error', fakeAsync(() => {
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 429 }))))
+    };
+    const authServiceMock = { isAdmin: jest.fn() };
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isFetching = true;
+    service.isLoading = true;
+
+    localStorage.removeItem('guilds');
+    service.getGuilds(comServiceMock as any, authServiceMock as any);
+
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('REQUESTS');
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should call redirectLoginError with EXPIRED on non-401/429 error', fakeAsync(() => {
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))))
+    };
+    const authServiceMock = { isAdmin: jest.fn() };
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+    service.isFetching = true;
+    service.isLoading = true;
+    document.body.innerHTML = '<button id="cache_btn" disabled></button>';
+    const cache_btn = document.getElementById('cache_btn') as HTMLButtonElement;
+
+    service.getGuilds(comServiceMock as any, authServiceMock as any, cache_btn);
+    tick(10001);
+
+    expect(redirectSpy).toHaveBeenCalledWith('EXPIRED');
+    expect(service.isFetching).toBe(false);
+    expect(cache_btn.disabled).toBe(false);
+  }));
+
+  it('should do nothing on 401 error and set isFetching to false', fakeAsync(() => {
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 401 }))))
+    };
+    const authServiceMock = { isAdmin: jest.fn() };
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError');
+    service.isFetching = true;
+    service.isLoading = true;
+
+    service.getGuilds(comServiceMock as any, authServiceMock as any);
+    tick();
+
+    expect(redirectSpy).not.toHaveBeenCalled();
+    expect(service.isFetching).toBe(false);
+  }));
+
+  it('should set isLoading to false and re-enable cache_btn on error if cache_btn is provided', fakeAsync(() => {
+    const comServiceMock = {
+      getGuilds: jest.fn().mockResolvedValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))))
+    };
+    const authServiceMock = { isAdmin: jest.fn() };
+    const cache_btn = document.createElement('button');
+    cache_btn.disabled = false;
+    service.isFetching = true;
+    service.isLoading = true;
+    const redirectSpy = jest.spyOn(service, 'redirectLoginError').mockImplementation(() => {});
+
+    service.getGuilds(comServiceMock as any, authServiceMock as any, cache_btn);
+    tick();
+
+    expect(redirectSpy).toHaveBeenCalledWith('EXPIRED');
+    expect(service.isLoading).toBe(false);
+    tick(10001);
+    expect(cache_btn.disabled).toBe(false);
+  }));
+
   it('should return early if active_guild is not set', () => {
     service.active_guild = null;
     service.isFetching = false;
@@ -297,7 +521,7 @@ describe('DataHolderService', () => {
     service.active_guild = { id: 'guild1' } as Guild;
     const mockChannels = [{ id: 'channel1', type: 0 }, { id: 'channel2', type: 0 }] as Channel[];
 
-    localStorage.setItem('guild_channels_timestamp', (Date.now() - 120000).toString());  // Set expired cache
+    localStorage.setItem('guild_channels_timestamp', (Date.now() - 400000).toString());  // Set expired cache
     jest.spyOn(comService, 'getGuildChannels').mockResolvedValue(defer(() => Promise.resolve(mockChannels)));
 
     // text channel type
@@ -431,6 +655,7 @@ describe('DataHolderService', () => {
   it('should use cached config if available and not expired', fakeAsync(() => {
     const mockConfig = { color_code: 16777215, thumbnail_url: 'url', banner_url: null, emoji_reaction: ':test:' };
     localStorage.setItem('gift_config', JSON.stringify(mockConfig));
+    localStorage.setItem('guild_vip', true.toString());
     localStorage.setItem('gift_config_timestamp', Date.now().toString());
     service.active_guild = { id: 'guild1' } as Guild;
 
@@ -449,8 +674,9 @@ describe('DataHolderService', () => {
     localStorage.setItem('gift_config', JSON.stringify({}));
     localStorage.setItem('gift_config_timestamp', (Date.now() - 31000).toString());
     const mockConfig = { color_code: 16777215, thumbnail_url: 'url2', banner_url: null, emoji_reaction: ':api:' };
+    let rawConfig = { config: mockConfig, has_vip: true } as EmbedConfigRaw;
     service.active_guild = { id: 'guild1' } as Guild;
-    const apiSpy = jest.spyOn(apiService, 'getEventConfig').mockReturnValue(defer(() => Promise.resolve(mockConfig)));
+    const apiSpy = jest.spyOn(apiService, 'getEventConfig').mockReturnValue(defer(() => Promise.resolve(rawConfig)));
     jest.spyOn(service, 'getGuildEmojis').mockImplementation(() => {});
 
     service.getEventConfig(apiService, comService, false);
@@ -462,6 +688,14 @@ describe('DataHolderService', () => {
     expect(service.isLoading).toBe(false);
     expect(service.getGuildEmojis).toHaveBeenCalledWith(comService, false);
     expect(localStorage.getItem('gift_config')).toEqual(JSON.stringify(mockConfig));
+
+    // check branch for false if not response.has_vip
+    rawConfig = { config: mockConfig } as EmbedConfigRaw;
+    service.getEventConfig(apiService, comService, true);
+    tick(550);
+
+    expect(service.has_vip).toBe(false);
+
   }));
 
   it('should handle API error 429 and call redirectLoginError with REQUESTS', fakeAsync(() => {

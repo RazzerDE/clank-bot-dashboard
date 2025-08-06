@@ -69,7 +69,7 @@
     </div>
 
     <!-- Modal body -->
-    <div class="p-4 md:p-5">
+    <div class="p-4 md:p-5 max-h-[20vh] md:max-h-[60vh] lg:max-h-[unset] overflow-y-auto">
       <div class="space-y-4 flex flex-col">
         <label for="themefaq" class="inline-flex items-center cursor-pointer">
           <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="this.dataService.isFAQ" id="themefaq">
@@ -79,25 +79,32 @@
                     after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
                     peer-checked:bg-green-600 dark:peer-checked:bg-green-600 transition-colors duration-300"></div>
           <span class="ms-3 text-sm font-medium text-gray-900 dark:text-white">
-          {{ 'PLACEHOLDER_THEME_MODAL2_TOGGLE' | translate }}
-        </span>
+            {{ 'PLACEHOLDER_THEME_MODAL2_TOGGLE' | translate }}
+          </span>
         </label>
+        @if (!this.dataService.has_vip && this.dataService.isFAQ) {
+          <span class="text-xs text-red-500 mt-1" [innerHTML]="'PLACEHOLDER_THEME_VIP_REQUIRED' | translate"></span>
+        }
 
         <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800">
 
         <label for="themefaqanswer" class="block text-sm font-medium text-gray-900 dark:text-white
                                            mb-0 transition-all duration-300"
-               [class.opacity-50]="!this.dataService.isFAQ">{{ 'PLACEHOLDER_THEME_MODAL2_ANSWER' | translate }} <span class="text-red-500">*</span>
+               [class.opacity-50]="!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ)">
+          {{ 'PLACEHOLDER_THEME_MODAL2_ANSWER' | translate }} <span class="text-red-500">*</span>
         </label>
 
-        <textarea id="themefaqanswer" rows="3" maxlength="255" minlength="1" [class.opacity-50]="!this.dataService.isFAQ"
+        <textarea id="themefaqanswer" rows="3" maxlength="255" minlength="1"
+                  [class.opacity-50]="!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ)"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                     focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600
                     dark:!border-gray-500 dark:placeholder-gray-400 dark:text-white duration-300
                     dark:focus:ring-primary-500 dark:focus:border-primary-500 resize-none transition-all"
-                  [disabled]="!this.dataService.isFAQ" (keyup)="updateFAQPreview($event)" [(ngModel)]="this.dataService.faq_answer"
+                  [disabled]="!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ)"
+                  (keyup)="updateFAQPreview($event)" [(ngModel)]="this.dataService.faq_answer"
                   [placeholder]="'PLACEHOLDER_THEME_MODAL2_ANSWER_PLACEHOLDER' | translate"></textarea>
-        <p class="text-gray-900 dark:text-white mb-0 transition-all duration-300" [class.opacity-50]="!this.dataService.isFAQ">
+        <p class="text-gray-900 dark:text-white mb-0 transition-all duration-300"
+           [class.opacity-50]="!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ)">
           {{ 'PLACEHOLDER_THEME_MODAL2_PREVIEW' | translate }}
         </p>
 

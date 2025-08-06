@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { DataTableComponent } from './data-table.component';
 import {TranslateModule} from "@ngx-translate/core";
@@ -41,7 +41,7 @@ describe('DataTableComponent', () => {
 
   it('should return default styles if role.color is falsy', () => {
     const role = { color: 0 } as Role;
-    const styles = component.getRoleStyles(role);
+    const styles = component['getRoleStyles'](role);
     expect(styles).toEqual({
       'background-color': 'rgba(115, 115, 115, 0.1)',
       'color': '#737373',
@@ -52,7 +52,7 @@ describe('DataTableComponent', () => {
 
   it('should return correct styles for a valid color', () => {
     const role = { color: 0x336699 } as Role; // #336699
-    const styles = component.getRoleStyles(role);
+    const styles = component['getRoleStyles'](role);
     expect(styles).toEqual({
       'background-color': 'rgba(51, 102, 153, 0.1)',
       'color': '#336699',
@@ -63,7 +63,7 @@ describe('DataTableComponent', () => {
 
   it('should handle color with less than 6 hex digits', () => {
     const role = { color: 0x123 } as Role; // #000123
-    const styles = component.getRoleStyles(role);
+    const styles = component['getRoleStyles'](role);
     expect(styles).toEqual({
       'background-color': 'rgba(0, 1, 35, 0.1)',
       'color': '#000123',
@@ -74,32 +74,32 @@ describe('DataTableComponent', () => {
 
   it('isSupportType should return true for SupportTheme', () => {
     const supportTheme = {roles: [], name: 'Test'} as unknown as SupportTheme;
-    expect(component.isSupportType(supportTheme)).toBe(true);
+    expect(component['isSupportType'](supportTheme)).toBe(true);
   });
 
   it('isSupportType should return false for Role', () => {
     const role = { support_level: 1 } as Role;
-    expect(component.isSupportType(role)).toBe(false);
+    expect(component['isSupportType'](role)).toBe(false);
   });
 
   it('isRoleType should return true for Role', () => {
     const role = { support_level: 1 } as Role;
-    expect(component.isRoleType(role)).toBe(true);
+    expect(component['isRoleType'](role)).toBe(true);
   });
 
   it('isRoleType should return false for SupportTheme', () => {
     const supportTheme = {roles: [], name: 'Test'} as unknown as SupportTheme;
-    expect(component.isRoleType(supportTheme)).toBe(false);
+    expect(component['isRoleType'](supportTheme)).toBe(false);
   });
 
   it('isBlockedUserType should return true for BlockedUser', () => {
     const blocked_user = { staff_id: '123', reason: 'test' } as BlockedUser;
-    expect(component.isBlockedUserType(blocked_user)).toBe(true);
+    expect(component['isBlockedUserType'](blocked_user)).toBe(true);
   });
 
   it('isBlockedUserType should return false for SupportTheme', () => {
     const supportTheme = {roles: [], name: 'Test'} as unknown as SupportTheme;
-    expect(component.isRoleType(supportTheme)).toBe(false);
+    expect(component['isRoleType'](supportTheme)).toBe(false);
   });
 
   it('ngAfterViewChecked should set rowHeight if mainRow is present', () => {
@@ -117,7 +117,7 @@ describe('DataTableComponent', () => {
     const row = { name: 'Test Row' } as any;
     const rowClickSpy = jest.spyOn(component.rowClick, 'emit');
 
-    component.onRowClick(row);
+    component['onRowClick'](row);
 
     expect(rowClickSpy).toHaveBeenCalledWith(row);
   });
@@ -128,10 +128,10 @@ describe('DataTableComponent', () => {
     const notGiveaway2 = { prize: 'Test Prize' } as any;
     const notGiveaway3 = {} as any;
 
-    expect(component.isGiveawayType(giveaway)).toBe(true);
-    expect(component.isGiveawayType(notGiveaway1)).toBe(false);
-    expect(component.isGiveawayType(notGiveaway2)).toBe(false);
-    expect(component.isGiveawayType(notGiveaway3)).toBe(false);
+    expect(component['isGiveawayType'](giveaway)).toBe(true);
+    expect(component['isGiveawayType'](notGiveaway1)).toBe(false);
+    expect(component['isGiveawayType'](notGiveaway2)).toBe(false);
+    expect(component['isGiveawayType'](notGiveaway3)).toBe(false);
   });
 
   it('should return null if gw_req is null or empty', () => {
@@ -215,10 +215,10 @@ describe('DataTableComponent', () => {
     component['now'] = now;
     const past = new Date(now.getTime() - 100000);
     const ended = { end_date: past.toISOString() } as Giveaway;
-    expect(component.isInvalidButtonForIndex(ended, 0)).toBe(true);
-    expect(component.isInvalidButtonForIndex(ended, 1)).toBe(true);
-    expect(component.isInvalidButtonForIndex(ended, 2)).toBe(true);
-    expect(component.isInvalidButtonForIndex(ended, 3)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](ended, 0)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](ended, 1)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](ended, 2)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](ended, 3)).toBe(true);
   });
 
   it('should disable all buttons for giveaways where start_date is in the past', () => {
@@ -226,10 +226,10 @@ describe('DataTableComponent', () => {
     component['now'] = now;
     const past = new Date(now.getTime() - 100000);
     const started = { start_date: past.toISOString() } as Giveaway;
-    expect(component.isInvalidButtonForIndex(started, 0)).toBe(true);
-    expect(component.isInvalidButtonForIndex(started, 1)).toBe(true);
-    expect(component.isInvalidButtonForIndex(started, 2)).toBe(true);
-    expect(component.isInvalidButtonForIndex(started, 3)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](started, 0)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](started, 1)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](started, 2)).toBe(true);
+    expect(component['isInvalidButtonForIndex'](started, 3)).toBe(true);
   });
 
   it('isUnbanRequestType should return true for valid UnbanRequest object', () => {
@@ -243,7 +243,7 @@ describe('DataTableComponent', () => {
       end_date: '2024-01-01T00:00:00Z',
       excuse: 'Sorry'
     } as any;
-    expect(component.isUnbanRequestType(unbanRequest)).toBe(true);
+    expect(component['isUnbanRequestType'](unbanRequest)).toBe(true);
   });
 
   it('isUnbanRequestType should return false if any required property is missing', () => {
@@ -260,12 +260,26 @@ describe('DataTableComponent', () => {
     for (const key of Object.keys(base)) {
       const copy = { ...base };
       delete copy[key];
-      expect(component.isUnbanRequestType(copy as any)).toBe(false);
+      expect(component['isUnbanRequestType'](copy as any)).toBe(false);
     }
   });
 
   it('isUnbanRequestType should return false for unrelated object', () => {
     const unrelated = { foo: 'bar' };
-    expect(component.isUnbanRequestType(unrelated as any)).toBe(false);
+    expect(component['isUnbanRequestType'](unrelated as any)).toBe(false);
   });
+
+  it('should set dataTableBtnPressed to true, call button.action with the object, and reset dataTableBtnPressed after 2 seconds', fakeAsync(() => {
+    const button = { action: jest.fn() } as any;
+    const obj = { test: 'value' } as any;
+
+    component['dataTableBtnPressed'] = false;
+    component['onDataTableBtnClick'](button, obj);
+
+    expect(component['dataTableBtnPressed']).toBe(true);
+    expect(button.action).toHaveBeenCalledWith(obj);
+
+    tick(2000);
+    expect(component['dataTableBtnPressed']).toBe(false);
+  }));
 });

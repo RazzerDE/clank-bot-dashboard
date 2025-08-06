@@ -5,6 +5,7 @@
 
     <!-- Snippet Modal -->
     <app-modal [type]="modalType" [obj]="this.newSnippet" [announcement]="this.currentAnnouncement"
+               [org_announcement]="this.org_currentAnnouncement"
                [snippet_action]="addTextSnippet.bind(this)" [snippet_edit]="editTextSnippet.bind(this)"/>
 
     <!-- Page Thumb -->
@@ -18,7 +19,7 @@
 
     <div class="flex-1 my-4 flex flex-col items-center">
       <div class="p-4 py-2 sm:p-5 flex-grow flex flex-col w-full">
-        <div class="mx-auto w-full h-[calc(100vh-30rem)] px-4 lg:!px-0">
+        <div class="mx-auto w-full lg:h-[calc(100vh-30rem)] px-4 lg:!px-0">
 
           <!-- Table Header -->
           <div class="bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800
@@ -71,7 +72,7 @@
           </div>
 
           <!-- Layout for Table and Details -->
-          <div class="flex flex-col lg:flex-row gap-4 h-full">
+          <div class="flex flex-col lg:flex-row gap-4 h-auto lg:!h-full">
 
             <!-- Left column (Table) -->
             <div class="lg:w-1/3 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
@@ -101,8 +102,8 @@
 
                   <hr class="my-6 border-gray-300 dark:border-gray-600 w-3/4 self-center" />
 
-                  <div class="flex-grow flex w-full justify-start pr-6 gap-x-6">
-                    <div class="w-1/2">
+                  <div class="flex-grow flex flex-col 2xl:flex-row w-full justify-start pr-6 gap-x-6">
+                    <div class="w-full 2xl:w-1/2">
                       <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
                         {{ 'PAGE_SNIPPETS_PREVIEW_TITLE' | translate }}
                       </h3>

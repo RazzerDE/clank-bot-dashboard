@@ -42,18 +42,26 @@
                 <!-- Add Theme Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-green-700
                                                via-green-600 to-green-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
-                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br"
-                        (click)="openSupportThemeModal('ADD')" id="addThemeBtn_1">
+                                               focus:ring-green-700 focus:outline-none hover:bg-gradient-to-br
+                                               disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                        (click)="openSupportThemeModal('ADD')" id="addThemeBtn_1" [disabled]="isForumMissing">
                   <fa-icon [icon]="faPlus" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_THEME_ADD' | translate }}
                 </button>
 
                 <!-- Default Ping Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-orange-700
                                                via-orange-600 to-orange-500 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2
-                                               focus:ring-orange-700 focus:outline-none hover:bg-gradient-to-br"
-                        (click)="openDefaultMentionModal()" id="mentionBtn_1">
+                                               focus:ring-orange-700 focus:outline-none hover:bg-gradient-to-br
+                                               disabled:bg-gray-700 disabled:bg-none disabled:cursor-not-allowed"
+                        (click)="openDefaultMentionModal()" id="mentionBtn_1" tooltipClass="table-tooltip"
+                        [disabled]="this.dataService.support_themes.length === 0" placement="auto"
+                        [ngbTooltip]="this.dataService.support_themes.length === 0 ? tooltipContent : null">
                   <fa-icon [icon]="faBell" class="me-2"></fa-icon>{{ 'PLACEHOLDER_BUTTON_DEFAULT_PING' | translate }}
                 </button>
+
+                <ng-template #tooltipContent>
+                  <div [innerText]="'PLACEHOLDER_THEMES_TOOLTIP_EMPTY' | translate"></div>
+                </ng-template>
 
                 <!-- Refresh cache Button -->
                 <button type="button" class="flex items-center justify-center text-white bg-gradient-to-r from-blue-700
@@ -68,7 +76,18 @@
             </div>
 
             <!-- Table -->
-            <data-table [tconfig]="tableConfig" />
+            @if (this.isForumMissing) {
+              <div class="flex flex-col items-center justify-center w-full border-t !border-gray-300 dark:!border-gray-700">
+                <div class="py-8 flex flex-col items-center justify-center w-full text-center">
+                  <img [ngSrc]="'assets/img/icons/error-big.png'" class="animate-float mb-2"
+                     width="128" height="128" alt="Error-Big ~ Clank Discord-Bot"/>
+                  <span class="text-red-500 dark:text-red-400 w-2/4 text-xl transition-colors duration-300"
+                        [innerHTML]="'PLACEHOLDER_SUPPORTFORUM_MISSING' | translate"></span>
+                </div>
+              </div>
+            } @else {
+              <data-table [tconfig]="tableConfig" />
+            }
 
           </div>
         </div>

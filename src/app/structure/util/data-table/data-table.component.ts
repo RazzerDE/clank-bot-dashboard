@@ -9,19 +9,19 @@ import {
 } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {TableConfig} from "../../../services/types/Config";
+import {ButtonConfig, TableConfig} from "../../../services/types/Config";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {SupportTheme, TicketSnippet} from "../../../services/types/Tickets";
 import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {faClock, faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons/faHourglassEnd";
+import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons";
 import {BlockedUser} from "../../../services/types/discord/User";
 import {DatePipe} from "../../../pipes/date/date.pipe";
 import {Giveaway} from "../../../services/types/Events";
 import {MarkdownPipe} from "../../../pipes/markdown/markdown.pipe";
-import {faChartSimple} from "@fortawesome/free-solid-svg-icons/faChartSimple";
+import {faChartSimple} from "@fortawesome/free-solid-svg-icons";
 import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 import {ConvertTimePipe} from "../../../pipes/convert-time.pipe";
 import {UnbanRequest} from "../../../services/types/Security";
@@ -66,6 +66,7 @@ export class DataTableComponent implements AfterViewChecked {
     protected readonly faChartSimple: IconDefinition = faChartSimple;
     protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;
     private heightSet: boolean = false;
+    protected dataTableBtnPressed: boolean = false;
 
     constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
 
@@ -89,7 +90,7 @@ export class DataTableComponent implements AfterViewChecked {
    *
    * @param row - The row object that was clicked, which can be of type `SupportTheme`, `Role`, or `TicketSnippet`.
    */
-    onRowClick(row: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): void {
+    protected onRowClick(row: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): void {
       this.rowClick.emit(row);
     }
 
@@ -100,7 +101,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param obj - The object to check, which can be of type `SupportTheme` or `Role`.
      * @returns `true` if the object is of type `SupportTheme`, otherwise `false`.
      */
-    isSupportType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is SupportTheme {
+    protected isSupportType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is SupportTheme {
       return (obj as SupportTheme).roles !== undefined;
     }
 
@@ -111,7 +112,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param obj - The object to check, which can be of type `SupportTheme`, `Role`, or `UnbanRequest`.
      * @returns `true` if the object is of type `UnbanRequest`, otherwise `false`.
      */
-    isUnbanRequestType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is UnbanRequest {
+    protected isUnbanRequestType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is UnbanRequest {
       return (obj as UnbanRequest).user_id !== undefined && (obj as UnbanRequest).user_name !== undefined &&
         (obj as UnbanRequest).user_avatar !== undefined && (obj as UnbanRequest).staff_id !== undefined &&
         (obj as UnbanRequest).staff_name !== undefined && (obj as UnbanRequest).staff_avatar !== undefined &&
@@ -125,7 +126,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param obj - The object to check, which can be of type `SupportTheme` or `Role`.
      * @returns `true` if the object is of type `Role`, otherwise `false`.
      */
-    isRoleType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Role {
+    protected isRoleType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Role {
       return (obj as Role).support_level !== undefined;
     }
 
@@ -136,7 +137,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param obj - The object to check.
      * @returns `true` if the object is of type `BlockedUser`, otherwise `false`.
      */
-    isBlockedUserType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is BlockedUser {
+    protected isBlockedUserType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is BlockedUser {
       return (obj as BlockedUser).staff_id !== undefined && (obj as BlockedUser).reason !== undefined;
     }
 
@@ -147,7 +148,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param obj - The object to check, which can be of type `SupportTheme`, `Role`, `TicketSnippet`, `BlockedUser`, or `Giveaway`.
      * @returns `true` if the object is of type `Giveaway`, otherwise `false`.
      */
-    isGiveawayType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Giveaway {
+    protected isGiveawayType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Giveaway {
       return (obj as Giveaway).creator_id !== undefined && (obj as Giveaway).prize !== undefined;
     }
 
@@ -182,7 +183,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param role - The Discord role object containing a color property
      * @returns An object with CSS style properties as key-value pairs
      */
-    getRoleStyles(role: Role): { [key: string]: string } {
+    protected getRoleStyles(role: Role): { [key: string]: string } {
       if (!role.color) {
         return { // default color
           'background-color': 'rgba(115, 115, 115, 0.1)',
@@ -245,6 +246,22 @@ export class DataTableComponent implements AfterViewChecked {
     };
 
   /**
+   * Handles the click event for a data table button.
+   * Sets a pressed state, executes the button action with the provided object,
+   * and resets the pressed state after 3 seconds.
+   *
+   * @param button - The button configuration containing the action to execute.
+   * @param obj - The data object associated with the row (can be SupportTheme, Role, TicketSnippet, BlockedUser, Giveaway, or UnbanRequest).
+   */
+  protected onDataTableBtnClick(button: ButtonConfig,
+                      obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): void {
+    this.dataTableBtnPressed = true;
+    button.action(obj);
+
+    setTimeout((): void => { this.dataTableBtnPressed = false; }, 2000);
+  }
+
+  /**
    * Determines if a button should be disabled for a giveaway based on its index and the giveaway's state.
    *
    * Button indexes:
@@ -263,7 +280,7 @@ export class DataTableComponent implements AfterViewChecked {
    * @param index - The button index (0-3)
    * @returns `true` if the button should be disabled, otherwise `false`
    */
-  isInvalidButtonForIndex(obj: Giveaway, index: number) {
+  protected isInvalidButtonForIndex(obj: Giveaway, index: number) {
     return (obj.start_date && (index === 0 || index === 2) || (!obj.start_date && (index === 1 || index === 3))) ||
     (!obj.start_date && obj.end_date && this.now.getTime() > new Date(obj.end_date).getTime()) ||
     (obj.start_date && this.now.getTime() > new Date(obj.start_date).getTime());

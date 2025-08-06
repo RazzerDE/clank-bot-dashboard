@@ -1,14 +1,23 @@
 <div id="discord-bot" class="intro-banner banner-bg">
+  <picture>
+    <source type="image/avif" media="(max-width: 480px)" srcset="assets/img/bg/clank-discord-bot-bg-480.avif" />
+    <source type="image/avif" media="(max-width: 768px)" srcset="assets/img/bg/clank-discord-bot-bg-768.avif" />
+    <source type="image/avif" media="(max-width: 1024px)" srcset="assets/img/bg/clank-discord-bot-bg-1024.avif" />
+    <source type="image/avif" media="(max-width: 1200px)" srcset="assets/img/bg/clank-discord-bot-bg-1200.avif" />
+    <img ngSrc="assets/img/bg/clank-discord-bot-bg-1200.avif"
+         alt="Discord Bot Banner Background" class="absolute inset-0 w-full h-full object-cover -z-10"
+         fetchpriority="high" priority fill sizes="100vw" />
+  </picture>
   <!-- Star animation -->
-  <canvas id="intro-canvas" class="absolute z-1 top-auto bottom-0 left-0 h-full w-full h-footer-bg"></canvas>
-  <div class="container relative z-[1]">
+  <canvas id="intro-canvas" class="absolute z-10 top-auto bottom-0 left-0 h-full w-full h-footer-bg"></canvas>
+  <div class="container relative z-20">
     <div class="banner-content text-center">
-      <img class="banner-icon mx-auto relative right-2 a_fadeInUp"
-           ngSrc="assets/img/icons/discord.png" alt="Clank ~ Discord-Bot (Discord-Logo)" height="75" width="75" />
+      <img class="banner-icon mx-auto relative right-2 a_fadeInUp" fetchpriority="high" height="75" width="75"
+           ngSrc="assets/img/icons/discord.avif" alt="Clank ~ Discord-Bot (Discord-Logo)" priority />
       <h1 class="banner-title a_fadeInUp">
         {{ 'SECTION_INTRO_TITLE' | translate }}
       </h1>
-      <div class="description a_fadeInUp">
+      <div class="description !text-base px-4 md:px-0 md:!text-lg a_fadeInUp">
         {{ 'SECTION_INTRO_DESC' | translate }}
       </div>
       <a class="banner-btn black-shape-big a_fadeInUp" href="/invite">
@@ -21,28 +30,27 @@
   </div>
 
   <!-- Small inline Banner -->
-  <div class="guild_banner a_fadeInUp">
+  <div class="guild_banner !h-28 md:!h-24 a_fadeInUp">
     <div class="container">
       <div class="row flex-nowrap">
-        <div class="col-md-6 !w-1/2 lg:w-3/4" [ngClass]="slideContainer.checkVisibility() ? '!w-1/2' : '!w-full'">
+        <div class="col-md-6 w-full md:!w-1/2 lg:w-3/4" >
           <div class="guild_info_section">
-            <h3>{{ 'SECTION_INTRO_BANNER_TITLE' | translate }}
-              <img ngSrc="assets/img/frames/steps.png" alt="Clank ~ Discord-Bot (Step-Icon)"
+            <h2 class="text-lg mb-0 self-center md:self-start">{{ 'SECTION_INTRO_BANNER_TITLE' | translate }}
+              <img ngSrc="assets/img/frames/steps.webp" fetchpriority="high" alt="Clank ~ Discord-Bot (Step-Icon)"
                    class="img-fluid inline-block -mt-[2px] ml-2" height="11" width="74"/>
-            </h3>
-            <p class="m-0">{{ 'SECTION_INTRO_BANNER_DESC' | translate:
+            </h2>
+            <p class="m-0 text-sm text-center md:!text-start md:text-base w-full">{{ 'SECTION_INTRO_BANNER_DESC' | translate:
               {guild_count: dataService.bot_stats.guild_count, user_count: dataService.bot_stats.user_count} }}</p>
           </div>
         </div>
 
         <!-- Little Slider with "Used by" Guilds -->
-        <div class="col-md-6 !w-1/2 lg:w-3/4">
+        <div class="col-md-6 hidden md:block !w-1/2 lg:w-3/4">
           <div class="px-0 py-14">
             <div class="guild_slider_section slide_shadow">
               <div class="slider-inner slide_shadow_content">
 
-                <div class="hidden lg:block" #slideContainer
-                     (mouseenter)="this.isPaused = true" (mouseleave)="this.isPaused = false">
+                <div (mouseenter)="this.isPaused = true" (mouseleave)="this.isPaused = false">
                   <div class="slider" #slider [style.transform]="'translateX(' + currentTranslate + 'px)'"
                        [style.transition]="isResetting ? 'none' : 'transform ' + transitionSpeed + 'ms linear'">
 
@@ -50,9 +58,10 @@
                       <a href="{{ item.guild_invite }}" target="_blank">
                         <div class="slider-item">
                           @if (!item.invalidImg) {
-                            <img ngSrc="{{ item.image_url }}" [alt]="item.guild_name + '~ Discord-Server'" width="50" height="50"
-                                 (error)="item.invalidImg = true"
-                                 class="partner-icon rounded-full" (mouseenter)="activeSlide($event)" (mouseleave)="activeSlide($event)" />
+                            <img ngSrc="{{ item.image_url.replace('.gif', '.webp').replace('.png', '.webp') }}"
+                                 [alt]="item.guild_name + '~ Discord-Server'" width="50" height="50"
+                                 (error)="item.invalidImg = true" class="partner-icon rounded-full"
+                                 (mouseenter)="activeSlide($event)" (mouseleave)="activeSlide($event)" />
                           } @else {
                             <div class="partner-icon rounded-full flex items-center justify-center bg-gray-700">
                               <span>{{ item.guild_name.charAt(0).toUpperCase() + item.guild_name.charAt(1).toUpperCase() }}</span>

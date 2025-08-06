@@ -5,7 +5,7 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {
   faBullhorn,
   faExclamationCircle, faExclamationTriangle,
@@ -15,7 +15,7 @@ import {
   faXmark,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {TableConfig} from "../../../../services/types/Config";
 import {TicketAnnouncement, TicketSnippet} from "../../../../services/types/Tickets";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -56,6 +56,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   protected snippets: TicketSnippet[] = [];
   protected filteredSnippets: TicketSnippet[] = this.snippets;
   protected currentAnnouncement: TicketAnnouncement = { level: null, description: null, end_date: null };
+  protected org_currentAnnouncement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
   protected readonly faBullhorn: IconDefinition = faBullhorn;
@@ -79,6 +80,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
         this.dataLoading = { snippets: true, announcement: true };
         this.dataService.selectedSnippet = null;
         this.currentAnnouncement = { level: null, description: null, end_date: null };
+        this.org_currentAnnouncement = { level: null, description: null, end_date: null };
         this.getSnippetDetails(true);
       }
     });
@@ -167,6 +169,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
       if (this.snippets.length > 0) { this.dataService.selectedSnippet = this.snippets[0]; }
       this.filteredSnippets = this.snippets;
       this.currentAnnouncement = JSON.parse(localStorage.getItem('ticket_announcement') as string);
+      this.org_currentAnnouncement = { ...this.currentAnnouncement };
       this.dataService.isLoading = false;
       this.startLoading = false;
       return;
@@ -209,6 +212,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
       .subscribe({
         next: (announcementStatus: TicketAnnouncement): void => {
           this.currentAnnouncement = announcementStatus;
+          this.org_currentAnnouncement = { ...this.currentAnnouncement };
 
           this.dataService.isLoading = false;
           this.startLoading = false;

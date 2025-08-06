@@ -66,7 +66,8 @@ describe('ActiveGiveawaysComponent', () => {
 
   it('should use cache if available and not expired', () => {
     const mockEvents = [{ id: 1, prize: 'Test', creator_id: '1', creator_name: 'A', creator_avatar: '', gw_req: null, channel_id: null, end_date: new Date(), winner_count: 1, participants: 0, start_date: null }];
-    localStorage.setItem('active_events', JSON.stringify(mockEvents));
+    const mockEventsRaw = { giveaways: mockEvents, has_vip: true };
+    localStorage.setItem('active_events', JSON.stringify(mockEventsRaw));
     localStorage.setItem('active_events_timestamp', Date.now().toString());
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
     const spy = jest.spyOn(component['dataService'], 'getEventConfig');
@@ -86,8 +87,9 @@ describe('ActiveGiveawaysComponent', () => {
 
     const mockEvents = [{id: 2, prize: 'API', creator_id: '2', creator_name: 'B', creator_avatar: '', gw_req: null,
       channel_id: null, end_date: new Date(), winner_count: 1, participants: 0, start_date: null }] as unknown as Giveaway[];
+    const mockEventsRaw = { giveaways: mockEvents, has_vip: true };
     component['dataService'].active_guild = { id: 'guild1' } as Guild;
-    const apiSpy = jest.spyOn(component['apiService'], 'getGuildEvents').mockReturnValue(defer(() => Promise.resolve(mockEvents)));
+    const apiSpy = jest.spyOn(component['apiService'], 'getGuildEvents').mockReturnValue(defer(() => Promise.resolve(mockEventsRaw)));
     const configSpy = jest.spyOn(component['dataService'], 'getEventConfig');
 
     (component as any).getGuildEvents();
@@ -237,6 +239,25 @@ describe('ActiveGiveawaysComponent', () => {
 
     expect(showAlertSpy).toHaveBeenCalledWith(
       expect.stringContaining('ERROR_GIVEAWAY_406'),
+      expect.any(String)
+    );
+    expect(component['disableSendBtn']).toBe(false);
+  }));
+
+  it('should handle API error 402 and payment required alert', fakeAsync(() => {
+    const mockProfile = { id: '123', username: 'Test', avatar: 'avatar' };
+    const mockGuild = { id: 'guild1' };
+    component['dataService'].active_guild = mockGuild as any;
+    component['dataService'].profile = mockProfile as any;
+    const giveaway = { sponsor_id: 'sponsor', channel_id: ['chan'], end_date: new Date() } as any;
+    jest.spyOn(component['apiService'], 'createGuildEvent').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 402 }))));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
+
+    (component as any).addGuildEvent(giveaway);
+    tick();
+
+    expect(showAlertSpy).toHaveBeenCalledWith(
+      expect.stringContaining('ERROR_TITLE_402'),
       expect.any(String)
     );
     expect(component['disableSendBtn']).toBe(false);
@@ -571,30 +592,32 @@ describe('ActiveGiveawaysComponent', () => {
     );
   });
 
-  it('should open modal in edit mode and strip emoji from prize if giveaway is provided and type is not EVENTS_CREATE', () => {
+  it('should open modal in edit mode and strip emoji from prize if giveaway is provided and type is not EVENTS_CREATE', fakeAsync(() => {
     const giveaway = { prize: '<:smile:1234> Test Prize', creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, channel_id: null, end_date: new Date(), winner_count: 1, participants: 0, start_date: null };
     const getGuildChannelsSpy = jest.spyOn(component['dataService'], 'getGuildChannels').mockImplementation(() => {});
     const showModalSpy = jest.spyOn(component['modal'], 'showModal').mockImplementation(() => {});
 
     component['openModal']('EVENTS_EDIT', giveaway as any);
+    tick(1001);
 
     expect(getGuildChannelsSpy).toHaveBeenCalledWith(component['comService'], false, false, 'TEXT');
     expect(component['modalObj'].prize).toBe('Test Prize');
     expect(component['modalType']).toBe('EVENTS_EDIT');
     expect(showModalSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it('should open modal in create mode and reset modalObj if no giveaway is provided or type is EVENTS_CREATE', () => {
+  it('should open modal in create mode and reset modalObj if no giveaway is provided or type is EVENTS_CREATE', fakeAsync(() => {
     const getGuildChannelsSpy = jest.spyOn(component['dataService'], 'getGuildChannels').mockImplementation(() => {});
     const showModalSpy = jest.spyOn(component['modal'], 'showModal').mockImplementation(() => {});
 
     component['openModal']('EVENTS_CREATE');
+    tick(1001);
 
     expect(getGuildChannelsSpy).toHaveBeenCalledWith(component['comService'], false, false, 'TEXT');
     expect(component['modalObj']).toEqual(component['initGiveaway']);
     expect(component['modalType']).toBe('EVENTS_CREATE');
     expect(showModalSpy).toHaveBeenCalled();
-  });
+  }));
 
   it('should disable the cache button, set loading, fetch events with no cache, and re-enable the button after 15s', fakeAsync(() => {
     component['disabledCacheBtn'] = false;

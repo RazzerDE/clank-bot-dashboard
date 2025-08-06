@@ -8,17 +8,17 @@ import {
 } from "../../../../structure/util/modal/templates/discord-markdown/discord-markdown.component";
 import {Giveaway} from "../../../../services/types/Events";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faPanorama} from "@fortawesome/free-solid-svg-icons/faPanorama";
+import {faPanorama} from "@fortawesome/free-solid-svg-icons";
 import {FormsModule} from "@angular/forms";
-import {faCamera} from "@fortawesome/free-solid-svg-icons/faCamera";
-import {faIcons} from "@fortawesome/free-solid-svg-icons/faIcons";
-import {faBrush} from "@fortawesome/free-solid-svg-icons/faBrush";
-import {faSave} from "@fortawesome/free-solid-svg-icons/faSave";
-import {faShuffle} from "@fortawesome/free-solid-svg-icons/faShuffle";
+import {faCamera} from "@fortawesome/free-solid-svg-icons";
+import {faIcons} from "@fortawesome/free-solid-svg-icons";
+import {faBrush} from "@fortawesome/free-solid-svg-icons";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
+import {faShuffle} from "@fortawesome/free-solid-svg-icons";
 import {ApiService} from "../../../../services/api/api.service";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Subscription} from "rxjs";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {EmojiPickerComponent} from "../../../../structure/util/modal/templates/emoji-picker/emoji-picker.component";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -121,7 +121,7 @@ export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
    */
   protected saveGiftConfig(embed_config: EmbedConfig): void {
     if (!this.dataService.active_guild) { return; }
-    if (embed_config.thumbnail_invalid || embed_config.banner_invalid) {
+    if ((embed_config.thumbnail_invalid && embed_config.thumbnail_url) || (embed_config.banner_invalid && embed_config.banner_url)) {
       this.dataService.error_color = 'red';
       this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_IMAGE_TITLE'),
         this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_IMAGE_DESC'));
@@ -162,6 +162,9 @@ export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
           if (error.status == 404 || error.status == 400) {
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_TITLE'),
               this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_DESC'));
+          } else if (error.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_GIVEAWAY_DESIGN_402_DESC'));
           } else if (error.status == 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

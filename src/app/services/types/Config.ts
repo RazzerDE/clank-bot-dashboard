@@ -33,6 +33,11 @@ export interface TableConfig {
   actions: Function[];
 }
 
+export interface EmbedConfigRaw {
+  config: EmbedConfig;
+  has_vip: boolean;
+}
+
 export interface EmbedConfig {
   guild_id?: string;                        // ID of the guild, used for saving changes
   enabled?: boolean;                        // Flag to indicate if the giveaway system is enabled

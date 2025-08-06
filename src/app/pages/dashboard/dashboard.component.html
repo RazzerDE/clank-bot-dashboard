@@ -20,22 +20,22 @@
         <!-- Login Notice -->
         <div class="bg-gradient-to-l from-slate-50 via-gray-50 to-blue-50 dark:from-slate-800
                   dark:via-gray-800 dark:to-slate-900 transition-colors duration-500 shadow-md dark:shadow-2xl">
-          <div class="ml-6 sm:ml-14 flex w-full flex-col px-6 sm:px-8">
-            <div class="my-8 flex flex-auto flex-col w-11/12 sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0">
+          <div class="ml-0 sm:ml-14 flex w-full flex-row md:!flex-col px-6 sm:px-8">
+            <div class="my-8 flex flex-auto flex-col sm:my-12 sm:flex-row sm:items-center gap-y-5 sm:gap-y-0 w-full md:w-11/12">
               <div class="flex flex-auto items-center animate__animated animate__fadeIn">
                 @if (this.dataService.profile) {
-                  <div class="h-16 w-16 flex-0 overflow-hidden rounded-full">
+                  <div class="h-16 w-16 flex-0 overflow-hidden rounded-full min-w-16 max-w-16">
 
                     <!-- Show User Avatar or Default one -->
                     @if (this.dataService.profile.avatar) {
                       <img
                         ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile.id}}/{{this.dataService.profile.avatar}}{{this.dataService.profile.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
-                        class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
-                        height="64" (error)="this.dataService.profile.avatar = null">
+                        class="h-full w-full object-cover min-w-16 max-w-16" alt="Clank ~ Discord-Bot (User Avatar)"
+                        width="64" height="64" (error)="this.dataService.profile.avatar = null">
                     } @else {
                       <img [ngSrc]="'https://cdn.discordapp.com/embed/avatars/' + (Number(this.dataService.profile.id) % 6) + '.png'"
-                           class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64"
-                           height="64">
+                           class="h-full w-full object-cover min-w-16 max-w-16" alt="Clank ~ Discord-Bot (User Avatar)"
+                           width="64" height="64">
                     }
                   </div>
 
@@ -49,7 +49,7 @@
                         </span>! 👋
                     </div>
                     <div class="flex items-center">
-                      <fa-icon [icon]="faTruckMedical" class="text-gray-500"></fa-icon>
+                      <fa-icon [icon]="faTruckMedical" class="text-gray-500 me-1 md:!me-0"></fa-icon>
                       <div class="text-gray-500 ml-1.5 leading-6">{{'SECTION_LOGIN_NOTICE_DESC' | translate }}
                         <a href="https://discord.gg/bl4cklist" target="_blank"
                            class="text-gray-500 hover:!text-gray-800 dark:hover:!text-gray-300">
@@ -75,14 +75,14 @@
         </div>
 
         <!-- Main Content -->
-        <div class="w-full p-4 overflow-auto h-[calc(100vh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
-          <div class="grid grid-cols-5 gap-4 h-full">
+        <div class="w-full p-4 overflow-auto md:h-[calc(100vh-240px)]" style="padding-bottom: 20px !important;" #dashboardContainer>
+          <div class="block md:grid grid-cols-5 gap-4 h-full">
             <div class="col-span-3 grid grid-rows-2 gap-4 min-h-0">
 
               <!-- Setup Progress Container -->
               <div class="bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-800
                         dark:via-slate-800 dark:to-slate-900 rounded-lg flex flex-col transition-colors duration-500
-                        !border-gray-300 dark:!border-gray-700 border-1">
+                        !border-gray-300 dark:!border-gray-700 border-1 mb-2 md:!mb-0">
                 <div class="p-4 pb-0">
                   <div class="flex items-center justify-between">
                     <span class="text-black/90 dark:!text-white/80 transition-colors duration-500 text-lg font-medium">
@@ -102,13 +102,13 @@
 
                   <!-- Task List -->
                   <div class="flex flex-col overflow-y-auto mt-3 scrollbar-thin" #tasklistDiv
-                       [style.height.px]="welcomeContainer.clientHeight - 80">
+                       [style.height.px]="(window.innerWidth > 700 && window.innerHeight > 900) ? welcomeContainer.clientHeight - 80 : null">
                     @if (this.dataLoading.moduleProgress) {
                       <div class="flex justify-center items-center h-full">
                         <span class="data-loader"></span>
                       </div>
                     } @else {
-                      @for (task of tasks; track task.id) {
+                      @for (task of tasks; track trackByTaskId(task)) {
                         <div
                           class="flex flex-col border-b border-gray-300 dark:!border-gray-700 transition-colors duration-500">
                           <button (click)="toggleTask(task.id);"
@@ -134,7 +134,7 @@
                           <!-- Subtasks -->
                           @if (expandedTasks.includes(task.id)) {
                             <div class="space-y-1" [@expandCollapse]>
-                              @for (subtask of task.subtasks; track $index) {
+                              @for (subtask of task.subtasks; track trackBySubtaskId(subtask, $index)) {
                                 <div class="flex items-center w-full p-3 py-2 text-left border-t border-gray-300
                                           dark:!border-gray-700 transition-colors duration-500">
                                   @if (subtask.id === 2.2) {
@@ -147,8 +147,8 @@
                                     <img ngSrc="assets/img/icons/deny.png" class="w-4 h-4 ml-8" height="64" width="64"
                                          alt="Clank ~ Discord-Bot (Deny Icon)"/>
                                   }
-                                  <a [routerLink]="subtask.redirect_url">
-                                    <span class="ml-3 flex-1 text-gray-500 dark:!text-gray-400/90 text-sm
+                                  <a [routerLink]="subtask.redirect_url" class="flex-1">
+                                    <span class="ml-3 block text-gray-500 dark:!text-gray-400/90 text-sm whitespace-pre-line
                                                  hover:text-gray-400 dark:hover:!text-gray-300 transition-colors duration-300">
                                       {{ subtask.name | translate }}
                                     </span>
@@ -178,12 +178,12 @@
               <!-- Welcome Container -->
               <div class="bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
                         dark:to-slate-900 rounded-lg p-4 transition-colors duration-500 flex flex-col !border-gray-300
-                        dark:!border-gray-700 border-1" #welcomeContainer>
+                        dark:!border-gray-700 border-1 mb-4 md:!mb-0" #welcomeContainer>
                 <h4 class="mb-2 text-black/90 dark:!text-white/80 transition-colors duration-500">
                   {{ 'SECTION_WELCOME_DASHBOARD_TITLE' | translate }}
                 </h4>
 
-                <div class="overflow-y-auto" [style.height.px]="welcomeContainer.clientHeight - 80">
+                <div class="md:overflow-y-auto" [style.height.px]="(window.innerWidth > 700 && window.innerHeight > 900) ? welcomeContainer.clientHeight - 80 : null">
                   <p class="text-gray-500 dark:!text-gray-400/90 transition-colors duration-500">
                     {{ 'SECTION_WELCOME_DASHBOARD_DESC' | translate }}
                   </p>
@@ -210,7 +210,9 @@
                   </div>
                 } @else {
                   @if (this.servers.length > 0) {
-                    <div class="relative shadow-md dark:shadow-2xl sm:rounded-lg mt-3 overflow-y-auto max-h-full" #serverlistDiv>
+                    <div class="relative shadow-md dark:shadow-2xl sm:rounded-lg mt-3 overflow-y-auto max-h-full
+                                border !border-gray-300/60 dark:!border-gray-700/40 transition-colors duration-200"
+                         #serverlistDiv>
                       <table class="w-full h-full text-sm text-left text-gray-500 dark:!text-gray-400">
                         <colgroup>
                           <col span="1" style="width: 50%;">
@@ -219,8 +221,7 @@
                         </colgroup>
 
                         <thead class="text-xs text-gray-700 uppercase dark:!text-gray-400 bg-white dark:!bg-gray-800
-                                      sticky top-0 transition-colors duration-500 !border-gray-300/60 dark:!border-gray-700/40
-                                      border-t border-l">
+                                      sticky top-0 transition-colors duration-500">
 
                         <tr>
                           <th scope="col" class="px-6 py-3">

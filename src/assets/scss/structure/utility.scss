@@ -149,7 +149,7 @@
 /* Custom button in intro sections */
 .banner-btn {
   @apply inline-block font-RussoOne text-base uppercase relative transition-all duration-[400ms] ease-in;
-  @apply bg-[#A3FF12] text-[#090A1A] py-[19px] px-[50px];
+  @apply bg-[#A3FF12] text-[#090A1A] p-3 md:py-[19px] md:px-[50px];
 }
 
 // Design of lang switch button

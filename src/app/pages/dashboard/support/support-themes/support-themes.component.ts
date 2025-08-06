@@ -4,11 +4,11 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {faBell, faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {SupportTheme, SupportThemeResponse} from "../../../../services/types/Tickets";
-import {faPencil} from "@fortawesome/free-solid-svg-icons/faPencil";
+import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {TableConfig} from "../../../../services/types/Config";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {Subscription} from "rxjs";
@@ -19,6 +19,9 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
 import {Role} from "../../../../services/types/discord/Guilds";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {ApiService} from "../../../../services/api/api.service";
+import {TasksCompletionList} from "../../../../services/types/Tasks";
+import {NgOptimizedImage} from "@angular/common";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-support-themes',
@@ -29,7 +32,9 @@ import {ApiService} from "../../../../services/api/api.service";
     FaIconComponent,
     DataTableComponent,
     ModalComponent,
-    AlertBoxComponent
+    AlertBoxComponent,
+    NgOptimizedImage,
+    NgbTooltip
   ],
   templateUrl: './support-themes.component.html',
   styleUrl: './support-themes.component.scss'
@@ -38,12 +43,13 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected filteredThemes: SupportTheme[] = this.dataService.support_themes;
   protected selectedOptions: string[] = [];
   protected modalExtra: Role[] = [];
-  protected editTheme: SupportTheme = this.dataService.initTheme;
+  protected editTheme: SupportTheme = { ...this.dataService.initTheme };
   protected discordRoles: Role[] = [];
   protected dataLoading: boolean = true;
   protected disabledCacheBtn: boolean = false;
   private readonly subscription: Subscription | null = null;
   private reloadEmojis: boolean = false;
+  protected isForumMissing: boolean = false;
 
   private startLoading: boolean = false;
   protected modalType: string = 'SUPPORT_THEME_ADD';
@@ -132,11 +138,17 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
     // check if guilds are already stored in local storage (one minute cache)
     if ((localStorage.getItem('support_themes') && localStorage.getItem('guild_roles') &&
-      localStorage.getItem('support_themes_timestamp') &&
+      localStorage.getItem('moduleStatus') &&
+      localStorage.getItem('support_themes_timestamp') && localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
+      const moduleStatus: TasksCompletionList = JSON.parse(localStorage.getItem('moduleStatus') as string);
+      this.isForumMissing = !moduleStatus['task_1'].subtasks[0].finished;
+
+      this.dataService.has_vip = localStorage.getItem('guild_vip') === 'true';
       this.discordRoles = JSON.parse(localStorage.getItem('guild_roles') as string);
       this.filteredThemes = this.dataService.support_themes;
+
       this.dataService.isLoading = false;
       this.dataLoading = false;
       return;
@@ -148,13 +160,15 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         next: (response: SupportThemeResponse): void => {
           this.dataService.support_themes = response.themes;
           this.filteredThemes = this.dataService.support_themes;
+
+          this.dataService.has_vip = response.has_vip;
           this.discordRoles = response.guild_roles;
-          this.dataService.isLoading = false;
-          this.dataLoading = false;
           if (subscription) { subscription.unsubscribe(); }
 
+          setTimeout((): void => { this.getModuleStatus(); }, 550);
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           localStorage.setItem('guild_roles', JSON.stringify(this.discordRoles));
+          localStorage.setItem('guild_vip', this.dataService.has_vip.toString());
           localStorage.setItem('support_themes_timestamp', Date.now().toString());
         },
         error: (err: HttpErrorResponse): void => {
@@ -169,6 +183,32 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         }
       });
     });
+  }
+
+  /**
+   * Fetches the module status for the active guild and updates the local state.
+   *
+   * This method retrieves the module status from the API, stores it in localStorage,
+   * and sets the `isForumMissing` flag if the required forum task is not finished.
+   * Unsubscribes from the observable after completion to prevent memory leaks.
+   *
+   * @param {boolean} [no_cache] - Optional flag to bypass cache when fetching module status.
+   */
+  private getModuleStatus(no_cache?: boolean): void {
+    let subscription: Subscription | null = null;
+    subscription = this.apiService.getModuleStatus(this.dataService.active_guild!.id, no_cache)
+      .subscribe({
+        next: (moduleStatus: TasksCompletionList): void => {
+          localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
+          this.isForumMissing = !moduleStatus['task_1'].subtasks[0].finished;
+
+          this.dataService.isLoading = false;
+          this.dataLoading = false;
+          if (subscription) { subscription.unsubscribe(); }
+        }, error: (error: HttpErrorResponse): void => {
+          if (subscription) { subscription.unsubscribe(); }
+          this.dataService.handleApiError(error) }
+      });
   }
 
   /**
@@ -281,7 +321,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
       this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
-      this.editTheme = this.dataService.initTheme;
+      this.editTheme = { ...this.dataService.initTheme };
     } else {
       theme!.guild_id = this.dataService.active_guild!.id;
       // remove default mention roles (show only role-specific)
@@ -405,9 +445,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    * @param role_id - The ID of the role to check.
    * @returns A string containing the translated placeholder if the role ID is found in the default roles or selectedOptions, otherwise an empty string.
    */
-  isDefaultMentioned(default_roles: Role[], role_id: string): string {
-    const isDefault = default_roles.some(r => r.id === role_id);
-    const isSelected = this.modalType === 'DEFAULT_MENTION' && this.selectedOptions.includes(role_id);
+  private isDefaultMentioned(default_roles: Role[], role_id: string): string {
+    const isDefault: boolean = default_roles.some(r => r.id === role_id);
+    const isSelected: boolean = this.modalType === 'DEFAULT_MENTION' && this.selectedOptions.includes(role_id);
 
     return (isDefault || isSelected) ? '(' + this.translate.instant("PLACEHOLDER_DEFAULT") + ')' : '';
   }

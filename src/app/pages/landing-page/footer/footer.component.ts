@@ -1,11 +1,11 @@
-import {Component, AfterViewInit, ViewChild, ElementRef, HostListener} from '@angular/core';
+import {Component, AfterViewInit, ViewChild, ElementRef, HostListener, PLATFORM_ID, Inject} from '@angular/core';
 import { faChevronUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import {NgOptimizedImage} from "@angular/common";
+import {isPlatformBrowser, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {RouterLink} from "@angular/router";
-import {AnimationService} from "../../../services/animation/animation.service";
 import {TranslatePipe} from "@ngx-translate/core";
-import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
+import {LNavigationItem, nav_items} from '../../../services/types/landing-page/LNavigationItem';
+import {AnimationService} from "../../../services/animation/animation.service";
 
 @Component({
     selector: 'landing-footer',
@@ -22,14 +22,20 @@ export class FooterComponent implements AfterViewInit {
   @ViewChild('invite_btn')
   protected invite_btn!: ElementRef<HTMLAnchorElement>;
   protected faChevronUp: IconDefinition = faChevronUp;
-  protected readonly nav_items = nav_items;
+  protected readonly nav_items: LNavigationItem[] = nav_items;
 
-  constructor(private animations: AnimationService) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private animationService: AnimationService) {}
 
-  ngAfterViewInit() {
-    // start firefly animation for footer
-    this.animations.setCanvasID('footer-canvas', 'firefly');
-    this.animations.startAnimation('footer-canvas');
+  /**
+   * Lifecycle hook that is called after Angular has fully initialized a component's view.
+   * Starts the firefly animation for the footer if running in a browser environment.
+   */
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId) && window.innerWidth > 700 && window.innerHeight > 900) {
+      // start firefly animation for footer
+      this.animationService.setCanvasID('footer-canvas', 'firefly');
+      this.animationService.startAnimation('footer-canvas');
+    }
   }
 
   /**

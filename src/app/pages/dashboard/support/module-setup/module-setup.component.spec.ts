@@ -5,7 +5,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
-import {defer, of} from "rxjs";
+import {BehaviorSubject, defer, of} from "rxjs";
 import {SubTasksCompletion, TasksCompletion, TasksCompletionList} from "../../../../services/types/Tasks";
 import {Channel, Guild, SupportSetup} from "../../../../services/types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -21,8 +21,9 @@ describe('ModuleSetupComponent', () => {
       imports: [ModuleSetupComponent, TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
         { provide: ActivatedRoute, useValue: '' },
-        { provide: DataHolderService, useValue: { allowDataFetch: of(true), showAlert: jest.fn(),
-                                                  redirectLoginError: jest.fn(), error_color: '', handleApiError: jest.fn() } },
+        { provide: DataHolderService, useValue: { allowDataFetch: of(true), showAlert: jest.fn(), servers: [],
+                                                  redirectLoginError: jest.fn(), error_color: '', isDisabledSpamBtn: false,
+                                                  handleApiError: jest.fn(), sidebarStateChanged: new BehaviorSubject<boolean>(false) } },
         { provide: ComService, useValue: { setSupportForum: jest.fn() } },
       ]
     })
@@ -59,21 +60,24 @@ describe('ModuleSetupComponent', () => {
     expect(component['dataLoading']).toEqual({ statusBox: false, channelItems: false });
   });
 
-  it('should set the support forum channel and show success alert on successful response', async () => {
+  it('should set the support forum channel and show success alert on successful response', fakeAsync(() => {
     const channel = { id: '1', name: 'General' } as Channel;
     dataService.active_guild = { id: '123' } as Guild;
+    dataService.isDisabledSpamBtn = true;
 
-    const setSupportForumSpy = jest.spyOn(component['discordService'], 'setSupportForum').mockResolvedValue(of(null));
+    const setSupportForumSpy = jest.spyOn(component['discordService'], 'setSupportForum').mockResolvedValue(defer(() => Promise.resolve(null)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
-    await component['setForumChannel'](channel);
+    component['setForumChannel'](channel);
+    tick(251);
 
     expect(component['supportForum']).toEqual({ channel: channel, pending: true });
     expect(component['dataService'].error_color).toBe('green');
     expect(showAlertSpy).toHaveBeenCalledWith('SUCCESS_SAVE', 'SUCCESS_FORUM_DESC');
+    expect(dataService.isDisabledSpamBtn).toBe(false);
     setSupportForumSpy.mockRestore();
     showAlertSpy.mockRestore();
-  });
+  }));
 
   it('should return early if active_guild is not set', () => {
     dataService.active_guild = null;
@@ -205,7 +209,7 @@ describe('ModuleSetupComponent', () => {
     component['getServerData']();
     tick();
 
-    expect(getModuleStatusSpy).toHaveBeenCalledWith('123');
+    expect(getModuleStatusSpy).toHaveBeenCalled();
     expect(component['moduleStatusObj']).toEqual({
       finished: false,
       subtasks: [{ finished: true }, { finished: false }, { finished: false }]
@@ -254,25 +258,23 @@ describe('ModuleSetupComponent', () => {
     expect(handleApiErrorSpy).toHaveBeenCalledWith(errorResponse);
   }));
 
-  it('should show error alert if response status is 409', async () => {
+  it('should show error alert if response status is 409', fakeAsync(() => {
     const channel = { id: '1', name: 'General' } as Channel;
     dataService.active_guild = { id: '123' } as Guild;
     const errorResponse = new HttpErrorResponse({ status: 409 });
-    const setSupportForumSpy = jest.spyOn(component['discordService'], 'setSupportForum').mockResolvedValue({
-      subscribe: (callbacks: any) => {
-        callbacks.error(errorResponse);
-        return { unsubscribe: () => {} };
-      }
-    } as any);
+
+    const setSupportForumSpy = jest.spyOn(component['discordService'], 'setSupportForum')
+      .mockResolvedValue(defer(() => Promise.reject(errorResponse)));
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
 
-    await component['setForumChannel'](channel);
+    component['setForumChannel'](channel);
+    tick(251);
 
     expect(component['dataService'].error_color).toBe('red');
     expect(showAlertSpy).toHaveBeenCalledWith('ERROR_SAVE', 'ERROR_FORUM_DESC');
     setSupportForumSpy.mockRestore();
     showAlertSpy.mockRestore();
-  });
+  }));
 
   it('should redirect to login error if response status is 429', async () => {
     const channel = { id: '1', name: 'General' } as Channel;

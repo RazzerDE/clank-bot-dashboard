@@ -2,8 +2,8 @@
           dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
           dark:!border-gray-700 border-1" [ngClass]="this.type === 'SECURITY_SHIELD' ? 'bg-gradient-to-tl' : 'bg-gradient-to-br'">
   <!-- Header -->
-  <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
-              transition-colors duration-300">
+  <div class="flex flex-col md:flex-row items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
+              transition-colors duration-300 px-3 md:!px-6">
     <div [ngClass]="this.type === 'SECURITY_SHIELD' ? 'w-4/5' : 'w-full'">
       <h2 class="text-xl font-medium text-gray-800 dark:text-gray-200 transition-colors duration-300 mb-0">
         {{ this.type === 'SECURITY_SHIELD' ? ('PAGE_SECURITY_SHIELD_TOOLS_TITLE' | translate) :
@@ -18,7 +18,7 @@
     @if (this.type === 'SECURITY_SHIELD') {
       <button class="bg-gradient-to-r from-red-600 via-red-500 to-red-700 hover:from-red-700 shadow-lg
                  hover:via-red-600 hover:to-red-800 text-white font-semibold px-6 py-2 rounded-lg
-                   transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none"
+                   transition-colors duration-200 disabled:bg-gray-700 disabled:bg-none mt-3 md:!mt-0"
               (click)="this.openConfirmModal.emit({ type: 0, btn: panicButtonBtn });" #panicButtonBtn>
         <fa-icon [icon]="faCircleExclamation" class="me-2" /> {{ 'PLACEHOLDER_BUTTON_PANIC' | translate }}
       </button>
@@ -39,7 +39,7 @@
       <div class="mx-auto w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
 
       <!-- Angular CDK Drag & Drop List (ENABLED) -->
-      <div class="overflow-y-auto pr-2 space-y-3 h-[calc(100vh-43rem)] py-2 transition-all duration-200"
+      <div class="overflow-y-auto pr-2 space-y-3 h-80 lg:h-[calc(50vh-10rem)] xl:h-[calc(50vh-17rem)] 2xl:h-[calc(100vh-43rem)] py-2 transition-all duration-200"
            [cdkDropListData]="enabledFeatures" cdkDropList #enabledList="cdkDropList"
            [ngClass]="isDragging ? 'cursor-grabbing dark:!bg-blue-950/50 rounded-lg p-3 pt-3' : ''"
            [cdkDropListConnectedTo]="[disabledList]" (cdkDropListDropped)="drop($event)" data-container="enabled">
@@ -81,10 +81,10 @@
         {{ this.type === 'SECURITY_SHIELD' ? ('PAGE_SECURITY_SHIELD_TOOLS_DISABLED' | translate) :
                                              ('PAGE_SECURITY_SHIELD_LOGS_DISABLED' | translate) }}
       </p>
-      <div class="mx-auto w-2/3 border-b-2 border-gray-400 dark:border-gray-700 mb-3 transition-colors duration-200"></div>
+      <div class="mx-auto w-2/3 border-b-2 border-gray-400  dark:border-gray-700 mb-3 transition-colors duration-200"></div>
 
       <!-- Angular CDK Drag & Drop List (DISABLED) -->
-      <div class="overflow-y-auto pr-2 space-y-3 h-[calc(100vh-43rem)] py-2 transition-all duration-200"
+      <div class="overflow-y-auto pr-2 space-y-3 h-80 lg:h-[calc(50vh-10rem)] xl:h-[calc(50vh-17rem)] 2xl:h-[calc(100vh-43rem)] py-2 transition-all duration-200"
            [ngClass]="isDragging ? 'cursor-grabbing dark:!bg-blue-950/50 p-3 pt-3' : ''" cdkDropList
            #disabledList="cdkDropList" [cdkDropListData]="disabledFeatures"
            [cdkDropListConnectedTo]="[enabledList]" (cdkDropListDropped)="drop($event)" data-container="disabled">

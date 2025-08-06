@@ -6,14 +6,14 @@ import {DatePipe, NgClass} from "@angular/common";
 import {Giveaway} from "../../../../../services/types/Events";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faTrophy} from "@fortawesome/free-solid-svg-icons/faTrophy";
+import {faTrophy} from "@fortawesome/free-solid-svg-icons";
 import {SelectItems} from "../../../../../services/types/Config";
 import {SelectComponent} from "../select/select.component";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 import {ComService} from "../../../../../services/discord-com/com.service";
 import {RequirementFieldComponent} from "./req-field/req-field.component";
 import {ConvertTimePipe} from "../../../../../pipes/convert-time.pipe";
-import {faUser} from "@fortawesome/free-solid-svg-icons/faUser";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'template-create-giveaway',
@@ -88,6 +88,8 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    * - A giveaway requirement was set but has no value
    * - A server recommendation was set but has no valid discord URL
    * - the start date is bigger than the end date
+   * - The giveaway requirement is set to a value that requires VIP but the user does not have VIP.
+   * - The giveaway prize is empty or undefined.
    *
    * @returns {boolean} `true` if the giveaway is valid, otherwise `false`.
    */
@@ -97,10 +99,14 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
         ((this.giveaway.gw_req.startsWith('SERVER: ') && this.giveaway.gw_req.includes('://discord.gg/')) ||
           (!this.giveaway.gw_req.startsWith('SERVER: ') && this.giveaway.gw_req.split(': ')[1].trim().length > 0)));
 
-    return !!this.giveaway.prize && !!this.giveaway.end_date && !isNaN(new Date(this.giveaway.end_date).getTime()) &&
-      new Date(this.giveaway.end_date).getTime() > Date.now() && !!this.giveaway.channel_id &&
-      !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 && this.giveaway.winner_count <= 100 &&
-      hasValidRequirement && (!this.giveaway.start_date || new Date(this.giveaway.start_date).getTime() <= new Date(this.giveaway.end_date).getTime());
+    const hasNoVip: boolean = !this.dataService.has_vip && !!this.giveaway.gw_req && (this.giveaway.gw_req.startsWith('OWN:') ||
+      this.giveaway.gw_req.startsWith('MITGLIED:') || this.giveaway.gw_req.startsWith('no_nitro'));
+
+    return !!this.giveaway.prize && this.giveaway.prize.trim().length > 0 &&!!this.giveaway.end_date &&
+      !isNaN(new Date(this.giveaway.end_date).getTime()) && new Date(this.giveaway.end_date).getTime() > Date.now() &&
+      !!this.giveaway.channel_id && !!this.giveaway.winner_count && this.giveaway.winner_count >= 1 &&
+      this.giveaway.winner_count <= 100 && hasValidRequirement && !hasNoVip &&
+      (!this.giveaway.start_date || new Date(this.giveaway.start_date).getTime() <= new Date(this.giveaway.end_date).getTime());
   }
 
   /**

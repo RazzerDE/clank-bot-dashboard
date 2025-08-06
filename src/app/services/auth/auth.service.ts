@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
-import {AccessCode} from "../types/Authenticate";
 import {DiscordUser} from "../types/discord/User";
-import {JwtHelperService} from "@auth0/angular-jwt";
 import {DataHolderService} from "../data/data-holder.service";
+import {ComService} from "../discord-com/com.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +12,9 @@ import {DataHolderService} from "../data/data-holder.service";
 export class AuthService {
 
   private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
-  headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
-  private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router,
-              private dataService: DataHolderService) {
-    if (localStorage.getItem('access_token')) {
-      this.headers = this.setAuthorizationHeader(localStorage.getItem('access_token')!);
-    }
-  }
+              private dataService: DataHolderService, private comService: ComService) {}
 
   /**
    * Authenticates the user with the provided Discord authorization code and state.
@@ -49,27 +42,19 @@ export class AuthService {
       return;
     }
 
-    this.http.post<any>(`${config.api_url}/auth/discord`, { code: code, state: state })
+    this.http.post<any>(`${config.api_url}/auth/discord`, { code: code, state: state }, { withCredentials: true })
       .subscribe({
-        next: (response: AccessCode): void => {
+        next: (_: Object): void => {
           localStorage.removeItem('state');  // clean up stored state
           localStorage.removeItem('state_expiry');
 
-          // decrypt token and store it
-          response.access_token = this.decryptToken(response.access_token);
-          if (!response.access_token) { return; }
-
-          localStorage.setItem('access_token', response.access_token);
-          this.headers = this.setAuthorizationHeader(response.access_token);
-          window.dispatchEvent(new StorageEvent('storage'));  // trigger event listener
-
           // remove query parameters from URL
           this.router.navigateByUrl('/dashboard').then((): void => {
-              if (fetch_profile) { // fetch profile directly after discord callback
-                this.isValidToken(response.access_token);
-              }
-            }
-          );
+            if (fetch_profile) {
+              this.getProfileInfo();
+            } else {
+              this.dataService.isLoginLoading = false;
+            }});
         },
         error: (error: HttpErrorResponse): void => {
           if (error.status === 400) {  // code is not valid
@@ -84,25 +69,22 @@ export class AuthService {
   }
 
   /**
-   * Checks if the stored access token is valid.
-   * If the token is not present, redirects the user to the invalid login error page.
-   * If the token is present, sends a request to verify the token.
-   * If the token is invalid or an error occurs, redirects the user to the appropriate error page.
+   * Fetches the authenticated Discord user's profile information from the backend.
    *
-   * @param {string} access_token - The access token to verify. If not provided, uses the stored access token.
+   * On success, updates the profile in the DataHolderService.
+   * On error, logs out the user and redirects to the appropriate error page based on the HTTP status code.
    */
-  private isValidToken(access_token?: string): void {
-    let temp_headers: HttpHeaders = this.headers;
-    if (access_token) {
-      temp_headers = this.headers.set('Authorization', `Bearer ${access_token}`);
-    }
-
-    this.http.get<DiscordUser>(`${config.api_url}/auth/me`, { headers: temp_headers }).subscribe({
+  private getProfileInfo(): void {
+    this.http.get<DiscordUser>(`${config.api_url}/auth/me`, { withCredentials: true }).subscribe({
       next: (response: DiscordUser): void => {
         this.dataService.profile = response;
-      },
+        this.dataService.isLoginLoading = false;
+
+        this.dataService.getGuilds(this.comService, this);
+        setTimeout((): void => { this.dataService.allowDataFetch.next(true); }, 500);
+        },
       error: (error: HttpErrorResponse): void => {
-        localStorage.removeItem('access_token');
+        this.logout();
 
         if (error.status === 401) {
           this.dataService.redirectLoginError('EXPIRED');
@@ -163,37 +145,6 @@ export class AuthService {
   }
 
   /**
-   * Sets the Authorization header with the provided token.
-   *
-   * @param {string} token - The access token to be set in the Authorization header.
-   * @returns {HttpHeaders} The updated HttpHeaders object with the Authorization header set.
-   */
-  setAuthorizationHeader(token: string): HttpHeaders {
-    return this.headers.set('Authorization', `Bearer ${token}`);
-  }
-
-  /**
-   * Decrypts the given encrypted token.
-   *
-   * This method takes an encrypted token as input, decodes it using the JWT library,
-   * and returns the original Discord token. If the decryption fails, it logs an error
-   * and navigates the user to the invalid login error page.
-   *
-   * @param {string} encryptedToken - The encrypted token to be decrypted.
-   * @returns {string} The original Discord token.
-   */
-  private decryptToken(encryptedToken: string): string {
-    // The JWT library will automatically validate the signature using the same key
-    try {
-      const decodedToken = this.jwtHelper.decodeToken(encryptedToken);
-      return decodedToken.sub; // The original Discord token
-    } catch (error) {
-      this.dataService.redirectLoginError('INVALID');
-      return '';
-    }
-  }
-
-  /**
    * Checks if the user has administrator permissions.
    *
    * This method takes a permission string, converts it to a BigInt, and checks if the
@@ -213,8 +164,23 @@ export class AuthService {
    * and navigating to the home page.
    */
   logout(): void {
-    localStorage.removeItem('access_token');
-    this.router.navigateByUrl('/').then();
+    this.http.post<any>(`${config.api_url}/auth/logout`, {}, { withCredentials: true })
+      .subscribe({
+        next: (_: Object): void => {
+          // remove query parameters from URL
+          localStorage.clear();  // clear all local storage
+          this.router.navigateByUrl('/').then();
+        },
+        error: (error: HttpErrorResponse): void => {
+          if (error.status === 400) {  // code is not valid
+            this.dataService.redirectLoginError('INVALID');
+          } else if (error.status === 429) {  // ratelimited
+            this.dataService.redirectLoginError('BLOCKED');
+          } else {
+            this.dataService.redirectLoginError('UNKNOWN');
+          }
+        }
+      });
   }
 
   /**
@@ -225,12 +191,6 @@ export class AuthService {
   discordLogin(): void {
     this.route.queryParams.subscribe(params => {
       if ((!params['code'] || !params['state']) && !window.location.pathname.includes("errors/")) {
-        // already authenticated
-        if (localStorage.getItem('access_token')) {
-          this.isValidToken();
-          return;
-        }
-
         // redirect to discord if invalid login code
         this.appendState();
         return;

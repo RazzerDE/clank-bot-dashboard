@@ -31,7 +31,7 @@ export class SupportThemeAddComponent {
   @Input() showFirst: boolean = false;
   @Input() type: string = '';
   @Input() discordRoles: Role[] = [];
-  @Input() newTheme: SupportTheme = this.dataService.initTheme;
+  @Input() newTheme: SupportTheme = { ...this.dataService.initTheme };
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
@@ -51,7 +51,12 @@ export class SupportThemeAddComponent {
    * @param {SupportTheme} theme - The support theme object to be created
    */
   protected addSupportTheme(theme: SupportTheme): void {
-    this.newTheme.faq_answer = this.dataService.faq_answer;
+    if (this.dataService.isFAQ) {
+      this.newTheme.faq_answer = this.dataService.faq_answer;
+    } else {
+      this.newTheme.faq_answer = null;
+    }
+
     const sent_theme: Subscription = this.apiService.createSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {
@@ -61,9 +66,11 @@ export class SupportThemeAddComponent {
 
           // update shown data
           this.dataService.support_themes.push(theme);
-          this.updateThemes()
+          this.updateThemes();
+
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
-          this.newTheme = this.dataService.initTheme;
+          this.newTheme = { ...this.dataService.initTheme };
+
           this.hideModal();
           sent_theme.unsubscribe();
           },
@@ -73,9 +80,12 @@ export class SupportThemeAddComponent {
           if (error.status === 409) { // already pending/exist
             this.dataService.showAlert(this.translate.instant('ERROR_THEME_CREATION_CONFLICT'),
               this.translate.instant('ERROR_THEME_CREATION_CONFLICT_DESC', { name: theme.name }));
+          } else if (error.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_SUPPORT_THEMES_402_DESC'));
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
-            this.newTheme = this.dataService.initTheme;
+            this.newTheme = { ...this.dataService.initTheme };
           }
 
           this.hideModal();
@@ -97,7 +107,12 @@ export class SupportThemeAddComponent {
    * @param theme The updated SupportTheme object to be saved.
    */
   protected editSupportTheme(theme: SupportTheme): void {
-    this.newTheme.faq_answer = this.dataService.faq_answer;
+    if (this.dataService.isFAQ) {
+      this.newTheme.faq_answer = this.dataService.faq_answer;
+    } else {
+      this.newTheme.faq_answer = null;
+    }
+
     const edit_theme: Subscription = this.apiService.editSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {
@@ -115,7 +130,7 @@ export class SupportThemeAddComponent {
 
           this.updateThemes();
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
-          this.newTheme = this.dataService.initTheme;
+          this.newTheme = { ...this.dataService.initTheme };
           this.hideModal();
           edit_theme.unsubscribe();
         },
@@ -124,11 +139,15 @@ export class SupportThemeAddComponent {
           if (error.status === 400) { // theme name got changed and name is already taken
             this.dataService.showAlert(this.translate.instant('ERROR_THEME_EDIT_CONFLICT'),
               this.translate.instant('ERROR_THEME_EDIT_CONFLICT_DESC', { name: theme.name }));
+          } else if (error.status === 402) {
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_SUPPORT_THEMES_402_DESC'));
+            theme.faq_answer = null;
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
           }
+          this.newTheme = { ...this.dataService.initTheme };
           this.newTheme.name = this.newTheme.old_name!;
-          this.newTheme = this.dataService.initTheme;
           this.hideModal();
           edit_theme.unsubscribe();
         }
@@ -224,14 +243,15 @@ export class SupportThemeAddComponent {
    *
    * @returns {boolean} Returns true if the theme is INVALID
    */
-  isThemeInvalid(): boolean {
-    if (this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && !this.dataService.isFAQ) {
+  protected isThemeInvalid(): boolean {
+    if (this.newTheme.name.trim().length > 0 && this.newTheme.desc.trim().length > 0 && !this.dataService.isFAQ) {
       return false; // Non-FAQ Theme
     }
 
     // FAQ theme with content
     this.newTheme.faq_answer = this.dataService.faq_answer;
-    return !(this.newTheme.name.length > 0 && this.newTheme.desc.length > 0 && (this.dataService.isFAQ && this.newTheme.faq_answer && this.newTheme.faq_answer!.length > 0));
+    return !(this.newTheme.name.trim().length > 0 && this.newTheme.desc.trim().length > 0 &&
+      (this.dataService.isFAQ && this.newTheme.faq_answer && this.newTheme.faq_answer!.trim().length > 0));
   }
 
   /**
@@ -239,7 +259,7 @@ export class SupportThemeAddComponent {
    *
    * @param {Emoji | string} emoji - The Discord emoji object that was selected by the user
    */
-  updateThemeIcon(emoji: Emoji | string): void {
+  protected updateThemeIcon(emoji: Emoji | string): void {
     if (typeof emoji === 'string') {
       this.newTheme.icon = emoji; // Unicode emoji
     } else {

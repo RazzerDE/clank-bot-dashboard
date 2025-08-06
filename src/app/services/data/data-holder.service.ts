@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
-import {Subject, Subscription} from "rxjs";
+import {BehaviorSubject, Subject, Subscription} from "rxjs";
 import {Channel, Emoji, Guild, initEmojis, Role} from "../types/discord/Guilds";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SupportTheme, TicketSnippet} from "../types/Tickets";
@@ -10,15 +10,19 @@ import {ComService} from "../discord-com/com.service";
 import {TranslateService} from "@ngx-translate/core";
 import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
 import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
-import {EmbedConfig} from "../types/Config";
+import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
 import {ApiService} from "../api/api.service";
 import {SecurityLogs, UnbanRequest} from "../types/Security";
+import {isPlatformBrowser} from "@angular/common";
+import {AuthService} from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataHolderService {
   isLoading: boolean = true;
+  isLoginLoading: boolean = false;
+
   isEmojisLoading: boolean = true;
   isDarkTheme: boolean = false;
   isFetching: boolean = false;
@@ -28,6 +32,8 @@ export class DataHolderService {
   showEmojiPicker: boolean = false;
   hideGuildSidebar: boolean = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
+  sidebarStateChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isDisabledSpamBtn: boolean = false;
 
   // error handler related
   error_title: string = 'ERROR_UNKNOWN_TITLE';
@@ -44,11 +50,13 @@ export class DataHolderService {
   readonly initTheme: SupportTheme = { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [],
                                     default_roles: [], pending: true, action: 'CREATE' };
   support_themes: SupportTheme[] = [];
+  servers: Guild[] = [];
   guild_roles: Role[] = [];
   guild_channels: Channel[] = [];
   guild_emojis: Emoji[] | string[] = [];
   unban_requests: UnbanRequest[] = [];
   filteredRequests: UnbanRequest[] = this.unban_requests;
+  has_vip: boolean = false;
 
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
@@ -57,15 +65,99 @@ export class DataHolderService {
   org_config: EmbedConfig = {...this.embed_config};
   selectedSnippet: TicketSnippet | null = null;
 
-  private markdownPipe: MarkdownPipe = new MarkdownPipe();
-  private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
+  private markdownPipe: MarkdownPipe | undefined;
+  private convertTimePipe: ConvertTimePipe | undefined;
 
-  constructor(private router: Router, private translate: TranslateService) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private translate: TranslateService) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeFromLocalStorage();
+    }
+  }
+
+  /**
+   * Initializes the active guild state from localStorage.
+   *
+   * Loads the active guild from localStorage if available and sets the sidebar logo visibility.
+   * This method should be called during service initialization to restore persisted state.
+   */
+  private initializeFromLocalStorage(): void {
     const temp_guild: string | null = localStorage.getItem('active_guild');
     if (temp_guild) {
       this.showSidebarLogo = true;
       this.active_guild = JSON.parse(temp_guild) as Guild;
     }
+  }
+
+  /**
+   * Fetches the list of guilds (servers) from the Discord API and updates the local storage.
+   *
+   * If the guilds are already stored in local storage and were updated within the last 10 minutes,
+   * the cached guilds are used instead of making a new API request.
+   *
+   * The function filters the guilds to include only those where the user has administrator permissions
+   * or is the owner, and the guild has the "COMMUNITY" feature. It also formats the member and presence
+   * counts for display and sorts the guilds by name.
+   *
+   * If the API request fails, the user is redirected to the login error page.
+   *
+   * @param comService - The service used to communicate with the Discord API.
+   * @param authService - The service used to check user permissions and roles.
+   * @param cache_btn - Optional button element to indicate that the cache is being used (default: `undefined`).
+   *
+   */
+  getGuilds(comService: ComService, authService: AuthService, cache_btn?: HTMLButtonElement): void {
+    this.isFetching = true;
+    if (cache_btn) { this.isLoading = true; cache_btn.disabled = true; }
+
+    // check if guilds are already stored in local storage
+    if (localStorage.getItem('guilds') && localStorage.getItem('guilds_last_updated') &&
+      Date.now() - Number(localStorage.getItem('guilds_last_updated')) < 600000 && !cache_btn) {
+      this.servers = JSON.parse(localStorage.getItem('guilds') as string);
+      if (!this.active_guild) { this.isLoading = false; }
+      return;
+    }
+
+    comService.getGuilds().then((observable) => observable.subscribe({
+      next: (guilds: Guild[]): void => {
+        this.servers = guilds
+          .filter((guild: Guild): boolean =>
+            // check if user has admin perms and if guild is public
+            (authService.isAdmin(guild.permissions) || guild.owner) && guild.features.includes("COMMUNITY"))
+          .map((guild: Guild): Guild => {
+            if (guild.icon !== null) {  // add image url if guild has an icon
+              guild.image_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}${guild.icon.startsWith('a_') ? '.gif' : '.png'}`;
+            }
+
+            // format thousand approximate_member_count with dot
+            guild.approximate_member_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_member_count));
+            guild.approximate_presence_count = new Intl.NumberFormat('de-DE').format(Number(guild.approximate_presence_count));
+
+            return guild;
+          }).sort((a: Guild, b: Guild): number => a.name.localeCompare(b.name));  // filter guilds based on name
+
+        localStorage.setItem('guilds', JSON.stringify(this.servers));
+        localStorage.setItem('guilds_last_updated', Date.now().toString());
+        if (!this.active_guild || cache_btn) {
+          this.isLoading = false;
+          if (cache_btn) { setTimeout((): void => { cache_btn.disabled = false }, 10000); }
+        }
+        this.isFetching = false;
+      },
+      error: (err: HttpErrorResponse): void => {
+        if (err.status === 429) {
+          this.redirectLoginError('REQUESTS');
+          // this.dataService.isLoading = false;
+        } else if (err.status === 401) {
+          // do nothing because header is weird af
+        } else {
+          this.redirectLoginError('EXPIRED');
+          // this.dataService.isLoading = false;
+        }
+
+        this.isFetching = false;
+        if (cache_btn) { this.isLoading = false; setTimeout((): void => { cache_btn.disabled = false }, 10000); }
+      }
+    }));
   }
 
   /**
@@ -113,7 +205,7 @@ export class DataHolderService {
    * Fetches the channels of the active guild from the Discord API.
    *
    * This method checks if the channels are cached in local storage and uses the cache
-   * if it is valid (less than one minute old). If the cache is invalid or `no_cache`
+   * if it is valid (less than 5m old). If the cache is invalid or `no_cache`
    * is set to `true`, it fetches the channels from the API and updates the cache.
    *
    * @param discordService - The service used to communicate with the Discord API.
@@ -125,9 +217,9 @@ export class DataHolderService {
     if (!this.active_guild) { return; }
     this.isFetching = true;
 
-    // check if guilds are already stored in local storage (one minute cache)
+    // check if guilds are already stored in local storage (5m cache)
     if ((localStorage.getItem('guild_channels') && localStorage.getItem('guild_channels_timestamp') &&
-      Date.now() - Number(localStorage.getItem('guild_channels_timestamp')) < 60000) && !no_cache) {
+      Date.now() - Number(localStorage.getItem('guild_channels_timestamp')) < 300000) && !no_cache) {
       // check if wish type is the same as the one in local storage
       if (wish_type && localStorage.getItem('guild_channels_type') !== wish_type) {
         this.getGuildChannels(discordService, true, loading, wish_type);
@@ -234,8 +326,10 @@ export class DataHolderService {
 
     // check if guilds are already stored in local storage (30 seconds cache)
     if ((localStorage.getItem('gift_config') && localStorage.getItem('gift_config_timestamp') &&
+      localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('gift_config_timestamp')) < 30000 && !no_cache)) {
       this.embed_config = JSON.parse(localStorage.getItem('gift_config') as string);
+      this.has_vip = localStorage.getItem('guild_vip') === 'true';
       if (typeof this.embed_config.color_code === 'number') {
         this.embed_config.color_code = `#${this.embed_config.color_code.toString(16).padStart(6, '0')}`;
       }
@@ -249,18 +343,20 @@ export class DataHolderService {
 
     const sub: Subscription = apiService.getEventConfig(this.active_guild!.id)
       .subscribe({
-        next: (config: EmbedConfig): void => {
-          if (typeof config.color_code === 'number') {
-            config.color_code = `#${config.color_code.toString(16).padStart(6, '0')}`;
+        next: (response: EmbedConfigRaw): void => {
+          if (typeof response.config.color_code === 'number') {
+            response.config.color_code = `#${response.config.color_code.toString(16).padStart(6, '0')}`;
           }
 
-          this.embed_config = config;
-          this.org_config = { ...config };
+          this.embed_config = response.config;
+          this.has_vip = response.has_vip || false;
+          this.org_config = { ...response.config };
           this.isLoading = false;
           this.isFetching = false;
 
           setTimeout((): void => { this.getGuildEmojis(comService, no_cache) }, 550);
           localStorage.setItem('gift_config', JSON.stringify(this.embed_config));
+          localStorage.setItem('guild_vip', this.has_vip.toString());
           localStorage.setItem('gift_config_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
@@ -441,6 +537,8 @@ export class DataHolderService {
     if (!value || value === '') { return ''; }
     const reqElement: HTMLSpanElement = document.getElementById('req_element') as HTMLSpanElement;
     const req_value: string = value.split(': ')[1];
+    this.markdownPipe = this.markdownPipe || new MarkdownPipe();
+    this.convertTimePipe = this.convertTimePipe || new ConvertTimePipe();
 
     switch (true) {
       case value.startsWith('MSG: '):
@@ -547,6 +645,8 @@ export class DataHolderService {
    * @param {string} desc - The description of the alert box.
    */
   showAlert(title: string, desc: string): void {
+    if (this.router.url === '/errors/simple') { return; } // do not show alert on error page
+
     this.error_title = title;
     this.error_desc = desc;
     this.showAlertBox = true;
@@ -597,6 +697,7 @@ export class DataHolderService {
    */
   toggleSidebar(): void {
     this.showMobileSidebar = !this.showMobileSidebar;
+    if (this.showMobileSidebar) { this.sidebarStateChanged.next(true); }
   }
 
   /**

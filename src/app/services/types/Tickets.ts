@@ -32,4 +32,5 @@ export interface SupportTheme {
 export interface SupportThemeResponse {
   themes: SupportTheme[];
   guild_roles: Role[];
+  has_vip: boolean;
 }

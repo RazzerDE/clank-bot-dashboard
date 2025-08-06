@@ -1,4 +1,4 @@
-import {ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot} from "@angular/router";
+import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from "@angular/router";
 import {catchError, map, Observable, of, tap} from "rxjs";
 import {inject} from "@angular/core";
 import {AuthService} from "../services/auth/auth.service";
@@ -11,36 +11,36 @@ export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _state: 
   const authService: AuthService = inject(AuthService);
   const dataService: DataHolderService = inject(DataHolderService);
   const http: HttpClient = inject(HttpClient);
-  const accessToken: string | null = localStorage.getItem('access_token');
+  const router: Router = inject(Router);
+
+  if (dataService.isLoginLoading) {
+    return of(false); // Prevent further checks while login is loading
+  }
 
   // Handle Discord callback with code and state
+  dataService.isLoginLoading = true;
   if (route.queryParams['code'] && route.queryParams['state']) {
     authService.authenticateUser(route.queryParams['code'], route.queryParams['state'], true);
     return of(true);
   }
 
-  // If no access token, redirect to Discord login
-  if (!accessToken) {
-    localStorage.clear();
-    authService.discordLogin();
-    return of(false);
-  }
-
   // if no active_guild is set but a logged in page is requested, redirect to the dashboard
-  if (!dataService.active_guild && !(route.routeConfig?.path?.endsWith('dashboard') || route.routeConfig?.path?.endsWith('dashboard/contact'))) {
-    window.location.href = '/dashboard';
+  if (!dataService.active_guild && route.routeConfig?.path && (!(route.routeConfig?.path?.endsWith('dashboard')
+      || route.routeConfig?.path?.endsWith('dashboard/contact')))) {
+    router.navigateByUrl('/dashboard').then();
+    dataService.isLoginLoading = false;
     return of(false);
   }
 
   // Verify existing token
-  return http.get<DiscordUser>(`${config.api_url}/auth/me`, { headers: authService.headers}).pipe(
-    tap((response: DiscordUser): void => { dataService.profile = response; }), map((): boolean => true),
+  return http.get<DiscordUser>(`${config.api_url}/auth/me`, { withCredentials: true }).pipe(
+    tap((response: DiscordUser): void => { dataService.profile = response; dataService.isLoginLoading = false;}), map((): boolean => true),
     catchError((error: HttpErrorResponse): Observable<boolean> => {
-      localStorage.removeItem('access_token');
-      if (error.status === 401) {
-        dataService.redirectLoginError('EXPIRED');
+      if (error.status === 401) { // not authenticated
+        authService.discordLogin();
       } else {
         dataService.redirectLoginError('UNKNOWN');
+        authService.logout();
       }
       return of(false);
     })

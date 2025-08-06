@@ -91,6 +91,33 @@ describe('DragNDropComponent', () => {
     expect(component['disabledFeatures']).toEqual([]);
   });
 
+  it('should revert move and show alert if type is SECURITY_LOGS, category is unban_thread_id and user has no vip', () => {
+    const feature1 = {enabled: false, category: 'unban_thread_id'} as unknown as SecurityFeature;
+    const feature2 = {enabled: true, category: 'other'} as unknown as SecurityFeature;
+    component.type = 'SECURITY_LOGS';
+    component['feature_list'] = [feature1, feature2];
+    component['enabledFeatures'] = [feature2];
+    component['disabledFeatures'] = [feature1];
+    component['dataService'].has_vip = false;
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
+    const translateSpy = jest.spyOn(component['translate'], 'instant').mockImplementation(((key: string) => key) as any);
+
+    const event = {
+      previousContainer: { data: component['disabledFeatures'] },
+      container: { data: component['enabledFeatures'] },
+      previousIndex: 0,
+      currentIndex: 1
+    } as CdkDragDrop<SecurityFeature[]>;
+
+    (component as any).drop(event);
+
+    expect(component['enabledFeatures']).toEqual([feature2]);
+    expect(component['disabledFeatures']).toEqual([feature1]);
+    expect(showAlertSpy).toHaveBeenCalledWith('ERROR_TITLE_402', 'ERROR_UNBAN_LOG_402_DESC');
+    expect(translateSpy).toHaveBeenCalledWith('ERROR_TITLE_402');
+    expect(translateSpy).toHaveBeenCalledWith('ERROR_UNBAN_LOG_402_DESC');
+  });
+
   it('should return true if security_features differ from org_features', () => {
     component['feature_list'] = [{ enabled: true }] as SecurityFeature[];
     component['org_features'] = [{ enabled: false }] as SecurityFeature[];

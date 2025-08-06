@@ -27,6 +27,15 @@
 
   <!-- Footer Content -->
   <div class="footer-area">
+    <picture>
+      <source type="image/avif" media="(max-width: 480px)" srcset="assets/img/bg/clank-discord-bot-footer-bg-new-480.avif" />
+      <source type="image/avif" media="(max-width: 768px)" srcset="assets/img/bg/clank-discord-bot-footer-bg-new-768.avif" />
+      <source type="image/avif" media="(max-width: 1024px)" srcset="assets/img/bg/clank-discord-bot-footer-bg-new-1024.avif" />
+      <source type="image/avif" media="(max-width: 1200px)" srcset="assets/img/bg/clank-discord-bot-footer-bg-new-1200.avif" />
+      <img ngSrc="assets/img/bg/clank-discord-bot-footer-bg-new-1200.avif" alt="Discord Bot (Footer) Banner Background"
+           class="absolute inset-0 w-full h-full object-cover object-center aspect-[5/1] -z-10" fetchpriority="low" priority fill
+           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw" />
+    </picture>
     <!-- Firefly animation -->
     <canvas id="footer-canvas" class="absolute z-1 top-auto bottom-0 left-0 h-full w-full h-footer-bg"></canvas>
     <div id="content-div" class="container z-2 relative mt-24">
@@ -60,7 +69,7 @@
 
       <!-- Scroll Up Button -->
       <div class="text-center pt-3 pb-9">
-        <a href="#">
+        <a href="#" aria-label="Scroll to top">
           <fa-icon [icon]="faChevronUp"></fa-icon>
         </a>
       </div>

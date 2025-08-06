@@ -1,12 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ApiService } from './api.service';
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
 import {TasksCompletionList} from "../types/Tasks";
-import {AuthService} from "../auth/auth.service";
-import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
@@ -23,14 +21,10 @@ describe('ApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot()],
-    providers: [
-        { provide: ActivatedRoute, useValue: {} },
-        { provide: AuthService, useValue: { headers: new HttpHeaders({ 'Authorization': 'Bearer token' }) } },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      providers: [{ provide: ActivatedRoute, useValue: {} }]
+    });
+
     service = TestBed.inject(ApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -85,7 +79,6 @@ describe('ApiService', () => {
 
   it('should fetch feature votes successfully', () => {
     const mockResponse: FeatureVotes = { feature_1: { votes: 10, userVote: true } } as unknown as FeatureVotes;
-    service['authService'].headers = new HttpHeaders({ 'Authorization': 'Bearer token' });
 
     service.getFeatureVotes().subscribe((response) => {
       expect(response).toEqual(mockResponse);
@@ -93,7 +86,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/progress/features`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -107,7 +99,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/progress/modules?guild_id=${guildId}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -121,7 +112,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/blocked-users?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -137,7 +127,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/blocked-users?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(blockedUser);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -152,7 +141,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/blocked-users?guild_id=${guild_id}&user_id=${user_id}`);
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -175,7 +163,7 @@ describe('ApiService', () => {
   it('should fetch module status from API if cache is expired', () => {
     const guildId = '12345';
     const mockModuleStatus: TasksCompletionList = { task_1: { guild_id: guildId,  finished: false,  subtasks: [] } };
-    const expiredTimestamp = (Date.now() - 70000).toString();
+    const expiredTimestamp = (Date.now() - 400000).toString();
 
     localStorage.setItem('moduleStatusTimestamp', expiredTimestamp);
     localStorage.setItem('moduleStatus', JSON.stringify(mockModuleStatus));
@@ -186,7 +174,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/progress/modules?guild_id=${guildId}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockModuleStatus);
 
     localStorage.removeItem('moduleStatusTimestamp');
@@ -209,7 +196,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/progress/modules?guild_id=${guildId}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush({ task_1: { guild_id: guildId, finished: false, subtasks: [] } });
 
     expect(consoleSpy).toHaveBeenCalledWith('Cache reading error:', expect.any(SyntaxError));
@@ -229,7 +215,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/progress/modules?guild_id=${guildId}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockModuleStatus);
   });
 
@@ -244,7 +229,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/progress/features`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockData);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -260,7 +244,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/contact/idea`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockData);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -276,7 +259,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/contact/bug`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockData);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -297,7 +279,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-setup?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -314,7 +295,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-snippets?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -329,7 +309,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-snippets?guild_id=${snippet.guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(snippet);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -344,7 +323,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-snippets?guild_id=${snippet.guild_id}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(snippet);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -360,7 +338,6 @@ describe('ApiService', () => {
       `${service['API_URL']}/guilds/support-snippets?guild_id=${snippet.guild_id}&name=${encodeURIComponent(snippet.name)}`
     );
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -378,7 +355,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-announcement?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -398,7 +374,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-announcement?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(announcement);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -412,7 +387,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-announcement?guild_id=${guild_id}`);
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -428,7 +402,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(theme);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -444,7 +417,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(theme);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -461,7 +433,6 @@ describe('ApiService', () => {
       `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('OldTheme')}`
     );
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -478,7 +449,6 @@ describe('ApiService', () => {
       `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('TestTheme')}`
     );
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -495,7 +465,6 @@ describe('ApiService', () => {
       `${service['API_URL']}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent('TestTheme')}`
     );
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -512,7 +481,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -529,7 +497,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/config?guild_id=${embedConfig.guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(embedConfig);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -546,7 +513,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/config?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -567,7 +533,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(giveaway);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -586,7 +551,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/effects?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -607,7 +571,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/effects?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(effects);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -628,7 +591,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(giveaway);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -646,7 +608,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`);
     expect(req.request.method).toBe('DELETE');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -669,7 +630,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/events/start?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({});
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -683,7 +643,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -700,7 +659,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/requests?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -719,7 +677,6 @@ describe('ApiService', () => {
     );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({});
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -738,7 +695,6 @@ describe('ApiService', () => {
     );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({});
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -755,7 +711,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/shields?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -774,7 +729,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/shields?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(shields);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -788,7 +742,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/backups?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -804,7 +757,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/actions?guild_id=${guild_id}&action=${action}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({});
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -818,7 +770,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/pending?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -834,7 +785,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({});
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -850,7 +800,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}&delete=true`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({});
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -866,7 +815,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/logs/pending?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(logs);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -880,7 +828,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/unban-method?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -897,7 +844,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/security/unban-method?guild_id=${guild_id}&type=${action}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(method);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -911,7 +857,6 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/misc/global-chat?guild_id=${guild_id}`);
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -927,7 +872,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/misc/global-chat?guild_id=${guild_id}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(customize);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 
@@ -943,7 +887,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`${service['API_URL']}/guilds/misc/global-chat?guild_id=${guild_id}`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(updated);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer token');
     req.flush(mockResponse);
   });
 });

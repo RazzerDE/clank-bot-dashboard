@@ -94,6 +94,20 @@ describe('TicketAnnouncementComponent', () => {
     expect(hideModalSpy).toHaveBeenCalled();
   }));
 
+  it('should handle error response with status 400', fakeAsync(() => {
+    component['dataService'].active_guild = { id: '123' } as Guild;
+    component['activeAnnounce'] = { level: 1, description: 'Test announcement', end_date: '2023-10-01' };
+    jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 400 }))));
+    const alertSpy = jest.spyOn(component['dataService'], 'showAlert');
+    const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
+
+    component.submitAnnouncement();
+    tick();
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(hideModalSpy).toHaveBeenCalled();
+  }));
+
   it('should handle error response with unknown status', fakeAsync(() => {
     component['dataService'].active_guild = { id: '123' } as Guild;
     jest.spyOn(component['apiService'], 'setAnnouncement').mockReturnValue(defer(() => Promise.reject(new HttpErrorResponse({ status: 500 }))));
@@ -193,6 +207,13 @@ describe('TicketAnnouncementComponent', () => {
     expect(component['isAnnounceInvalid']()).toBe(true);
   });
 
+  it('should return true if end_date is not null and is in the past', () => {
+    component.activeAnnounce.level = 1;
+    component.activeAnnounce.description = 'Test description';
+    component.activeAnnounce.end_date = new Date(Date.now() - 1000).toISOString(); // past date
+    expect(component['isAnnounceInvalid']()).toBe(true);
+  });
+
   it('should return false if both level and description are not null', () => {
     component.activeAnnounce.level = 2;
     component.activeAnnounce.description = 'Test description';
@@ -256,5 +277,66 @@ describe('TicketAnnouncementComponent', () => {
     result = (component as any).formatEndDate();
 
     expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}, \d{1,2}:\d{2} (AM|PM)$/);
+  });
+
+  it('should update preview color and icon for level 1 (default)', fakeAsync(() => {
+    document.body.innerHTML = `
+    <div id="previewBorderColor"></div>
+    <img id="previewIcon" />
+  `;
+    const event = { target: { value: '1' } } as unknown as Event;
+    component.activeAnnounce.level = null;
+
+    (component as any).changeAnnouncementPreview(event);
+    tick(15);
+
+    const previewElement = document.getElementById('previewBorderColor') as HTMLDivElement;
+    const previewIconElement = document.getElementById('previewIcon') as HTMLImageElement;
+
+    expect(previewElement.style.backgroundColor).toBe('rgb(44, 191, 104)');
+    expect(previewIconElement.src).toContain('green_mark.gif');
+  }));
+
+  it('should update preview color and icon for level 2 (orange)', fakeAsync(() => {
+    document.body.innerHTML = `
+    <div id="previewBorderColor"></div>
+    <img id="previewIcon" />
+  `;
+    const event = { target: { value: '2' } } as unknown as Event;
+    component.activeAnnounce.level = null;
+
+    (component as any).changeAnnouncementPreview(event);
+    tick(15);
+
+    const previewElement = document.getElementById('previewBorderColor') as HTMLDivElement;
+    const previewIconElement = document.getElementById('previewIcon') as HTMLImageElement;
+
+    expect(previewElement.style.backgroundColor).toBe('rgb(249, 137, 40)');
+    expect(previewIconElement.src).toContain('orange_mark.png');
+  }));
+
+  it('should update preview color and icon for level 3 (red)', fakeAsync(() => {
+    document.body.innerHTML = `
+    <div id="previewBorderColor"></div>
+    <img id="previewIcon" />
+  `;
+    const event = { target: { value: '3' } } as unknown as Event;
+    component.activeAnnounce.level = null;
+
+    (component as any).changeAnnouncementPreview(event);
+    tick(15);
+
+    const previewElement = document.getElementById('previewBorderColor') as HTMLDivElement;
+    const previewIconElement = document.getElementById('previewIcon') as HTMLImageElement;
+
+    expect(previewElement.style.backgroundColor).toBe('rgb(208, 65, 48)');
+    expect(previewIconElement.src).toContain('alarm.gif');
+  }));
+
+  it('should do nothing if event.target is null', () => {
+    const event = { target: null } as unknown as Event;
+    const spy = jest.spyOn(document, 'getElementById');
+    (component as any).changeAnnouncementPreview(event);
+    expect(spy).not.toHaveBeenCalled();
   });
 });

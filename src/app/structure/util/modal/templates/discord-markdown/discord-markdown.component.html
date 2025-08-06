@@ -3,8 +3,16 @@
   @case (type.startsWith('SUPPORT_SNIPPET')) {
     <div class="discord-embed mb-0 h-fit">
       <div class="author">
-        <img ngSrc="assets/img/admin-placeholder.png" alt="Example Admin ~ Discord-Bot Clank" height="24" width="24" />
-        <span>Mr.Supercool ~ ADMINISTRATOR</span>
+        @if (this.dataService.profile!.avatar) {
+          <img
+            ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile!.id}}/{{this.dataService.profile!.avatar}}{{this.dataService.profile!.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=24"
+            class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="24" height="24"
+            (error)="this.dataService.profile!.avatar = null">
+        } @else {
+          <img [ngSrc]="'https://cdn.discordapp.com/embed/avatars/' + (Number(this.dataService.profile!.id) % 6) + '.png'"
+               class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="24" height="24">
+        }
+        <span>{{ this.dataService.profile!.username }} ~ Administrator</span>
       </div>
 
       <div class="description" #ticketPreview
@@ -12,7 +20,15 @@
 
       <div class="footer">
         @if (this.dataService.active_guild) {
-          <img [ngSrc]="this.dataService.active_guild.image_url!" alt="Server-Icon Preview ~ Clank Discord-Bot" width="24" height="24">
+          @if (this.dataService.active_guild.image_url) {
+            <img [ngSrc]="this.dataService.active_guild.image_url" (error)="this.dataService.active_guild.image_url = undefined"
+              class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (Guild Avatar)" width="24" height="24">
+          } @else {
+            <div class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-white/10 text-gray-800
+                      dark:text-white text-md transition-colors duration-200 rounded-full me-1">
+              {{ this.dataService.active_guild.name.charAt(0) + this.dataService.active_guild.name.charAt(1) }}
+            </div>
+          }
           <span>{{ this.dataService.active_guild.name }}</span>
         }
       </div>
@@ -86,9 +102,7 @@
                     <div><img class="inline-block align-middle mb-1" height="20" width="20"
                               [ngSrc]="'assets/img/icons/arrow1.png'" alt="Arrow-Emoji ~ Clank Discord-Bot" />
                       {{ 'PLACEHOLDER_GIVEAWAY_EMBED_ENDS' | translate}}
-                      <span class="font-bold" [innerText]="this.giveaway ?
-                      (this.ownDatePipe.transform(this.giveaway.end_date, this.translate.currentLang, 'short')) :
-                      this.translate.currentLang === 'de' ? 'in 1 Stunde' : 'in 1 hour'"></span>
+                      <span class="font-bold" [innerText]="giveway_duration"></span>
                     </div>
                     <div [class.hidden]="!this.giveaway?.sponsor_id">
                       <img class="inline-block align-middle mb-1 mr-1" height="20" width="20"
@@ -119,7 +133,7 @@
               </div>
 
               <!-- Right column for the gift image -->
-              @if (dataService.embed_config.thumbnail_url != null) {
+              @if (dataService.embed_config.thumbnail_url != null && dataService.embed_config.thumbnail_url.length > 0) {
                 <div class="flex items-start justify-center">
                   @if (!this.dataService.embed_config.thumbnail_invalid) {
                     <div class="w-20 h-20 flex items-center justify-center">
@@ -136,7 +150,8 @@
             </div>
 
             <!-- Banner image below content -->
-            @if (dataService.embed_config.banner_url != null && type === 'EVENTS_DESIGN') {
+            @if (dataService.embed_config.banner_url != null && type === 'EVENTS_DESIGN' &&
+                 dataService.embed_config.banner_url.length > 0) {
               <div class="mt-2 w-full">
                 @if (!this.dataService.embed_config.banner_invalid) {
                   <div class="w-full flex items-center justify-center mt-2">
@@ -208,20 +223,27 @@
                 <div class="flex items-center space-x-2">
                   <img class="w-6 h-6 bg-green-500 rounded-full" height="24" width="24"
                        [ngSrc]="'https://i.imgur.com/RiVxjb2.png'" alt="Server-Owner Icon - Clank Discord-Bot" />
-                  <span class="text-white text-sm font-semibold">{{'PAGE_MISC_GLOBALCHAT_OWNER' | translate}} 🗴 Level - 100</span>
+                  <span class="text-white text-sm font-semibold w-1/2 2xl:w-full">{{'PAGE_MISC_GLOBALCHAT_OWNER' | translate}} 🗴 Level - 100</span>
                 </div>
               </div>
 
               <!-- Floating Avatar -->
               <div class="absolute top-0 right-0 w-16 h-16 rounded-full overflow-hidden z-10">
-                <img [ngSrc]="'https://cdn.discordapp.com/avatars/327176944640720906/a_c261a382dc3b0ebe95d6304eb452c854.gif?size=64'"
-                     alt="User-Avatar - Clank Discord-Bot" width="64" height="64" class="w-full h-full object-cover">
+                @if (this.dataService.profile!.avatar) {
+                  <img
+                    ngSrc="https://cdn.discordapp.com/avatars/{{this.dataService.profile!.id}}/{{this.dataService.profile!.avatar}}{{this.dataService.profile!.avatar.startsWith('a_') ? '.gif' : '.png'}}?size=64"
+                    class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64"
+                    (error)="this.dataService.profile!.avatar = null">
+                } @else {
+                  <img [ngSrc]="'https://cdn.discordapp.com/embed/avatars/' + (Number(this.dataService.profile!.id) % 6) + '.png'"
+                       class="h-full w-full object-cover" alt="Clank ~ Discord-Bot (User Avatar)" width="64" height="64">
+                }
               </div>
 
               <!-- User Info -->
               <div class="mb-2 pr-16 flex justify-start items-center">
                 <span class="bg-gray-800/40 me-1 rounded justify-center text-base">👤</span>
-                <span class="text-blue-400 text-md font-semibold">› Yannic</span>
+                <span class="text-blue-400 text-md font-semibold">› {{ this.dataService.profile!.username }}</span>
               </div>
 
               <!-- Message Content -->
@@ -258,7 +280,7 @@
 
               <div class="flex items-center space-x-1 h-full ml-7">
                 <span class="text-gray-300 text-xs font-medium">{{ this.dataService.active_guild!.name }}</span>
-                <span class="text-gray-300 text-xs">(👥 85 - 📊 14)</span>
+                <span class="text-gray-300 text-xs xl:hidden 2xl:block">(👥 85 - 📊 14)</span>
               </div>
               @if (this.obj.global_desc) {
                 <div class="text-gray-300 text-xs ml-7 tracking-tight">📚 › {{ this.obj.global_desc }}</div>
@@ -274,13 +296,19 @@
   @default {
     <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
                   text-gray-300 font-sans mt-2 transition-all duration-300"
-         [class.opacity-50]="!this.dataService.isFAQ && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
-      <div class="absolute top-0 left-0 w-1 h-full rounded-l"
-           [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'bg-[#f98928]' : 'bg-[#5865f2]'"></div>
+         [class.opacity-50]="(!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ))
+                             && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
+      <div class="absolute top-0 left-0 w-1 h-full rounded-l" id="previewBorderColor"
+           [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+                      ? (!this.announce_level || this.announce_level === 1) ? 'bg-[#2cbf68]'
+                      : this.announce_level === 2 ? 'bg-[#f98928]' : 'bg-[#d04130]' : 'bg-[#5865f2]'"></div>
       <div class="pl-3 w-full">
         <div class="flex items-center font-bold text-sm text-white mb-0">
           <div class="h-5 w-[3px] bg-gray-500 dark:bg-gray-500/80 ml-1 rounded-lg"></div>
-          <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/faq_answer_theme.gif'"
+          <img [ngSrc]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
+                        ?  (!this.announce_level || this.announce_level === 1) ? 'assets/img/icons/green_mark.gif' :
+                           this.announce_level === 2 ? 'assets/img/icons/orange_mark.png' : 'assets/img/icons/alarm.gif'
+                        : 'assets/img/icons/faq_answer_theme.gif'" id="previewIcon"
                alt="Clank-Icon ~ Clank Discord-Bot" class="w-5 h-5" height="40" width="40"
                [ngClass]="!type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT') ? 'mx-2' : 'ml-2 mx-0.5'">
           <span>~ {{ type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')

@@ -40,7 +40,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   protected channelItems: Channel[] = [];
 
   protected selectedChannel: Channel | null = null;
-  private subscription: Subscription | null = null;
+  private readonly subscription: Subscription | null = null;
   protected cacheRefreshDisabled: boolean = false;
   protected moduleStatusObj: TasksCompletion | undefined;
   protected supportForum: { channel: Channel | null, pending: boolean } = { channel: null, pending: false };
@@ -140,7 +140,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
 
     let sub: Subscription | null = null;
     let sub2: Subscription | null = null;
-    sub = this.apiService.getModuleStatus(this.dataService.active_guild!.id)
+    sub = this.apiService.getModuleStatus(this.dataService.active_guild!.id, no_cache)
       .subscribe({
         next: (moduleStatus: TasksCompletionList): void => {
           localStorage.setItem('moduleStatus', JSON.stringify(moduleStatus));
@@ -188,6 +188,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
    */
   protected setForumChannel(channel: Channel): void {
     if (!this.dataService.active_guild) { return; }
+    this.dataService.isDisabledSpamBtn = true;
 
     this.discordService.setSupportForum(this.dataService.active_guild.id, channel.id)
       .then((observable) => {
@@ -199,6 +200,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
             this.dataService.error_color = 'green';
             this.dataService.showAlert(this.translate.instant('SUCCESS_SAVE'), this.translate.instant('SUCCESS_FORUM_DESC'));
             subscription.unsubscribe();
+            setTimeout((): void => { this.dataService.isDisabledSpamBtn = false; }, 250);
           },
           error: (err: HttpErrorResponse): void => {
             if (err.status === 409) {
@@ -213,6 +215,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
             }
 
             subscription.unsubscribe();
+            setTimeout((): void => { this.dataService.isDisabledSpamBtn = false; }, 250);
           }
         });
       });

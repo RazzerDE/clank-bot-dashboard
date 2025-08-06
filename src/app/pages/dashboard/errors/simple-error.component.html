@@ -1,9 +1,9 @@
 <div class="flex w-screen h-screen flex-col">
   <div class="flex h-full flex-auto flex-col items-center justify-center p-6 sm:p-10 bg-gray-100 dark:!bg-slate-900
               transition-colors duration-500">
-    <div class="w-full max-w-3xl">
-      <img ngSrc="assets/img/bg/errors/server-error.svg" alt="Clank ~ Discord-Bot (Server-Error Bg)"
-           class="w-full h-auto animate-float" height="16" width="16" />
+    <div class="w-full" [ngClass]="this.router.url === '/errors/simple' ? 'max-w-3xl' : 'max-w-lg mb-4'">
+      <img [ngSrc]="this.router.url === '/errors/simple' ? 'assets/img/bg/errors/server-error.svg' : 'assets/img/bg/errors/404.png'"
+           alt="Clank ~ Discord-Bot (Server-Error Bg)" class="w-full h-auto animate-float" height="768" width="512" />
     </div>
 
     <div class="text-black dark:!text-white text-center text-4xl font-extrabold leading-tight tracking-tight
@@ -13,7 +13,7 @@
     </div>
 
     <div class="flex items-center justify-between gap-x-8 mt-12">
-     <a href="/dashboard" (click)="localStorage.removeItem('active_guild'); dataService.active_guild = null;">
+     <a href="/dashboard">
        <button type="button" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300
                                  font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 focus:outline-none
                                  dark:focus:ring-red-500">

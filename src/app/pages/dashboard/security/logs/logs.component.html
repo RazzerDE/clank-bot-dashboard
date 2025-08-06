@@ -11,12 +11,12 @@
       <app-alert-box></app-alert-box>
     }
 
-    <div class="flex w-full gap-6 p-3 mt-3 sm:p-5 min-h-[calc(100%-17rem)]">
+    <div class="flex flex-col xl:flex-row w-full gap-6 p-3 mt-3 sm:p-5 2xl:min-h-[calc(100%-17rem)]">
 
       <!-- Forum - Container -->
-      <div class="w-1/3 bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-800
-                dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors duration-300 flex flex-col !border-gray-300
-                dark:!border-gray-700 border-1">
+      <div class="w-full xl:w-1/3 bg-gradient-to-tl from-white via-slate-50 to-blue-50 dark:from-slate-800
+                dark:via-slate-800 dark:to-slate-900 rounded-xl shadow-md dark:shadow-xl transition-colors
+                  duration-300 flex flex-col !border-gray-300 dark:!border-gray-700 border-1">
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b !border-gray-300 dark:!border-gray-700
                     transition-colors duration-300">
@@ -67,15 +67,15 @@
             {{ 'PAGE_SECURITY_LOGS_PICKER_ACTIVE_TITLE' | translate }}
           </h2>
 
-          <div class="bg-slate-200 dark:bg-slate-900 transition-colors duration-300 rounded-lg p-3 flex flex-col gap-2 shadow-md mb-4">
-            <div class="flex justify-between items-center">
+          <div class="bg-slate-200 dark:bg-slate-900 transition-colors duration-300 rounded-lg p-3 flex flex-col gap-2 shadow-md mb-4 xl:!mb-0 2xl:!mb-4">
+            <div class="flex xl:flex-col 2xl:flex-row justify-between items-center">
               <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
                 {{ 'PLACEHOLDER_CHANNEL_NAME' | translate }}:</span>
               <span class="text-green-600 dark:text-green-400 font-semibold transition-colors duration-300 font-mono">
                 <code>{{ this.selectedLog ? this.selectedLog!.name : '-' }}</code>
               </span>
             </div>
-            <div class="flex justify-between items-center">
+            <div class="flex xl:flex-col 2xl:flex-row justify-between items-center">
               <span class="text-gray-700 dark:text-gray-300 font-medium transition-colors duration-300">
                 {{ 'PLACEHOLDER_CHANNEL_ID' | translate}}:</span>
               <span class="text-gray-700 dark:text-gray-200 font-semibold transition-colors duration-300 font-mono">

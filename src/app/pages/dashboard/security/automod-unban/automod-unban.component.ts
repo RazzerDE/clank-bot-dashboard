@@ -13,11 +13,11 @@ import {
   faXmark,
   IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
-import {UnbanMethod} from "../../../../services/types/Security";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {UnbanMethod, UnbanMethodRaw} from "../../../../services/types/Security";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {SelectComponent} from "../../../../structure/util/modal/templates/select/select.component";
 import {EventCard} from "../../../../services/types/Events";
-import {faHandcuffs} from "@fortawesome/free-solid-svg-icons/faHandcuffs";
+import {faHandcuffs} from "@fortawesome/free-solid-svg-icons";
 import {Subscription} from "rxjs";
 import {ApiService} from "../../../../services/api/api.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -118,8 +118,10 @@ export class AutomodUnbanComponent implements OnDestroy {
 
     // check if guilds are already stored in local storage (15 seconds cache)
     if ((localStorage.getItem('unban_method') && localStorage.getItem('unban_method_timestamp') &&
+      localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('unban_method_timestamp')) < 15000 && !no_cache)) {
       this.unban_method = JSON.parse(localStorage.getItem('unban_method') as string);
+      this.dataService.has_vip = localStorage.getItem('guild_vip') === 'true';
       this.org_features = JSON.parse(JSON.stringify(this.unban_method));
 
       this.dataService.isLoading = false;
@@ -128,12 +130,14 @@ export class AutomodUnbanComponent implements OnDestroy {
 
     const sub: Subscription = this.apiService.getUnbanMethod(this.dataService.active_guild.id)
       .subscribe({
-        next: (config: UnbanMethod): void => {
-          this.unban_method = config;
+        next: (config: UnbanMethodRaw): void => {
+          this.unban_method = config.unban_method;
+          this.dataService.has_vip = config.has_vip;
           this.org_features = JSON.parse(JSON.stringify(this.unban_method));
           this.dataService.isLoading = false;
 
           localStorage.setItem('unban_method', JSON.stringify(this.unban_method));
+          localStorage.setItem('guild_vip', this.dataService.has_vip.toString());
           localStorage.setItem('unban_method_timestamp', Date.now().toString());
           sub.unsubscribe();
         },
@@ -197,6 +201,10 @@ export class AutomodUnbanComponent implements OnDestroy {
 
           if (err.status === 409 && (this.unban_method.method_type && this.unban_method.method_type != 'BOT')) {
             if (this.isInvalidUnbanMethodInput()) { return; }
+          } else if (err.status === 402) {
+            this.dataService.error_color = 'red';
+            this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
+              this.translate.instant('ERROR_CLANK_UNBAN_402_DESC'));
           } else if (err.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;

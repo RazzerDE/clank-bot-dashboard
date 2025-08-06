@@ -25,6 +25,11 @@ export interface BackupData {
   roles: Role[];                      // An array of role IDs in the guild.
 }
 
+export interface SecurityFeatureRaw {
+  shields: SecurityFeature[];
+  has_vip: boolean;
+}
+
 export interface SecurityFeature {
   guild_id?: string;                  // The ID of the guild for which the security features are configured.
   category: 0 | 1 | 2 | 3;            // raw api value of the category, used for the API.
@@ -71,6 +76,7 @@ export interface SecurityLogs {
   unban_thread_id: string | null;
   unban_thread_id_pending?: boolean;
   unban_thread_id_delete?: boolean;
+  has_vip?: boolean;
 
   [key: string]: string | boolean | null | undefined;
 }
@@ -88,6 +94,11 @@ export const initLogs: LogFeature[] = [
 export interface LogFeature {
   category: string;
   enabled: boolean;
+}
+
+export interface UnbanMethodRaw {
+  unban_method: UnbanMethod;
+  has_vip: boolean;
 }
 
 export interface UnbanMethod {

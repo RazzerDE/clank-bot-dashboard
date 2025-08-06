@@ -1,4 +1,4 @@
-interface LNavigationItem {
+export interface LNavigationItem {
   redirect_url: string;
   title: string;
 }

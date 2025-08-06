@@ -1,18 +1,23 @@
-import {HostListener, Injectable, OnDestroy} from '@angular/core';
+import {HostListener, Inject, Injectable, NgZone, OnDestroy, PLATFORM_ID} from '@angular/core';
 import {CanvasAnimation} from "../types/animation/CanvasAnimation";
 import {Firefly} from "../types/animation/FireFly";
 import {Star} from "../types/animation/Star";
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnimationService implements OnDestroy {
   private canvases: { [id: string]: CanvasAnimation } = {};
-  private fpsInterval = 1000 / 60; // 60 FPS
+  private fpsInterval: number = 1000 / 60; // 60 FPS
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private ngZone: NgZone) {
     // load animations like fadeInUp, fadeInDown, etc.
-    document.addEventListener('DOMContentLoaded', (): void => this.loadAnimations());
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('DOMContentLoaded', (): void => {
+        setTimeout(() => this.loadAnimations(), 100);
+      });
+    }
   }
 
   /**
@@ -122,7 +127,9 @@ export class AnimationService implements OnDestroy {
       }
     }
 
-    canvas.animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
+    this.ngZone.runOutsideAngular((): void => {
+      canvas.animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
+    });
   }
 
   /**
@@ -134,7 +141,9 @@ export class AnimationService implements OnDestroy {
    */
   public startAnimation(id: string): void {
     if (this.canvases[id]) {
-      this.canvases[id].animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
+      this.ngZone.runOutsideAngular((): void => {
+        this.canvases[id].animationFrameId = requestAnimationFrame((time: number): void => this.draw(id, time));
+      });
     }
   }
 

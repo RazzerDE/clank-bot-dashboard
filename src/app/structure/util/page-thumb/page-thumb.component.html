@@ -1,11 +1,11 @@
 <div class="relative flex-shrink-0 overflow-hidden from-slate-50 via-gray-50 to-blue-50 dark:from-slate-800
-            dark:via-gray-800 dark:to-slate-900 px-4 sm:p-10 transition-colors duration-500 shadow-md dark:shadow-2xl"
+            dark:via-gray-800 dark:to-slate-900 px-4 p-10 transition-colors duration-500 shadow-md dark:shadow-2xl"
      [ngClass]="{'bg-gradient-to-r':  color == 'blue'       || color == 'green'       || color == 'red-pink',
                  'bg-gradient-to-b':  color == 'yellow'     || color == 'red'         || color == 'orange-red',
                  'bg-gradient-to-tr': color == 'red-bright' || color == 'cyan'        || color == 'green-yellow',
                  'bg-gradient-to-br': color == 'purple'     || color == 'orange',
                  'bg-gradient-to-bl': color == 'rosa'       || color == 'red-yellow',
-                 'sm:!p-4': size === 'less'}">
+                 '!p-4': size === 'less'}">
   <svg viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 pointer-events-none">
     <g fill="none" stroke="currentColor" stroke-width="100" class="text-gray-400 dark:text-gray-700 opacity-25 transition-colors duration-500">
       <circle r="234" cx="196" cy="23"></circle>
@@ -13,7 +13,7 @@
     </g>
   </svg>
   <div class="relative z-1 flex flex-col items-center">
-    <p class="text-lg font-semibold mb-1 text-gray-500 dark:text-gray-400 transition-colors duration-500">
+    <p class="text-lg font-semibold mb-1 text-gray-500 dark:text-gray-400 transition-colors duration-500 text-center">
       {{ subtitle }}
     </p>
     <div class="mt-1 text-center text-4xl md:text-5xl font-extrabold !leading-tight tracking-tight

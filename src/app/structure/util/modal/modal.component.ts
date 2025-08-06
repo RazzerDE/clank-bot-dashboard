@@ -79,6 +79,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() obj: TicketSnippet | BlockedUser | Giveaway | SecurityModal = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
+  @Input() org_announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
   @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
   @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
@@ -155,7 +156,8 @@ export class ModalComponent implements AfterContentInit  {
    * @returns `true` if a second modal should be displayed, otherwise `false`.
    */
   protected showSecondModal(): boolean {
-    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT')) ||
-      this.type.startsWith('EVENTS_') && !this.type.includes('TEAMLIST')
+    return (this.type.endsWith('ADD') || this.type.endsWith('EDIT'))
+      || this.type.startsWith('EVENTS_') && !this.type.includes('TEAMLIST')
+      || this.type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
   }
 }

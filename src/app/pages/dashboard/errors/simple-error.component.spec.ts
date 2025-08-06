@@ -15,7 +15,8 @@ describe('SimpleErrorComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SimpleErrorComponent, TranslateModule.forRoot()],
-      providers: [ { provide: ActivatedRoute, useValue: {} } ]
+      providers: [ { provide: ActivatedRoute, useValue: {} },
+        { provide: DataHolderService, useValue: { isLoading: false, error_title: 'ERROR_PAGE_404_TITLE', error_desc: 'ERROR_PAGE_404_DESC' }} ]
     })
     .compileComponents();
 

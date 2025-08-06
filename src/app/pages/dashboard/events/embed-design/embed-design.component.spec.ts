@@ -84,7 +84,7 @@ describe('EmbedDesignComponent', () => {
 
   it('should show error and return if embed_config has invalid images', fakeAsync(() => {
     component['dataService'].active_guild = { id: 'guild1', name: 'Guild' } as any;
-    const embed_config = { thumbnail_invalid: true, banner_invalid: false } as any;
+    const embed_config = { banner_url: 'test', thumbnail_invalid: true, banner_invalid: true } as any;
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
 
     (component as any).saveGiftConfig(embed_config);
@@ -157,6 +157,22 @@ describe('EmbedDesignComponent', () => {
     tick();
     expect(showAlertSpy).toHaveBeenCalledWith(
       expect.stringContaining('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_TITLE'),
+      expect.any(String)
+    );
+    expect(component['disableSendBtn']).toBe(false);
+  }));
+
+  it('should show payment required alert on error 402', fakeAsync(() => {
+    component['dataService'].active_guild = { id: 'guild1', name: 'Guild' } as any;
+    const embed_config = { thumbnail_invalid: false, banner_invalid: false } as any;
+    jest.spyOn(component['apiService'], 'saveEmbedConfig').mockReturnValue(defer(() => Promise.reject({ status: 402 })));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
+
+    (component as any).saveGiftConfig(embed_config);
+    tick();
+
+    expect(showAlertSpy).toHaveBeenCalledWith(
+      expect.stringContaining('ERROR_TITLE_402'),
       expect.any(String)
     );
     expect(component['disableSendBtn']).toBe(false);

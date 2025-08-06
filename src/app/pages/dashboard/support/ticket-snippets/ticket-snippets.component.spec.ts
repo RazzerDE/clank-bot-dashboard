@@ -9,6 +9,7 @@ import {Guild} from "../../../../services/types/discord/Guilds";
 import {TicketAnnouncement, TicketSnippet} from "../../../../services/types/Tickets";
 import {HttpErrorResponse} from "@angular/common/http";
 import {defer} from "rxjs";
+import {DiscordUser} from "../../../../services/types/discord/User";
 
 describe('TicketSnippetsComponent', () => {
   let component: TicketSnippetsComponent;
@@ -25,6 +26,7 @@ describe('TicketSnippetsComponent', () => {
 
     fixture = TestBed.createComponent(TicketSnippetsComponent);
     component = fixture.componentInstance;
+    component['dataService'].profile = { id: '123', username: 'testuser', avatar: 'test' } as DiscordUser;
     fixture.detectChanges();
   });
 

@@ -63,6 +63,10 @@
                [ngClass]="this.type === 'EVENTS_EDIT' ? 'cursor-not-allowed dark:!text-gray-400' : ''"
                (ngModelChange)="giveaway.start_date = $event;">
       </div>
+      @if (!this.dataService.has_vip && this.giveaway.gw_req && (this.giveaway.gw_req.startsWith('OWN:') ||
+           this.giveaway.gw_req.startsWith('MITGLIED:') || this.giveaway.gw_req.startsWith('no_nitro'))) {
+        <span class="text-xs text-red-500 mt-1" [innerHTML]="'PLACEHOLDER_EVENT_VIP_REQUIRED' | translate"></span>
+      }
 
       <!-- Requirement Box -->
       @if (this.giveaway.gw_req) {
@@ -81,11 +85,13 @@
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
           }
           @case ('OWN') {
-            <req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
-                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER'" [required]="true"
-                       [value]="this.type === 'EVENTS_EDIT' ?this.giveaway.gw_req : ''" [type]="this.type"
-                       (inputChange)="this.giveaway.gw_req = 'OWN: ' + ($any($event.target).value).replace(':', '');
+            @if (this.dataService.has_vip) {
+              <req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
+                         [placeholderKey]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER'" [required]="true"
+                         [value]="this.type === 'EVENTS_EDIT' ?this.giveaway.gw_req : ''" [type]="this.type"
+                         (inputChange)="this.giveaway.gw_req = 'OWN: ' + ($any($event.target).value).replace(':', '');
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+            }
           }
           @case ('SERVER') {
             <req-field id="server-req" [labelText]="'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate"
@@ -95,15 +101,19 @@
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
           }
           @case ('MITGLIED') {
-            <req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
-                       [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
-                       [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
-                       (inputChange)="this.giveaway.gw_req = 'MITGLIED: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
+            @if (this.dataService.has_vip) {
+              <req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
+                         [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
+                         [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
+                         (inputChange)="this.giveaway.gw_req = 'MITGLIED: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
                                       this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+            }
           }
           @case ('no_nitro') {
-            <req-field id="no-nitro-req" [value]="'no_nitro'"
-                       (inputChange)="this.giveaway.gw_req = 'no_nitro'; this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+            @if (this.dataService.has_vip) {
+              <req-field id="no-nitro-req" [value]="'no_nitro'"
+                         (inputChange)="this.giveaway.gw_req = 'no_nitro'; this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
+            }
           }
           @case ('ROLE_ID') {
             <label #roleVisible for="role-req" class="block text-sm font-medium text-gray-900 dark:text-white mb-3">
@@ -167,7 +177,7 @@
     </div>
 
     <!-- Modal body -->
-    <div class="p-4 md:p-5">
+    <div class="p-4 md:p-5 max-h-[20vh] md:max-h-[60vh] lg:max-h-[unset] overflow-y-auto">
       <template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0" />
     </div>
 

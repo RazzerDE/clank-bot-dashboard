@@ -3,9 +3,10 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {SelectComponent} from "../select/select.component";
 import {NgClass} from "@angular/common";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons/faTrashCan";
+import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {Role} from "../../../../../services/types/discord/Guilds";
+import {DataHolderService} from "../../../../../services/data/data-holder.service";
 
 @Component({
   selector: 'template-role-picker',
@@ -26,6 +27,17 @@ export class RolePickerComponent {
 
   public activeTab: number = 0;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
-
   @ViewChild(SelectComponent, { static: true }) selectComponent!: SelectComponent;
+
+  constructor(protected dataService: DataHolderService) {}
+
+  /**
+   * Executes the provided action with the selected role options and resets the active tab after 1 second.
+   *
+   * @param options - The collection of selected HTML option elements representing roles.
+   */
+  protected runTeamAction(options: HTMLCollectionOf<HTMLOptionElement>): void {
+    this.action(options);
+    setTimeout((): void => { this.activeTab = 0; }, 1000);
+  }
 }

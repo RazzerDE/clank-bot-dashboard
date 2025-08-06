@@ -7,6 +7,8 @@
 
 
 /* Importing style libraries. */
+@include meta.load-css('assets/scss/critical.scss');
+
 @include meta.load-css('bootstrap/scss/bootstrap');
 @include meta.load-css('assets/fonts/fonts.scss');
 @include meta.load-css('assets/scss/base.scss');

@@ -5,15 +5,22 @@ import {GeneralStats} from "../types/Statistics";
 import {SliderItems} from "../types/landing-page/SliderItems";
 import {config} from "../../../environments/config";
 import {TasksCompletionList} from "../types/Tasks";
-import {AuthService} from "../auth/auth.service";
 import {formGroupBug, formGroupIdea} from "../types/Forms";
 import {FeatureData, FeatureVotes} from "../types/navigation/WishlistTags";
 import {SupportSetup} from "../types/discord/Guilds";
 import {SupportTheme, TicketAnnouncement, TicketSnippet} from "../types/Tickets";
 import {BlockedUser} from "../types/discord/User";
-import {EventEffects, EventEffectsRaw, Giveaway} from "../types/Events";
-import {EmbedConfig} from "../types/Config";
-import {BackupData, SecurityFeature, SecurityLogs, UnbanMethod, UnbanRequest} from "../types/Security";
+import {EventEffects, EventEffectsRaw, Giveaway, GiveawaysRaw} from "../types/Events";
+import {EmbedConfig, EmbedConfigRaw} from "../types/Config";
+import {
+  BackupData,
+  SecurityFeature,
+  SecurityFeatureRaw,
+  SecurityLogs,
+  UnbanMethod,
+  UnbanMethodRaw,
+  UnbanRequest
+} from "../types/Security";
 import {GlobalChatConfig, GlobalChatCustomizing, GlobalChatObject} from "../types/Misc";
 
 @Injectable({
@@ -23,7 +30,7 @@ export class ApiService {
 
   private readonly API_URL: string = config.api_url;
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient) { }
 
   /**
    * Fetches general statistics about the clank bot (guild count, user count & module related statistics).
@@ -49,7 +56,7 @@ export class ApiService {
    * @returns An Observable that emits the feature votes.
    */
   getFeatureVotes(): Observable<FeatureVotes> {
-    return this.http.get<FeatureVotes>(`${this.API_URL}/progress/features`, { headers: this.authService.headers });
+    return this.http.get<FeatureVotes>(`${this.API_URL}/progress/features`, { withCredentials: true });
   }
 
   /**
@@ -57,19 +64,20 @@ export class ApiService {
    * This function also caches the module status for 1 minute, to avoid ratelimits.
    *
    * @param guild_id - The ID of the guild for which to fetch the module status.
+   * @param no_cache - Optional parameter to bypass the cache and always fetch the latest status from the server.
    * @returns An Observable that emits the status of the modules.
    */
-  getModuleStatus(guild_id: string): Observable<TasksCompletionList> {
+  getModuleStatus(guild_id: string, no_cache?: boolean): Observable<TasksCompletionList> {
     const moduleStatusTimestamp: string | null = localStorage.getItem('moduleStatusTimestamp');
     const moduleStatus: string | null = localStorage.getItem('moduleStatus');
 
     try {
-      if (moduleStatusTimestamp && moduleStatus) {
+      if (moduleStatusTimestamp && moduleStatus && !no_cache) {
         const timestamp: number = parseInt(moduleStatusTimestamp);
         const module: TasksCompletionList = JSON.parse(moduleStatus);
 
-        // check if module status cache is younger than 1 minute
-        if (Date.now() - timestamp < 60000 && module['task_1'].guild_id === guild_id) {
+        // check if module status cache is younger than 5 minutes
+        if (Date.now() - timestamp < 300000 && module['task_1'].guild_id === guild_id) {
           module['task_1'].cached = true;
           return of(module);
         }
@@ -77,7 +85,7 @@ export class ApiService {
     } catch (error) { console.error('Cache reading error:', error); }
 
     return this.http.get<TasksCompletionList>(`${this.API_URL}/progress/modules?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -88,7 +96,7 @@ export class ApiService {
    */
   getBlockedUsers(guild_id: string): Observable<BlockedUser[]> {
     return this.http.get<BlockedUser[]>(`${this.API_URL}/guilds/blocked-users?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -100,7 +108,7 @@ export class ApiService {
    */
   addBlockedUser(guild_id: string, blockedUser: BlockedUser): Observable<BlockedUser> {
     return this.http.post<BlockedUser>(`${this.API_URL}/guilds/blocked-users?guild_id=${guild_id}`, blockedUser,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -112,7 +120,7 @@ export class ApiService {
    */
   deleteBlockedUser(guild_id: string, user_id: string): Observable<Object> {
     return this.http.delete(`${this.API_URL}/guilds/blocked-users?guild_id=${guild_id}&user_id=${user_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -123,7 +131,7 @@ export class ApiService {
    */
   getSupportSetupStatus(guild_id: string): Observable<SupportSetup> {
     return this.http.get<SupportSetup>(`${this.API_URL}/guilds/support-setup?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -132,9 +140,9 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to fetch the events.
    * @returns An Observable that emits an array of Giveaway objects.
    */
-  getGuildEvents(guild_id: string): Observable<Giveaway[]> {
-    return this.http.get<Giveaway[]>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+  getGuildEvents(guild_id: string): Observable<GiveawaysRaw> {
+    return this.http.get<GiveawaysRaw>(`${this.API_URL}/guilds/events?guild_id=${guild_id}`,
+      { withCredentials: true });
   }
 
   /**
@@ -145,7 +153,7 @@ export class ApiService {
    */
   saveEmbedConfig(embed_config: EmbedConfig): Observable<EmbedConfig> {
     return this.http.post<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${embed_config.guild_id}`, embed_config,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -157,18 +165,18 @@ export class ApiService {
    */
   updateUnbanRequest(guild_id: string, user_id: string, status: 1 | 2): Observable<Object> {
     return this.http.put<Object>(`${this.API_URL}/guilds/security/requests?guild_id=${guild_id}&user_id=${user_id}&status=${status}`, {},
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
    * Fetches the configuration for discord event embeds in a specific guild.
    *
    * @param guild_id - The ID of the guild for which to fetch the event embed configuration.
-   * @return An Observable that emits the EmbedConfig object containing the configuration details.
+   * @return An Observable that emits the EmbedConfigRaw object containing the configuration details.
    */
-  getEventConfig(guild_id: string): Observable<EmbedConfig> {
-    return this.http.get<EmbedConfig>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+  getEventConfig(guild_id: string): Observable<EmbedConfigRaw> {
+    return this.http.get<EmbedConfigRaw>(`${this.API_URL}/guilds/events/config?guild_id=${guild_id}`,
+      { withCredentials: true });
   }
 
   /**
@@ -179,7 +187,7 @@ export class ApiService {
    */
   getGuildGlobalChat(guild_id: string): Observable<GlobalChatConfig> {
     return this.http.get<GlobalChatConfig>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -191,7 +199,7 @@ export class ApiService {
    */
   saveGlobalChatCustomizing(guild_id: string, customize: GlobalChatCustomizing): Observable<Object> {
     return this.http.post<Object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, customize,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -203,7 +211,7 @@ export class ApiService {
    */
   updateGlobalChat(guild_id: string, updated: GlobalChatObject): Observable<Object> {
     return this.http.put<Object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, updated,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -214,7 +222,7 @@ export class ApiService {
    */
   getSecurityLogs(guild_id: string): Observable<SecurityLogs> {
     return this.http.get<SecurityLogs>(`${this.API_URL}/guilds/security/logs?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -225,7 +233,7 @@ export class ApiService {
    */
   getSecurityLogsPending(guild_id: string): Observable<SecurityLogs> {
     return this.http.get<SecurityLogs>(`${this.API_URL}/guilds/security/logs/pending?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -238,7 +246,7 @@ export class ApiService {
    */
   updateLogForum(guild_id: string, channel_id: string, delete_action?: boolean): Observable<Object> {
     return this.http.put<Object>(`${this.API_URL}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}` + (delete_action ? '&delete=true' : ''),
-      {}, { headers: this.authService.headers });
+      {}, { withCredentials: true });
   }
 
   /**
@@ -250,7 +258,7 @@ export class ApiService {
    */
   updateLogThreads(guild_id: string, logs: SecurityLogs): Observable<SecurityLogs> {
     return this.http.post<SecurityLogs>(`${this.API_URL}/guilds/security/logs/pending?guild_id=${guild_id}`, logs,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -261,7 +269,7 @@ export class ApiService {
    */
   getUnbanRequests(guild_id: string): Observable<UnbanRequest[]> {
     return this.http.get<UnbanRequest[]>(`${this.API_URL}/guilds/security/requests?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -272,7 +280,7 @@ export class ApiService {
    */
   getEventEffects(guild_id: string): Observable<EventEffectsRaw> {
     return this.http.get<EventEffectsRaw>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -281,9 +289,9 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to fetch the configuration.
    * @return An Observable that emits an UnbanMethod object representing the related config.
    */
-  getUnbanMethod(guild_id: string): Observable<UnbanMethod> {
-    return this.http.get<UnbanMethod>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+  getUnbanMethod(guild_id: string): Observable<UnbanMethodRaw> {
+    return this.http.get<UnbanMethodRaw>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}`,
+      { withCredentials: true });
   }
 
   /**
@@ -296,7 +304,7 @@ export class ApiService {
    */
   doUnbanAction(guild_id: string, method: UnbanMethod, action: 0 | 1): Observable<Object> {
     return this.http.post<Object>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}&type=${action}`,
-      method, { headers: this.authService.headers });
+      method, { withCredentials: true });
   }
 
   /**
@@ -305,9 +313,9 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to fetch the security shields configuration.
    * @return An Observable that emits an array of SecurityFeature objects representing the security shields.
    */
-  getSecurityShields(guild_id: string): Observable<SecurityFeature[]> {
-    return this.http.get<SecurityFeature[]>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+  getSecurityShields(guild_id: string): Observable<SecurityFeatureRaw> {
+    return this.http.get<SecurityFeatureRaw>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`,
+      { withCredentials: true });
   }
 
   /**
@@ -318,7 +326,7 @@ export class ApiService {
    */
   saveSecurityShields(guild_id: string, shields: SecurityFeature[]): Observable<Object> {
     return this.http.post<Object>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`, shields,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -329,7 +337,7 @@ export class ApiService {
    */
   getBackupData(guild_id: string): Observable<BackupData> {
     return this.http.get<BackupData>(`${this.API_URL}/guilds/security/backups?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -341,7 +349,7 @@ export class ApiService {
    */
   insertBotAction(guild_id: string, action: 0 | 1 | 2): Observable<Object> {
     return this.http.put<Object>(`${this.API_URL}/guilds/security/actions?guild_id=${guild_id}&action=${action}`,
-      {}, { headers: this.authService.headers });
+      {}, { withCredentials: true });
   }
 
   /**
@@ -352,7 +360,7 @@ export class ApiService {
    */
   saveEventEffects(effects: EventEffects, guild_id: string): Observable<Object> {
     return this.http.post<Object>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`, effects,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -363,7 +371,7 @@ export class ApiService {
    */
   createGuildEvent(giveaway: Giveaway): Observable<Giveaway> {
     return this.http.post<Giveaway>(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}`, giveaway,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -374,7 +382,7 @@ export class ApiService {
    */
   updateGuildEvent(giveaway: Giveaway): Observable<Giveaway> {
     return this.http.put<Giveaway>(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}`, giveaway,
-      {headers: this.authService.headers});
+      { withCredentials: true });
   }
 
   /**
@@ -385,7 +393,7 @@ export class ApiService {
    */
   deleteGuildEvent(giveaway: Giveaway): Observable<Object> {
     return this.http.delete(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
-      {headers: this.authService.headers});
+      { withCredentials: true });
   }
 
   /**
@@ -396,7 +404,7 @@ export class ApiService {
    */
   startScheduledEvent(giveaway: Giveaway): Observable<Giveaway> {
     return this.http.put<Giveaway>(`${this.API_URL}/guilds/events/start?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
-      {}, { headers: this.authService.headers });
+      {}, { withCredentials: true });
   }
 
   /**
@@ -407,7 +415,7 @@ export class ApiService {
    */
   getSnippets(guild_id: string): Observable<TicketSnippet[]> {
     return this.http.get<TicketSnippet[]>(`${this.API_URL}/guilds/support-snippets?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -418,7 +426,7 @@ export class ApiService {
    */
   createSnippet(snippet: TicketSnippet): Observable<Object> {
     return this.http.post(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -430,7 +438,7 @@ export class ApiService {
    */
   editSnippet(snippet: TicketSnippet): Observable<Object> {
     return this.http.put(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -442,7 +450,7 @@ export class ApiService {
   deleteSnippet(snippet: TicketSnippet): Observable<Object> {
     return this.http.delete(
       `${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}&name=${encodeURIComponent(snippet.name)}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -453,7 +461,7 @@ export class ApiService {
    */
   getTicketAnnouncement(guild_id: string): Observable<TicketAnnouncement> {
     return this.http.get<TicketAnnouncement>(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -465,7 +473,7 @@ export class ApiService {
    */
   setAnnouncement(announcement: TicketAnnouncement, guild_id: string): Observable<Object> {
     return this.http.post(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`, announcement,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -476,7 +484,7 @@ export class ApiService {
    */
   deleteAnnouncement(guild_id: string): Observable<Object> {
     return this.http.delete(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -488,7 +496,7 @@ export class ApiService {
    */
   createSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
     return this.http.post(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}`, theme,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -500,7 +508,7 @@ export class ApiService {
    */
   editSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
     return this.http.put(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}`, theme,
-      { headers: this.authService.headers });
+      { withCredentials: true });
   }
 
   /**
@@ -514,7 +522,7 @@ export class ApiService {
     const themeName: string = theme.old_name && theme.old_name !== theme.name ? theme.old_name : theme.name;
     return this.http.delete(
       `${this.API_URL}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent(themeName)}`,
-      { headers: this.authService.headers }
+      { withCredentials: true }
     );
   }
 
@@ -525,7 +533,7 @@ export class ApiService {
    * @returns An Observable that emits the server's response.
    */
   sendFeatureVote(data: FeatureData): Observable<Object> {
-    return this.http.post(`${this.API_URL}/progress/features`, data, { headers: this.authService.headers });
+    return this.http.post(`${this.API_URL}/progress/features`, data, { withCredentials: true });
   }
 
   /**
@@ -535,7 +543,7 @@ export class ApiService {
    * @returns An Observable that emits the server's response.
    */
   sendBugReport(data: formGroupBug): Observable<Object> {
-    return this.http.post(`${this.API_URL}/contact/bug`, data, { headers: this.authService.headers });
+    return this.http.post(`${this.API_URL}/contact/bug`, data, { withCredentials: true });
   }
 
   /**
@@ -545,6 +553,6 @@ export class ApiService {
    * @returns An Observable that emits the server's response.
    */
   sendIdeaSuggestion(data: formGroupIdea): Observable<Object> {
-    return this.http.post(`${this.API_URL}/contact/idea`, data, { headers: this.authService.headers });
+    return this.http.post(`${this.API_URL}/contact/idea`, data, { withCredentials: true });
   }
 }

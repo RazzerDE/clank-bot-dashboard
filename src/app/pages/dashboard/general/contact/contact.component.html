@@ -1,5 +1,4 @@
 <dashboard-layout>
-
   <section class="flex flex-auto flex-col bg-gradient-to-tr from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -25,13 +24,14 @@
         </div>
         <div class="mt-2">
           <h2 class="truncate text-3xl font-semibold md:text-4xl tracking-wider mb-0">📡
-            <span class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] bg-clip-text text-transparent">
+            <span class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] bg-clip-text text-transparent
+                         whitespace-normal break-words">
                 {{ 'PAGE_CONTACT_THUMB_TITLE' | translate }}
-              </span>
+            </span>
           </h2>
         </div>
       </div>
-      <div class="flex items-center justify-end">
+      <div class="flex items-center justify-center md:justify-end mt-4 md:!mt-0">
         <a href="https://discord.gg/bl4cklist">
           <button class="bg-gradient-to-r from-[#5371f5] to-[#53b7f5] text-white font-bold
                            py-2 pl-3 pr-4 rounded hover:from-[#6a8df5] hover:to-[#6ac1f5]">
@@ -45,10 +45,10 @@
     <!-- Page Content -->
     <div class="flex-auto p-6 sm:p-10 overflow-y-auto pt-4 pb-6 md:pb-1">
       <!-- Site Description -->
-      <div class="flex flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-8">
+      <div class="flex flex-col md:flex-row text-gray-700 dark:!text-gray-400 transition-colors duration-500 gap-x-[13%] mb-8">
         <p class="mb-2 flex-1" [innerHTML]="'PAGE_CONTACT_DESC_LEFT' | translate"></p>
-        <div class="self-center border-l border-gray-400 dark:!border-gray-700 mx-4 transition-colors duration-500
-                      h-20"></div>
+        <div class="self-center bg-gray-400 dark:!bg-gray-700 transition-colors duration-500
+                    h-px w-20 mx-0 my-4 md:h-20 md:w-px md:mx-4 md:my-0"></div>
         <p class="mb-2 flex-1 text-right" [innerHTML]="'PAGE_CONTACT_DESC_RIGHT' | translate"></p>
       </div>
 
@@ -71,19 +71,24 @@
           <!-- Form-Header -->
           <div class="flex items-center mb-4 w-full justify-center">
             @for (step of wizard_idea_suggestion; track $index) {
-              <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500" (click)="toggleStep($index, 'IDEA')">
-                <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
-                     [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
-                  {{ $index + 1 }}
+              @if ($index === current_steps.idea_suggestion - 1 || window.innerWidth > 700) {
+                <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer
+                            transition-colors duration-500" (click)="toggleStep($index, 'IDEA')">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
+                       [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'bg-blue-600 text-white' :
+                                 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
+                    {{ $index + 1 }}
+                  </div>
+                  <span class="ml-2 transition-colors duration-500"
+                        [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'text-blue-600':
+                                                                'text-gray-600 dark:!text-gray-500'">
+                    {{step.title | translate}}
+                  </span>
                 </div>
-                <span class="ml-2 transition-colors duration-500"
-                      [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
-                  {{step.title | translate}}
-                </span>
-              </div>
+              }
 
               <!-- Divider -->
-              @if ($index < wizard_idea_suggestion.length - 1) {
+              @if ($index < wizard_idea_suggestion.length - 1 && window.innerWidth > 700) {
                 <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
               }
             }
@@ -92,69 +97,71 @@
           <!-- Content of Form -->
           <div class="relative overflow-hidden border-b border-gray-300 dark:!border-gray-700
                         transition-colors duration-500" [style.height]="formContainerHeight">
-            @for (step of getFormStep('IDEA'); track $index) {
-              <div [@stepContent] class="mb-3">
-                <!-- Form Description -->
-                <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
+            <form [formGroup]="formGroupIdea" class="space-y-4 pb-3">
+              @for (step of getFormStep('IDEA'); track $index) {
+                <div [@stepContent] class="mb-3">
+                  <!-- Form Description -->
+                  <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
 
-                <!-- Form Fields -->
-                @for (field of step.fields; track $index) {
-                  <form [formGroup]="formGroupIdea" class="space-y-4 pb-3">
-                    <div class="relative">
-                      <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
-                                                       transition-colors duration-500">
-                        {{ field.label | translate }}
-                      </label>
+                  <!-- Form Fields -->
+                  @for (field of step.fields; track $index) {
+                    <div class="space-y-4 pb-3">
+                      <div class="relative">
+                        <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
+                                                         transition-colors duration-500">
+                          {{ field.label | translate }}
+                        </label>
 
-                      <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
-                        <fa-icon [icon]="field.icon"></fa-icon>
+                        <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
+                          <fa-icon [icon]="field.icon"></fa-icon>
+                        </div>
+                        @if (field.type === 'textarea') {
+                          <textarea [id]="field.id" [formControlName]="field.controlName"
+                                    maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="(field.placeholder | translate).replaceAll('\\n', '&#10;')"
+                                    class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                               text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
+                                               transition-colors duration-500 dark:!text-gray-300 max-h-32"
+                                    [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
+                                                                   && this.formGroupIdea.get(field.controlName)!.touched}">
+                              </textarea>
+                        } @else if (field.type === 'text') {
+                          <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
+                                 maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder | translate"
+                                 class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                          text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
+                                          transition-colors duration-500 dark:!text-gray-300"
+                                 [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
+                                                                   && this.formGroupIdea.get(field.controlName)!.touched}" />
+                        } @else {
+                          <select [id]="field.id" [formControlName]="field.controlName"
+                                  class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                           text-gray-700 dark:bg-gray-700 dark:border-gray-600
+                                           transition-colors duration-500 dark:text-gray-300"
+                                  [ngClass]="{'!text-gray-400': this.formGroupIdea.get(field.controlName)!.value == ''
+                                                                   && this.formGroupIdea.get(field.controlName)!.touched}">
+                            <option selected disabled value="">{{ 'FORM_IDEA_SUGGESTION_3_FIELD_1_PLACEHOLDER' | translate }}</option>
+                            <!-- Discord-Server -->
+                            <option value="1035289083284557865">{{ 'FORM_IDEA_SUGGESTION_3_TAG_1' | translate }}</option>
+                            <!-- Webseite -->
+                            <option value="1035289271923392522">{{ 'FORM_IDEA_SUGGESTION_3_TAG_2' | translate }}</option>
+                            <!-- Allgemeine Idee -->
+                            <option value="1259588226398556290">{{ 'FORM_IDEA_SUGGESTION_3_TAG_3' | translate }}</option>
+                            <!-- Gewinnspiel-Modul -->
+                            <option value="1035289207175921794">{{ 'FORM_IDEA_SUGGESTION_3_TAG_4' | translate }}</option>
+                            <!-- Support-Modul -->
+                            <option value="1035289762317217812">{{ 'FORM_IDEA_SUGGESTION_3_TAG_5' | translate }}</option>
+                            <!-- Security-Modul -->
+                            <option value="1035289482812993688">{{ 'FORM_IDEA_SUGGESTION_3_TAG_6' | translate }}</option>
+                            <!-- Global-Chat -->
+                            <option value="1035289406191435776">{{ 'FORM_IDEA_SUGGESTION_3_TAG_7' | translate }}</option>
+                          </select>
+                        }
                       </div>
-                      @if (field.type === 'textarea') {
-                        <textarea [id]="field.id" [formControlName]="field.controlName"
-                                  maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="(field.placeholder | translate).replaceAll('\\n', '&#10;')"
-                                  class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                             text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                             transition-colors duration-500 dark:!text-gray-300 max-h-32"
-                                  [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
-                                                                 && this.formGroupIdea.get(field.controlName)!.touched}">
-                            </textarea>
-                      } @else if (field.type === 'text') {
-                        <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
-                               maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder | translate"
-                               class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                        text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                        transition-colors duration-500 dark:!text-gray-300"
-                               [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
-                                                                 && this.formGroupIdea.get(field.controlName)!.touched}" />
-                      } @else {
-                        <select [id]="field.id" [formControlName]="field.controlName"
-                                class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                         text-gray-700 dark:bg-gray-700 dark:border-gray-600
-                                         transition-colors duration-500 dark:text-gray-300"
-                                [ngClass]="{'!text-gray-400': this.formGroupIdea.get(field.controlName)!.value == ''
-                                                                 && this.formGroupIdea.get(field.controlName)!.touched}">
-                          <option selected disabled value="">{{ 'FORM_IDEA_SUGGESTION_3_FIELD_1_PLACEHOLDER' | translate }}</option>
-                          <!-- Discord-Server -->
-                          <option value="1035289083284557865">{{ 'FORM_IDEA_SUGGESTION_3_TAG_1' | translate }}</option>
-                          <!-- Webseite -->
-                          <option value="1035289271923392522">{{ 'FORM_IDEA_SUGGESTION_3_TAG_2' | translate }}</option>
-                          <!-- Allgemeine Idee -->
-                          <option value="1259588226398556290">{{ 'FORM_IDEA_SUGGESTION_3_TAG_3' | translate }}</option>
-                          <!-- Gewinnspiel-Modul -->
-                          <option value="1035289207175921794">{{ 'FORM_IDEA_SUGGESTION_3_TAG_4' | translate }}</option>
-                          <!-- Support-Modul -->
-                          <option value="1035289762317217812">{{ 'FORM_IDEA_SUGGESTION_3_TAG_5' | translate }}</option>
-                          <!-- Security-Modul -->
-                          <option value="1035289482812993688">{{ 'FORM_IDEA_SUGGESTION_3_TAG_6' | translate }}</option>
-                          <!-- Global-Chat -->
-                          <option value="1035289406191435776">{{ 'FORM_IDEA_SUGGESTION_3_TAG_7' | translate }}</option>
-                        </select>
-                      }
                     </div>
-                  </form>
-                }
-              </div>
-            }
+                  }
+                </div>
+              }
+            </form>
           </div>
 
           <!-- Form-Footer -->
@@ -171,7 +178,7 @@
               <button class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-500
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400
                              disabled:dark:bg-gray-600"
-                      (click)="sendForm('IDEA')" [disabled]="isFormValid('IDEA') || this.ideaSuggestionSent" #sendIdeaSuggestBtn>
+                      (click)="sendForm('IDEA')" [disabled]="isFormValid('IDEA') || this.ideaSuggestionSent">
                 {{ current_steps.idea_suggestion === wizard_idea_suggestion.length ? this.translate.instant('WIZARD_BUTTON_IDEA_SEND') : this.translate.instant('WIZARD_BUTTON_CONTINUE') }}
               </button>
             </div>
@@ -185,20 +192,25 @@
           <!-- Form-Header -->
           <div class="flex items-center mb-4 w-full justify-center">
             @for (step of wizard_bug_steps; track $index) {
-              <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500" (click)="toggleStep($index, 'BUG')">
-                <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
-                     [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
-                  {{ $index + 1 }}
+              @if ($index === current_steps.bug_report - 1 || window.innerWidth > 700) {
+                <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer
+                            transition-colors duration-500" (click)="toggleStep($index, 'BUG')">
+                  <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
+                       [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'bg-blue-600 text-white' :
+                                  'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
+                    {{ $index + 1 }}
+                  </div>
+                  <span class="ml-2 transition-colors duration-500"
+                        [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'text-blue-600':
+                                                           'text-gray-600 dark:!text-gray-500'">
+                    {{step.title | translate}}
+                  </span>
                 </div>
-                <span class="ml-2 transition-colors duration-500"
-                      [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'text-blue-600': 'text-gray-600 dark:!text-gray-500'">
-                  {{step.title | translate}}
-                </span>
-              </div>
 
-              <!-- Divider -->
-              @if ($index < wizard_bug_steps.length - 1) {
-                <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+                <!-- Divider -->
+                @if ($index < wizard_bug_steps.length - 1 && window.innerWidth > 700) {
+                  <div class="w-8 h-[1px] bg-gray-300 dark:!bg-gray-700 mx-4 transition-colors duration-500"></div>
+                }
               }
             }
           </div>
@@ -206,46 +218,50 @@
           <!-- Content of Form -->
           <div class="relative overflow-hidden border-b border-gray-300 dark:!border-gray-700
                         transition-colors duration-500" #formBugReport [style.height]="formContainerHeight">
-            @for (step of getFormStep('BUG'); track $index) {
-              <div [@stepContent] class="mb-3">
-                <!-- Form Description -->
-                <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
+            <form [formGroup]="formGroupBug" class="space-y-4 pb-3">
+              @for (step of getFormStep('BUG'); track $index) {
+                <div [@stepContent] class="mb-3">
+                  <!-- Form Description -->
+                  <p class="text-gray-500 mb-3">{{ step.title | translate }}</p>
 
-                <!-- Form Fields -->
-                @for (field of step.fields; track $index) {
-                  <form [formGroup]="formGroupBug" class="space-y-4 pb-3">
-                    <div class="relative">
-                      <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
-                                                         transition-colors duration-500">
-                        {{ field.label | translate }}
-                      </label>
+                  <!-- Form Fields -->
+                  @for (field of step.fields; track field.id) {
+                    <div class="space-y-4 pb-3">
+                      <div class="relative">
+                        <label [for]="field.id" class="block mb-2 text-gray-600 dark:!text-gray-300
+                                                           transition-colors duration-500">
+                          {{ field.label | translate }}
+                        </label>
 
-                      <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
-                        <fa-icon [icon]="field.icon"></fa-icon>
+                        <div class="absolute inset-y-0 left-3 top-8 flex items-center pointer-events-none">
+                          <fa-icon [icon]="field.icon"></fa-icon>
+                        </div>
+                        @if (field.type === 'textarea') {
+                          <textarea [id]="field.id" [formControlName]="field.controlName"
+                                    maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="(field.placeholder | translate).replaceAll('\\n', '&#10;')"
+                                    class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                               text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
+                                               transition-colors duration-500 dark:!text-gray-300 max-h-32 "
+                                    [attr.aria-label]="field.controlName"
+                                    [ngClass]="{'!border-red-500': (this.formGroupBug.get(field.controlName)!.value == ''
+                                                                      && this.formGroupBug.get(field.controlName)!.touched)}">
+                              </textarea>
+                        } @else {
+                          <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
+                                 maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder | translate"
+                                 class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
+                                          text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
+                                          transition-colors duration-500 dark:!text-gray-300"
+                                 [attr.aria-label]="field.controlName"
+                                 [ngClass]="{'!border-red-500': this.formGroupBug.get(field.controlName)!.value == ''
+                                                                   && this.formGroupBug.get(field.controlName)!.touched}" />
+                        }
                       </div>
-                      @if (field.type === 'textarea') {
-                        <textarea [id]="field.id" [formControlName]="field.controlName"
-                                  maxlength="500" minlength="10" autocomplete="off" [attr.placeholder]="(field.placeholder | translate).replaceAll('\\n', '&#10;')"
-                                  class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                             text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                             transition-colors duration-500 dark:!text-gray-300 max-h-32"
-                                  [ngClass]="{'!border-red-500': this.formGroupBug.get(field.controlName)!.value == ''
-                                                                    && this.formGroupBug.get(field.controlName)!.touched}">
-                            </textarea>
-                      } @else {
-                        <input [id]="field.id" [type]="field.type" [formControlName]="field.controlName"
-                               maxlength="250" minlength="10" autocomplete="off" [attr.placeholder]="field.placeholder | translate"
-                               class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
-                                        text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
-                                        transition-colors duration-500 dark:!text-gray-300"
-                               [ngClass]="{'!border-red-500': this.formGroupBug.get(field.controlName)!.value == ''
-                                                                 && this.formGroupBug.get(field.controlName)!.touched}" />
-                      }
                     </div>
-                  </form>
-                }
-              </div>
-            }
+                  }
+                </div>
+              }
+            </form>
           </div>
 
           <!-- Form-Footer -->

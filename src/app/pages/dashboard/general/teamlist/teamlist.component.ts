@@ -5,15 +5,15 @@ import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thu
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faSearch, faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {faChevronDown} from "@fortawesome/free-solid-svg-icons/faChevronDown";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComService} from "../../../../services/discord-com/com.service";
 import {Role, TeamList} from "../../../../services/types/discord/Guilds";
 import {Router} from "@angular/router";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {Subscription} from "rxjs";
-import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
+import {faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {DataTableComponent} from "../../../../structure/util/data-table/data-table.component";
 import {TableConfig} from "../../../../services/types/Config";
 import {ModalComponent} from "../../../../structure/util/modal/modal.component";
@@ -62,6 +62,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = true;
+        this.dataService.isLoading = true;
         this.getTeamRoles();
       }
     });
@@ -253,6 +254,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
    */
   addRole(options: HTMLCollectionOf<HTMLOptionElement>): void {
     if (!this.dataService.active_guild) { return; }
+    this.dataService.isDisabledSpamBtn = true;
     const option: HTMLOptionElement = options.item(0)!
     const found_role: Role = this.discordRoles.find(r => r.id === option.value) as Role
     found_role.support_level = this.getActiveTab();
@@ -273,6 +275,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modalComponent.hideModal();
+            setTimeout((): void => { this.dataService.isDisabledSpamBtn = false; }, 250);
             if (subscription) { subscription.unsubscribe(); }
           },
           error: (err: HttpErrorResponse): void => {
@@ -294,6 +297,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
             // close modal
             this.modalComponent.hideModal();
+            setTimeout((): void => { this.dataService.isDisabledSpamBtn = false; }, 250);
           }
         });
     });

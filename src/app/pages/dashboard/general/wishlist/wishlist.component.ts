@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -74,9 +74,6 @@ export class WishlistComponent implements AfterViewInit {
   protected readonly faClock: IconDefinition = faClock;
   protected isOnCooldown: CooldownFeatures[] = [];
 
-  @ViewChild('Divider') protected divider!: ElementRef<HTMLDivElement>
-  @ViewChild('WishlistContainer') protected wishlistContainer!: ElementRef<HTMLDivElement>
-
   protected feature_list: Feature[] = feature_list;
   protected tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
@@ -95,7 +92,6 @@ export class WishlistComponent implements AfterViewInit {
    * from the server. It is called once after the component's view has been initialized.
    */
   ngAfterViewInit(): void {
-    this.setResponsiveHeight();
     this.getFeatureVotes();
   }
 
@@ -182,6 +178,8 @@ export class WishlistComponent implements AfterViewInit {
 
         if (error.status == 429) {
           this.dataService.redirectLoginError('REQUESTS');
+        } else if (error.status === 401) {
+          this.dataService.redirectLoginError('NO_CLANK');
         } else {
           this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
         }
@@ -226,19 +224,6 @@ export class WishlistComponent implements AfterViewInit {
     });
 
     this.allItemsDisabled = feature_list.every(f => !f.enabled);
-  }
-
-  /**
-   * Adjusts the height of the wishlist container to match the height of the divider element.
-   * This method is triggered on window resize and fullscreen change events.
-   *
-   */
-  @HostListener('window:resize', ['$event'])
-  @HostListener('document:fullscreenchange', ['$event'])
-  protected setResponsiveHeight(): void {
-    if (this.divider && this.wishlistContainer && this.divider.nativeElement.offsetHeight > 0) {
-      this.wishlistContainer.nativeElement.style.height = `${this.divider.nativeElement.offsetHeight}px`;
-    }
   }
 
   /**

@@ -1,7 +1,7 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {DataHolderService} from "../../../services/data/data-holder.service";
-import {RouterLink} from "@angular/router";
-import {NgOptimizedImage} from "@angular/common";
+import {Router, RouterLink} from "@angular/router";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faHome, IconDefinition} from "@fortawesome/free-solid-svg-icons";
@@ -11,14 +11,15 @@ import {ThemeSwitchButtonComponent} from "../../../structure/util/theme-switch-b
 
 @Component({
     selector: 'app-simple-error',
-    imports: [
-        RouterLink,
-        NgOptimizedImage,
-        TranslatePipe,
-        FaIconComponent,
-        LangSwitchButtonComponent,
-        ThemeSwitchButtonComponent
-    ],
+  imports: [
+    RouterLink,
+    NgOptimizedImage,
+    TranslatePipe,
+    FaIconComponent,
+    LangSwitchButtonComponent,
+    ThemeSwitchButtonComponent,
+    NgClass
+  ],
     templateUrl: './simple-error.component.html',
     styleUrl: './simple-error.component.scss'
 })
@@ -26,9 +27,9 @@ export class SimpleErrorComponent implements AfterViewInit {
 
   protected readonly faHome: IconDefinition = faHome;
   protected readonly faDiscord: IconDefinition = faDiscord;
-  protected readonly localStorage = localStorage;
+  protected readonly localStorage: Storage = localStorage;
 
-  constructor(protected dataService: DataHolderService, private translate: TranslateService) {
+  constructor(protected dataService: DataHolderService, private translate: TranslateService, protected router: Router) {
     this.dataService.isLoading = true;
   }
 
@@ -41,6 +42,11 @@ export class SimpleErrorComponent implements AfterViewInit {
     this.translate.onLangChange.subscribe((): void => {
       document.title = this.translate.instant('ERROR_PAGE_TITLE');
     });
+
+    if (this.router.url != '/errors/simple') {  // custom 404 error page
+      this.dataService.error_title = this.translate.instant('ERROR_PAGE_404_TITLE');
+      this.dataService.error_desc = this.translate.instant('ERROR_PAGE_404_DESC');
+    }
 
     this.dataService.isLoading = false;
   }

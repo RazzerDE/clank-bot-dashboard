@@ -55,7 +55,7 @@ export class SnippetAddComponent {
    * @returns {boolean} Returns true if the theme is INVALID
    */
   protected isSnippetInvalid(): boolean {
-    return !(this.newSnippet.name.length > 0 && this.newSnippet.desc.length > 0);
+    return !(this.newSnippet.name.trim().length > 0 && this.newSnippet.desc.trim().length > 0);
   }
 
 }

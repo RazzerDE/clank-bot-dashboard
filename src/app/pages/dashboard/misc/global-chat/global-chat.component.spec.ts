@@ -135,7 +135,7 @@ describe('GlobalChatComponent', () => {
     expect(button.disabled).toBe(false);
   }));
 
-  it('should set bot_avatar_url to null and isInvalidAvatar to true if input is empty', () => {
+  it('should set bot_avatar_url to null and isInvalidAvatar to false if input is empty', () => {
     const event = { target: { value: '' } } as unknown as Event;
     component['global_chat'].global_config = { ...component['global_chat'].global_config, bot_avatar_url: 'oldUrl' } as GlobalChatConfigDetails;
     component['isInvalidAvatar'] = false;
@@ -143,7 +143,7 @@ describe('GlobalChatComponent', () => {
     component['verifyAvatarURL'](event);
 
     expect(component['global_chat'].global_config!.bot_avatar_url).toBeNull();
-    expect(component['isInvalidAvatar']).toBe(true);
+    expect(component['isInvalidAvatar']).toBe(false);
   });
 
   it('should set bot_avatar_url to null and isInvalidAvatar to true if url is invalid', () => {
@@ -311,6 +311,30 @@ describe('GlobalChatComponent', () => {
     expect(showAlertSpy).toHaveBeenCalledWith(
       expect.stringContaining('ERROR_MISC_GLOBAL_MISSING_TITLE'),
       expect.stringContaining('ERROR_MISC_GLOBAL_MISSING_DESC')
+    );
+    expect(component['disabledSendBtn']).toBe(false);
+
+    // check "disabledLockButton" branch
+    component['saveCustomizing'](true);
+    tick(2001);
+    expect(component['disabledLockBtn']).toBe(false);
+  }));
+
+  it('should handle error 402 and show missing alert', fakeAsync(() => {
+    component['dataService'].active_guild = { id: 'guild1' } as any;
+    component['global_chat'].global_config = { bot_avatar_url: 'url', bot_name: 'Bot', lock_reason: null } as any;
+    component['global_chat'].global_desc = 'desc';
+    component['isInvalidAvatar'] = false;
+    jest.spyOn(component['apiService'], 'saveGlobalChatCustomizing').mockReturnValue(defer(() => Promise.reject({ status: 402 })));
+    const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert');
+
+    component['saveCustomizing']();
+    tick(2001);
+
+    expect(component['dataService'].error_color).toBe('red');
+    expect(showAlertSpy).toHaveBeenCalledWith(
+      expect.stringContaining('ERROR_TITLE_402'),
+      expect.stringContaining('ERROR_GLOBALCHAT_402_DESC')
     );
     expect(component['disabledSendBtn']).toBe(false);
 
@@ -633,4 +657,39 @@ describe('GlobalChatComponent', () => {
 
     expect(redirectSpy).toHaveBeenCalledWith('UNKNOWN');
   }));
+
+  it('should return true if bot_name is set but only whitespace', () => {
+    component['global_chat'].global_config = { ...component['global_chat'].global_config, bot_name: '   ' } as GlobalChatConfigDetails;
+    component['global_chat'].global_desc = 'desc';
+    component['isInvalidAvatar'] = false;
+    expect(component['isInvalidInput']()).toBe(true);
+  });
+
+  it('should return true if global_desc is set but only whitespace', () => {
+    component['global_chat'].global_config = { ...component['global_chat'].global_config, bot_name: 'Bot' } as GlobalChatConfigDetails;
+    component['global_chat'].global_desc = '   ';
+    component['isInvalidAvatar'] = false;
+    expect(component['isInvalidInput']()).toBe(true);
+  });
+
+  it('should return true if isInvalidAvatar is true', () => {
+    component['global_chat'].global_config = { ...component['global_chat'].global_config, bot_name: 'Bot' } as GlobalChatConfigDetails;
+    component['global_chat'].global_desc = 'desc';
+    component['isInvalidAvatar'] = true;
+    expect(component['isInvalidInput']()).toBe(true);
+  });
+
+  it('should return false if bot_name and global_desc are valid and isInvalidAvatar is false', () => {
+    component['global_chat'].global_config = { ...component['global_chat'].global_config, bot_name: 'Bot' } as GlobalChatConfigDetails;
+    component['global_chat'].global_desc = 'desc';
+    component['isInvalidAvatar'] = false;
+    expect(component['isInvalidInput']()).toBe(false);
+  });
+
+  it('should return false if bot_name and global_desc are null and isInvalidAvatar is false', () => {
+    component['global_chat'].global_config = { ...component['global_chat'].global_config, bot_name: null } as GlobalChatConfigDetails;
+    component['global_chat'].global_desc = null;
+    component['isInvalidAvatar'] = false;
+    expect(component['isInvalidInput']()).toBe(false);
+  });
 });

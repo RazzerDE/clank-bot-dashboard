@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {faBug} from "@fortawesome/free-solid-svg-icons/faBug";
+import {faBug} from "@fortawesome/free-solid-svg-icons";
 import {NgClass} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {DataHolderService} from "../../../services/data/data-holder.service";

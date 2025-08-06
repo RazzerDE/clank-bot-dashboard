@@ -1,32 +1,33 @@
 import {Component, HostListener, Renderer2} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
-import { faCode } from '@fortawesome/free-solid-svg-icons';
+import {faCode, faXmark} from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {TranslatePipe} from "@ngx-translate/core";
 import {LangSwitchButtonComponent} from "../../../structure/util/lang-switch-button/lang-switch-button.component";
-import { nav_items } from '../../../services/types/landing-page/LNavigationItem';
+import {LNavigationItem, nav_items} from '../../../services/types/landing-page/LNavigationItem';
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
     selector: 'landing-header',
-    imports: [
-        NgOptimizedImage,
-        RouterLink,
-        FontAwesomeModule,
-        TranslatePipe,
-        LangSwitchButtonComponent
-    ],
+  imports: [
+    NgOptimizedImage,
+    RouterLink,
+    TranslatePipe,
+    LangSwitchButtonComponent,
+    FaIconComponent
+  ],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
   protected mobileMenuExpanded: boolean = false;
 
+  protected readonly faCode: IconDefinition = faCode;
   protected faDiscord: IconDefinition = faDiscord;
-  protected faCode: IconDefinition = faCode;
-  protected readonly nav_items = nav_items;
+  protected readonly faXmark: IconDefinition = faXmark;
+  protected readonly nav_items: LNavigationItem[] = nav_items;
 
   constructor(private renderer: Renderer2) {}
 
@@ -37,7 +38,7 @@ export class HeaderComponent {
    *
    * @param close - Optional boolean to force close the menu.
    */
-  toggleMobileMenu(close?: boolean): void {
+  protected toggleMobileMenu(close?: boolean): void {
     this.mobileMenuExpanded = !this.mobileMenuExpanded;
     if (this.mobileMenuExpanded && !close) {
       this.renderer.addClass(document.body, 'nav-expanded');
@@ -68,10 +69,12 @@ export class HeaderComponent {
   @HostListener('document:click', ['$event'])
   onClickOutsideHandler(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    if (['header-buttons', 'bar', 'dot1', 'dot2', 'dot3']
+    if (['mobile_canvas_container', 'mobile_header', 'bar', 'dot1', 'dot2', 'dot3']
       .some(cls => target.id === cls || target.classList.contains(cls))) return;
 
-    this.toggleMobileMenu(true);
+    if (this.mobileMenuExpanded) {
+      this.toggleMobileMenu(true);
+    }
   }
 
   /**

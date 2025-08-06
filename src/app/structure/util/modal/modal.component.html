@@ -3,17 +3,18 @@
      [@fadeAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_backdrop"></div>
 
 <!-- Role Modal -->
-<div tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed z-50 flex justify-center items-center w-full md:inset-0
-                        h-[100vh] max-h-full" #roleModal
+<div tabindex="-1" class="hidden lg:overflow-y-auto overflow-x-hidden fixed z-50 flex justify-center items-center w-full md:inset-0
+                          h-[100vh] max-h-full" #roleModal
      [@slideAnimation]="isVisible ? 'visible' : 'hidden'" id="modal_container">
-  <div class="relative p-4 w-full max-h-[90vh] overflow-auto translate-x-36" id="roleModalContent" #roleModalContent
+  <div class="relative p-4 w-full max-h-[90vh] overflow-x-hidden overflow-y-hidden lg:overflow-auto xl:translate-x-36"
+       id="roleModalContent" #roleModalContent
        [ngClass]="{'max-w-lg mx-auto': !showSecondModal(), '!max-w-xl': this.type === 'SECURITY_SHIELDS',
-                  'flex justify-center items-center gap-4': showSecondModal()}">
+                  'flex flex-col md:flex-row justify-center items-center gap-4 overflow-y-auto': showSecondModal()}">
 
     <!-- First Modal (Always visible) -->
     <div class="relative bg-white rounded-lg shadow-sm dark:shadow-xl dark:!bg-gray-700 !border-gray-400
-              dark:!border-gray-500 border-1"
-         [ngClass]="{'w-full': !showSecondModal(), 'w-1/2 max-w-lg': showSecondModal()}" id="ignore">
+              dark:!border-gray-500 border-1 w-[calc(100%+2rem)]"
+         [ngClass]="{'md:w-full': !showSecondModal(), 'md:w-1/2 md:max-w-lg': showSecondModal()}" id="ignore">
       <!-- Modal Header -->
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
         <p class="text-xl font-semibold text-gray-900 dark:text-white mb-0">
@@ -55,7 +56,10 @@
       </div>
 
       <!-- Modal body -->
-      <div [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS' && this.type !== 'SECURITY_AUTOMOD'}">
+      <div class="lg:!max-h-[unset] overflow-y-auto"
+           [ngClass]="{'p-4 md:p-5': this.type !== 'SECURITY_SHIELDS' && this.type !== 'SECURITY_AUTOMOD',
+           'max-h-[60vh]': !showSecondModal(), 'max-h-[30vh] md:max-h-[60vh]': showSecondModal(),
+           'max-h-full': this.type.startsWith('BLOCKED_USER')}">
         <div class="space-y-4 flex flex-col">
           @switch (true) {
             @case (type === 'SUPPORT_THEME_FAQ') {
@@ -70,7 +74,8 @@
                                     [externalMarkdown]="secondSnippetAdd?.discordMarkdown" [snippet_edit]="snippet_edit" />
             }
             @case (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
-              <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true" />
+              <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true"
+                                            [org_activeAnnounce]="this.org_announcement" />
             }
             @case (type.startsWith('BLOCKED_USER')) {
               <template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />
