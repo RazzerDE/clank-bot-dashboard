@@ -24,7 +24,7 @@
     <tbody class="overflow-y-auto">
       <!-- Table is empty -->
       @if ((tconfig.type != 'UNBAN_REQUESTS' && tconfig.rows.length == 0 && !tconfig.dataLoading) ||
-           (tconfig.type === 'UNBAN_REQUESTS' && tconfig.rows.length == 0 && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
+           (tconfig.type === 'UNBAN_REQUESTS' && (returnFilteredRequests().length == 0 && !hasPendingItemsWithNoPerms()) && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
         <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
           <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">{{ tconfig.list_empty | translate }}</td>
         </tr>
@@ -56,13 +56,14 @@
         </tr>
       } @else {
         <!-- Show Error Message if there are pending support themes with missing permissions -->
-        @if (hasPendingSupportWithPerms()) {
+        @if (hasPendingItemsWithNoPerms()) {
           <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
-            <td class="px-4 py-3 text-center text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20"
+            <td class="px-4 py-3 text-center text-red-500 dark:text-red-400 bg-red-200 dark:bg-red-900/20"
                 [attr.colspan]="tconfig.columns.length">
               <fa-icon [icon]="faExclamationTriangle" class="text-red-500"></fa-icon>
               <div class="flex items-center justify-center gap-2">
-                <span [innerHTML]="'ERROR_THEME_PERMS_MISSING' | translate"></span>
+                <span [innerHTML]="tconfig.type === 'UNBAN_REQUESTS' ?
+                ('ERROR_SECURITY_UNBAN_PERMS_MISSING' | translate) : ('ERROR_THEME_PERMS_MISSING' | translate)"></span>
               </div>
             </td>
           </tr>
@@ -70,10 +71,11 @@
 
         <!-- Row Content -->
         @for (obj of tconfig.rows; track $index) {
-          <tr class="border-b dark:border-gray-700 transition-colors duration-100 hover:bg-gray-200
+          @if (isUnbanRequestType(obj) && obj.status != 0) {} @else {
+            <tr class="border-b dark:border-gray-700 transition-colors duration-100 hover:bg-gray-200
                    dark:hover:bg-slate-900/60 odd:bg-white even:bg-gray-50 dark:odd:bg-slate-800
                    dark:even:bg-slate-900/20" [@rowAnimation] (click)="onRowClick(obj)"
-              [ngClass]="{'cursor-pointer': this.rowClick.observers.length > 0,
+                [ngClass]="{'cursor-pointer': this.rowClick.observers.length > 0,
                           '!bg-blue-200 dark:!bg-blue-950': obj === this.dataService.selectedSnippet && tconfig.type === 'SUPPORT_SNIPPETS'}">
               @if (tconfig.type === 'SUPPORT_THEMES' && isSupportType(obj)) {
                 <td class="px-3 py-3 text-sm text-gray-500" [width]="tconfig.columns[0].width + '%'">
@@ -157,7 +159,7 @@
 
                       <ng-template #tooltipContent>
                         {{ obj.action === 'CREATE' ? ('PLACEHOLDER_THEME_PENDING' | translate) :
-                                                     ('PLACEHOLDER_THEME_UPDATE_PENDING' | translate)}}
+                        ('PLACEHOLDER_THEME_UPDATE_PENDING' | translate)}}
                       </ng-template>
                     }
                   }
@@ -266,55 +268,55 @@
                 <!-- Giveaway: Sponsor -->
                 <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
                   @if (obj.sponsor_id) {
-                      <div class="flex items-center">
-                        @if (!obj.sponsor_invalidImg) {
-                          <img [ngSrc]="obj.sponsor_avatar ? obj.sponsor_avatar.replace('size=1024', 'size=24')
+                    <div class="flex items-center">
+                      @if (!obj.sponsor_invalidImg) {
+                        <img [ngSrc]="obj.sponsor_avatar ? obj.sponsor_avatar.replace('size=1024', 'size=24')
                                                          : 'https://cdn.discordapp.com/embed/avatars/' + (obj.sponsor_id.length % 5) + '.png'"
-                               width="24" height="24" alt="Avatar for {{ obj.sponsor_name }}" class="w-6 h-6 rounded-full me-2.5"
-                               [title]="obj.sponsor_id" />
-                        } @else {
-                          <div class="w-6 h-6 rounded-full me-2.5 flex items-center justify-center bg-gray-700">
+                             width="24" height="24" alt="Avatar for {{ obj.sponsor_name }}" class="w-6 h-6 rounded-full me-2.5"
+                             [title]="obj.sponsor_id" />
+                      } @else {
+                        <div class="w-6 h-6 rounded-full me-2.5 flex items-center justify-center bg-gray-700">
                             <span class="text-white text-xs font-medium">
                               {{ obj.sponsor_name!.charAt(0).toUpperCase() + obj.sponsor_name!.charAt(1).toUpperCase() }}
                             </span>
-                          </div>
-                        }
-
-                        <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
-                                    duration-300" [title]="obj.sponsor_id">
-                          {{ obj.sponsor_name }}
-                          <div class="text-xs text-gray-500 mt-1">{{ obj.sponsor_id }}</div>
                         </div>
+                      }
+
+                      <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                                    duration-300" [title]="obj.sponsor_id">
+                        {{ obj.sponsor_name }}
+                        <div class="text-xs text-gray-500 mt-1">{{ obj.sponsor_id }}</div>
                       </div>
+                    </div>
                   }
                 </td>
               } @else if (isUnbanRequestType(obj)) {
 
                 <!-- Unban Request: Punished by -->
                 <td class="px-4 py-3" [width]="tconfig.columns[1].width + '%'">
-                @if (obj.staff_id) {
-                  <div class="flex items-center">
-                    @if (!obj.staff_invalid) {
-                      <img [ngSrc]="obj.staff_avatar ? obj.staff_avatar.replace('size=1024', 'size=24')
+                  @if (obj.staff_id) {
+                    <div class="flex items-center">
+                      @if (!obj.staff_invalid) {
+                        <img [ngSrc]="obj.staff_avatar ? obj.staff_avatar.replace('size=1024', 'size=24')
                                                        : 'https://cdn.discordapp.com/embed/avatars/' + (obj.staff_avatar.length % 5) + '.png'"
-                           width="24" height="24" alt="Avatar for {{ obj.staff_name }}" class="w-6 h-6 rounded-full me-2.5"
-                           [title]="obj.staff_id" (error)="obj.staff_invalid = true;"/>
-                    } @else {
-                      <div class="w-6 h-6 rounded-full me-2.5 flex items-center justify-center bg-gray-700">
+                             width="24" height="24" alt="Avatar for {{ obj.staff_name }}" class="w-6 h-6 rounded-full me-2.5"
+                             [title]="obj.staff_id" (error)="obj.staff_invalid = true;"/>
+                      } @else {
+                        <div class="w-6 h-6 rounded-full me-2.5 flex items-center justify-center bg-gray-700">
                         <span class="text-white text-xs font-medium">
                           {{ obj.staff_name.charAt(0).toUpperCase() + obj.staff_name.charAt(1).toUpperCase() }}
                         </span>
-                      </div>
-                    }
+                        </div>
+                      }
 
 
-                    <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
+                      <div class="font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
                                 duration-300" [title]="obj.staff_id">
-                      {{ obj.staff_name }}
-                      <div class="text-xs text-gray-500 mt-1">{{ obj.staff_id }}</div>
+                        {{ obj.staff_name }}
+                        <div class="text-xs text-gray-500 mt-1">{{ obj.staff_id }}</div>
+                      </div>
                     </div>
-                  </div>
-                }
+                  }
                 </td>
 
                 <!-- Unban Request: Reason for Blocking & Excuse -->
@@ -354,7 +356,7 @@
                             (click)="onDataTableBtnClick(button, obj)" id="TableBtn_{{ $index }}"
                             [ngClass]="button.color === 'blue' ? '!text-blue-500' : (button.color === 'green' ?
                                        '!text-green-500' : 'text-red-700 dark:text-red-700')"
-                             [title]="isUnbanRequestType(obj) ? button.color === 'green' ?
+                            [title]="isUnbanRequestType(obj) ? button.color === 'green' ?
                                       ('PLACEHOLDER_ACCEPT' | translate) : ('PLACEHOLDER_DENY' | translate) : ''">
                       <fa-icon [icon]="button.icon" [size]="button.size"></fa-icon>
                     </button>
@@ -376,7 +378,8 @@
                   }
                 }
               </td>
-          </tr>
+            </tr>
+          }
         }
       }
     </tbody>

@@ -14,6 +14,7 @@ export interface UnbanRequest {
   updated_date: number | string;      // The date when the unban request was last updated, in timestamp format.
   status: 0 | 1 | 2;                  // The status of the unban request: 0 = pending, 1 = accepted, 2 = rejected.
 
+  has_perms?: boolean;                // Optional: Indicates if the user has permissions to manage the unban request.
   user_invalid?: boolean;             // Optional: Indicates if the user image is invalid (e.g., avatar changed).
   staff_invalid?: boolean;            // Optional: Indicates if the staff image is invalid (e.g., avatar changed).
 }

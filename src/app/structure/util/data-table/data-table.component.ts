@@ -157,8 +157,20 @@ export class DataTableComponent implements AfterViewChecked {
    * Checks if there is at least one support item with pending status and permissions.
    * @returns `true` if any row in the table config is of type `SupportTheme` and has both `pending` and `has_perms` set to true, otherwise `false`.
    */
-    protected hasPendingSupportWithPerms(): boolean {
-      return this.tconfig.rows?.some(item => this.isSupportType(item) && item.pending && !item.has_perms) ?? false;
+    protected hasPendingItemsWithNoPerms(): boolean {
+      return this.tconfig.rows?.some(item =>
+        (this.isSupportType(item) && item.pending && !item.has_perms) ||
+        (this.isUnbanRequestType(item) && !item.has_perms)) ?? false;
+    }
+
+  /**
+   * Returns all filtered unban requests with status 0.
+   * Filters the rows in the table config and returns only those that are of type `UnbanRequest` and have a status of 0.
+   *
+   * @returns {UnbanRequest[]} An array of filtered unban requests with status 0.
+   */
+    protected returnFilteredRequests(): UnbanRequest[] {
+      return this.tconfig.rows.filter((item) => this.isUnbanRequestType(item) && item.status === 0) as UnbanRequest[];
     }
 
   /**
