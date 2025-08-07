@@ -57,6 +57,7 @@ export class SupportThemeAddComponent {
       this.newTheme.faq_answer = null;
     }
 
+    theme.has_perms = true;
     const sent_theme: Subscription = this.apiService.createSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {

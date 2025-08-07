@@ -78,6 +78,7 @@ export interface SecurityLogs {
   unban_thread_id_pending?: boolean;
   unban_thread_id_delete?: boolean;
   has_vip?: boolean;
+  has_perms?: boolean;
 
   [key: string]: string | boolean | null | undefined;
 }

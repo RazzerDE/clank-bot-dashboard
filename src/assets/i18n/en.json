@@ -286,6 +286,8 @@
   "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_TITLE": "❌ ~ No log channel has been set yet.",
   "PAGE_SECURITY_LOGS_CHANNEL_PENDING_TITLE": "⏳ ~ The log channel will be set up shortly.",
   "PAGE_SECURITY_LOGS_CHANNEL_DELETION_TITLE": "📛 ~ The log channel will be deleted soon.",
+  "PAGE_SECURITY_LOGS_CHANNEL_PERMS_MISSING_TITLE": "⛔ ~ Bot permissions incomplete!",
+  "PAGE_SECURITY_LOGS_CHANNEL_PERMS_MISSING_DESC": "› The bot does not have the required permissions to create the log forum / manage threads!<br /><strong>The bot will automatically try to repeat the process in 10 minutes.</strong>",
   "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_DESC": "› As soon as you set a log channel on the left, you can configure all available log events here.",
   "PAGE_SECURITY_LOGS_CHANNEL_PENDING_DESC": "› This process takes a few minutes - afterwards you can configure all log events.",
   "PAGE_SECURITY_LOGS_CHANNEL_DELETION_DESC": "› The log channel will be deleted soon - therefore you cannot configure any log events here.",

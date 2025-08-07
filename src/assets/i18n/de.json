@@ -286,6 +286,8 @@
   "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_TITLE": "❌ ~ Es wurde noch kein Log-Kanal festgelegt.",
   "PAGE_SECURITY_LOGS_CHANNEL_PENDING_TITLE": "⏳ ~ Der Log-Kanal wird in Kürze eingerichtet.",
   "PAGE_SECURITY_LOGS_CHANNEL_DELETION_TITLE": "📛 ~ Log-Kanal wird in Kürze gelöscht.",
+  "PAGE_SECURITY_LOGS_CHANNEL_PERMS_MISSING_TITLE": "⛔ ~ Bot-Rechte unvollständig!",
+  "PAGE_SECURITY_LOGS_CHANNEL_PERMS_MISSING_DESC": "› Der Bot hat nicht die benötigten Rechte um das Log-Forum zu erstellen / Threads zu verwalten!<br /><strong>Der Bot wird automatisch in 10 Minuten versuchen, den Vorgang zu wiederholen.</strong>",
   "PAGE_SECURITY_LOGS_CHANNEL_NOT_SET_DESC": "› Sobald du links einen Log-Kanal festgelegt hast, kannst du hier alle verfügbaren Log-Events einrichten.",
   "PAGE_SECURITY_LOGS_CHANNEL_PENDING_DESC": "› Dieser Vorgang dauert ein paar Minuten - Anschließend kannst du alle Log-Events einrichten.",
   "PAGE_SECURITY_LOGS_CHANNEL_DELETION_DESC": "› Der Log-Kanal wird in Kürze gelöscht - daher kannst du hier keine Log-Events einrichten.",
