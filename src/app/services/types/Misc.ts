@@ -28,6 +28,7 @@ export interface GlobalChatConfig {
   total_message_count: number;
   global_desc: null | string;
   has_vip?: boolean;
+  has_perms?: boolean;
 
   // Pending properties
   global_chat_pending_id?: string | null;

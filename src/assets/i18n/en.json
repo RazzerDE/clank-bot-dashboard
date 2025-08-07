@@ -193,6 +193,8 @@
   "PAGE_MISC_GLOBALCHAT_PENDING_DESC": "› This process takes a few minutes - afterwards you can make all settings.",
   "PAGE_MISC_GLOBALCHAT_DELETION": "📛 ~ Global chat channel will be deleted soon..",
   "PAGE_MISC_GLOBALCHAT_DELETION_DESC": "› The global chat channel will be deleted soon - therefore you cannot make any settings here.",
+  "PAGE_MISC_GLOBALCHAT_NO_PERMISSIONS": "⛔ ~ Bot permissions incomplete!",
+  "PAGE_MISC_GLOBALCHAT_NO_PERMISSIONS_DESC": "› The bot does not have the required permissions to create the global chat channel!<br /><strong>The bot will automatically try to repeat the process in 10 minutes.</strong>",
 
   "PAGE_SECURITY_REQUESTS_SUBTITLE": "🚨 ~ USERS, THAT WANT TO GET UNBANNED",
   "PAGE_SECURITY_REQUESTS_TITLE": "Unban Requests",

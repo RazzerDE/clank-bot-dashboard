@@ -193,6 +193,8 @@
   "PAGE_MISC_GLOBALCHAT_PENDING_DESC": "› Dieser Vorgang dauert ein paar Minuten - Anschließend kannst du alle Einstellungen vornehmen.",
   "PAGE_MISC_GLOBALCHAT_DELETION": "📛 ~ Global-Chat Kanal wird in Kürze gelöscht..",
   "PAGE_MISC_GLOBALCHAT_DELETION_DESC": "› Der Global-Chat Kanal wird in Kürze gelöscht - daher kannst du hier keine Einstellungen vornehmen.",
+  "PAGE_MISC_GLOBALCHAT_NO_PERMISSIONS": "⛔ ~ Bot-Rechte unvollständig!",
+  "PAGE_MISC_GLOBALCHAT_NO_PERMISSIONS_DESC": "› Der Bot hat nicht die benötigten Rechte um den Global-Chat Kanal zu erstellen!<br /><strong>Der Bot wird automatisch in 10 Minuten versuchen, den Vorgang zu wiederholen.</strong>",
 
   "PAGE_SECURITY_REQUESTS_SUBTITLE": "🚨 ~ USER, DIE ENTSPERRT WERDEN MÖCHTEN",
   "PAGE_SECURITY_REQUESTS_TITLE": "Entsperrungs-Anträge",
