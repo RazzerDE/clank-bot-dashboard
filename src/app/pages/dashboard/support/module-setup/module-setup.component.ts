@@ -43,7 +43,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   private readonly subscription: Subscription | null = null;
   protected cacheRefreshDisabled: boolean = false;
   protected moduleStatusObj: TasksCompletion | undefined;
-  protected supportForum: { channel: Channel | null, pending: boolean } = { channel: null, pending: false };
+  protected supportForum: { channel: Channel | null, pending: boolean, has_perms: boolean } = { channel: null, pending: false, has_perms: true };
 
   private startLoading: boolean = false;
   protected dataLoading: { statusBox: boolean, channelItems: boolean } = { statusBox: true, channelItems: true };
@@ -56,7 +56,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
     this.subscription = this.dataService.allowDataFetch.subscribe((value: boolean): void => {
       if (value) { // only fetch data if allowed
         this.dataLoading = { statusBox: true, channelItems: true };
-        this.supportForum = { channel: null, pending: false };
+        this.supportForum = { channel: null, pending: false, has_perms: true };
         this.cacheRefreshDisabled = false;
         this.selectedChannel = null;
         this.getServerData(true);
@@ -104,7 +104,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
   private getServerData(no_cache?: boolean): void {
     if (!this.dataService.active_guild) { return; }
     if (no_cache) { this.dataService.isLoading = true; }
-    this.supportForum = { channel: null, pending: false };
+    this.supportForum = { channel: null, pending: false, has_perms: true };
     this.selectedChannel = null;
     this.startLoading = true;
 
@@ -113,7 +113,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
     const cachedTimestamp = localStorage.getItem('moduleStatusTimestamp');
     const cachedSupportSetup = localStorage.getItem('supportSetup');
     if (!no_cache && cachedStatus && cachedTimestamp && cachedSupportSetup) {
-      const timestamp = parseInt(cachedTimestamp);
+      const timestamp: number = parseInt(cachedTimestamp);
       if (Date.now() - timestamp < 300000) { // 5 minutes
         const moduleStatus: TasksCompletionList = JSON.parse(cachedStatus);
         if (!moduleStatus) { localStorage.removeItem('moduleStatus'); return; }
@@ -125,7 +125,8 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
 
         const supportSetup: any = JSON.parse(cachedSupportSetup);
         if (supportSetup['support_forum'] != null) {
-          this.supportForum = { channel: supportSetup['support_forum'], pending: supportSetup['support_forum_pending'] };
+          this.supportForum = { channel: supportSetup['support_forum'], pending: supportSetup['support_forum_pending'],
+                                has_perms: supportSetup['has_perms'] !== undefined ? supportSetup['has_perms'] : true };
           this.selectedChannel = this.supportForum.channel;
         }
 
@@ -155,7 +156,8 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
               .subscribe({
                 next: (supportSetup: SupportSetup): void => {
                   if (supportSetup.support_forum != null) {
-                    this.supportForum = { channel: supportSetup.support_forum, pending: supportSetup.support_forum_pending };
+                    this.supportForum = { channel: supportSetup.support_forum, pending: supportSetup.support_forum_pending,
+                                          has_perms: supportSetup.has_perms !== undefined ? supportSetup.has_perms : true };
                     this.selectedChannel = supportSetup.support_forum;
                   }
 
@@ -194,7 +196,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
       .then((observable) => {
         const subscription: Subscription = observable.subscribe({
           next: (_response: null): void => {
-            this.supportForum = { channel: channel, pending: true };
+            this.supportForum = { channel: channel, pending: true, has_perms: true };
             localStorage.removeItem('supportSetup');
 
             this.dataService.error_color = 'green';

@@ -65,5 +65,6 @@ export const initEmojis: string[] = ['📚', '🎮', '🎯', '🎲', '🧩', '�
 export interface SupportSetup {
   support_forum: Channel;
   support_forum_pending: boolean;
+  has_perms?: boolean;
   discord_channels: Channel[];
 }
