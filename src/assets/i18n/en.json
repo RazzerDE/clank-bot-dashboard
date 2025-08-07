@@ -401,6 +401,7 @@
   "ERROR_THEME_EDIT_CONFLICT_DESC": "The theme name <strong>{{name}}</strong> already exists or will be assigned soon!",
   "ERROR_THEME_CREATION_LIMIT_TITLE": "Theme limit reached",
   "ERROR_THEME_CREATION_LIMIT_DESC": "You have already created <strong>17</strong> themes - please delete one of the themes to create a new one!",
+  "ERROR_THEME_PERMS_MISSING": "The bot does not have enough permissions in the support forum to manage support topics - please check the bot permissions!<br /><strong>The bot will automatically try to apply the changes again in 10 minutes.</strong>",
 
   "SUCCESS_EFFECTS_ROLES_TITLE": "Role added",
   "SUCCESS_EFFECTS_ROLES_DESC": "The role <strong>{{name}}</strong> was added to \"<strong>{{type}}</strong>\" - click \"<strong>Save changes</strong>\" to apply changes!",

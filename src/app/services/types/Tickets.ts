@@ -22,6 +22,7 @@ export interface SupportTheme {
   desc: string;
 
   // added by us
+  has_perms?: boolean;
   default_roles?: Role[];
   guild_id?: string;
   pending?: boolean; // change is pending

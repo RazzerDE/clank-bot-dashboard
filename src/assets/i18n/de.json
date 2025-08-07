@@ -401,6 +401,7 @@
   "ERROR_THEME_EDIT_CONFLICT_DESC": "Der Themen-Name <strong>{{name}}</strong> existiert bereits oder wird in Kürze vergeben!",
   "ERROR_THEME_CREATION_LIMIT_TITLE": "Thema-Limit erreicht",
   "ERROR_THEME_CREATION_LIMIT_DESC": "Du hast bereits <strong>17</strong> Themen erstellt - bitte lösche eines der Themen, um ein neues zu erstellen!",
+  "ERROR_THEME_PERMS_MISSING": "Der Bot hat nicht genug Rechte in dem Support-Forum, um Support-Themen zu verwalten - bitte überprüfe die Bot-Rechte!<br /><strong>Der Bot wird automatisch in 10 Minuten versuchen, die Änderungen erneut zu übernehmen.</strong>",
 
   "SUCCESS_EFFECTS_ROLES_TITLE": "Rolle hinzugefügt",
   "SUCCESS_EFFECTS_ROLES_DESC": "Die Rolle <strong>{{name}}</strong> wurde zu \"<strong>{{type}}</strong>\" hinzugefügt - denke daran auf \"<strong>Änderungen speichern</strong>\" zu klicken!",
