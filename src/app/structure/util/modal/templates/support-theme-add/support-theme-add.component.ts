@@ -268,7 +268,7 @@ export class SupportThemeAddComponent {
     if (typeof emoji === 'string') {
       this.newTheme.icon = emoji; // Unicode emoji
     } else {
-      this.newTheme.icon = this.dataService.getEmojibyId(emoji.id, true, emoji.animated);
+      this.newTheme.icon = this.dataService.getEmojibyId(emoji.id, false, emoji.animated, emoji.name);
     }
 
     this.newTheme.guild_id = this.dataService.active_guild!.id;

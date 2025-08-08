@@ -513,11 +513,13 @@ export class DataHolderService {
    * @param emoji - The Discord emoji string format (e.g., '<:emojiname:123456789>' or '<a:emojiname:123456789>')
    * @param isID - Optional boolean to indicate if the input is the ID of the emoji (default: false)
    * @param isAnimated - Optional boolean to indicate if the emoji is animated (default: false)
+   * @param emoji_name - Optional string indicating to return the entire emoji string instead of the CDN URL (default: false)
    * @returns The CDN URL for the emoji, or an empty string if the emoji format is invalid
    */
-  getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean): string {
+  getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean, emoji_name?: string): string {
     if (!emoji) { return emoji; }
     if (isID) { return `https://cdn.discordapp.com/emojis/${emoji}.${isAnimated ? 'gif' : 'png'}`; }
+    if (emoji_name) { return `<${isAnimated ? 'a' : ''}:${emoji_name}:${emoji}>`; }
 
     // Match emoji format <:name:id> or <a:name:id>
     const match: RegExpMatchArray | null = emoji.match(/<(a?):(\w+):(\d+)>/);
