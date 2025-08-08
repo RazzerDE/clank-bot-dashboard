@@ -9,7 +9,10 @@
 | ![Landing Page](https://i.imgur.com/xYCoqv5.png) | ![Dashboard (Logged In)](https://i.imgur.com/O5DPJkI.png) |
 |:------------------------------------------------:|:---------------------------------------------------------:|
 |                 **Landing Page**                 |                 **Dashboard (Logged In)**                 |
-
+<br />
+<p align="center">
+  <a href="https://pagespeed.web.dev/analysis/https-clank-dev/6098g4srg4?form_factor=desktop"><img src="https://i.imgur.com/MKn1nOT.png" style="height: 100px;"></a>
+</p>
 <h4 align="center">
   <a href="https://angular.dev">
     <img src="https://img.shields.io/badge/Angular-20.1.3-27ae60?style=for-the-badge" alt="angular version" style="height: 25px;">
