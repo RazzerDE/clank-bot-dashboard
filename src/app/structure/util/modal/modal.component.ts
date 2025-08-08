@@ -78,6 +78,7 @@ export class ModalComponent implements AfterContentInit  {
   @Input() extra: Role[] = [];
   @Input() obj: TicketSnippet | BlockedUser | Giveaway | SecurityModal = {} as TicketSnippet;
   @Input() theme: SupportTheme = {} as SupportTheme;
+  @Input() active_themeroles: Role[] = [];
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
   @Input() org_announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 

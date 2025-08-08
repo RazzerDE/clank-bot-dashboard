@@ -31,6 +31,7 @@ export class SupportThemeAddComponent {
   @Input() showFirst: boolean = false;
   @Input() type: string = '';
   @Input() discordRoles: Role[] = [];
+  @Input() activeOptions : Role[] | undefined;
   @Input() newTheme: SupportTheme = { ...this.dataService.initTheme };
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
 
@@ -53,6 +54,7 @@ export class SupportThemeAddComponent {
   protected addSupportTheme(theme: SupportTheme): void {
     if (this.dataService.isFAQ) {
       this.newTheme.faq_answer = this.dataService.faq_answer;
+      this.newTheme.roles = []; // FAQ themes should not have roles, so we clear them
     } else {
       this.newTheme.faq_answer = null;
     }
@@ -110,10 +112,12 @@ export class SupportThemeAddComponent {
   protected editSupportTheme(theme: SupportTheme): void {
     if (this.dataService.isFAQ) {
       this.newTheme.faq_answer = this.dataService.faq_answer;
+      this.newTheme.roles = []; // FAQ themes should not have roles, so we clear them
     } else {
       this.newTheme.faq_answer = null;
     }
 
+    theme.has_perms = true;
     const edit_theme: Subscription = this.apiService.editSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
         next: (_data: any): void => {

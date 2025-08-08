@@ -322,6 +322,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
       this.editTheme = { ...this.dataService.initTheme };
+      this.editTheme.roles = [];
     } else {
       theme!.guild_id = this.dataService.active_guild!.id;
       // remove default mention roles (show only role-specific)
@@ -333,7 +334,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
     this.dataService.faq_answer = this.editTheme.faq_answer || '';
     this.dataService.isFAQ = Boolean(this.editTheme.faq_answer && this.editTheme.faq_answer.length > 0);
-    this.modal.showModal();
+    setTimeout((): void => { this.modal.showModal(); }, 10);
   }
 
   /**

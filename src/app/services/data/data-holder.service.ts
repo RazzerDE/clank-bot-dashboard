@@ -289,6 +289,10 @@ export class DataHolderService {
       subscription = observable.subscribe({
         next: (response: Emoji[]): void => {
           this.guild_emojis = response;
+          if (this.guild_emojis.length === 0) {
+            this.guild_emojis = initEmojis;
+          }
+
           this.isEmojisLoading = false;
           localStorage.setItem('guild_emojis', JSON.stringify(this.guild_emojis));
           localStorage.setItem('guild_emojis_timestamp', Date.now().toString());
