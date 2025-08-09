@@ -449,7 +449,7 @@ describe('SupportThemeAddComponent', () => {
     component['updateThemeIcon'](emoji);
 
     expect(component.newTheme.icon).toBe(mockIcon);
-    expect(component['dataService'].getEmojibyId).toHaveBeenCalledWith('123', true, true);
+    expect(component['dataService'].getEmojibyId).toHaveBeenCalledWith('123', false, true, undefined);
     expect(component.newTheme.guild_id).toBe(mockGuildId);
   });
 

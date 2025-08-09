@@ -432,13 +432,29 @@ describe('ActiveShieldsComponent', () => {
 
   it('should open confirmation modal and set action/element', () => {
     const element = document.createElement('button');
+    component['dataService'].active_guild = { id: 'guild5', owner: true } as Guild;
     component['modal'] = { showModal: jest.fn() } as any;
+
     component['openConfirmModal'](1, element);
 
     expect(component['modalElement']).toBe(element);
     expect(component['modalAction']).toBe(1);
     expect(component['modal'].showModal).toHaveBeenCalled();
   });
+
+  it("should NOT open confirm modal and set element if not guild owner", () => {
+    const element = document.createElement('button');
+    component['dataService'].active_guild = { id: 'guild5', owner: false } as Guild;
+    component['modal'] = { showModal: jest.fn() } as any;
+    jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
+
+    component['openConfirmModal'](1, element);
+
+    expect(component['dataService'].showAlert).toHaveBeenCalledWith("ERROR_SECURITY_ACTION_1_NOT_OWNER_TITLE",
+      "ERROR_SECURITY_ACTION_1_NOT_OWNER_DESC");
+    expect(component['modalAction']).not.toBe(1);
+    expect(component['modal'].showModal).not.toHaveBeenCalled();
+  })
 
   it('should return "-" if backupDate is undefined', () => {
     expect((component as any).formatBackupDate(undefined)).toBe('-');

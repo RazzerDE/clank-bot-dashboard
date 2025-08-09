@@ -66,6 +66,16 @@ describe('DataHolderService', () => {
     expect(service.active_guild).toBeNull();
   });
 
+  it('should return the correct built discord emoji if emoji_name is true', () => {
+    const emojiId = '123456789';
+    const result = service.getEmojibyId(emojiId, false, true, 'testEmoji');
+    expect(result).toBe('<a:testEmoji:123456789>');
+
+    // non animated emoji
+    const result2 = service.getEmojibyId(emojiId, false, false, 'testEmoji');
+    expect(result2).toBe('<:testEmoji:123456789>');
+  });
+
   it('should return the correct CDN URL for emoji ID with isID true and isAnimated true', () => {
     const emojiId = '123456789';
     const result = service.getEmojibyId(emojiId, true, true);
@@ -789,6 +799,20 @@ describe('DataHolderService', () => {
     expect(comService.getGuildEmojis).toHaveBeenCalledWith('guild1');
     expect(service.guild_emojis).toEqual([{ id: '2', name: 'wink' }]);
     expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify([{ id: '2', name: 'wink' }]));
+  }));
+
+
+  it('should use initEmojis if api fetch is empty array', fakeAsync(() => {
+    const mockEmoji = [] as unknown as Emoji[];
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.resolve(mockEmoji)));
+    service.active_guild = { id: 'guild1' } as Guild;
+
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(service.guild_emojis).toEqual(initEmojis);
+    expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify(initEmojis));
+    expect(service.isEmojisLoading).toBe(false);
   }));
 
   it('should handle API error 429 by calling redirectLoginError with REQUESTS', fakeAsync(() => {

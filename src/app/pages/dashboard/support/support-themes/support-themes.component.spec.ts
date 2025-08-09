@@ -381,12 +381,13 @@ describe('SupportThemesComponent', () => {
     );
   });
 
-  it('should open modal in ADD mode, fetch emojis, reset reloadEmojis and set editTheme to initTheme', () => {
+  it('should open modal in ADD mode, fetch emojis, reset reloadEmojis and set editTheme to initTheme', fakeAsync(() => {
     component['reloadEmojis'] = true;
-    (component.dataService as any).initTheme = { name: 'init', faq_answer: '' };
+    (component.dataService as any).initTheme = { name: 'init', faq_answer: '', roles: [] };
     jest.spyOn(component['modal'], 'showModal');
 
     component['openSupportThemeModal']('ADD');
+    tick(11);
 
     expect(component['modalType']).toBe('SUPPORT_THEME_ADD');
     expect(component['reloadEmojis']).toBe(false);
@@ -394,9 +395,9 @@ describe('SupportThemesComponent', () => {
     expect(component.dataService.faq_answer).toBe('');
     expect(component.dataService.isFAQ).toBe(false);
     expect(component['modal'].showModal).toHaveBeenCalled();
-  });
+  }));
 
-  it('should open modal in EDIT mode, set modalExtra, old_name, editTheme, and show modal', () => {
+  it('should open modal in EDIT mode, set modalExtra, old_name, editTheme, and show modal', fakeAsync(() => {
     const theme = {
       name: 'Theme1',
       faq_answer: 'answer',
@@ -411,6 +412,7 @@ describe('SupportThemesComponent', () => {
     jest.spyOn(component['modal'], 'showModal');
 
     component['openSupportThemeModal']('EDIT', theme);
+    tick(11);
 
     expect(component['modalType']).toBe('SUPPORT_THEME_EDIT');
     expect(theme.guild_id).toBe('guild1');
@@ -420,9 +422,9 @@ describe('SupportThemesComponent', () => {
     expect(component.dataService.faq_answer).toBe('answer');
     expect(component.dataService.isFAQ).toBe(true);
     expect(component['modal'].showModal).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle case when default_roles is undefined in openSupportThemeModal EDIT', () => {
+  it('should handle case when default_roles is undefined in openSupportThemeModal EDIT', fakeAsync(() => {
     const theme = {
       name: 'ThemeNoDefaultRoles',
       faq_answer: '',
@@ -436,13 +438,14 @@ describe('SupportThemesComponent', () => {
 
     // cover the || [] branch
     component['openSupportThemeModal']('EDIT', theme);
+    tick(11);
 
     expect(component['modalType']).toBe('SUPPORT_THEME_EDIT');
     expect(component['modalExtra']).toEqual([{ id: '2', name: 'Role2' }]);
     expect(theme.old_name).toBe('ThemeNoDefaultRoles');
     expect(component['editTheme']).toBe(theme);
     expect(component['modal'].showModal).toHaveBeenCalled();
-  });
+  }));
 
   it('should do nothing if no active guild is set', () => {
     component.dataService.active_guild = null;

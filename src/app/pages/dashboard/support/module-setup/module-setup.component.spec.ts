@@ -71,7 +71,7 @@ describe('ModuleSetupComponent', () => {
     component['setForumChannel'](channel);
     tick(251);
 
-    expect(component['supportForum']).toEqual({ channel: channel, pending: true });
+    expect(component['supportForum']).toEqual({ channel: channel, pending: true, has_perms: true });
     expect(component['dataService'].error_color).toBe('green');
     expect(showAlertSpy).toHaveBeenCalledWith('SUCCESS_SAVE', 'SUCCESS_FORUM_DESC');
     expect(dataService.isDisabledSpamBtn).toBe(false);
@@ -94,14 +94,6 @@ describe('ModuleSetupComponent', () => {
   it('should use cached data when valid cache exists', () => {
     dataService.active_guild = { id: '123' } as Guild;
 
-    // Mock localStorage
-    const localStorageMock = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn()
-    };
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-
     // Setup mock returns
     const cachedStatus = JSON.stringify({
       task_1: {
@@ -109,19 +101,15 @@ describe('ModuleSetupComponent', () => {
         subtasks: [{ finished: true }, { finished: true }, { finished: true }, { finished: true }]
       }
     });
-    const cachedSupportSetup = JSON.stringify({
+    let cachedSupportSetup = JSON.stringify({
       support_forum: { id: '1', name: 'Forum' },
       support_forum_pending: true,
       discord_channels: [{ id: '2', name: 'General' }]
     });
 
-    localStorageMock.getItem
-      .mockImplementation((key) => {
-        if (key === 'moduleStatus') return cachedStatus;
-        if (key === 'moduleStatusTimestamp') return (Date.now() - 100000).toString(); // Recent timestamp
-        if (key === 'supportSetup') return cachedSupportSetup;
-        return null;
-      });
+    localStorage.setItem('moduleStatus', cachedStatus);
+    localStorage.setItem('moduleStatusTimestamp', (Date.now() - 100000).toString()); // Recent timestamp
+    localStorage.setItem('supportSetup', cachedSupportSetup);
 
     const updateStatusSpy = jest.spyOn(component as any, 'updateStatus');
 
@@ -134,30 +122,28 @@ describe('ModuleSetupComponent', () => {
     });
     expect(component['supportForum']).toEqual({
       channel: { id: '1', name: 'Forum' },
-      pending: true
+      pending: true, has_perms: true
     });
     expect(component['channelItems']).toEqual([{ id: '2', name: 'General' }]);
     expect(updateStatusSpy).toHaveBeenCalled();
     expect(dataService.isLoading).toBe(false);
+
+    // has_perms branch
+    cachedSupportSetup = JSON.stringify({ support_forum: { id: '1', name: 'Forum' }, support_forum_pending: true,
+      discord_channels: [{ id: '2', name: 'General' }], has_perms: false });
+    localStorage.setItem('supportSetup', cachedSupportSetup);
+
+    component['getServerData']();
+
+    expect(component['supportForum'].has_perms).toBe(false);
   });
 
   it('should handle invalid cached moduleStatus', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
 
-    const localStorageMock = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn()
-    };
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-
-    localStorageMock.getItem
-      .mockImplementation((key) => {
-        if (key === 'moduleStatus') return 'null';
-        if (key === 'moduleStatusTimestamp') return (Date.now() - 100000).toString();
-        if (key === 'supportSetup') return '{}';
-        return null;
-      });
+    localStorage.setItem('moduleStatus', 'null');
+    localStorage.setItem('moduleStatusTimestamp', (Date.now() - 100000).toString());
+    localStorage.setItem('supportSetup', '{}');
 
     const apiServiceSpy = jest.spyOn(component['apiService'], 'getModuleStatus')
       .mockReturnValue(defer(() => Promise.resolve({})));
@@ -165,27 +151,13 @@ describe('ModuleSetupComponent', () => {
     component['getServerData']();
     tick();
 
-    expect(localStorageMock.removeItem).toHaveBeenCalledWith('moduleStatus');
+    expect(localStorage.getItem('moduleStatus')).toBeNull();
     expect(apiServiceSpy).not.toHaveBeenCalled();
   }));
 
   it('should fetch fresh data when cache is expired', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
-
-    const localStorageMock = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn()
-    };
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-
-    localStorageMock.getItem
-      .mockImplementation((key) => {
-        if (key === 'moduleStatus') return '{}';
-        if (key === 'moduleStatusTimestamp') return (Date.now() - 600000).toString(); // Expired timestamp
-        if (key === 'supportSetup') return '{}';
-        return null;
-      });
+    localStorage.clear();
 
     const mockModuleStatus = {
       task_1: {
@@ -194,13 +166,13 @@ describe('ModuleSetupComponent', () => {
       }
     } as unknown as TasksCompletionList;
 
-    const mockSupportSetup = {
+    let mockSupportSetup = {
       support_forum: { id: '3', name: 'Support' },
       support_forum_pending: false,
       discord_channels: [{ id: '4', name: 'Help' }]
     } as SupportSetup;
 
-    const getModuleStatusSpy = jest.spyOn(component['apiService'], 'getModuleStatus')
+    let getModuleStatusSpy = jest.spyOn(component['apiService'], 'getModuleStatus')
       .mockReturnValue(defer(() => Promise.resolve(mockModuleStatus)));
 
     const getSupportSetupSpy = jest.spyOn(component['apiService'], 'getSupportSetupStatus')
@@ -218,14 +190,31 @@ describe('ModuleSetupComponent', () => {
     tick(1000);
 
     expect(getSupportSetupSpy).toHaveBeenCalledWith('123');
-    expect(localStorageMock.setItem).toHaveBeenCalledWith('supportSetup', JSON.stringify(mockSupportSetup));
-    expect(localStorageMock.setItem).toHaveBeenCalledWith('moduleStatusTimestamp', expect.any(String));
+    expect(localStorage.getItem('supportSetup')).toBe(JSON.stringify(mockSupportSetup));
+    expect(localStorage.getItem('moduleStatusTimestamp')).toBeTruthy();
+    localStorage.clear();
 
+    // has_perms set branch
+    mockSupportSetup = { support_forum: { id: '3', name: 'Support' }, support_forum_pending: false,
+      discord_channels: [{ id: '4', name: 'Help' }], has_perms: true } as SupportSetup;
+
+    getModuleStatusSpy = jest.spyOn(component['apiService'], 'getModuleStatus')
+      .mockReturnValue(defer(() => Promise.resolve(mockModuleStatus)));
+
+    component['getServerData']();
+    tick();
+
+    expect(getModuleStatusSpy).toHaveBeenCalledTimes(2);
+    expect(component['moduleStatusObj']).toEqual({
+      finished: false,
+      subtasks: [{ finished: true }, { finished: false }]
+    });
   }));
 
   it('should handle API error in getModuleStatus', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
     const errorResponse = new HttpErrorResponse({ status: 500 });
+    localStorage.clear();
 
     jest.spyOn(component['apiService'], 'getModuleStatus')
       .mockReturnValue(defer(() => Promise.reject(errorResponse)));
@@ -240,6 +229,7 @@ describe('ModuleSetupComponent', () => {
 
   it('should handle API error in getSupportSetupStatus', fakeAsync(() => {
     dataService.active_guild = { id: '123' } as Guild;
+    localStorage.clear();
     const moduleStatusResponse = {
       task_1: {finished: false, subtasks: []}
     } as unknown as TasksCompletionList;
@@ -341,7 +331,7 @@ describe('ModuleSetupComponent', () => {
 
     await component['setForumChannel'](channel);
 
-    expect(component['supportForum']).toEqual({ channel: null, pending: false });
+    expect(component['supportForum']).toEqual({ channel: null, pending: false, has_perms: true });
     expect(setSupportForumSpy).not.toHaveBeenCalled();
     setSupportForumSpy.mockRestore();
   });

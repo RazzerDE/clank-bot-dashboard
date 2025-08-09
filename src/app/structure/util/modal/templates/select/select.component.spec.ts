@@ -32,7 +32,7 @@ describe('SelectComponent', () => {
   it('should return early if options is empty', () => {
     component.options = [];
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
-    component.changeSelectPicker();
+    component['changeSelectPicker']();
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
@@ -51,7 +51,7 @@ describe('SelectComponent', () => {
     jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_ROLE_MODAL_DEFAULT');
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.changeSelectPicker();
+    component['changeSelectPicker']();
 
     expect(component.isRolePickerValid).toBe(true);
     expect(emitSpy).toHaveBeenCalledWith(['1', '2']);
@@ -71,7 +71,7 @@ describe('SelectComponent', () => {
     jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_ROLE_MODAL_DEFAULT');
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.changeSelectPicker();
+    component['changeSelectPicker']();
 
     expect(component.isRolePickerValid).toBe(false);
     expect(emitSpy).toHaveBeenCalledWith([]);
@@ -91,7 +91,7 @@ describe('SelectComponent', () => {
     jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_CHANNEL_MODAL_DEFAULT');
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.changeSelectPicker();
+    component['changeSelectPicker']();
 
     expect(component.isRolePickerValid).toBe(true);
     expect(emitSpy).toHaveBeenCalledWith(['2']);
@@ -108,7 +108,7 @@ describe('SelectComponent', () => {
     jest.spyOn(component as any, 'isSelectItemsType').mockReturnValue(true);
     const emitSpy = jest.spyOn(component.selectionChange, 'emit');
 
-    component.changeSelectPicker();
+    component['changeSelectPicker']();
 
     expect(emitSpy).toHaveBeenCalledWith('abc');
   });
@@ -131,7 +131,7 @@ describe('SelectComponent', () => {
   it('should return false if options is empty', () => {
     component.options = [];
     component.type = 'EVENTS_TEST';
-    expect(component.isChannelList()).toBe(false);
+    expect(component['isChannelList']()).toBe(false);
   });
 
   it('should return false if first option is not a Channel', () => {
@@ -139,7 +139,7 @@ describe('SelectComponent', () => {
     component.options = [mockRole];
     component.type = 'EVENTS_TEST';
     jest.spyOn(component as any, 'isChannelType').mockReturnValue(false);
-    expect(component.isChannelList()).toBe(false);
+    expect(component['isChannelList']()).toBe(false);
   });
 
   it('should return true if options has Channel and type starts with EVENTS_', () => {
@@ -147,31 +147,46 @@ describe('SelectComponent', () => {
     component.options = [mockChannel];
     component.type = 'EVENTS_ANNOUNCE';
     jest.spyOn(component as any, 'isChannelType').mockReturnValue(true);
-    expect(component.isChannelList()).toBe(true);
+    expect(component['isChannelList']()).toBe(true);
   });
 
   it('should return true if option is currently selected and type is SECURITY_UNBAN', () => {
     component.type = 'SECURITY_UNBAN';
     component.activeOption = '12345';
-    expect(component.isSelectDisabled('123')).toBe(true);
+    expect(component['isSelectDisabled']('123')).toBe(true);
   });
 
   it('should return false if type is not SECURITY_UNBAN', () => {
     component.type = 'EVENTS_TEST';
     component.activeOption = '12345';
-    expect(component.isSelectDisabled('123')).toBe(false);
+    expect(component['isSelectDisabled']('123')).toBe(false);
   });
 
   it('should return false if activeOption does not start with optionValue', () => {
     component.type = 'SECURITY_UNBAN';
     component.activeOption = '99999';
-    expect(component.isSelectDisabled('123')).toBe(false);
+    expect(component['isSelectDisabled']('123')).toBe(false);
   });
 
   it('should return false if activeOption is null', () => {
     component.type = 'SECURITY_UNBAN';
     component.activeOption = null;
-    expect(component.isSelectDisabled('123')).toBe(false);
+    expect(component['isSelectDisabled']('123')).toBe(false);
+  });
+
+  it('should return true if the given role_id is in activeOptions', () => {
+    component.activeOptions = [{ id: 'test', name: 'TestRole' }] as Role[];
+    expect((component as any).isThemeRoleSelected('test')).toBe(true);
+  });
+
+  it('should return false if the given role_id is not in activeOptions', () => {
+    component.activeOptions = [{ id: 'test', name: 'TestRole' }] as Role[];
+    expect((component as any).isThemeRoleSelected('other')).toBe(false);
+  });
+
+  it('should return false if activeOptions is undefined', () => {
+    component.activeOptions = undefined;
+    expect((component as any).isThemeRoleSelected('test')).toBe(false);
   });
 
 });
