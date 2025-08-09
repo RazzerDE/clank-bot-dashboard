@@ -20,9 +20,6 @@
   <a href="https://tailwindcss.com">
     <img src="https://img.shields.io/badge/Tailwind-3.4.17-27ae60?style=for-the-badge" alt="tailwind version" style="height: 25px;">
   </a>
-   <a href="https://discord.gg/bl4cklist">
-    <img src="https://img.shields.io/discord/616655040614236160?style=for-the-badge&logo=discord&label=Discord&color=%237289da" alt="discord server" style="height: 25px;">
-  </a>
   <a href="https://animate.style">
     <img src="https://img.shields.io/badge/Animate.css-4.1.1-27ae60?style=for-the-badge" alt="animate.css version" style="height: 25px;">
   </a>
@@ -30,6 +27,15 @@
     <img src="https://img.shields.io/badge/JEST-29.7.0-27ae60?style=for-the-badge" alt="jest version" style="height: 25px;">
   </a>
   <br>
+</h4>
+<h4 align="center">
+ <a href="https://discord.gg/bl4cklist">
+    <img src="https://img.shields.io/discord/616655040614236160?style=for-the-badge&logo=discord&label=Discord&color=%237289da" alt="discord server" style="height: 25px;">
+  </a>
+  
+ <a href="https://status.bl4cklist.de">
+   <img src="https://uptime.betterstack.com/status-badges/v1/monitor/22wtt.svg" alt="uptime status" style="height: 25px;">
+ </a>
 </h4>
 
 ## 🗯️ Introduction
