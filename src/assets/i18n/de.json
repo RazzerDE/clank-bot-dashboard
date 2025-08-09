@@ -467,6 +467,8 @@
   "ERROR_SECURITY_ACTION_0_DESC": "Der Panik-Modus wird bereits in Kürze aktiviert - du kannst ihn nicht erneut aktivieren!",
   "ERROR_SECURITY_ACTION_1_TITLE": "Backup wird in Kürze wiederhergestellt",
   "ERROR_SECURITY_ACTION_1_DESC": "Das Backup wird bereits in Kürze wiederhergestellt - du kannst es nicht erneut wiederherstellen!",
+  "ERROR_SECURITY_ACTION_1_NOT_OWNER_TITLE": "Du bist nicht der Server-Besitzer",
+  "ERROR_SECURITY_ACTION_1_NOT_OWNER_DESC": "Nur der Server-Besitzer kann ein Backup wiederherstellen - bitte kontaktiere den Server-Besitzer!",
   "ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE": "Entsperrungs-Antrag nicht gefunden",
   "ERROR_SECURITY_UNBAN_NOT_FOUND_DESC": "Der Entsperrungs-Antrag konnte nicht gefunden werden - wurde er bereits bearbeitet?",
   "ERROR_SECURITY_UNBAN_PERMS_MISSING": "Der Bot hat nicht genug Rechte um User zu entsperren - bitte überprüfe die Bot-Rechte!<br /><strong>Der Bot wird automatisch in 10 Minuten versuchen, die akzeptierten Anträge erneut zu bearbeiten.</strong>",

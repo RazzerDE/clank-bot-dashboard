@@ -286,6 +286,12 @@ export class ActiveShieldsComponent implements OnDestroy {
    * @param element The HTML button element that triggered the modal.
    */
   protected openConfirmModal(action: 0 | 1, element: HTMLButtonElement): void {
+    if (action == 1 && !this.dataService.active_guild?.owner) {
+      this.dataService.showAlert(this.translate.instant("ERROR_SECURITY_ACTION_1_NOT_OWNER_TITLE"),
+        this.translate.instant("ERROR_SECURITY_ACTION_1_NOT_OWNER_DESC"));
+      return;
+    }
+
     this.modalElement = element;
     this.modalAction = action;
 
