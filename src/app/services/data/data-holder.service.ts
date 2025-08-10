@@ -531,6 +531,30 @@ export class DataHolderService {
   }
 
   /**
+   * Updates the combined roles for each support theme by merging default roles and theme-specific roles.
+   *
+   * Each role in the combined list is marked with `_isFromDefault` to indicate whether it is a default mention role or specific to the theme.
+   * This is used for display and logic purposes in the UI.
+   *
+   * @param themes - Array of support themes to update.
+   * @param default_roles - Array of default roles to be included in each theme.
+   * @returns The updated array of support themes with combined roles.
+   */
+  updatePingRoles(themes: SupportTheme[], default_roles: Role[]): SupportTheme[] {
+    themes.forEach((theme: SupportTheme): void => {
+      const standardRoles = default_roles.map(role => ({
+        ...role, _isFromDefault: true }));  // add mark for default ping roles
+
+      const themeRoles = theme.roles.map(role => ({
+        ...role, _isFromDefault: false }));  // add mark for theme-specific ping roles
+
+      theme.combined_roles = [...standardRoles, ...themeRoles];
+    });
+
+    return themes;
+  }
+
+  /**
    * Updates the Discord embed preview element and returns a formatted value for a given giveaway requirement.
    *
    * This function sets the content of the preview element (`req_element`) based on the requirement type (e.g., message count, voice time, membership duration, server, role, custom value, or Nitro restriction).

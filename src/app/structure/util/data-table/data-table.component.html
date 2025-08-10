@@ -179,11 +179,11 @@
 
                 <!-- Support-Theme: Mentioned Role list -->
                 <td class="px-4 py-3" [width]="tconfig.columns[3].width + '%'">
-                  @for (role of obj.roles; track $index) {
+                  @for (role of obj.combined_roles; track $index) {
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-opacity-10
                                  shadow-sm hover:bg-opacity-20 hover:shadow transition-all duration-200 mr-1 mb-1
                                  truncate" [ngStyle]="getRoleStyles(role)">
-                        <span class="truncate">{{ role.name }} {{ tconfig.actions[1](obj.default_roles, role.id) }}</span>
+                        <span class="truncate">{{ role.name }} {{ tconfig.actions[1](role) }}</span>
                     </span>
                   }
                 </td>

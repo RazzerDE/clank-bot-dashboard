@@ -28,9 +28,8 @@
     }
     @for (obj of options; track $index) {
       @if (!isSelectItemsType(obj)) { <!-- Discord Role/channel list -->
-        <option value="{{ obj.id }}" [selected]="((type === 'DEFAULT_MENTION' || this.type === 'SUPPORT_THEME_EDIT')
-                                                 && isDefaultMentioned(obj.id)) ||
-                                                 (this.type === 'SUPPORT_THEME_ADD' && isThemeRoleSelected(obj.id)) ||
+        <option value="{{ obj.id }}" [selected]="((type === 'DEFAULT_MENTION') && isDefaultMentioned(obj.id)) ||
+                                                 (this.type.startsWith('SUPPORT_THEME') && isThemeRoleSelected(obj.id)) ||
                                                  (this.type === 'EVENTS_EFFECTS' && this.activeOption === obj.id) ||
                                                  ((this.type === 'EVENTS_EDIT' || this.type === 'SECURITY_LOGS' ||
                                                    this.type === 'MISC_GLOBALCHAT') && this.activeOption === obj.id)">

@@ -28,13 +28,13 @@ export class SelectComponent {
   @Input() activeOption: string | null | undefined = null;
   @Input() activeOptions : Role[] | undefined;
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
-  isRolePickerValid: boolean = false;
   @Output() selectionChange = new EventEmitter<string[] | string>();
 
   @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected isFocused: boolean = false;
+  isRolePickerValid: boolean = false;
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService) {}
 

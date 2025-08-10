@@ -24,6 +24,7 @@ export interface SupportTheme {
   // added by us
   has_perms?: boolean;
   default_roles?: Role[];
+  combined_roles?: Role[]; // roles that are combined with the default roles
   guild_id?: string;
   pending?: boolean; // change is pending
   action?: 'CREATE' | 'UPDATE' | 'DELETE'; // action to perform

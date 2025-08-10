@@ -71,6 +71,9 @@ export class SupportThemeAddComponent {
           this.dataService.support_themes.push(theme);
           this.updateThemes();
 
+          const default_roles: Role[] = this.dataService.support_themes[0].default_roles || [];
+          this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
+
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           this.newTheme = { ...this.dataService.initTheme };
 
@@ -133,6 +136,9 @@ export class SupportThemeAddComponent {
           const foundThemeIndex: number = this.dataService.support_themes.findIndex((t) => t.name === theme.name);
           if (foundThemeIndex !== -1) { this.dataService.support_themes[foundThemeIndex] = {...theme}; }
 
+          const default_roles: Role[] = this.dataService.support_themes[0].default_roles || [];
+          this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
+
           this.updateThemes();
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
           this.newTheme = { ...this.dataService.initTheme };
@@ -179,37 +185,13 @@ export class SupportThemeAddComponent {
 
    /**
     * Updates the roles associated with the current theme.
-    *
-    * This method performs two main operations:
-    * 1. Converts string role IDs to Role objects if the current theme roles are stored as strings
-    * 2. Adds default roles from the first support theme if they aren't already included
-    *    in the current theme's roles to ensure consistent mentioning behavior
-    *
-    * The method prevents duplicate roles by checking role IDs before adding default roles.
+    * Converts string role IDs to Role objects if the current theme roles are stored as strings
    */
   protected updateThemeMentions(): void {
     // Convert string role IDs to Role objects if necessary
     if (Array.isArray(this.newTheme.roles) && typeof this.newTheme.roles[0] === 'string') {
       const roleIds = this.newTheme.roles as unknown as string[];
       this.newTheme.roles = this.discordRoles.filter(role => roleIds.includes(role.id));
-    }
-
-    // Add default roles from the first support theme if available
-    if (this.dataService.support_themes && this.dataService.support_themes.length > 0 &&
-      this.dataService.support_themes[0].default_roles &&
-      this.dataService.support_themes[0].default_roles.length > 0) {
-
-      const defaultRoles = this.dataService.support_themes[0].default_roles;
-
-      // Create a Set of existing role IDs to avoid duplicates
-      const existingRoleIds = new Set((this.newTheme.roles as Role[]).map(role => role.id));
-
-      // Add default roles that aren't already included
-      defaultRoles.forEach(role => {
-        if (!existingRoleIds.has(role.id)) {
-          (this.newTheme.roles as Role[]).push(role);
-        }
-      });
     }
   }
 

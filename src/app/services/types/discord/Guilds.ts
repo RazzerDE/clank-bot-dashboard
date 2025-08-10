@@ -38,6 +38,7 @@ export interface Role {
 
   // properties added by us
   support_level?: number;
+  _isFromDefault?: boolean;
 }
 
 export interface Channel {
