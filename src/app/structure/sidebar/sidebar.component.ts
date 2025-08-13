@@ -12,16 +12,19 @@ import {ComService} from "../../services/discord-com/com.service";
 import {nav_items, NavigationItem} from "../../services/types/navigation/NavigationItem";
 import {Guild} from "../../services/types/discord/Guilds";
 import {Subscription} from "rxjs";
+import {faCircleQuestion} from "@fortawesome/free-regular-svg-icons";
+import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: 'app-sidebar',
-    imports: [
-        FaIconComponent,
-        NgOptimizedImage,
-        RouterLink,
-        NgClass,
-        TranslatePipe
-    ],
+  imports: [
+    FaIconComponent,
+    NgOptimizedImage,
+    RouterLink,
+    NgClass,
+    TranslatePipe,
+    NgbTooltip
+  ],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss',
     animations: [
@@ -194,4 +197,6 @@ export class SidebarComponent implements AfterViewInit, OnDestroy {
     const keysToRemove: string[] = Object.keys(localStorage).filter(key => !importantKeys.includes(key));
     keysToRemove.forEach(key => localStorage.removeItem(key));
   }
+
+  protected readonly faCircleQuestion = faCircleQuestion;
 }
