@@ -142,6 +142,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       localStorage.getItem('support_themes_timestamp') && localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
+      const default_roles: Role[] = this.dataService.support_themes[0].default_roles || [];
+      this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
+
       const moduleStatus: TasksCompletionList = JSON.parse(localStorage.getItem('moduleStatus') as string);
       this.isForumMissing = !moduleStatus['task_1'].subtasks[0].finished;
 
@@ -158,6 +161,9 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     this.discordService.getSupportThemes(this.dataService.active_guild!.id).then((observable) => {
       subscription = observable.subscribe({
         next: (response: SupportThemeResponse): void => {
+          const default_roles: Role[] = response.themes[0].default_roles || [];
+          response.themes = this.dataService.updatePingRoles(response.themes, default_roles);
+
           this.dataService.support_themes = response.themes;
           this.filteredThemes = this.dataService.support_themes;
 
@@ -311,6 +317,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
    */
   protected openSupportThemeModal(action: 'ADD' | 'EDIT', theme?: SupportTheme): void {
     this.modalType = `SUPPORT_THEME_${action}`;
+    this.modalExtra = [];
+
     if (action === 'ADD') {
       if (this.dataService.support_themes.length >= 17) {
         this.dataService.error_color = 'red';
@@ -322,6 +330,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
       this.editTheme = { ...this.dataService.initTheme };
+      this.editTheme.roles = [];
     } else {
       theme!.guild_id = this.dataService.active_guild!.id;
       // remove default mention roles (show only role-specific)
@@ -333,7 +342,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
 
     this.dataService.faq_answer = this.editTheme.faq_answer || '';
     this.dataService.isFAQ = Boolean(this.editTheme.faq_answer && this.editTheme.faq_answer.length > 0);
-    this.modal.showModal();
+    setTimeout((): void => { this.modal.showModal(); }, 10);
   }
 
   /**
@@ -361,7 +370,8 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           next: (_result: boolean): void => {
             // Successfully changed, update shown data
             this.selectedOptions = selectedOptions;
-            this.updatePingRoles(selectedOptions);
+            const default_roles: Role[] = this.discordRoles.filter(role => selectedOptions.includes(role.id));
+            this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
             localStorage.removeItem('support_themes');
 
             if (selectedOptions.length > 0) {
@@ -397,59 +407,13 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   }
 
   /**
-   * Updates the roles associated with each support theme based on the selected options.
-   *
-   * This method modifies the `roles` array of each `SupportTheme` in the `supportThemes` list.
-   * If no roles are selected, it removes all default roles. Otherwise, it replaces the old default roles
-   * with the newly selected roles and ensures no duplicates are added. The roles are then sorted by their position.
-   *
-   * @param {string[]} selectedOptions - An array of role IDs selected by the user.
-   */
-  private updatePingRoles(selectedOptions: string[]): void {
-    // Update the default roles for each support theme
-    this.dataService.support_themes.forEach((theme: SupportTheme): void => {
-      if (selectedOptions.length === 0) {  // Remove all default roles
-        const defaultRoleIds = this.modalExtra.map(role => role.id);
-        theme.roles = theme.roles.filter(role => !defaultRoleIds.includes(role.id));
-      } else {
-        // Identify previous default roles stored in modalExtra
-        const defaultRoleIds = new Set(this.modalExtra.map(role => role.id));
-        // Remove all old default roles
-        theme.roles = theme.roles.filter(role => !defaultRoleIds.has(role.id));
-
-        // Add the newly selected roles
-        const newRoles: Role[] = [];
-        selectedOptions.forEach((roleId: string): void => {
-          const selectedRole: Role | undefined = this.discordRoles.find(role => role.id === roleId);
-          if (selectedRole) {
-            newRoles.push(selectedRole);
-          }
-        });
-
-        // Update theme roles with non-default roles plus newly selected roles
-        theme.roles = [...theme.roles, ...newRoles];
-      }
-
-      // Update default_roles property for each theme to track the current default roles
-      theme.default_roles = selectedOptions.length === 0 ? [] :
-        this.discordRoles.filter(role => selectedOptions.includes(role.id));
-
-      theme.roles.sort((a: Role, b: Role): number => a.id.localeCompare(b.id)); // Sort roles by id
-    });
-  }
-
-  /**
    * Checks if a given role ID is part of the default roles or selected options and returns a translated placeholder string if true.
    *
-   * @param default_roles - An array of default `Role` objects to check against.
-   * @param role_id - The ID of the role to check.
+   * @param role - The role to check against the default roles and selected options.
    * @returns A string containing the translated placeholder if the role ID is found in the default roles or selectedOptions, otherwise an empty string.
    */
-  private isDefaultMentioned(default_roles: Role[], role_id: string): string {
-    const isDefault: boolean = default_roles.some(r => r.id === role_id);
-    const isSelected: boolean = this.modalType === 'DEFAULT_MENTION' && this.selectedOptions.includes(role_id);
-
-    return (isDefault || isSelected) ? '(' + this.translate.instant("PLACEHOLDER_DEFAULT") + ')' : '';
+  private isDefaultMentioned(role?: Role): string {
+    return role && role._isFromDefault === true ? '(' + this.translate.instant("PLACEHOLDER_DEFAULT") + ')' : '';
   }
 
   /**
@@ -509,7 +473,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       ],
       actions: [
         (theme: SupportTheme): void => this.openFAQModal(theme),
-        (default_roles: Role[], role_id: string): string => this.isDefaultMentioned(default_roles, role_id)
+        (role?: Role): string => this.isDefaultMentioned(role)
       ]
     };
   };

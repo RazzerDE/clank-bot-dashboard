@@ -282,4 +282,52 @@ describe('DataTableComponent', () => {
     tick(2000);
     expect(component['dataTableBtnPressed']).toBe(false);
   }));
+
+  it('should return true if any SupportTheme row is pending and has no perms', () => {
+    component.tconfig.rows = [
+      { roles: [], pending: true, has_perms: false } as any,
+      { roles: [], pending: false, has_perms: true } as any
+    ];
+    expect(component['hasPendingItemsWithNoPerms']()).toBe(true);
+  });
+
+  it('should return true if any UnbanRequest row has no perms', () => {
+    component.tconfig.rows = [
+      { user_id: '1', user_name: 'User', user_avatar: '', staff_id: '2', staff_name: '', staff_avatar: '', end_date: '', excuse: '', has_perms: false } as any
+    ];
+    expect(component['hasPendingItemsWithNoPerms']()).toBe(true);
+  });
+
+  it('should return false if no SupportTheme or UnbanRequest row matches the condition', () => {
+    component.tconfig.rows = [
+      { roles: [], pending: false, has_perms: true } as any,
+      { user_id: '1', user_name: 'User', user_avatar: '', staff_id: '2', staff_name: '', staff_avatar: '', end_date: '', excuse: '', has_perms: true } as any
+    ];
+    expect(component['hasPendingItemsWithNoPerms']()).toBe(false);
+  });
+
+  it('should return false if rows is undefined', () => {
+    component.tconfig.rows = undefined as any;
+    expect(component['hasPendingItemsWithNoPerms']()).toBe(false);
+  });
+
+  it('should return only UnbanRequest items with status 0', () => {
+    const unban1 = { user_id: '1', user_name: 'A', user_avatar: '', staff_id: '2', staff_name: '', staff_avatar: '', end_date: '', excuse: '', status: 0 } as any;
+    const unban2 = { user_id: '2', user_name: 'B', user_avatar: '', staff_id: '3', staff_name: '', staff_avatar: '', end_date: '', excuse: '', status: 1 } as any;
+    const notUnban = { foo: 'bar' } as any;
+    component.tconfig.rows = [unban1, unban2, notUnban];
+
+    const result = (component as any).returnFilteredRequests();
+
+    expect(result).toEqual([unban1]);
+  });
+
+  it('should return an empty array if no UnbanRequest with status 0 exists', () => {
+    const unban = { user_id: '1', user_name: 'A', user_avatar: '', staff_id: '2', staff_name: '', staff_avatar: '', end_date: '', excuse: '', status: 1 } as any;
+    component.tconfig.rows = [unban];
+
+    const result = (component as any).returnFilteredRequests();
+
+    expect(result).toEqual([]);
+  });
 });

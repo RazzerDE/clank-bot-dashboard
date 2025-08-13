@@ -88,7 +88,7 @@
       </div>
 
       <!-- Thread Selection - Container -->
-      @if (this.dataService.security_logs.channel_id && !this.dataService.security_logs.channel_id_pending) {
+      @if (this.dataService.security_logs.channel_id && !this.dataService.security_logs.channel_id_pending && this.dataService.security_logs.has_perms) {
         <app-drag-n-drop class="w-full" [type]="'SECURITY_LOGS'" [org_features]="org_logs" [feature_list]="log_list"
                          [enabledFeatures]="enabledFeatures" [disabledFeatures]="disabledFeatures" [disabledSendBtn]="this.sendState"
                          [refresh_data_function]="this.getSecurityLogs.bind(this)" (saveAction)="this.saveLogThreads();"/>
@@ -120,11 +120,13 @@
           </div>
 
             <div class="flex flex-col items-center justify-center p-6 h-full">
-              <img [ngSrc]="'assets/img/bg/sleeping.png'" class="animate-float mb-2" width="128" height="128"
-                   alt="Sleeping-Icon ~ Clank Discord-Bot" />
+              <img [ngSrc]="!this.dataService.security_logs.has_perms ? 'assets/img/bg/warning.png' : 'assets/img/bg/sleeping.png'"
+                   class="animate-float mb-2" width="128" height="128" alt="Sleeping-Icon ~ Clank Discord-Bot" />
               <div class="text-center">
                 <h2 class="text-2xl font-medium text-gray-800 dark:text-gray-200 mb-2 transition-colors duration-300">
-                  @if (this.dataService.security_logs.channel_id_delete) {
+                  @if (!this.dataService.security_logs.has_perms) {
+                    {{ 'PAGE_SECURITY_LOGS_CHANNEL_PERMS_MISSING_TITLE' | translate }}
+                  } @else if (this.dataService.security_logs.channel_id_delete) {
                     {{ 'PAGE_SECURITY_LOGS_CHANNEL_DELETION_TITLE' | translate }}
                   } @else if (this.dataService.security_logs.channel_id_pending) {
                     {{ 'PAGE_SECURITY_LOGS_CHANNEL_PENDING_TITLE' | translate }}
@@ -133,7 +135,9 @@
                   }
                 </h2>
                 <p class="text-gray-500 dark:text-gray-400 text-lg transition-colors duration-300">
-                  @if (this.dataService.security_logs.channel_id_delete) {
+                  @if (!this.dataService.security_logs.has_perms) {
+                    <span [innerHTML]="'PAGE_SECURITY_LOGS_CHANNEL_PERMS_MISSING_DESC' | translate"></span>
+                  } @else if (this.dataService.security_logs.channel_id_delete) {
                     {{ 'PAGE_SECURITY_LOGS_CHANNEL_DELETION_DESC' | translate }}
                   } @else if (this.dataService.security_logs.channel_id_pending) {
                     {{ 'PAGE_SECURITY_LOGS_CHANNEL_PENDING_DESC' | translate }}

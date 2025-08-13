@@ -12,26 +12,42 @@
     <!-- Status Box -->
     <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg bg-gradient-to-l from-slate-50
               via-gray-50 to-blue-50 dark:from-slate-800 dark:via-gray-800 dark:to-slate-900 justify-center
-                flex-col transition-colors duration-500" [class.!pt-4]="moduleStatus === 1"
-      [ngClass]="moduleStatus == 2 ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
-                                     moduleStatus == 0 ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
-                                     'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
+                flex-col transition-colors duration-500" [class.!py-4]="moduleStatus === 1 || !this.supportForum.has_perms && this.supportForum.pending"
+      [ngClass]="moduleStatus == 2 && !this.supportForum.pending ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
+                 moduleStatus == 0 || (this.supportForum.pending && !this.supportForum.has_perms) ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
+                 'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
       @if (this.dataLoading.statusBox) {
         <div class="h-28 flex items-center">
           <span class="data-loader"></span>
         </div>
       } @else {
         <img class="shrink-0 inline" alt="Modul Status Icon ~ Clank Discord Bot" height="64" width="64"
-             [ngSrc]="moduleStatus == 2 ? '/assets/img/icons/check2.png' :
-                      moduleStatus == 1 ? '/assets/img/icons/warning.png' : '/assets/img/icons/error.png'"
-             [ngClass]="moduleStatus == 1 ? 'w-14 h-14 mb-2' : 'w-10 h-10 mb-3'"/>
+             [ngSrc]="moduleStatus == 2 && (this.supportForum.has_perms && !this.supportForum.pending) ? '/assets/img/icons/check2.png' :
+                      moduleStatus == 1 || (this.supportForum.has_perms && this.supportForum.pending) ? '/assets/img/icons/warning.png' : '/assets/img/icons/error.png'"
+             [ngClass]="moduleStatus == 1 || (this.supportForum.has_perms && this.supportForum.pending) ? 'w-14 h-14 mb-2' : 'w-10 h-10 mb-3'"/>
         <h4 class="font-medium mb-2 !text-green-800 dark:!text-green-400"
-            [ngClass]="moduleStatus == 2 ? '!text-green-800 dark:!text-green-400' :
-                       moduleStatus == 0 ? '!text-red-800 dark:!text-red-400' : '' +
-                                           '!text-yellow-800 dark:!text-yellow-300'">
-          {{ 'PAGE_SETUP_MODULE_TITLE_' + moduleStatus | translate }}
+            [ngClass]="moduleStatus == 2 && (this.supportForum.has_perms && !this.supportForum.pending) ? '!text-green-800 dark:!text-green-400' :
+                       moduleStatus == 0 || (!this.supportForum.has_perms) ? '!text-red-800 dark:!text-red-400' :
+                                                                             '!text-yellow-800 dark:!text-yellow-300'">
+          @if (this.supportForum.pending) {
+            @if (!this.supportForum.has_perms) {
+              {{ 'PAGE_SETUP_MODULE_TITLE_ERROR' | translate }}
+            } @else {
+              {{ 'PAGE_SETUP_MODULE_TITLE_PENDING' | translate }}
+            }
+          } @else {
+            {{ 'PAGE_SETUP_MODULE_TITLE_' + moduleStatus | translate }}
+          }
         </h4>
-        {{ 'PAGE_SETUP_MODULE_DESC_' + moduleStatus | translate }}
+        @if (this.supportForum.pending) {
+          @if (!this.supportForum.has_perms) {
+            <span class="text-center" [innerHTML]="'PAGE_SETUP_MODULE_DESC_ERROR' | translate"></span>
+          } @else {
+            {{ 'PAGE_SETUP_MODULE_DESC_PENDING' | translate }}
+          }
+        } @else {
+          {{ 'PAGE_SETUP_MODULE_DESC_' + moduleStatus | translate }}
+        }
       }
     </div>
 
@@ -145,9 +161,11 @@
                       !border-gray-300 dark:!border-gray-700 border-1" [@slideInOut]>
               <div class="flex flex-col lg:flex-row justify-between items-center">
                 <p class="text-gray-700 dark:text-gray-300 transition-colors duration-500 mb-0 p-0">
-                  @if (!this.supportForum.pending) {
+                  @if (!this.supportForum.pending && this.supportForum.has_perms) {
                     <strong>{{ 'PAGE_SETUP_CHANNEL_INFO' | translate }}</strong>
-                  } @else {
+                  } @else if (!this.supportForum.has_perms) {
+                    <strong>{{ 'PAGE_SETUP_CHANNEL_INFO_PERMS_MISSING' | translate }}</strong>
+                  } @else if (this.supportForum.pending) {
                     <strong>{{ 'PAGE_SETUP_CHANNEL_INFO_PENDING' | translate }}</strong>
                   }
                 </p>

@@ -39,7 +39,8 @@ describe('SupportThemesComponent', () => {
             initTheme: { id: "0", name: '', icon: '🌟', desc: '', faq_answer: '', roles: [], default_roles: [],
               pending: true, action: 'CREATE' }, sidebarStateChanged: new BehaviorSubject<boolean>(false),
             redirectLoginError: jest.fn(), showAlert: jest.fn(), support_themes: [], getEmojibyId: jest.fn(),
-            getGuildEmojis: jest.fn(), handleApiError: jest.fn() } },
+            getGuildEmojis: jest.fn(), handleApiError: jest.fn(),
+            updatePingRoles: (themes: SupportTheme[], _roles: Role[]): SupportTheme[] => { return themes; }} },
       ]
     })
     .compileComponents();
@@ -127,22 +128,39 @@ describe('SupportThemesComponent', () => {
     expect(component['filteredThemes']).toEqual(supportThemes);
     expect(component.dataService.isLoading).toBe(false);
     expect(component['dataLoading']).toBe(false);
+
+    // branch for ".default_roles || []"
+    component['dataService'].support_themes = [{ default_roles: undefined }] as any;
+    localStorage.setItem('support_themes', JSON.stringify(component.dataService.support_themes));
+    component['getSupportThemes']();
+
+    expect(component.dataService.support_themes).toEqual([{}]);
   });
 
   it('should fetch from API if no cache or no_cache is true and update state', fakeAsync(() => {
     component.dataService.active_guild = { id: 'guild1' } as any;
-    const mockObject = {
+    let mockObject = {
       themes: [{name: 'Theme2', desc: '', roles: [], default_roles: []}],
       guild_roles: [{id: '2', name: 'Role2'}],
       has_vip: true,
     } as unknown as SupportThemeResponse;
-    const getSupportThemesSpy = jest.spyOn(component['discordService'], 'getSupportThemes').mockResolvedValue(defer(() => Promise.resolve(mockObject)));
+    let getSupportThemesSpy = jest.spyOn(component['discordService'], 'getSupportThemes').mockResolvedValue(defer(() => Promise.resolve(mockObject)));
     jest.spyOn(component as any, 'getModuleStatus').mockImplementation((): void => {});
 
     component['getSupportThemes'](true);
     tick();
 
     expect(getSupportThemesSpy).toHaveBeenCalledWith('guild1');
+
+    // branch for ".default_roles || []"
+    mockObject.themes = [{ default_roles: undefined }] as any;
+    getSupportThemesSpy = jest.spyOn(component['discordService'], 'getSupportThemes').mockResolvedValue(defer(() => Promise.resolve(mockObject)));
+
+    component['getSupportThemes'](true);
+    tick();
+
+    expect(component.dataService.support_themes).toEqual([{}]);
+    expect(getSupportThemesSpy).toHaveBeenCalledTimes(2);
   }));
 
   it('should handle API response and update localStorage', () => {
@@ -381,12 +399,13 @@ describe('SupportThemesComponent', () => {
     );
   });
 
-  it('should open modal in ADD mode, fetch emojis, reset reloadEmojis and set editTheme to initTheme', () => {
+  it('should open modal in ADD mode, fetch emojis, reset reloadEmojis and set editTheme to initTheme', fakeAsync(() => {
     component['reloadEmojis'] = true;
-    (component.dataService as any).initTheme = { name: 'init', faq_answer: '' };
+    (component.dataService as any).initTheme = { name: 'init', faq_answer: '', roles: [] };
     jest.spyOn(component['modal'], 'showModal');
 
     component['openSupportThemeModal']('ADD');
+    tick(11);
 
     expect(component['modalType']).toBe('SUPPORT_THEME_ADD');
     expect(component['reloadEmojis']).toBe(false);
@@ -394,9 +413,9 @@ describe('SupportThemesComponent', () => {
     expect(component.dataService.faq_answer).toBe('');
     expect(component.dataService.isFAQ).toBe(false);
     expect(component['modal'].showModal).toHaveBeenCalled();
-  });
+  }));
 
-  it('should open modal in EDIT mode, set modalExtra, old_name, editTheme, and show modal', () => {
+  it('should open modal in EDIT mode, set modalExtra, old_name, editTheme, and show modal', fakeAsync(() => {
     const theme = {
       name: 'Theme1',
       faq_answer: 'answer',
@@ -411,6 +430,7 @@ describe('SupportThemesComponent', () => {
     jest.spyOn(component['modal'], 'showModal');
 
     component['openSupportThemeModal']('EDIT', theme);
+    tick(11);
 
     expect(component['modalType']).toBe('SUPPORT_THEME_EDIT');
     expect(theme.guild_id).toBe('guild1');
@@ -420,9 +440,9 @@ describe('SupportThemesComponent', () => {
     expect(component.dataService.faq_answer).toBe('answer');
     expect(component.dataService.isFAQ).toBe(true);
     expect(component['modal'].showModal).toHaveBeenCalled();
-  });
+  }));
 
-  it('should handle case when default_roles is undefined in openSupportThemeModal EDIT', () => {
+  it('should handle case when default_roles is undefined in openSupportThemeModal EDIT', fakeAsync(() => {
     const theme = {
       name: 'ThemeNoDefaultRoles',
       faq_answer: '',
@@ -436,13 +456,14 @@ describe('SupportThemesComponent', () => {
 
     // cover the || [] branch
     component['openSupportThemeModal']('EDIT', theme);
+    tick(11);
 
     expect(component['modalType']).toBe('SUPPORT_THEME_EDIT');
     expect(component['modalExtra']).toEqual([{ id: '2', name: 'Role2' }]);
     expect(theme.old_name).toBe('ThemeNoDefaultRoles');
     expect(component['editTheme']).toBe(theme);
     expect(component['modal'].showModal).toHaveBeenCalled();
-  });
+  }));
 
   it('should do nothing if no active guild is set', () => {
     component.dataService.active_guild = null;
@@ -530,130 +551,33 @@ describe('SupportThemesComponent', () => {
     expect(component['modal'].hideModal).toHaveBeenCalled();
   });
 
-  it('should remove all default roles when selectedOptions is empty', () => {
-    const defaultRole = { id: '1', name: 'Role1' } as Role;
-    const otherRole = { id: '2', name: 'Role2' } as Role;
-    component.dataService.support_themes = [
-      { roles: [defaultRole, otherRole], default_roles: [defaultRole] }
-    ] as any;
-    component['modalExtra'] = [defaultRole];
-    component['discordRoles'] = [defaultRole, otherRole];
+  it('should return the translated default placeholder if role is from default', () => {
+    const translateSpy = jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_DEFAULT');
+    const role = { _isFromDefault: true } as Role;
 
-    (component as any).updatePingRoles([]);
+    const result = (component as any).isDefaultMentioned(role);
 
-    expect(component.dataService.support_themes[0].roles).toEqual([otherRole]);
-    expect(component.dataService.support_themes[0].default_roles).toEqual([]);
+    expect(translateSpy).toHaveBeenCalledWith('PLACEHOLDER_DEFAULT');
+    expect(result).toBe('(PLACEHOLDER_DEFAULT)');
   });
 
-  it('should replace old default roles with new selected roles', () => {
-    const defaultRole = { id: '1', name: 'Role1' } as Role;
-    const newRole = { id: '2', name: 'Role2' } as Role;
-    component.dataService.support_themes = [
-      { roles: [defaultRole], default_roles: [defaultRole] }
-    ] as any;
-    component['modalExtra'] = [defaultRole];
-    component['discordRoles'] = [defaultRole, newRole];
+  it('should return an empty string if role is not from default', () => {
+    const translateSpy = jest.spyOn(component['translate'], 'instant');
+    const role = { _isFromDefault: false } as Role;
 
-    (component as any).updatePingRoles(['2']);
+    const result = (component as any).isDefaultMentioned(role);
 
-    expect(component.dataService.support_themes[0].roles).toEqual([newRole]);
-    expect(component.dataService.support_themes[0].default_roles).toEqual([newRole]);
-  });
-
-  it('should add multiple new selected roles and sort them by id', () => {
-    const defaultRole = { id: '1', name: 'Role1' } as Role;
-    const newRole1 = { id: '2', name: 'Role2' } as Role;
-    const newRole2 = { id: '3', name: 'Role3' } as Role;
-    component.dataService.support_themes = [
-      { roles: [defaultRole], default_roles: [defaultRole] }
-    ] as any;
-    component['modalExtra'] = [defaultRole];
-    component['discordRoles'] = [defaultRole, newRole2, newRole1];
-
-    (component as any).updatePingRoles(['2', '3']);
-
-    expect(component.dataService.support_themes[0].roles).toEqual([newRole1, newRole2]);
-    expect(component.dataService.support_themes[0].default_roles).toEqual([newRole2, newRole1]);
-  });
-
-  it('should not add roles that are not found in discordRoles', () => {
-    const defaultRole = { id: '1', name: 'Role1' } as Role;
-    component.dataService.support_themes = [
-      { roles: [defaultRole], default_roles: [defaultRole] }
-    ] as any;
-    component['modalExtra'] = [defaultRole];
-    component['discordRoles'] = [defaultRole];
-
-    (component as any).updatePingRoles(['999']);
-
-    expect(component.dataService.support_themes[0].roles).toEqual([]);
-    expect(component.dataService.support_themes[0].default_roles).toEqual([]);
-  });
-
-  it('should handle multiple support themes', () => {
-    const defaultRole = { id: '1', name: 'Role1' } as Role;
-    const newRole = { id: '2', name: 'Role2' } as Role;
-    component.dataService.support_themes = [
-      { roles: [defaultRole], default_roles: [defaultRole] },
-      { roles: [defaultRole], default_roles: [defaultRole] }
-    ] as any;
-    component['modalExtra'] = [defaultRole];
-    component['discordRoles'] = [defaultRole, newRole];
-
-    (component as any).updatePingRoles(['2']);
-
-    expect(component.dataService.support_themes[0].roles).toEqual([newRole]);
-    expect(component.dataService.support_themes[1].roles).toEqual([newRole]);
-    expect(component.dataService.support_themes[0].default_roles).toEqual([newRole]);
-    expect(component.dataService.support_themes[1].default_roles).toEqual([newRole]);
-  });
-
-  it('should return placeholder if role is in default_roles', () => {
-    const default_roles = [{ id: '1', name: 'Role1' }] as Role[];
-    component['modalType'] = 'SUPPORT_THEME_ADD';
-    component['selectedOptions'] = [];
-    jest.spyOn(component['translate'], 'instant').mockReturnValue('DEFAULT');
-
-    const result = (component as any).isDefaultMentioned(default_roles, '1');
-
-    expect(result).toBe('(DEFAULT)');
-    expect(component['translate'].instant).toHaveBeenCalledWith('PLACEHOLDER_DEFAULT');
-  });
-
-  it('should return placeholder if role is in selectedOptions and modalType is DEFAULT_MENTION', () => {
-    const default_roles = [{ id: '2', name: 'Role2' }] as Role[];
-    component['modalType'] = 'DEFAULT_MENTION';
-    component['selectedOptions'] = ['3'];
-    jest.spyOn(component['translate'], 'instant').mockReturnValue('DEFAULT');
-
-    const result = (component as any).isDefaultMentioned(default_roles, '3');
-
-    expect(result).toBe('(DEFAULT)');
-    expect(component['translate'].instant).toHaveBeenCalledWith('PLACEHOLDER_DEFAULT');
-  });
-
-  it('should return empty string if role is not in default_roles or selectedOptions', () => {
-    const default_roles = [{ id: '1', name: 'Role1' }] as Role[];
-    component['modalType'] = 'SUPPORT_THEME_ADD';
-    component['selectedOptions'] = ['2'];
-    jest.spyOn(component['translate'], 'instant');
-
-    const result = (component as any).isDefaultMentioned(default_roles, '3');
-
+    expect(translateSpy).not.toHaveBeenCalled();
     expect(result).toBe('');
-    expect(component['translate'].instant).not.toHaveBeenCalled();
   });
 
-  it('should return placeholder if both default_roles and selectedOptions contain the role', () => {
-    const default_roles = [{ id: '1', name: 'Role1' }] as Role[];
-    component['modalType'] = 'DEFAULT_MENTION';
-    component['selectedOptions'] = ['1'];
-    jest.spyOn(component['translate'], 'instant').mockReturnValue('DEFAULT');
+  it('should return an empty string if role is undefined', () => {
+    const translateSpy = jest.spyOn(component['translate'], 'instant');
 
-    const result = (component as any).isDefaultMentioned(default_roles, '1');
+    const result = (component as any).isDefaultMentioned(undefined);
 
-    expect(result).toBe('(DEFAULT)');
-    expect(component['translate'].instant).toHaveBeenCalledWith('PLACEHOLDER_DEFAULT');
+    expect(translateSpy).not.toHaveBeenCalled();
+    expect(result).toBe('');
   });
 
   it('should hide modal if clicked on roleModalContent and modalType is SUPPORT_THEME_ADD', () => {
@@ -725,10 +649,12 @@ describe('SupportThemesComponent', () => {
   });
 
   it('should call isDefaultMentioned via tableConfig.actions', () => {
-    const default_roles = [{ id: '1', name: 'Role1' }] as Role[];
-    const role_id = '1';
-    const result = component['tableConfig'].actions[1](default_roles, role_id);
-    expect(result).toContain('PLACEHOLDER_DEFAULT');
+    const role: Role = { id: '1', name: 'Role1', _isFromDefault: true } as Role;
+    jest.spyOn(component['translate'], 'instant').mockReturnValue('PLACEHOLDER_DEFAULT');
+
+    const result = component['tableConfig'].actions[1](role);
+
+    expect(result).toBe('(PLACEHOLDER_DEFAULT)');
   });
 
   it('should store moduleStatus, set isForumMissing, set loading flags to false and unsubscribe on success', fakeAsync(() => {

@@ -289,6 +289,10 @@ export class DataHolderService {
       subscription = observable.subscribe({
         next: (response: Emoji[]): void => {
           this.guild_emojis = response;
+          if (this.guild_emojis.length === 0) {
+            this.guild_emojis = initEmojis;
+          }
+
           this.isEmojisLoading = false;
           localStorage.setItem('guild_emojis', JSON.stringify(this.guild_emojis));
           localStorage.setItem('guild_emojis_timestamp', Date.now().toString());
@@ -509,11 +513,13 @@ export class DataHolderService {
    * @param emoji - The Discord emoji string format (e.g., '<:emojiname:123456789>' or '<a:emojiname:123456789>')
    * @param isID - Optional boolean to indicate if the input is the ID of the emoji (default: false)
    * @param isAnimated - Optional boolean to indicate if the emoji is animated (default: false)
+   * @param emoji_name - Optional string indicating to return the entire emoji string instead of the CDN URL (default: false)
    * @returns The CDN URL for the emoji, or an empty string if the emoji format is invalid
    */
-  getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean): string {
+  getEmojibyId(emoji: string, isID?: boolean, isAnimated?: boolean, emoji_name?: string): string {
     if (!emoji) { return emoji; }
     if (isID) { return `https://cdn.discordapp.com/emojis/${emoji}.${isAnimated ? 'gif' : 'png'}`; }
+    if (emoji_name) { return `<${isAnimated ? 'a' : ''}:${emoji_name}:${emoji}>`; }
 
     // Match emoji format <:name:id> or <a:name:id>
     const match: RegExpMatchArray | null = emoji.match(/<(a?):(\w+):(\d+)>/);
@@ -522,6 +528,30 @@ export class DataHolderService {
     const emojiId: string = match[3];
     const fileType: 'gif' | 'png' = match[1] === 'a' ? 'gif' : 'png';
     return `https://cdn.discordapp.com/emojis/${emojiId}.${fileType}`;
+  }
+
+  /**
+   * Updates the combined roles for each support theme by merging default roles and theme-specific roles.
+   *
+   * Each role in the combined list is marked with `_isFromDefault` to indicate whether it is a default mention role or specific to the theme.
+   * This is used for display and logic purposes in the UI.
+   *
+   * @param themes - Array of support themes to update.
+   * @param default_roles - Array of default roles to be included in each theme.
+   * @returns The updated array of support themes with combined roles.
+   */
+  updatePingRoles(themes: SupportTheme[], default_roles: Role[]): SupportTheme[] {
+    themes.forEach((theme: SupportTheme): void => {
+      const standardRoles = default_roles.map(role => ({
+        ...role, _isFromDefault: true }));  // add mark for default ping roles
+
+      const themeRoles = theme.roles.map(role => ({
+        ...role, _isFromDefault: false }));  // add mark for theme-specific ping roles
+
+      theme.combined_roles = [...standardRoles, ...themeRoles];
+    });
+
+    return themes;
   }
 
   /**

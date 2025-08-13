@@ -13,6 +13,7 @@ import {SecurityLogs, UnbanRequest} from "../types/Security";
 import {MarkdownPipe} from "../../pipes/markdown/markdown.pipe";
 import {ConvertTimePipe} from "../../pipes/convert-time.pipe";
 import {EmbedConfigRaw} from "../types/Config";
+import {SupportTheme} from "../types/Tickets";
 
 describe('DataHolderService', () => {
   let service: DataHolderService;
@@ -64,6 +65,68 @@ describe('DataHolderService', () => {
 
     expect(service.showSidebarLogo).toBe(false);
     expect(service.active_guild).toBeNull();
+  });
+
+  it('should add _isFromDefault true to all default roles and _isFromDefault false to all theme roles, and combine them in combined_roles', () => {
+    const default_roles = [
+      { id: '1', name: 'DefaultRole1' },
+      { id: '2', name: 'DefaultRole2' }
+    ] as Role[];
+
+    const themes = [
+      { id: 'theme1', name: 'Theme1', roles: [{ id: '3', name: 'ThemeRole1' }], combined_roles: [] },
+      { id: 'theme2', name: 'Theme2', roles: [{ id: '4', name: 'ThemeRole2' }, { id: '5', name: 'ThemeRole3' }], combined_roles: [] }
+    ] as unknown as SupportTheme[];
+
+    const result = service.updatePingRoles(themes, default_roles);
+
+    expect(result.length).toBe(2);
+
+    // Theme 1
+    expect(result[0].combined_roles!.length).toBe(3);
+    expect(result[0].combined_roles![0]._isFromDefault).toBe(true);
+    expect(result[0].combined_roles![1]._isFromDefault).toBe(true);
+    expect(result[0].combined_roles![2]._isFromDefault).toBe(false);
+    expect(result[0].combined_roles![2].id).toBe('3');
+
+    // Theme 2
+    expect(result[1].combined_roles!.length).toBe(4);
+    expect(result[1].combined_roles![0]._isFromDefault).toBe(true);
+    expect(result[1].combined_roles![1]._isFromDefault).toBe(true);
+    expect(result[1].combined_roles![2]._isFromDefault).toBe(false);
+    expect(result[1].combined_roles![3]._isFromDefault).toBe(false);
+    expect(result[1].combined_roles![2].id).toBe('4');
+    expect(result[1].combined_roles![3].id).toBe('5');
+  });
+
+  it('should return the same themes array reference', () => {
+    const default_roles = [] as Role[];
+    const themes = [
+      { id: 'theme1', name: 'Theme1', roles: [], combined_roles: [] }
+    ] as unknown as SupportTheme[];
+
+    const result = service.updatePingRoles(themes, default_roles);
+    expect(result).toBe(themes);
+  });
+
+  it('should handle empty default_roles and theme.roles', () => {
+    const default_roles = [] as Role[];
+    const themes = [
+      { id: 'theme1', name: 'Theme1', roles: [], combined_roles: [] }
+    ] as unknown as SupportTheme[];
+
+    const result = service.updatePingRoles(themes, default_roles);
+    expect(result[0].combined_roles).toEqual([]);
+  });
+
+  it('should return the correct built discord emoji if emoji_name is true', () => {
+    const emojiId = '123456789';
+    const result = service.getEmojibyId(emojiId, false, true, 'testEmoji');
+    expect(result).toBe('<a:testEmoji:123456789>');
+
+    // non animated emoji
+    const result2 = service.getEmojibyId(emojiId, false, false, 'testEmoji');
+    expect(result2).toBe('<:testEmoji:123456789>');
   });
 
   it('should return the correct CDN URL for emoji ID with isID true and isAnimated true', () => {
@@ -789,6 +852,20 @@ describe('DataHolderService', () => {
     expect(comService.getGuildEmojis).toHaveBeenCalledWith('guild1');
     expect(service.guild_emojis).toEqual([{ id: '2', name: 'wink' }]);
     expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify([{ id: '2', name: 'wink' }]));
+  }));
+
+
+  it('should use initEmojis if api fetch is empty array', fakeAsync(() => {
+    const mockEmoji = [] as unknown as Emoji[];
+    jest.spyOn(comService, 'getGuildEmojis').mockResolvedValue(defer(() => Promise.resolve(mockEmoji)));
+    service.active_guild = { id: 'guild1' } as Guild;
+
+    service.getGuildEmojis(comService, true);
+    tick();
+
+    expect(service.guild_emojis).toEqual(initEmojis);
+    expect(localStorage.getItem('guild_emojis')).toBe(JSON.stringify(initEmojis));
+    expect(service.isEmojisLoading).toBe(false);
   }));
 
   it('should handle API error 429 by calling redirectLoginError with REQUESTS', fakeAsync(() => {

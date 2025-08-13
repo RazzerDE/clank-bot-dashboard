@@ -31,7 +31,8 @@ describe('SupportThemeAddComponent', () => {
       error_color: '',
       showAlert: jest.fn(),
       getEmojibyId: jest.fn(),
-      initTheme: { name: '', desc: '', faq_answer: '', roles: [] },
+      initTheme: { name: '', desc: '', faq_answer: '', roles: [], default_roles: [] },
+      updatePingRoles: (themes: SupportTheme[], _role: Role): SupportTheme[] => { return themes; },
     };
 
     await TestBed.configureTestingModule({
@@ -153,9 +154,10 @@ describe('SupportThemeAddComponent', () => {
   }));
 
   it('should update newTheme faq answer based on dataService.isFAQ', fakeAsync(() => {
-    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], icon: '' } as SupportTheme;
+    const theme = { id: '1', name: 'Test', desc: 'Desc', faq_answer: '', roles: [], default_roles: [], icon: '' } as SupportTheme;
     const hideModalSpy = jest.spyOn(component as any, 'hideModal').mockImplementation(() => {});
     component.newTheme = { ...theme };
+    component['dataService'].support_themes = [{ ...theme }];
 
     // case 1: isFAQ = true
     mockDataService.isFAQ = true;
@@ -279,63 +281,27 @@ describe('SupportThemeAddComponent', () => {
     ]);
   });
 
-  it('should convert string role IDs to Role objects and add missing default roles', () => {
-    const mockRole1 = { id: '1', name: 'Role1' } as Role;
-    const mockRole2 = { id: '2', name: 'Role2' } as Role;
-    const mockRole3 = { id: '3', name: 'Role3' } as Role;
-    const defaultRole = { id: '4', name: 'DefaultRole' } as Role;
-
-    component.discordRoles = [mockRole1, mockRole2, mockRole3, defaultRole];
+  it('should convert string role IDs in newTheme.roles to Role objects', () => {
+    const role1 = { id: '1', name: 'Role1' } as Role;
+    const role2 = { id: '2', name: 'Role2' } as Role;
+    component.discordRoles = [role1, role2];
     component.newTheme.roles = ['1', '2'] as any;
-    mockDataService.support_themes = [{ default_roles: [defaultRole] } as any];
 
     component['updateThemeMentions']();
 
-    expect(component.newTheme.roles).toEqual([mockRole1, mockRole2, defaultRole]);
-  });
-
-  it('should not add duplicate default roles if already present', () => {
-    const mockRole1 = { id: '1', name: 'Role1' } as Role;
-    const defaultRole = { id: '2', name: 'DefaultRole' } as Role;
-
-    component.discordRoles = [mockRole1, defaultRole];
-    component.newTheme.roles = [mockRole1, defaultRole];
-    mockDataService.support_themes = [{ default_roles: [defaultRole] } as any];
-
-    component['updateThemeMentions']();
-
-    // Default role should not be duplicated
-    expect(component.newTheme.roles).toEqual([mockRole1, defaultRole]);
+    expect(component.newTheme.roles).toEqual([role1, role2]);
   });
 
   it('should do nothing if newTheme.roles is not an array', () => {
     component.newTheme.roles = undefined as any;
-    mockDataService.support_themes = [];
-
     expect(() => component['updateThemeMentions']()).not.toThrow();
   });
 
-  it('should do nothing if there are no support_themes', () => {
-    component.newTheme.roles = [];
-    mockDataService.support_themes = [];
-
-    component['updateThemeMentions']();
-
-    expect(component.newTheme.roles).toEqual([]);
-  });
-
-  it('should do nothing if default_roles is missing or empty', () => {
-    component.newTheme.roles = [];
-    mockDataService.support_themes = [{} as any];
-
-    component['updateThemeMentions']();
-
-    expect(component.newTheme.roles).toEqual([]);
-
-    mockDataService.support_themes = [{ default_roles: [] } as any];
-    component['updateThemeMentions']();
-
-    expect(component.newTheme.roles).toEqual([]);
+  it('should do nothing if newTheme.roles is an array but not of strings', () => {
+    const role1 = { id: '1', name: 'Role1' } as Role;
+    component.newTheme.roles = [role1] as any;
+    expect(() => component['updateThemeMentions']()).not.toThrow();
+    expect(component.newTheme.roles).toEqual([role1]);
   });
 
   it('should add the hidden class to modal and backdrop when hideModal is called', () => {
@@ -449,7 +415,7 @@ describe('SupportThemeAddComponent', () => {
     component['updateThemeIcon'](emoji);
 
     expect(component.newTheme.icon).toBe(mockIcon);
-    expect(component['dataService'].getEmojibyId).toHaveBeenCalledWith('123', true, true);
+    expect(component['dataService'].getEmojibyId).toHaveBeenCalledWith('123', false, true, undefined);
     expect(component.newTheme.guild_id).toBe(mockGuildId);
   });
 

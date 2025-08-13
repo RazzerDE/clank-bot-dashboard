@@ -59,7 +59,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
         this.selectedLog = null;
         this.tempLog = null;
         this.dataService.security_logs = {channel_id: null, guild_thread_id: null, bot_thread_id: null, channel_roles_thread_id: null,
-          message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null, unban_thread_id: null}
+          message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null, unban_thread_id: null, has_perms: true}
         this.getSecurityLogs(true);
       }
     });
@@ -127,6 +127,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
       .subscribe({
         next: (config: SecurityLogs): void => {
           this.dataService.security_logs = config;
+          if (config.has_perms === undefined) { this.dataService.security_logs.has_perms = true; }
           this.dataService.has_vip = config.has_vip || false;
           this.updateLogList();
           setTimeout((): void => { this.dataService.getGuildChannels(this.comService, no_cache, true, 'FORUM') }, 550);
@@ -172,7 +173,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
           // channel is now updated, so threads are reset
           this.dataService.security_logs = {channel_id: null, guild_thread_id: null, bot_thread_id: null,
             channel_roles_thread_id: null, message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null,
-            unban_thread_id: null, channel_id_pending: true, channel_id_delete: delete_action }
+            unban_thread_id: null, channel_id_pending: true, channel_id_delete: delete_action, has_perms: true };
           this.selectedLog = this.tempLog;
           this.updateLogList();
 
@@ -233,7 +234,8 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
 
     // Remove all *_pending and *_delete attributes before sending
     const sanitizedLogs: SecurityLogs = Object.keys(this.dataService.security_logs)
-      .filter(key => !key.endsWith('_pending') && !key.endsWith('_delete') && !key.endsWith("has_vip"))
+      .filter(key => !key.endsWith('_pending') && !key.endsWith('_delete')
+        && !key.endsWith("has_vip") && !key.endsWith("has_perms"))
       .reduce((acc, key) =>
         {acc[key] = this.dataService.security_logs[key]; return acc;}, {} as SecurityLogs);
 

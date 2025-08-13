@@ -26,14 +26,15 @@ export class SelectComponent {
   @Input({transform: booleanAttribute}) disabled: boolean = false;
   @Input() options: Role[] | Channel[] | SelectItems[] = [];
   @Input() activeOption: string | null | undefined = null;
+  @Input() activeOptions : Role[] | undefined;
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
-  isRolePickerValid: boolean = false;
   @Output() selectionChange = new EventEmitter<string[] | string>();
 
   @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected isFocused: boolean = false;
+  isRolePickerValid: boolean = false;
 
   constructor(private translate: TranslateService, protected dataService: DataHolderService) {}
 
@@ -43,7 +44,7 @@ export class SelectComponent {
    * This method checks the value of the role picker element and sets the `isRolePickerValid`
    * property to `true` if a valid role is selected, otherwise sets it to `false`.
    */
-  changeSelectPicker(): void {
+  protected changeSelectPicker(): void {
     if (this.options.length === 0) { return; }
 
     // channel or role type
@@ -103,7 +104,7 @@ export class SelectComponent {
    * @returns `true` if the options array contains at least one element, the first element is a `Channel`,
    *          and the `type` string starts with `EVENTS_`; otherwise, `false`.
    */
-  isChannelList(): boolean {
+  protected isChannelList(): boolean {
     return this.options.length > 0 && this.isChannelType(this.options[0]);
   }
 
@@ -113,10 +114,20 @@ export class SelectComponent {
    * @param optionValue - The value of the option to check.
    * @returns `true` if the option is currently selected and the type is 'SECURITY_UNBAN', otherwise `false`.
    */
-  public isSelectDisabled(optionValue: string): boolean {
+  protected isSelectDisabled(optionValue: string): boolean {
     const isCurrentlySelected: boolean = Boolean(
       (this.type?.startsWith('EVENTS_') || this.type === 'SECURITY_UNBAN') && this.activeOption?.startsWith(optionValue));
 
     return isCurrentlySelected && this.type === 'SECURITY_UNBAN';
+  }
+
+  /**
+   * Checks if a role with the given ID is currently selected as a theme role.
+   *
+   * @param role_id - The ID of the role to check.
+   * @returns `true` if the role is in the list of active options, otherwise `false`.
+   */
+  protected isThemeRoleSelected(role_id: string): boolean {
+    return this.activeOptions?.some(role => role.id === role_id) || false;
   }
 }

@@ -67,7 +67,8 @@ export class GlobalChatComponent implements OnDestroy {
 
   private details: GlobalChatConfigDetails = { channel_id: null, message_count: 0, created_at: Date.now(), lock_reason: null,
                                                bot_name: null, bot_avatar_url: null, invite: null };
-  protected global_chat: GlobalChatConfig = { global_config: this.details, channel_count: 0, total_message_count: 0, global_desc: null };
+  protected global_chat: GlobalChatConfig = { global_config: this.details, channel_count: 0, total_message_count: 0,
+                                              global_desc: null, has_perms: true };
   protected org_global_chat: GlobalChatConfig = JSON.parse(JSON.stringify(this.global_chat)); // deep copy of the global chat config
 
   constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService,
@@ -79,7 +80,7 @@ export class GlobalChatComponent implements OnDestroy {
       if (value) { // only fetch data if allowed
         this.dataService.isLoading = true;
         this.isInvalidAvatar = false;
-        this.global_chat = { global_config: this.details, channel_count: 0, total_message_count: 0, global_desc: null };
+        this.global_chat = { global_config: this.details, channel_count: 0, total_message_count: 0, global_desc: null, has_perms: true };
         this.getGlobalChat(true);
       }
     });
@@ -348,6 +349,7 @@ export class GlobalChatComponent implements OnDestroy {
           }
 
           if (config.global_chat_pending_id) { config.global_config.channel_id = config.global_chat_pending_id; }
+          if (config.has_perms === undefined) { config.has_perms = true; }
 
           this.global_chat = config;
           this.dataService.has_vip = config.has_vip || false;

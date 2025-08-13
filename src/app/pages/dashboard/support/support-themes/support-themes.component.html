@@ -5,8 +5,8 @@
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Role Modal -->
-    <app-modal [type]="modalType" [content]="modalTheme.faq_answer!" [discordRoles]="discordRoles"
-               [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" [theme]="editTheme" />
+    <app-modal [type]="modalType" [content]="modalTheme.faq_answer!" [discordRoles]="discordRoles" [theme]="editTheme"
+               [active_themeroles]="editTheme.roles" [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" />
 
     <!-- Page Thumb -->
     <page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"

@@ -15,7 +15,7 @@ import {SupportTheme, TicketSnippet} from "../../../services/types/Tickets";
 import {Role} from "../../../services/types/discord/Guilds";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {faClock, faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faClock, faExclamationTriangle, faRobot, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faHourglassEnd} from "@fortawesome/free-solid-svg-icons";
 import {BlockedUser} from "../../../services/types/discord/User";
 import {DatePipe} from "../../../pipes/date/date.pipe";
@@ -58,6 +58,7 @@ export class DataTableComponent implements AfterViewChecked {
     @ViewChild('mainRow') protected mainRow!: ElementRef<HTMLTableCellElement>;
     protected markdownPipe: MarkdownPipe = new MarkdownPipe();
     private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
+    protected readonly faExclamationTriangle: IconDefinition = faExclamationTriangle;
 
     protected now: Date = new Date();
     protected rowHeight: number = 0;
@@ -150,6 +151,26 @@ export class DataTableComponent implements AfterViewChecked {
      */
     protected isGiveawayType(obj: SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest): obj is Giveaway {
       return (obj as Giveaway).creator_id !== undefined && (obj as Giveaway).prize !== undefined;
+    }
+
+  /**
+   * Checks if there is at least one support item with pending status and permissions.
+   * @returns `true` if any row in the table config is of type `SupportTheme` and has both `pending` and `has_perms` set to true, otherwise `false`.
+   */
+    protected hasPendingItemsWithNoPerms(): boolean {
+      return this.tconfig.rows?.some(item =>
+        (this.isSupportType(item) && item.pending && !item.has_perms) ||
+        (this.isUnbanRequestType(item) && !item.has_perms)) ?? false;
+    }
+
+  /**
+   * Returns all filtered unban requests with status 0.
+   * Filters the rows in the table config and returns only those that are of type `UnbanRequest` and have a status of 0.
+   *
+   * @returns {UnbanRequest[]} An array of filtered unban requests with status 0.
+   */
+    protected returnFilteredRequests(): UnbanRequest[] {
+      return this.tconfig.rows.filter((item) => this.isUnbanRequestType(item) && item.status === 0) as UnbanRequest[];
     }
 
   /**

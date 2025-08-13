@@ -38,6 +38,7 @@ export interface Role {
 
   // properties added by us
   support_level?: number;
+  _isFromDefault?: boolean;
 }
 
 export interface Channel {
@@ -65,5 +66,6 @@ export const initEmojis: string[] = ['📚', '🎮', '🎯', '🎲', '🧩', '�
 export interface SupportSetup {
   support_forum: Channel;
   support_forum_pending: boolean;
+  has_perms?: boolean;
   discord_channels: Channel[];
 }
