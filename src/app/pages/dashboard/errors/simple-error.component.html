@@ -21,13 +21,23 @@
       </button>
      </a>
 
-      <a href="https://discord.gg/bl4cklist">
-        <button type="button" class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:ring-gray-300
-                                   font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:bg-blue-600
-                                   dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-gray-600">
-          <fa-icon [icon]="faDiscord" class="mr-1"></fa-icon> {{ 'ERROR_SUPPORT_BUTTON' | translate }}
+    @if (this.dataService.error_title === 'ERROR_LOGIN_NO_CLANK_TITLE') {
+      <a [href]="invite_url">
+        <button type="button" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300
+                                     font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 focus:outline-none
+                                   dark:focus:ring-green-500">
+          <fa-icon [icon]="faLink" class="mr-1"></fa-icon> {{ 'ERROR_INVITE_BUTTON' | translate }}
         </button>
       </a>
+    }
+
+    <a href="https://discord.gg/bl4cklist">
+      <button type="button" class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:ring-gray-300
+                                 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:bg-blue-600
+                                 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-gray-600">
+        <fa-icon [icon]="faDiscord" class="mr-1"></fa-icon> {{ 'ERROR_SUPPORT_BUTTON' | translate }}
+      </button>
+    </a>
     </div>
   </div>
 
