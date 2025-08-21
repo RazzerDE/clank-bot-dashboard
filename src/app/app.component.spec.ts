@@ -40,6 +40,7 @@ describe('AppComponent', () => {
   it('should set correct meta tags and title for English SEO', () => {
     const setTitleSpy = jest.spyOn(component['title'], 'setTitle');
     const updateTagSpy = jest.spyOn(component['meta'], 'updateTag');
+    let link = document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' }));
 
     component['updateSEO']();
 
@@ -58,5 +59,18 @@ describe('AppComponent', () => {
       content: expect.stringContaining('Clank is the heart of your Discord server')
     });
     expect(updateTagSpy).toHaveBeenCalledWith({property: 'og:locale', content: 'en_US'});
+    expect(link.href).toBe('https://clank.dev/');
+
+    link.remove();
+  });
+
+  it('should set canonical link to /de if isGerman is true', () => {
+    let link = document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' }));
+
+    component['updateSEO'](true);
+
+    expect(link.href).toBe('https://clank.dev/de');
+
+    link.remove();
   });
 });
