@@ -71,7 +71,10 @@ export class SupportThemeAddComponent {
           this.dataService.support_themes.push(theme);
           this.updateThemes();
 
-          const default_roles: Role[] = this.dataService.support_themes[0].default_roles || [];
+          let default_roles: Role[] = [];
+          if (this.dataService.support_themes.length > 0) {
+            default_roles = this.dataService.support_themes[0].default_roles || [];
+          }
           this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
 
           localStorage.setItem('support_themes', JSON.stringify(this.dataService.support_themes));
@@ -136,7 +139,10 @@ export class SupportThemeAddComponent {
           const foundThemeIndex: number = this.dataService.support_themes.findIndex((t) => t.name === theme.name);
           if (foundThemeIndex !== -1) { this.dataService.support_themes[foundThemeIndex] = {...theme}; }
 
-          const default_roles: Role[] = this.dataService.support_themes[0].default_roles || [];
+          let default_roles: Role[] = [];
+          if (this.dataService.support_themes.length > 0) {
+            default_roles = this.dataService.support_themes[0].default_roles || [];
+          }
           this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
 
           this.updateThemes();

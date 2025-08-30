@@ -142,7 +142,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       localStorage.getItem('support_themes_timestamp') && localStorage.getItem('guild_vip') &&
       Date.now() - Number(localStorage.getItem('support_themes_timestamp')) < 60000) && !no_cache) {
       this.dataService.support_themes = JSON.parse(localStorage.getItem('support_themes') as string);
-      const default_roles: Role[] = this.dataService.support_themes[0].default_roles || [];
+      let default_roles: Role[] = [];
+      if (this.dataService.support_themes.length > 0) {
+        default_roles = this.dataService.support_themes[0].default_roles || [];
+      }
       this.dataService.support_themes = this.dataService.updatePingRoles(this.dataService.support_themes, default_roles);
 
       const moduleStatus: TasksCompletionList = JSON.parse(localStorage.getItem('moduleStatus') as string);
@@ -161,7 +164,10 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     this.discordService.getSupportThemes(this.dataService.active_guild!.id).then((observable) => {
       subscription = observable.subscribe({
         next: (response: SupportThemeResponse): void => {
-          const default_roles: Role[] = response.themes[0].default_roles || [];
+          let default_roles: Role[] = [];
+          if (response.themes.length > 0) {
+            default_roles = response.themes[0].default_roles || [];
+          }
           response.themes = this.dataService.updatePingRoles(response.themes, default_roles);
 
           this.dataService.support_themes = response.themes;
