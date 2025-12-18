@@ -312,7 +312,7 @@
   "PAGE_SETUP_CHANNEL_INFO_PERMS_MISSING": "❌ ~ Bot-Permissions are missing!",
   "PAGE_SETUP_LEFT_TITLE": "🚓 ~ SET SUPPORT FORUM",
   "PAGE_SETUP_LEFT_DESC": "› All tickets created by users on your Discord server will be placed in the support forum - this should only be visible to the server team, as they will handle the support requests here.",
-  "PAGE_SETUP_LEFT_LIST": "› There are <strong>2 ways</strong> users can create tickets:<span class=\"list-disc relative left-4\"><li>They send a private message to the Discord bot.</li><li>They select a support topic in a panel.</li></span>",
+  "PAGE_SETUP_LEFT_LIST": "There are <strong>2 ways</strong> users can create tickets:<br />- They send a private message to the Discord bot.<br />- They select a support topic in a panel.<br />",
   "PAGE_SETUP_LEFT_OUTRO": "Creating panels and support topics is <strong>NOT</strong> necessary to activate the system, but it helps the server team to better categorize created tickets.",
 
   "WISHLIST_TAG_FEATURES": "All Features",

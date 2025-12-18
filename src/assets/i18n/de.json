@@ -312,7 +312,7 @@
   "PAGE_SETUP_CHANNEL_INFO_PERMS_MISSING": "❌ ~ Bot-Rechte fehlen für:",
   "PAGE_SETUP_LEFT_TITLE": "🚓 ~ SUPPORT-FORUM FESTLEGEN",
   "PAGE_SETUP_LEFT_DESC": "› Innerhalb des Support-Forums landen alle Tickets, welche von Usern auf deinem Discord-Server erstellt wurden - dieser sollte nur sichtbar für das Server-Team sein, da diese hier sich um die Support-Anfragen kümmern werden.",
-  "PAGE_SETUP_LEFT_LIST": "› Es gibt <strong>2 Möglichkeiten</strong> wie User Tickets erstellen können:<span class=\"list-disc relative left-4\"><li>Sie senden dem Discord-Bot eine private Nachricht.</li><li>Sie wählen ein Support-Thema in einem Panel aus.</li></span>",
+  "PAGE_SETUP_LEFT_LIST": "Es gibt <strong>2 Möglichkeiten</strong> wie User Tickets erstellen können:<br />- Sie senden dem Discord-Bot eine private Nachricht.<br />- Sie wählen ein Support-Thema in einem Panel aus.<br />",
   "PAGE_SETUP_LEFT_OUTRO": "Die Erstellung von Panels und Support-Themen ist <strong>NICHT</strong> notwendig um das System zu aktivieren, aber es hilft dem Server-Team erstellte Tickets besser zu kategorisieren.",
 
   "WISHLIST_TAG_FEATURES": "Alle Features",

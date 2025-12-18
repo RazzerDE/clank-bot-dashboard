@@ -333,7 +333,6 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
         return;
       }
 
-      this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
       this.reloadEmojis = false;
       this.editTheme = { ...this.dataService.initTheme };
       this.editTheme.roles = [];
@@ -346,6 +345,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
       this.editTheme = theme!;
     }
 
+    this.dataService.getGuildEmojis(this.discordService, this.reloadEmojis);
     this.dataService.faq_answer = this.editTheme.faq_answer || '';
     this.dataService.isFAQ = Boolean(this.editTheme.faq_answer && this.editTheme.faq_answer.length > 0);
     setTimeout((): void => { this.modal.showModal(); }, 10);
