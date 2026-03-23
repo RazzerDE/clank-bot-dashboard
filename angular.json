@@ -23,6 +23,9 @@
             "polyfills": [
               "zone.js"
             ],
+            "security": {
+              "allowedHosts": ["clank.dev", "*.clank.dev"]
+            },
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
