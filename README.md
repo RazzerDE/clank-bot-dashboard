@@ -12,10 +12,10 @@
 <br />
 <p align="center">
   <a href="https://pagespeed.web.dev/analysis/https-clank-dev/6098g4srg4?form_factor=desktop"><img src="https://i.imgur.com/MKn1nOT.png" style="height: 100px;"></a>
-</p>
+</p>np
 <h4 align="center">
   <a href="https://angular.dev">
-    <img src="https://img.shields.io/badge/Angular-20.3.16-27ae60?style=for-the-badge" alt="angular version" style="height: 25px;">
+    <img src="https://img.shields.io/badge/Angular-20.3.21-27ae60?style=for-the-badge" alt="angular version" style="height: 25px;">
   </a>
   <a href="https://tailwindcss.com">
     <img src="https://img.shields.io/badge/Tailwind-3.4.17-27ae60?style=for-the-badge" alt="tailwind version" style="height: 25px;">
