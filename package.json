@@ -65,7 +65,7 @@
     "jest-preset-angular": "^14.6.0",
     "postcss": "^8.4.49",
     "source-map-explorer": "^2.5.3",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.3.2",
     "ts-jest": "^29.4.6",
     "typescript": "~5.8.3",
     "webpack-bundle-analyzer": "^4.10.2"
