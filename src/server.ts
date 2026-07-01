@@ -10,7 +10,7 @@ import { join } from 'node:path';
 const browserDistFolder: string = join(import.meta.dirname, '../browser');
 
 const app: Express = express();
-const angularApp = new AngularNodeAppEngine();
+const angularApp = new AngularNodeAppEngine({ trustProxyHeaders: ['x-forwarded-server', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto'] });
 
 /**
  * Serve static files from /browser
