@@ -61,7 +61,7 @@
     "@types/node": "^20.17.19",
     "autoprefixer": "^10.4.27",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-jsdom": "^30.4.1",
     "jest-preset-angular": "^14.6.0",
     "postcss": "^8.4.49",
     "source-map-explorer": "^2.5.3",
