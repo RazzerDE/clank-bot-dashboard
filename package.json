@@ -29,7 +29,7 @@
     "@auth0/angular-jwt": "^5.2.0",
     "@colsen1991/ngx-translate-extract-marker": "^3.0.1",
     "@fortawesome/angular-fontawesome": "^2.0.1",
-    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^7.3.0",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
