@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '21' # Updated to Node.js 21 for compatibility
+          node-version: '22'
 
       - name: Create directories
         run: mkdir -p src/environments
