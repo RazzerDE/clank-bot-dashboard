@@ -327,7 +327,7 @@ describe('EmbedDesignComponent', () => {
     let valid = false;
     for (let i = 0; i < 10; i++) {
       component.shuffleConfigs();
-      if (/^#[0-9a-f]{6}$/.test(<string>component['dataService'].embed_config.color_code!)) {
+      if (/^#[0-9a-f]{6}$/.test((component['dataService'].embed_config.color_code! as string))) {
         valid = true;
         break;
       }

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import { Component, Input, ViewChild, inject } from '@angular/core';
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 import {NgClass} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -7,7 +7,7 @@ import {TicketSnippet} from "../../../../../services/types/Tickets";
 import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
 
 @Component({
-  selector: 'template-snippet-add',
+  selector: 'app-template-snippet-add',
   imports: [
     ReactiveFormsModule,
     TranslatePipe,
@@ -19,17 +19,17 @@ import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
   styleUrl: './snippet-add.component.scss'
 })
 export class SnippetAddComponent {
-  @Input() type: string = '';
-  @Input() showFirst: boolean = false;
+  private translate = inject(TranslateService);
+
+  @Input() type = '';
+  @Input() showFirst = false;
   @Input() newSnippet: TicketSnippet = {} as TicketSnippet;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
-  @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
-  @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => {};
+  @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => { /* no-op default */ };
+  @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => { /* no-op default */ };
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
-
-  constructor(private translate: TranslateService) {}
 
   /**
    * Updates the snippet's discord preview based on the input in the text area.

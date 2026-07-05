@@ -1,10 +1,10 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_EVENTS_EFFECTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_EFFECTS_TITLE' | translate"
-                [color]="'cyan'" [desc]="'PAGE_EVENTS_EFFECTS_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_EVENTS_EFFECTS_SUBTITLE' | translate" [title]="'PAGE_EVENTS_EFFECTS_TITLE' | translate"
+                [color]="'cyan'" [desc]="'PAGE_EVENTS_EFFECTS_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -43,23 +43,23 @@
               <div class="flex"> <!-- Tabs -->
                 <li class="mr-2 cursor-pointer">
                 <span class="inline-block p-4 border-b-2 rounded-t-lg font-medium text-lg transition-all duration-200"
-                      (click)="this.activeTab = 'ROLES'"
+                      (click)="this.activeTab = 'ROLES'" (keyup.enter)="this.activeTab = 'ROLES'"
                       [ngClass]="this.activeTab === 'ROLES' ? '!border-cyan-600 !text-cyan-600 hover:!text-cyan-500 ' +
                        'hover:!border-cyan-500 dark:!text-cyan-500 dark:!border-cyan-500 dark:hover:!text-cyan-400 ' +
                         'dark:hover:!border-cyan-400' : '!border-gray-400 !text-gray-400 hover:!text-gray-600 ' +
                         'hover:!border-gray-600 dark:!border-gray-500 dark:!text-gray-500 dark:hover:!text-gray-400 ' +
-                        'dark:hover:!border-gray-400'">
+                        'dark:hover:!border-gray-400'" tabindex="0" role="button">
                   {{ 'EVENTS_TAB_NAV_ROLES' | translate }}
                 </span>
                 </li>
                 <li class="cursor-pointer">
                 <span class="inline-block p-4 border-b-2 rounded-t-lg transition-all duration-200 font-medium text-lg"
-                      (click)="this.activeTab = 'CHANNELS'"
+                      (click)="this.activeTab = 'CHANNELS'" (keyup.enter)="this.activeTab = 'CHANNELS'"
                       [ngClass]="this.activeTab === 'CHANNELS' ? '!border-cyan-600 !text-cyan-600 hover:!text-cyan-500 ' +
                        'hover:!border-cyan-500 dark:!text-cyan-500 dark:!border-cyan-500 dark:hover:!text-cyan-400 ' +
                         'dark:hover:!border-cyan-400' : '!border-gray-400 !text-gray-400 hover:!text-gray-600 ' +
                         'hover:!border-gray-600 dark:!border-gray-500 dark:!text-gray-500 dark:hover:!text-gray-400 ' +
-                        'dark:hover:!border-gray-400'">
+                        'dark:hover:!border-gray-400'" tabindex="0" role="button">
                   {{ 'EVENTS_TAB_NAV_CHANNELS' | translate }}
                 </span>
                 </li>
@@ -107,7 +107,7 @@
 
                   <!-- Role Selector -->
                   <div class="mb-3">
-                    <template-select [type]="'EVENTS_EFFECTS'" (selectionChange)="pushToCardList($event[0], item)"
+                    <app-template-select [type]="'EVENTS_EFFECTS'" (selectionChange)="pushToCardList($event[0], item)"
                                      [options]="excludeFromSelect(item)" [id]="this.activeTab === 'CHANNELS' ? 'channelpicker-' + $index : 'rolepicker-' + $index"/>
                   </div>
 
@@ -154,4 +154,4 @@
     </div>
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

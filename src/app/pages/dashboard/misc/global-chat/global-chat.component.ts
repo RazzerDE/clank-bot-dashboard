@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -49,6 +49,11 @@ import {FormsModule} from "@angular/forms";
   styleUrl: './global-chat.component.scss'
 })
 export class GlobalChatComponent implements OnDestroy {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private comService = inject(ComService);
+  protected translate = inject(TranslateService);
+
   protected readonly faCircleQuestion: IconDefinition = faCircleQuestion;
   protected readonly faUnlock: IconDefinition = faUnlock;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -60,10 +65,10 @@ export class GlobalChatComponent implements OnDestroy {
   protected readonly faSave: IconDefinition = faSave;
   protected readonly faLock: IconDefinition = faLock;
   private readonly subscription: Subscription | null = null;
-  protected isInvalidAvatar: boolean = false;
-  protected disabledSendBtn: boolean = false;
-  protected disabledLockBtn: boolean = false;
-  protected disableUpdateBtn: boolean = false;
+  protected isInvalidAvatar = false;
+  protected disabledSendBtn = false;
+  protected disabledLockBtn = false;
+  protected disableUpdateBtn = false;
 
   private details: GlobalChatConfigDetails = { channel_id: null, message_count: 0, created_at: Date.now(), lock_reason: null,
                                                bot_name: null, bot_avatar_url: null, invite: null };
@@ -71,8 +76,7 @@ export class GlobalChatComponent implements OnDestroy {
                                               global_desc: null, has_perms: true };
   protected org_global_chat: GlobalChatConfig = JSON.parse(JSON.stringify(this.global_chat)); // deep copy of the global chat config
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService,
-              protected translate: TranslateService) {
+  constructor() {
     document.title = 'Global Chat - Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getGlobalChat(true);
@@ -205,10 +209,10 @@ export class GlobalChatComponent implements OnDestroy {
       lock_reason: this.global_chat.global_config!.lock_reason, description: this.global_chat.global_desc
     }
 
-    lock ? this.disabledLockBtn = true : this.disabledSendBtn = true;
+    if (lock) { this.disabledLockBtn = true; } else { this.disabledSendBtn = true; }
     const sub: Subscription = this.apiService.saveGlobalChatCustomizing(this.dataService.active_guild.id, customizing)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           sub.unsubscribe();
           this.org_global_chat = JSON.parse(JSON.stringify(this.global_chat));
           localStorage.setItem('misc_globalchat', JSON.stringify(this.global_chat));
@@ -228,7 +232,9 @@ export class GlobalChatComponent implements OnDestroy {
               this.translate.instant("SUCCESS_MISC_GLOBAL_CUSTOMIZE_DESC"));
           }
 
-          setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 5000);
+          setTimeout((): void => {
+            if (lock) { this.disabledLockBtn = false; } else { this.disabledSendBtn = false; }
+          }, 5000);
         },
         error: (err: HttpErrorResponse): void => {
           sub.unsubscribe();
@@ -254,7 +260,9 @@ export class GlobalChatComponent implements OnDestroy {
             this.dataService.redirectLoginError('UNKNOWN');
           }
 
-          setTimeout((): void => { lock ? this.disabledLockBtn = false : this.disabledSendBtn = false; }, 2000);
+          setTimeout((): void => {
+            if (lock) { this.disabledLockBtn = false; } else { this.disabledSendBtn = false; }
+          }, 2000);
         }
       });
   }
@@ -277,7 +285,7 @@ export class GlobalChatComponent implements OnDestroy {
     this.disableUpdateBtn = true;
     const sub: Subscription = this.apiService.updateGlobalChat(this.dataService.active_guild.id, updated)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           sub.unsubscribe();
 
           this.global_chat.global_chat_pending_id = this.global_chat.global_config!.channel_id;

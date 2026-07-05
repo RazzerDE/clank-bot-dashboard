@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -7,8 +7,8 @@
                [shield_action]="this.startAutoModSetup.bind(this)" />
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_SECURITY_AUTOMOD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_AUTOMOD_TITLE' | translate"
-                [color]="'orange-red'" [desc]="'PAGE_SECURITY_AUTOMOD_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_SECURITY_AUTOMOD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_AUTOMOD_TITLE' | translate"
+                [color]="'orange-red'" [desc]="'PAGE_SECURITY_AUTOMOD_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -44,7 +44,7 @@
           <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 w-full my-4 xl:mt-0 h-auto xl:!h-[calc(50vh-24rem)]
                       2xl:!h-auto xl:overflow-y-auto">
             @for (item of this.event_cards; track $index) {
-              @if ($index == this.event_cards.length - 2) { <div class="w-full h-0"></div> } <!-- Break line on big monitors -->
+              @if ($index === this.event_cards.length - 2) { <div class="w-full h-0"></div> } <!-- Break line on big monitors -->
               <div class="border-l-[5px] rounded-lg shadow py-2 px-3 from-white bg-gradient-to-bl via-slate-50 to-blue-50
                         dark:from-slate-700/50 dark:via-slate-700/50 dark:to-slate-800 transition-all duration-200
                           hover:-translate-y-1 hover:drop-shadow-lg"
@@ -117,7 +117,7 @@
         <div class="flex flex-col p-3 h-full">
 
           <div class="mb-4">
-            <template-select [id]="'unbanpicker'" [options]="this.methods_select" [type]="'SECURITY_UNBAN'"
+            <app-template-select [id]="'unbanpicker'" [options]="this.methods_select" [type]="'SECURITY_UNBAN'"
                              [activeOption]="this.unban_method.method_type" (selectionChange)="setUnbanMethodType($any($event))" />
             @if (!this.dataService.has_vip && this.unban_method.method_type === 'BOT') {
               <span class="text-xs text-red-500 mt-1" @fadeInOut
@@ -193,4 +193,4 @@
     </div>
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

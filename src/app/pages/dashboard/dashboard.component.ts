@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import {DataHolderService} from "../../services/data/data-holder.service";
 import {TranslatePipe} from "@ngx-translate/core";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -35,6 +35,9 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons";
     ]
 })
 export class DashboardComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+
   protected servers: SliderItems[] = [];
   protected expandedTasks: number[] = [];
   protected tasks: Tasks[] = tasks;
@@ -53,12 +56,12 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
   protected readonly faTruckMedical: IconDefinition = faTruckMedical;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faRefresh: IconDefinition = faRefresh;
-  private startLoading: boolean = false;
+  private startLoading = false;
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
+  protected disabledCacheBtn = false;
   protected dataLoading: { moduleProgress: boolean, guildList: boolean } = { moduleProgress: true, guildList: true };
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService) {
+  constructor() {
     document.title = "Dashboard ~ Clank Discord-Bot";
     this.dataService.isLoading = true;
     this.dataService.hideGuildSidebar = false;
@@ -88,7 +91,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
    * It's used to show a loading state for some data related things.
    */
   ngAfterViewChecked(): void {
-    if (tasks == this.orgTasks && !this.dataService.isLoading && this.dataLoading.moduleProgress && !this.startLoading) {
+    if (tasks === this.orgTasks && !this.dataService.isLoading && this.dataLoading.moduleProgress && !this.startLoading) {
       setTimeout((): boolean => this.dataLoading.moduleProgress = false, 0);
     }
 
@@ -268,7 +271,7 @@ export class DashboardComponent implements OnDestroy, AfterViewChecked {
    * @param index The index of the subtask in the list.
    * @returns The unique ID of the subtask, or the index if no ID is present.
    */
-  trackBySubtaskId(subtask: any, index: number): number {
+  trackBySubtaskId(subtask: { id?: string | number } | null, index: number): string | number {
     return subtask?.id || index;
   }
 }

@@ -30,9 +30,9 @@ describe('RolePickerComponent', () => {
     const option = document.createElement('option');
     const collection = {
       length: 1,
-      item: (index: number) => option,
+      item: (_index: number) => option,
       [0]: option,
-      namedItem: (name: string) => null
+      namedItem: (_name: string) => null
     } as unknown as HTMLCollectionOf<HTMLOptionElement>;
 
     expect(() => component.action(collection, true)).not.toThrow();
@@ -43,9 +43,9 @@ describe('RolePickerComponent', () => {
     component.activeTab = 2;
     const options = {
       length: 1,
-      item: (index: number) => document.createElement('option'),
+      item: (_index: number) => document.createElement('option'),
       [0]: document.createElement('option'),
-      namedItem: (name: string) => null
+      namedItem: (_name: string) => null
     } as unknown as HTMLCollectionOf<HTMLOptionElement>;
     const actionSpy = jest.spyOn(component, 'action');
 

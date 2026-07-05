@@ -63,33 +63,33 @@
         <div class="space-y-4 flex flex-col">
           @switch (true) {
             @case (type === 'SUPPORT_THEME_FAQ') {
-              <template-faq-answer [content]="content" [type]="type" />
+              <app-template-faq-answer [content]="content" [type]="type" />
             }
             @case (type.startsWith('SUPPORT_THEME')) {
-              <template-support-theme-add [showFirst]="true" [discordRoles]="discordRoles" [type]="type" [activeOptions]="active_themeroles"
+              <app-template-support-theme-add [showFirst]="true" [discordRoles]="discordRoles" [type]="type" [activeOptions]="active_themeroles"
                                           [isDefaultMentioned]="isDefaultMentioned.bind(this)" [newTheme]="theme" />
             }
             @case (type.startsWith('SUPPORT_SNIPPET')) {
-              <template-snippet-add [type]="type" [newSnippet]="$any(obj)" [showFirst]="true" [snippet_action]="snippet_action"
+              <app-template-snippet-add [type]="type" [newSnippet]="$any(obj)" [showFirst]="true" [snippet_action]="snippet_action"
                                     [externalMarkdown]="secondSnippetAdd?.discordMarkdown" [snippet_edit]="snippet_edit" />
             }
             @case (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
-              <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true"
+              <app-template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="true"
                                             [org_activeAnnounce]="this.org_announcement" />
             }
             @case (type.startsWith('BLOCKED_USER')) {
-              <template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />
+              <app-template-blocked-user [newBlockedUser]="$any(obj)" [type]="$any(type)" [block_action]="this.block_action" />
             }
             @case (type.startsWith('EVENTS_')) {
-              <template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true" [event_action]="event_action"
+              <app-template-create-giveaway [giveaway]="$any(obj)" [showFirst]="true" [event_action]="event_action"
                                         [event_edit]="event_edit" [externalMarkdown]="secondGiveawayAdd?.discordMarkdown"
                                         [type]="$any(this.type)" />
             }
             @case (type === 'SECURITY_SHIELDS' || type === 'SECURITY_AUTOMOD') {
-              <template-confirm-dialog [type]="this.type" [shield_action]="this.shield_action" [obj]="$any(this.obj)" />
+              <app-template-confirm-dialog [type]="this.type" [shield_action]="this.shield_action" [obj]="$any(this.obj)" />
             }
             @default { <!-- Default Mention & Teamlist -->
-              <template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"
+              <app-template-role-picker [type]="type" [discordRoles]="discordRoles" [action]="action"
                                     [isDefaultMentioned]="isDefaultMentioned.bind(this)" />
             }
           }
@@ -101,13 +101,13 @@
     @if (showSecondModal()) {
 
       @if (type.startsWith('SUPPORT_SNIPPET')) {
-        <template-snippet-add #secondSnippetAdd [type]="type" [newSnippet]="$any(obj)" [showFirst]="false" />
+        <app-template-snippet-add #secondSnippetAdd [type]="type" [newSnippet]="$any(obj)" [showFirst]="false" />
       } @else if (type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')) {
-        <template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="false" />
+        <app-template-ticket-announcement [activeAnnounce]="announcement" [type]="type" [showFirst]="false" />
       } @else if (type.startsWith('SUPPORT_THEME')) {
-        <template-support-theme-add [showFirst]="false" />
+        <app-template-support-theme-add [showFirst]="false" />
       } @else if (type.startsWith('EVENTS_')) {
-        <template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)" />
+        <app-template-create-giveaway #secondGiveawayAdd [showFirst]="false" [giveaway]="$any(obj)" />
       }
 
     }

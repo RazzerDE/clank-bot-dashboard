@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import { Component, Input, ViewChild, inject } from '@angular/core';
 import {TicketAnnouncement} from "../../../../../services/types/Tickets";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -14,7 +14,7 @@ import {DataHolderService} from "../../../../../services/data/data-holder.servic
 import {ApiService} from "../../../../../services/api/api.service";
 
 @Component({
-  selector: 'template-ticket-announcement',
+  selector: 'app-template-ticket-announcement',
   imports: [
     DiscordMarkdownComponent,
     ReactiveFormsModule,
@@ -28,8 +28,12 @@ import {ApiService} from "../../../../../services/api/api.service";
   styleUrl: './ticket-announcement.component.scss'
 })
 export class TicketAnnouncementComponent {
-  @Input() type: string = '';
-  @Input() showFirst: boolean = false;
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private translate = inject(TranslateService);
+
+  @Input() type = '';
+  @Input() showFirst = false;
 
   @ViewChild(DiscordMarkdownComponent) markdownComponent!: DiscordMarkdownComponent;
   @Input() activeAnnounce: TicketAnnouncement = { level: null, description: null, end_date: null };
@@ -38,8 +42,6 @@ export class TicketAnnouncementComponent {
   protected readonly faTrashCan: IconDefinition = faTrashCan;
   protected readonly today: Date = new Date();
   protected readonly JSON = JSON;
-
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {}
 
   /**
    * Submits the current ticket announcement to the server.
@@ -61,7 +63,7 @@ export class TicketAnnouncementComponent {
     let sub: Subscription | null = null;
     sub = this.apiService.setAnnouncement(this.activeAnnounce, this.dataService.active_guild.id)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_ANNOUNCEMENT_SET_TITLE'),
             this.translate.instant('SUCCESS_ANNOUNCEMENT_SET_DESC', { date: this.formatEndDate() }));
@@ -73,9 +75,9 @@ export class TicketAnnouncementComponent {
         },
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
-          if (error.status == 429) {
+          if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
-          } else if (error.status == 400) {
+          } else if (error.status === 400) {
             this.dataService.showAlert(this.translate.instant('ERROR_DATE_PAST_TITLE'),
               this.translate.instant('ERROR_DATE_PAST_DESC'));
           } else {
@@ -102,7 +104,7 @@ export class TicketAnnouncementComponent {
     let sub1: Subscription | null = null;
     sub1 = this.apiService.deleteAnnouncement(this.dataService.active_guild.id)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_ANNOUNCEMENT_DELETE_TITLE'),
             this.translate.instant('SUCCESS_ANNOUNCEMENT_DELETE_DESC'));
@@ -119,10 +121,10 @@ export class TicketAnnouncementComponent {
         error: (error: HttpErrorResponse): void => {
           this.dataService.error_color = 'red';
           if (sub1) { sub1.unsubscribe(); }
-          if (error.status == 429) {
+          if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
-          } else if (error.status == 404) {
+          } else if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_ANNOUNCEMENT_NOT_FOUND_TITLE'),
               this.translate.instant('ERROR_ANNOUNCEMENT_NOT_FOUND_DESC'));
 
@@ -209,8 +211,8 @@ export class TicketAnnouncementComponent {
    */
   changeAnnouncementPreview(event: Event): void {
     if (!event.target) { return; }
-    let color: number = 0x2cbf68;
-    let icon: string = 'assets/img/icons/green_mark.gif'
+    let color = 0x2cbf68;
+    let icon = 'assets/img/icons/green_mark.gif'
     const value: number = parseInt((event.target as HTMLSelectElement).value, 10);
     this.activeAnnounce.level = value;
 

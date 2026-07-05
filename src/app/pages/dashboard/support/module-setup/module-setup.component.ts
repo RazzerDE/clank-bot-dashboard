@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, inject } from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -35,21 +35,25 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
   ]
 })
 export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private discordService = inject(ComService);
+  private translate = inject(TranslateService);
+
   protected moduleStatus: 0 | 1 | 2 = 0; // 0 = Not started, 1 = In progress, 2 = Completed
   protected currentStep: 1 | 2 | 3 = 1;
   protected channelItems: Channel[] = [];
 
   protected selectedChannel: Channel | null = null;
   private readonly subscription: Subscription | null = null;
-  protected cacheRefreshDisabled: boolean = false;
+  protected cacheRefreshDisabled = false;
   protected moduleStatusObj: TasksCompletion | undefined;
   protected supportForum: { channel: Channel | null, pending: boolean, has_perms: boolean } = { channel: null, pending: false, has_perms: true };
 
-  private startLoading: boolean = false;
+  private startLoading = false;
   protected dataLoading: { statusBox: boolean, channelItems: boolean } = { statusBox: true, channelItems: true };
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService,
-              private discordService: ComService, private translate: TranslateService) {
+  constructor() {
     document.title = 'Support Setup ~ Clank Discord-Bot';
 
     this.getServerData(); // first call to get the server data
@@ -80,7 +84,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
    * It's used to show a loading state for some data related things.
    */
   ngAfterViewChecked(): void {
-    if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length == 3 && this.dataLoading.statusBox) {
+    if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length === 3 && this.dataLoading.statusBox) {
       setTimeout((): boolean => this.dataLoading.statusBox = false, 0);
     }
 
@@ -123,7 +127,7 @@ export class ModuleSetupComponent implements OnDestroy, AfterViewChecked {
           moduleStatus['task_1'].subtasks.pop();
         }
 
-        const supportSetup: any = JSON.parse(cachedSupportSetup);
+        const supportSetup: SupportSetup = JSON.parse(cachedSupportSetup);
         if (supportSetup['support_forum'] != null) {
           this.supportForum = { channel: supportSetup['support_forum'], pending: supportSetup['support_forum_pending'],
                                 has_perms: supportSetup['has_perms'] !== undefined ? supportSetup['has_perms'] : true };

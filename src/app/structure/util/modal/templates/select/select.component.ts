@@ -1,4 +1,4 @@
-import {booleanAttribute, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import { booleanAttribute, Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -10,7 +10,7 @@ import {SelectItems} from "../../../../../services/types/Config";
 import {NgClass} from "@angular/common";
 
 @Component({
-  selector: 'template-select',
+  selector: 'app-template-select',
   imports: [
     FaIconComponent,
     FormsModule,
@@ -21,9 +21,12 @@ import {NgClass} from "@angular/common";
   styleUrl: './select.component.scss'
 })
 export class SelectComponent {
-  @Input() id: string = 'rolepicker';
-  @Input() type: string = '';
-  @Input({transform: booleanAttribute}) disabled: boolean = false;
+  private translate = inject(TranslateService);
+  protected dataService = inject(DataHolderService);
+
+  @Input() id = 'rolepicker';
+  @Input() type = '';
+  @Input({transform: booleanAttribute}) disabled = false;
   @Input() options: Role[] | Channel[] | SelectItems[] = [];
   @Input() activeOption: string | null | undefined = null;
   @Input() activeOptions : Role[] | undefined;
@@ -33,10 +36,8 @@ export class SelectComponent {
   @ViewChild('rolePicker') rolePicker!: ElementRef<HTMLSelectElement>;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
   protected readonly faHashtag: IconDefinition = faHashtag;
-  protected isFocused: boolean = false;
-  isRolePickerValid: boolean = false;
-
-  constructor(private translate: TranslateService, protected dataService: DataHolderService) {}
+  protected isFocused = false;
+  isRolePickerValid = false;
 
   /**
    * Validates the role picker selection.
@@ -115,7 +116,7 @@ export class SelectComponent {
    * @returns `true` if the option is currently selected and the type is 'SECURITY_UNBAN', otherwise `false`.
    */
   protected isSelectDisabled(optionValue: string): boolean {
-    const isCurrentlySelected: boolean = Boolean(
+    const isCurrentlySelected = Boolean(
       (this.type?.startsWith('EVENTS_') || this.type === 'SECURITY_UNBAN') && this.activeOption?.startsWith(optionValue));
 
     return isCurrentlySelected && this.type === 'SECURITY_UNBAN';

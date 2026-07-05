@@ -1,4 +1,4 @@
-import {inject, Inject, Injectable, PLATFORM_ID} from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {isPlatformBrowser, Location} from "@angular/common";
 
@@ -6,8 +6,9 @@ import {isPlatformBrowser, Location} from "@angular/common";
   providedIn: 'root'
 })
 export class LanguageSwitcherService {
+  private translate = inject(TranslateService);
+  private platformId = inject(PLATFORM_ID);
 
-  constructor(private translate: TranslateService, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   /**
    * Sets the application language.

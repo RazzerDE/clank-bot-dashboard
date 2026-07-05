@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import {NgClass} from "@angular/common";
 
 @Component({
-  selector: 'page-thumb',
+  selector: 'app-page-thumb',
   imports: [
     NgClass
   ],
@@ -10,9 +10,9 @@ import {NgClass} from "@angular/common";
   styleUrl: './page-thumb.component.scss'
 })
 export class PageThumbComponent {
-  @Input() subtitle: string = '';
-  @Input() title: string = '';
-  @Input() desc: string = '';
+  @Input() subtitle = '';
+  @Input() title = '';
+  @Input() desc = '';
 
   @Input() size: 'less' | 'normal' = 'normal';
   @Input() color: 'red' | 'red-bright' | 'yellow' | 'blue' | 'green' | 'purple' | 'rosa' | 'cyan' | 'orange' |

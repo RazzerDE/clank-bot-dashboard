@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -33,6 +33,11 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
   styleUrl: './teamlist.component.scss'
 })
 export class TeamlistComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private discordService = inject(ComService);
+  private router = inject(Router);
+  private translate = inject(TranslateService);
+
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faChevronDown: IconDefinition = faChevronDown;
@@ -43,18 +48,17 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
   protected filteredRoles: Role[] = [];
   protected discordRoles: Role[] = [];
 
-  protected dataLoading: boolean = true;
+  protected dataLoading = true;
   protected selectedSupportLevels: number[] = [0, 1, 2];
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
+  protected disabledCacheBtn = false;
 
   @ViewChild(ModalComponent) protected modalComponent!: ModalComponent;
   @ViewChild('filterDropdown') protected filterDropdown!: ElementRef<HTMLDivElement>;
   @ViewChild('dropdownButton') protected dropdownButton!: ElementRef<HTMLButtonElement>;
   @ViewChild('roleButton') protected roleButton!: ElementRef<HTMLButtonElement>;
 
-  constructor(protected dataService: DataHolderService, private discordService: ComService, private router: Router,
-              private translate: TranslateService) {
+  constructor() {
     document.title = "Teamlist ~ Clank Discord-Bot";
     this.dataService.isLoading = true;
 
@@ -416,7 +420,7 @@ export class TeamlistComponent implements OnDestroy, AfterViewChecked {
 
     // role modal
     clickedInside = this.modalComponent.modalContent.nativeElement.contains(event.target as Node);
-    if ((!clickedInside && document.activeElement != this.roleButton.nativeElement)
+    if ((!clickedInside && document.activeElement !== this.roleButton.nativeElement)
         || (event.target as HTMLElement).id.includes('roleModalContent')) {
       this.modalComponent.hideModal();
     }

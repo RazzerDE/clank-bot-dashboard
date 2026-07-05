@@ -9,7 +9,7 @@
                    'justify-center cursor-pointer select-none', 'transition-transform duration-300 ease-in-out',
                    this.dataService.showMobileSidebar ? (!localStorage.getItem('active_guild') || this.dataService.hideGuildSidebar ?
                    'max-xl:translate-x-14' : 'max-xl:translate-x-[22rem]') : 'translate-x-0']"
-         (click)="toggleServers()">
+         (click)="toggleServers()" (keyup.enter)="toggleServers()" tabindex="0" role="button">
       <img alt="Clank ~ Discord-Bot (Hamburger Icon)" class="w-5 h-5 rounded-none"
            ngSrc="assets/img/icons/sidebar/menu-burger.svg" width="24" height="24" />
     </div>
@@ -21,7 +21,7 @@
     <!-- Search -->
     @if ((!this.dataService.showMobileSidebar || window.innerWidth > 1025) && localStorage.getItem('active_guild')) {
       <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 dark:hover:!bg-gray-700 items-center
-                justify-center cursor-pointer select-none" (click)="showSearchInput = !showSearchInput">
+                justify-center cursor-pointer select-none" (click)="showSearchInput = !showSearchInput" (keyup.enter)="showSearchInput = !showSearchInput" tabindex="0" role="button">
         <img alt="Clank ~ Discord-Bot (Search Icon)" class="w-6 h-6 rounded-none mt-0.5"
              ngSrc="assets/img/icons/sidebar/search.svg" width="24" height="24" />
       </div>
@@ -29,11 +29,11 @@
 
     <!-- Switch Language -->
     <div class="lang-switch-btn w-8 h-8">
-      <lang-switch-button></lang-switch-button>
+      <app-lang-switch-button></app-lang-switch-button>
     </div>
 
     <!-- Theme Switcher -->
-    <theme-switch-button></theme-switch-button>
+    <app-theme-switch-button></app-theme-switch-button>
   </div>
 </div>
 
@@ -56,7 +56,7 @@
 
       <div class="w-10 h-10 hover:rounded-full flex hover:bg-gray-200 dark:hover:!bg-gray-700 items-center
                 justify-center cursor-pointer select-none absolute right-1 top-1/2 transform -translate-y-1/2"
-           (click)="closeSearch()">
+           (click)="closeSearch()" (keyup.enter)="closeSearch()" tabindex="0" role="button">
         <img ngSrc="assets/img/icons/sidebar/cross-circle.svg" alt="Clank ~ Discord-Bot (Close Icon)"
              class="w-6 h-6 cursor-pointer" height="24" width="24" />
       </div>

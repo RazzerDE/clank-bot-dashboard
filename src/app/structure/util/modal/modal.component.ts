@@ -1,11 +1,4 @@
-import {
-  AfterContentInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  ViewChild
-} from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
@@ -71,9 +64,12 @@ import {ConfirmDialogComponent} from "./templates/confirm-dialog/confirm-dialog.
   ]
 })
 export class ModalComponent implements AfterContentInit  {
+  protected dataService = inject(DataHolderService);
+  private cdr = inject(ChangeDetectorRef);
+
   @Input() discordRoles: Role[] = [];
-  @Input() type: string = '';
-  @Input() content: string = '';
+  @Input() type = '';
+  @Input() content = '';
 
   @Input() extra: Role[] = [];
   @Input() obj: TicketSnippet | BlockedUser | Giveaway | SecurityModal = {} as TicketSnippet;
@@ -82,15 +78,15 @@ export class ModalComponent implements AfterContentInit  {
   @Input() announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
   @Input() org_announcement: TicketAnnouncement = { level: null, description: null, end_date: null };
 
-  @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
-  @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => {};
-  @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => {};
-  @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
-  @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
-  @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
-  @Input() shield_action: (action: 0 | 1 | 2, element: HTMLButtonElement) => void = (): void => {};
+  @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => { /* no-op default */ };
+  @Input() snippet_action: (snippet: TicketSnippet) => void = (): void => { /* no-op default */ };
+  @Input() snippet_edit: (snippet: TicketSnippet) => void = (): void => { /* no-op default */ };
+  @Input() block_action: (blockedUser: BlockedUser) => void = (): void => { /* no-op default */ };
+  @Input() event_action: (giveaway: Giveaway) => void = (): void => { /* no-op default */ };
+  @Input() event_edit: (giveaway: Giveaway) => void = (): void => { /* no-op default */ };
+  @Input() shield_action: (action: 0 | 1 | 2, element: HTMLButtonElement) => void = (): void => { /* no-op default */ };
 
-  protected isVisible: boolean = false;
+  protected isVisible = false;
   protected readonly faXmark: IconDefinition = faXmark;
 
   @ViewChild('roleModal') roleModal!: ElementRef<HTMLDivElement>;
@@ -98,8 +94,6 @@ export class ModalComponent implements AfterContentInit  {
   @ViewChild('roleBackdrop') roleBackdrop!: ElementRef<HTMLDivElement>;
   @ViewChild('secondSnippetAdd') secondSnippetAdd: SnippetAddComponent | undefined = undefined;
   @ViewChild('secondGiveawayAdd') secondGiveawayAdd: CreateGiveawayComponent | undefined = undefined;
-
-  constructor(protected dataService: DataHolderService, private cdr: ChangeDetectorRef) {}
 
   /**
    * Lifecycle hook that is called after the component's content has been fully initialized.

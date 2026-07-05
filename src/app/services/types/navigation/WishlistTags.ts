@@ -39,7 +39,7 @@ export interface CooldownFeatures {
   isLoading: boolean;
 }
 
-export let tags: Tag[] = [
+export const tags: Tag[] = [
   { id: 1, name: "WISHLIST_TAG_FEATURES", isActive: true },
   { id: 2, name: 'Support-Tool', color: '#2980b9', isActive: false },
   { id: 3, name: 'Security-System', color: '#c0392b', isActive: false },
@@ -48,7 +48,7 @@ export let tags: Tag[] = [
   { id: 6, name: 'WISHLIST_TAG_MISC', color: '#2c3e50', isActive: false }
 ];
 
-export let feature_list: Feature[] = [
+export const feature_list: Feature[] = [
   { id: 1, name: 'WISHLIST_FEATURE_NAME_1', icon_url: 'assets/img/icons/utility/star.png', tag_id: 5, votes: 0,
     dislikes: 0, enabled: true, created_at: '18.01.2025', desc: 'WISHLIST_FEATURE_DESC_1' },
   { id: 2, name: 'WISHLIST_FEATURE_NAME_2', icon_url: 'assets/img/icons/utility/sound.png', tag_id: 5, votes: 0,

@@ -2,9 +2,9 @@
      [ngClass]="{'rotate-left': !this.isLangSwitched, 'rotate-right': this.isLangSwitched}">
   @if (translateService.getLanguage() === 'en') {
     <img ngSrc="assets/img/icons/lang/united-states.png" alt="Clank ~ Discord-Bot (America Icon)"
-         width="35" height="35" (click)="switchLanguage('de')" />
+         width="35" height="35" (click)="switchLanguage('de')" (keyup.enter)="switchLanguage('de')" tabindex="0" role="button"/>
   } @else {
     <img ngSrc="assets/img/icons/lang/germany.png" alt="Clank ~ Discord-Bot (Germany Icon)"
-         width="35" height="35" (click)="switchLanguage('en')" />
+         width="35" height="35" (click)="switchLanguage('en')" (keyup.enter)="switchLanguage('en')" tabindex="0" role="button"/>
   }
 </div>

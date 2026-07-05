@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -35,6 +35,11 @@ import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
   styleUrl: './active-giveaways.component.scss'
 })
 export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private comService = inject(ComService);
+  private translate = inject(TranslateService);
+
   private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
   protected readonly faSearch: IconDefinition = faSearch;
@@ -45,18 +50,17 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
   public giveaway: Giveaway = { ...this.initGiveaway };
   protected events: Giveaway[] = [];
   protected filteredEvents: Giveaway[] = [...this.events]; // Initially, all events are shown
-  protected modalType: string = 'EVENTS_CREATE';
+  protected modalType = 'EVENTS_CREATE';
   protected modalObj: Giveaway = this.giveaway;
-  protected dataLoading: boolean = true;
+  protected dataLoading = true;
 
-  protected disableSendBtn: boolean = false;
-  protected disabledCacheBtn: boolean = false;
+  protected disableSendBtn = false;
+  protected disabledCacheBtn = false;
   private dateCustomPipe: DatePipe = new DatePipe();
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
   @ViewChild(ModalComponent) private modal!: ModalComponent;
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService,
-              private translate: TranslateService) {
+  constructor() {
     document.title = 'Active Events - Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getGuildEvents(); // first call to get the server data
@@ -197,7 +201,7 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
           } else if (error.status === 409) { // already exist / invalid data
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_CREATION_CONFLICT'),
               this.translate.instant('ERROR_GIVEAWAY_CREATION_CONFLICT_DESC'));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {
@@ -260,7 +264,7 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
           } else if (error.status === 406) { // sponsor not found
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_406'),
               this.translate.instant('ERROR_GIVEAWAY_406_DESC', { sponsor: giveaway.sponsor_id }));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {
@@ -291,7 +295,7 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
     const org_price: string = this.markdownPipe.transform(giveaway.prize);
     const removed_gw: Subscription = this.apiService.deleteGuildEvent(giveaway)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_GIVEAWAY_REMOVED_TITLE'),
             this.translate.instant('SUCCESS_GIVEAWAY_REMOVED_DESC', { name: org_price }));
@@ -369,7 +373,7 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
         this.translate.instant('ERROR_GIVEAWAY_REMOVED_404_DESC'));
       if (index !== -1) { this.events.splice(index, 1); this.filteredEvents = this.sortEvents([...this.events]); }
       localStorage.setItem('active_events', JSON.stringify(this.events));
-    } else if (error.status == 429) {
+    } else if (error.status === 429) {
       this.dataService.redirectLoginError('REQUESTS');
       return;
     } else {
@@ -385,7 +389,7 @@ export class ActiveGiveawaysComponent implements OnDestroy, AfterViewChecked {
    */
   protected openModal(type: 'EVENTS_CREATE' | 'EVENTS_EDIT', giveaway?: Giveaway): void {
     this.dataService.isFetching = true;
-    if (giveaway && type != 'EVENTS_CREATE') {
+    if (giveaway && type !== 'EVENTS_CREATE') {
       const event: Giveaway = { ...giveaway };
       event.prize = event.prize.replace(/<a?:\w+:\d+>/g, '').trim();
       this.modalObj = event;

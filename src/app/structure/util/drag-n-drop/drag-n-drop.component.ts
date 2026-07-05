@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -25,27 +25,28 @@ import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons";
   styleUrl: './drag-n-drop.component.scss'
 })
 export class DragNDropComponent {
-  @Input() type: string = 'SECURITY_SHIELD';
-  @Input() feature_list: SecurityFeature[] | LogFeature[] = [];
-  @Input() enabledFeatures: SecurityFeature[] | LogFeature[] = [];
-  @Input() disabledFeatures: SecurityFeature[] | LogFeature[] = [];
-  @Input() org_features: SecurityFeature[] | LogFeature[] = [];
-  @Input() disabledSendBtn: boolean = false;
-  @Input() refresh_data_function: (no_cache?: boolean) => void = (): void => {};
+  protected dataService = inject(DataHolderService);
+  private translate = inject(TranslateService);
 
-  @Output() openConfirmModal = new EventEmitter<{ type: number, btn: any }>();
-  @Output() saveAction: EventEmitter<SecurityFeature[] | LogFeature[]> = new EventEmitter<SecurityFeature[] | LogFeature[]>();
+  @Input() type = 'SECURITY_SHIELD';
+  @Input() feature_list: (SecurityFeature | LogFeature)[] = [];
+  @Input() enabledFeatures: (SecurityFeature | LogFeature)[] = [];
+  @Input() disabledFeatures: (SecurityFeature | LogFeature)[] = [];
+  @Input() org_features: (SecurityFeature | LogFeature)[] = [];
+  @Input() disabledSendBtn = false;
+  @Input() refresh_data_function: (no_cache?: boolean) => void = (): void => { /* no-op default */ };
 
-  protected isDragging: boolean = false;
-  protected disabledCacheBtn: boolean = false;
+  @Output() openConfirmModal = new EventEmitter<{ type: number, btn: HTMLButtonElement }>();
+  @Output() saveAction: EventEmitter<(SecurityFeature | LogFeature)[]> = new EventEmitter<(SecurityFeature | LogFeature)[]>();
+
+  protected isDragging = false;
+  protected disabledCacheBtn = false;
   protected dragOrigin: 'enabled' | 'disabled' | null = null;
 
   protected readonly faSave: IconDefinition = faSave;
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faHourglassHalf: IconDefinition = faHourglassHalf;
   protected readonly faCircleExclamation: IconDefinition = faCircleExclamation;
-
-  constructor(protected dataService: DataHolderService, private translate: TranslateService) {}
 
   /**
    * Handles drag-and-drop events for security features.
@@ -55,16 +56,16 @@ export class DragNDropComponent {
    *
    * @param event - Drag-and-drop event containing source and destination containers and indices.
    */
-  protected drop(event: CdkDragDrop<SecurityFeature[] | LogFeature[]>): void {
+  protected drop(event: CdkDragDrop<(SecurityFeature | LogFeature)[]>): void {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data as any[], event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(event.previousContainer.data as any[], event.container.data, event.previousIndex, event.currentIndex);
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       const movedItem: SecurityFeature | LogFeature = event.container.data[event.currentIndex];
 
       // check if guild has vip and if the moved item is related to unban_thread_id, cancel it then
       if (this.type === 'SECURITY_LOGS' && movedItem.category === 'unban_thread_id' && !this.dataService.has_vip) {
-        transferArrayItem(event.container.data, event.previousContainer.data as any[], event.currentIndex, event.previousIndex);
+        transferArrayItem(event.container.data, event.previousContainer.data, event.currentIndex, event.previousIndex);
 
         this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
           this.translate.instant('ERROR_UNBAN_LOG_402_DESC'));
@@ -76,8 +77,8 @@ export class DragNDropComponent {
     }
 
     // sort arrays after moving items again
-    (this.enabledFeatures as any) = this.feature_list.filter(f => f.enabled);
-    (this.disabledFeatures as any) = this.feature_list.filter(f => !f.enabled);
+    this.enabledFeatures = this.feature_list.filter(f => f.enabled);
+    this.disabledFeatures = this.feature_list.filter(f => !f.enabled);
   }
 
   /**

@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import { Component, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -34,6 +34,10 @@ import {DragNDropComponent} from "../../../../structure/util/drag-n-drop/drag-n-
   styleUrl: './active-shields.component.scss'
 })
 export class ActiveShieldsComponent implements OnDestroy {
+  protected dataService = inject(DataHolderService);
+  protected translate = inject(TranslateService);
+  private apiService = inject(ApiService);
+
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faRotateLeft: IconDefinition = faRotateLeft;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -46,14 +50,14 @@ export class ActiveShieldsComponent implements OnDestroy {
   protected disabledFeatures: SecurityFeature[] = this.security_features.filter(f => !f.enabled);
   protected backup_data: BackupData = {enabled: true, backup_date: 1752686998, channels: [], roles: []};
 
-  protected disabledSendBtn: boolean = false;
+  protected disabledSendBtn = false;
   private readonly subscription: Subscription | null = null;
 
   @ViewChild(ModalComponent) private modal!: ModalComponent;
   protected modalAction: 0 | 1 = 0; // 0 = panic, 1 = backup restore
   protected modalElement: HTMLButtonElement | null = null;
 
-  constructor(protected dataService: DataHolderService, protected translate: TranslateService, private apiService: ApiService) {
+  constructor() {
     document.title = 'Active Shields ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSecurityShields();
@@ -203,7 +207,7 @@ export class ActiveShieldsComponent implements OnDestroy {
 
     const sub: Subscription = this.apiService.insertBotAction(this.dataService.active_guild.id, action)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           sub.unsubscribe();
 
           this.dataService.error_color = 'green';
@@ -251,7 +255,7 @@ export class ActiveShieldsComponent implements OnDestroy {
 
     const sub: Subscription = this.apiService.saveSecurityShields(this.dataService.active_guild.id, shields)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           sub.unsubscribe();
           this.org_features = JSON.parse(JSON.stringify(shields));
           localStorage.setItem('security_shields', JSON.stringify(shields));
@@ -286,7 +290,7 @@ export class ActiveShieldsComponent implements OnDestroy {
    * @param element The HTML button element that triggered the modal.
    */
   protected openConfirmModal(action: 0 | 1, element: HTMLButtonElement): void {
-    if (action == 1 && !this.dataService.active_guild?.owner) {
+    if (action === 1 && !this.dataService.active_guild?.owner) {
       this.dataService.showAlert(this.translate.instant("ERROR_SECURITY_ACTION_1_NOT_OWNER_TITLE"),
         this.translate.instant("ERROR_SECURITY_ACTION_1_NOT_OWNER_DESC"));
       return;
@@ -305,7 +309,7 @@ export class ActiveShieldsComponent implements OnDestroy {
    * @param lang Current language code ('de', 'en', etc.)
    * @returns Formatted date string or '-'
    */
-  protected formatBackupDate(backupDate?: number, lang: string = 'de'): string {
+  protected formatBackupDate(backupDate?: number, lang = 'de'): string {
     if (!backupDate) return '-';
     const date = new Date(backupDate);
     if (lang === 'de') {

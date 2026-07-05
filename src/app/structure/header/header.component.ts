@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {LangSwitchButtonComponent} from "../util/lang-switch-button/lang-switch-button.component";
 import {ThemeSwitchButtonComponent} from "../util/theme-switch-button/theme-switch-button.component";
@@ -47,6 +47,9 @@ import {FilteredNavigationItem, nav_items, NavigationItem} from "../../services/
     ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  protected dataService = inject(DataHolderService);
+  private translate = inject(TranslateService);
+
   @ViewChild('Header') protected header!: ElementRef<HTMLDivElement>;
   @ViewChild('searchContainer') protected searchContainer!: ElementRef<HTMLDivElement>;
 
@@ -54,11 +57,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   protected filteredNavItems: NavigationItem[] = nav_items;
 
   private langSubscription!: Subscription;
-  private server_picker_width: number = 0;
-  protected showSearchInput: boolean = false;
-  protected searchInput: string = '';
-
-  constructor(protected dataService: DataHolderService, private translate: TranslateService) {}
+  private server_picker_width = 0;
+  protected showSearchInput = false;
+  protected searchInput = '';
 
   /**
    * Angular lifecycle hook that is called after the component's view has been fully initialized.

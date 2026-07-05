@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -33,24 +33,28 @@ import {DatePipe} from "../../../../pipes/date/date.pipe";
   styleUrl: './blocked-users.component.scss'
 })
 export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private translate = inject(TranslateService);
+
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faPlus: IconDefinition = faPlus;
   protected readonly faRefresh: IconDefinition = faRefresh;
-  protected disabledCacheBtn: boolean = false;
-  protected disabledAddBtn: boolean = false;
-  protected dataLoading: boolean = true;
-  protected modalType: string = 'BLOCKED_USER_ADD';
+  protected disabledCacheBtn = false;
+  protected disabledAddBtn = false;
+  protected dataLoading = true;
+  protected modalType = 'BLOCKED_USER_ADD';
 
   protected user_list: BlockedUser[] = [];
   protected filteredUsers: BlockedUser[] = [...this.user_list];
-  protected startLoading: boolean = false;
+  protected startLoading = false;
   private readonly subscription: Subscription | null = null;
 
   @ViewChild(ModalComponent) modal!: ModalComponent;
   protected newBlockedUser: BlockedUser = {} as BlockedUser;
   private datePipe: DatePipe = new DatePipe();
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
+  constructor() {
     document.title = 'Blocked Users ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
 
@@ -157,7 +161,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
     let delete_blocked: Subscription | null = null;
     delete_blocked = this.apiService.deleteBlockedUser(this.dataService.active_guild.id, blockedUser.user_id)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_USER_UNBLOCK_TITLE'),
             this.translate.instant('SUCCESS_USER_UNBLOCK_DESC', { user: blockedUser.user_name, user_id: blockedUser.user_id }));
@@ -181,7 +185,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
 
             const index: number = this.user_list.findIndex((bu: BlockedUser) => bu.user_id === blockedUser.user_id);
             if (index !== -1) { this.user_list.splice(index, 1); this.filteredUsers = [...this.user_list]; }
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));
@@ -208,7 +212,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
     blockedUser.staff_name = this.dataService.profile.username;
     blockedUser.staff_avatar = this.dataService.profile.avatar;
 
-    let avatar_url: string = `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}`;
+    let avatar_url = `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}`;
     if (blockedUser.staff_avatar) {
       avatar_url = `https://cdn.discordapp.com/avatars/${blockedUser.staff_id}/${this.dataService.profile.avatar}`;
     }
@@ -249,7 +253,7 @@ export class BlockedUsersComponent implements OnDestroy, AfterViewChecked {
           } else if (error.status === 400) {
             this.dataService.showAlert(this.translate.instant('ERROR_DATE_PAST_TITLE'),
               this.translate.instant('ERROR_DATE_PAST_DESC'));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {

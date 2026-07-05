@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import {DataHolderService} from "../../../services/data/data-holder.service";
 import {Router, RouterLink} from "@angular/router";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -24,6 +24,10 @@ import {ThemeSwitchButtonComponent} from "../../../structure/util/theme-switch-b
     styleUrl: './simple-error.component.scss'
 })
 export class SimpleErrorComponent implements AfterViewInit {
+  protected dataService = inject(DataHolderService);
+  private translate = inject(TranslateService);
+  protected router = inject(Router);
+
 
   protected readonly faHome: IconDefinition = faHome;
   protected readonly faDiscord: IconDefinition = faDiscord;
@@ -34,7 +38,7 @@ export class SimpleErrorComponent implements AfterViewInit {
     '&permissions=10430293995255&integration_type=0&scope=bot+applications.commands' +
     `&guild_id=${this.dataService.active_guild?.id}&disable_guild_select=true`
 
-  constructor(protected dataService: DataHolderService, private translate: TranslateService, protected router: Router) {
+  constructor() {
     this.dataService.isLoading = true;
   }
 
@@ -51,7 +55,7 @@ export class SimpleErrorComponent implements AfterViewInit {
         `&guild_id=${this.dataService.active_guild?.id}&disable_guild_select=true`
     });
 
-    if (this.router.url != '/errors/simple') {  // custom 404 error page
+    if (this.router.url !== '/errors/simple') {  // custom 404 error page
       this.dataService.error_title = this.translate.instant('ERROR_PAGE_404_TITLE');
       this.dataService.error_desc = this.translate.instant('ERROR_PAGE_404_DESC');
     }

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, ViewChild} from '@angular/core';
+import { Component, OnDestroy, ViewChild, inject } from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -54,6 +54,10 @@ import {ModalComponent} from "../../../../structure/util/modal/modal.component";
   ],
 })
 export class AutomodUnbanComponent implements OnDestroy {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private translate = inject(TranslateService);
+
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faShieldHalved: IconDefinition = faShieldHalved;
@@ -61,8 +65,8 @@ export class AutomodUnbanComponent implements OnDestroy {
   protected readonly faTrash: IconDefinition = faTrash;
   protected readonly faHandcuffs: IconDefinition = faHandcuffs;
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
-  protected disabledSaveBtn: boolean = false;
+  protected disabledCacheBtn = false;
+  protected disabledSaveBtn = false;
 
   protected event_cards: EventCard[] = [
     {title: 'PAGE_SECURITY_AUTOMOD_CONTAINER_ITEM_0_TITLE', color: 'red',
@@ -81,7 +85,7 @@ export class AutomodUnbanComponent implements OnDestroy {
   protected modalElement: HTMLButtonElement | null = null;
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
+  constructor() {
     document.title = 'AutoMod-Settings - Clank Discord-Bot';
     this.dataService.isLoading = false;
     this.getUnbanMethod();
@@ -171,14 +175,14 @@ export class AutomodUnbanComponent implements OnDestroy {
   protected doAction(action: 0 | 1, element: HTMLButtonElement): void {
     if (!this.dataService.active_guild) { return; }
 
-    if (action === 0 && (this.unban_method.method_type && this.unban_method.method_type != 'BOT')) {
+    if (action === 0 && (this.unban_method.method_type && this.unban_method.method_type !== 'BOT')) {
       if (this.isInvalidUnbanMethodInput()) { return; }
     }
 
     element.disabled = true;
     const sub: Subscription = this.apiService.doUnbanAction(this.dataService.active_guild.id, this.unban_method, action)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           sub.unsubscribe();
 
           this.dataService.error_color = 'green';
@@ -199,7 +203,7 @@ export class AutomodUnbanComponent implements OnDestroy {
         },
         error: (err: HttpErrorResponse): void => {
 
-          if (err.status === 409 && (this.unban_method.method_type && this.unban_method.method_type != 'BOT')) {
+          if (err.status === 409 && (this.unban_method.method_type && this.unban_method.method_type !== 'BOT')) {
             if (this.isInvalidUnbanMethodInput()) { return; }
           } else if (err.status === 402) {
             this.dataService.error_color = 'red';
@@ -238,7 +242,7 @@ export class AutomodUnbanComponent implements OnDestroy {
     element.disabled = true;
     const sub: Subscription = this.apiService.insertBotAction(this.dataService.active_guild.id, action)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           sub.unsubscribe();
 
           this.dataService.error_color = 'green';
@@ -293,7 +297,7 @@ export class AutomodUnbanComponent implements OnDestroy {
     this.unban_method.method_type = method_type;
 
 
-    if (this.unban_method.method_type != this.org_features.method_type && (this.unban_method.method_type === 'FORM' ||
+    if (this.unban_method.method_type !== this.org_features.method_type && (this.unban_method.method_type === 'FORM' ||
         this.unban_method.method_type === 'EMAIL' || this.unban_method.method_type === 'INVITE')) {
       this.unban_method.method_extra = null;  // reset method input
     } else { this.unban_method.method_extra = this.org_features.method_extra; } // reset to original value
@@ -348,7 +352,7 @@ export class AutomodUnbanComponent implements OnDestroy {
           this.translate.instant('ERROR_SECURITY_UNBAN_METHOD_INVALID_EMAIL_DESC'));
         return true;
       } else if (this.unban_method.method_type === 'FORM') {
-        const urlPattern: RegExp = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/;
+        const urlPattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/;
         if (this.unban_method.method_extra && !urlPattern.test(this.unban_method.method_extra)) {
           this.dataService.error_color = 'red';
           this.dataService.showAlert(this.translate.instant('ERROR_SECURITY_UNBAN_METHOD_INVALID_URL_TITLE'),

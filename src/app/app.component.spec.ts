@@ -40,7 +40,7 @@ describe('AppComponent', () => {
   it('should set correct meta tags and title for English SEO', () => {
     const setTitleSpy = jest.spyOn(component['title'], 'setTitle');
     const updateTagSpy = jest.spyOn(component['meta'], 'updateTag');
-    let link = document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' }));
+    const link = document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' }));
 
     component['updateSEO']();
 
@@ -65,7 +65,7 @@ describe('AppComponent', () => {
   });
 
   it('should set canonical link to /de if isGerman is true', () => {
-    let link = document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' }));
+    const link = document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' }));
 
     component['updateSEO'](true);
 

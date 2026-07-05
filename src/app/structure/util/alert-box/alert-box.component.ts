@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faXmark, IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {faBug} from "@fortawesome/free-solid-svg-icons";
@@ -27,9 +27,8 @@ import {DataHolderService} from "../../../services/data/data-holder.service";
   ]
 })
 export class AlertBoxComponent {
+  protected dataService = inject(DataHolderService);
+
   protected readonly faXmark: IconDefinition = faXmark;
   protected readonly faBug: IconDefinition = faBug;
-
-  constructor(protected dataService: DataHolderService) {
-  }
 }

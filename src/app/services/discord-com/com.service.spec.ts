@@ -14,7 +14,6 @@ import {Observable} from "rxjs";
 describe('DiscordComService', () => {
   let service: ComService;
   let httpMock: HttpTestingController;
-  let authService: AuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,7 +27,6 @@ describe('DiscordComService', () => {
     ]
 });
     service = TestBed.inject(ComService);
-    authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 

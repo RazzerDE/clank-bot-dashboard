@@ -5,6 +5,12 @@ import {BlockedUser} from "./discord/User";
 import {Giveaway} from "./Events";
 import {UnbanRequest} from "./Security";
 
+// Table actions are wired dynamically per table type; each consumer assigns
+// callbacks with its own row type. Typing this precisely would require making
+// TableConfig generic, so keep the loose call signature `Function` had.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TableAction = (...args: any[]) => any;
+
 export interface SelectItems {
   value: string;
   label: string;
@@ -19,7 +25,7 @@ export interface ButtonConfig {
   color: string;
   icon: IconDefinition;
   size: 'lg' | 'xl';
-  action: Function;
+  action: TableAction;
 }
 
 export interface TableConfig {
@@ -30,7 +36,7 @@ export interface TableConfig {
   columns: ColumnConfig[];
   rows: SupportTheme[] | Role[] | TicketSnippet[] | BlockedUser[] | Giveaway[] | UnbanRequest[];
   action_btn: ButtonConfig[];
-  actions: Function[];
+  actions: TableAction[];
 }
 
 export interface EmbedConfigRaw {

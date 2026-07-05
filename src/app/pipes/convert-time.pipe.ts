@@ -16,7 +16,7 @@ export class ConvertTimePipe implements PipeTransform {
    * @param lang - The language for the output ('de' for German, 'en' for English). Defaults to 'de'.
    * @returns A string representing the time in a human-readable format.
    */
-  transform(value: number, lang: string = 'de'): string {
+  transform(value: number, lang = 'de'): string {
     if (value === null || value === undefined || isNaN(Number(value))) {
       return '';
     }
@@ -64,7 +64,7 @@ export class ConvertTimePipe implements PipeTransform {
       { value: 1, label: 's' }            // seconds
     ];
 
-    let result: string = '';
+    let result = '';
     let remainingSeconds: number = seconds;
 
     // Process each unit in order
@@ -98,7 +98,7 @@ export class ConvertTimePipe implements PipeTransform {
     const dayMatch: RegExpMatchArray | null = timeInput.match(/(\d+)d/);
     const minuteMatch: RegExpMatchArray | null = timeInput.match(/(\d+)m/);
     const secondMatch: RegExpMatchArray | null = timeInput.match(/(\d+)s/);
-    let totalSeconds: number = 0;
+    let totalSeconds = 0;
 
     if (yearMatch) totalSeconds += parseInt(yearMatch[1]) * 31536000; // 365 days
     if (monthMatch) totalSeconds += parseInt(monthMatch[1]) * 2592000; // 30 days

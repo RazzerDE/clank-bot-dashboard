@@ -2,7 +2,7 @@
 
   @if (this.dataService.showMobileSidebar) {
     <!-- Backdrop for mobile -->
-    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()"></div>
+    <div class="fixed inset-0 bg-gray-800/60 xl:hidden z-[10]" (click)="this.dataService.toggleSidebar()" (keyup.enter)="this.dataService.toggleSidebar()" tabindex="0" role="button"></div>
   }
 
   <!-- Hide sidebar on mobile devices; only show after button click -->

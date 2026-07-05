@@ -78,7 +78,7 @@
       <p class="text-gray-400 dark:text-gray-500 text-sm mb-2" [innerHTML]="'PLACEHOLDER_ANNOUNCEMENT_MODAL_INFO' | translate"></p>
       <hr class="mt-4 w-11/12 self-center bg-gray-700 dark:bg-gray-800 mb-4">
 
-      <template-discord-markdown [type]="this.type" class="!mt-0" [content]="activeAnnounce.description!"
+      <app-template-discord-markdown [type]="this.type" class="!mt-0" [content]="activeAnnounce.description!"
                                  [announce_level]="this.activeAnnounce.level!" [no_overlay]="true" />
     </div>
   </div>

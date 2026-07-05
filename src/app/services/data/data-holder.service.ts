@@ -1,4 +1,4 @@
-import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import {GeneralStats} from "../types/Statistics";
 import {Router} from "@angular/router";
 import {DiscordUser} from "../types/discord/User";
@@ -20,27 +20,31 @@ import {AuthService} from "../auth/auth.service";
   providedIn: 'root'
 })
 export class DataHolderService {
-  isLoading: boolean = true;
-  isLoginLoading: boolean = false;
+  private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
+  private translate = inject(TranslateService);
 
-  isEmojisLoading: boolean = true;
-  isDarkTheme: boolean = false;
-  isFetching: boolean = false;
-  isFAQ: boolean = false;
-  showSidebarLogo: boolean = false;
-  showMobileSidebar: boolean = false;
-  showEmojiPicker: boolean = false;
-  hideGuildSidebar: boolean = false;
+  isLoading = true;
+  isLoginLoading = false;
+
+  isEmojisLoading = true;
+  isDarkTheme = false;
+  isFetching = false;
+  isFAQ = false;
+  showSidebarLogo = false;
+  showMobileSidebar = false;
+  showEmojiPicker = false;
+  hideGuildSidebar = false;
   allowDataFetch: Subject<boolean> = new Subject<boolean>();
   sidebarStateChanged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  isDisabledSpamBtn: boolean = false;
+  isDisabledSpamBtn = false;
 
   // error handler related
-  error_title: string = 'ERROR_UNKNOWN_TITLE';
-  error_desc: string = 'ERROR_UNKNOWN_DESC';
+  error_title = 'ERROR_UNKNOWN_TITLE';
+  error_desc = 'ERROR_UNKNOWN_DESC';
   error_color: 'red' | 'green' | 'yellow' = 'red';
-  faq_answer: string = '';
-  showAlertBox: boolean = false;
+  faq_answer = '';
+  showAlertBox = false;
 
   // api related
   active_guild: Guild | null = null;
@@ -56,7 +60,7 @@ export class DataHolderService {
   guild_emojis: Emoji[] | string[] = [];
   unban_requests: UnbanRequest[] = [];
   filteredRequests: UnbanRequest[] = this.unban_requests;
-  has_vip: boolean = false;
+  has_vip = false;
 
   embed_config: EmbedConfig = { color_code: '#706fd3', thumbnail_url: 'https://i.imgur.com/8eajG1v.gif',
     banner_url: null, emoji_reaction: this.getEmojibyId('<a:present:873708141085343764>') }
@@ -68,7 +72,7 @@ export class DataHolderService {
   private markdownPipe: MarkdownPipe | undefined;
   private convertTimePipe: ConvertTimePipe | undefined;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, private translate: TranslateService) {
+  constructor() {
     if (isPlatformBrowser(this.platformId)) {
       this.initializeFromLocalStorage();
     }
@@ -582,24 +586,27 @@ export class DataHolderService {
           this.translate.instant('PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_MSG', { count: req_value }))
         return req_value;
 
-      case value.startsWith('VOICE: '):
+      case value.startsWith('VOICE: '): {
         const voiceTime: string = this.convertTimePipe.transform(Number(req_value), this.translate.currentLang);
         reqElement.innerHTML = this.markdownPipe.transform(
           this.translate.instant('PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_VOICE', { voicetime: voiceTime }));
         return this.convertTimePipe.convertToFormattedTime(Number(req_value));
+      }
 
-      case value.startsWith('MITGLIED: '):
+      case value.startsWith('MITGLIED: '): {
         const memberSince: string = this.convertTimePipe.transform(Number(req_value), this.translate.currentLang);
         reqElement.innerHTML = this.markdownPipe.transform(
           this.translate.instant('PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_MEMBER', { membership: memberSince }));
         return this.convertTimePipe.convertToFormattedTime(Number(req_value));
+      }
 
-      case value.startsWith('SERVER: '):
+      case value.startsWith('SERVER: '): {
         const server_url: string = req_value.split(' - ')[0];
         reqElement.innerHTML = this.markdownPipe.transform(
           this.translate.instant('PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_SERVER',
             { server: server_url }));
         return server_url;
+      }
 
       case value.startsWith('ROLE_ID: '):
         reqElement.innerHTML = this.translate.instant('PLACEHOLDER_GIVEAWAY_EMBED_REQUIREMENTS_ROLE');

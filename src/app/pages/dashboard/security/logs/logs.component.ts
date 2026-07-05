@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, inject } from '@angular/core';
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -33,12 +33,17 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons";
   styleUrl: './logs.component.scss'
 })
 export class LogsComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private comService = inject(ComService);
+  private translate = inject(TranslateService);
+
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faTrash: IconDefinition = faTrash;
   private readonly subscription: Subscription | null;
-  private refreshState: boolean = false;
-  protected sendState: boolean = false;
+  private refreshState = false;
+  protected sendState = false;
 
   // Angular - Drag and Drop feature lists
   protected log_list: LogFeature[] = initLogs;
@@ -48,8 +53,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
   protected enabledFeatures: LogFeature[] = this.log_list.filter(f => f.enabled);
   protected disabledFeatures: LogFeature[] = this.log_list.filter(f => !f.enabled);
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private comService: ComService,
-              private translate: TranslateService) {
+  constructor() {
     document.title = 'Security Logs ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSecurityLogs(); // first call to get the server data
@@ -169,7 +173,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
 
     const sub: Subscription = this.apiService.updateLogForum(this.dataService.active_guild!.id, this.tempLog.id, delete_action)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           // channel is now updated, so threads are reset
           this.dataService.security_logs = {channel_id: null, guild_thread_id: null, bot_thread_id: null,
             channel_roles_thread_id: null, message_thread_id: null, emoji_thread_id: null, join_leave_thread_id: null,
@@ -296,7 +300,7 @@ export class LogsComponent implements OnDestroy, AfterViewChecked {
     if (!this.dataService.security_logs) return;
 
     this.log_list = this.log_list.map(log => {
-      const securityLogs = this.dataService.security_logs as Record<string, any>;
+      const securityLogs = this.dataService.security_logs as unknown as Record<string, unknown>;
       const mainValue = securityLogs[log.category];
       const pendingValue = securityLogs[`${log.category}_pending`];
       const deleteValue = securityLogs[`${log.category}_delete`];

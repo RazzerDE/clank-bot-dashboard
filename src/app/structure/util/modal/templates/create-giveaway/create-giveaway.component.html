@@ -34,7 +34,7 @@
         {{ 'PLACEHOLDER_EVENT_CHANNEL_TITLE' | translate }} <span class="text-red-500">*</span>
       </label>
       <div class="flex gap-2 justify-between">
-        <template-select [options]="this.dataService.guild_channels" [type]="this.type" class="w-full"
+        <app-template-select [options]="this.dataService.guild_channels" [type]="this.type" class="w-full"
                          [activeOption]="$any(this.giveaway.channel_id)"
                          (selectionChange)="this.giveaway.channel_id = $any($event)" [id]="'channelpicker'" />
         <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
@@ -50,7 +50,7 @@
         {{ 'PLACEHOLDER_EVENT_END_DATE_TITLE' | translate }}
       </label>
       <div class="flex gap-2">
-        <template-select [options]="this.giveaway_reqs" [type]="this.type" class="w-full" [id]="getReqId()"
+        <app-template-select [options]="this.giveaway_reqs" [type]="this.type" class="w-full" [id]="getReqId()"
                          [activeOption]="$any(this.giveaway.gw_req)"
                          (selectionChange)="this.giveaway.gw_req = $any($event); this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
         <input type="datetime-local" class="w-44 bg-gray-50 border border-gray-300 text-gray-900
@@ -72,13 +72,13 @@
       @if (this.giveaway.gw_req) {
         @switch (this.giveaway.gw_req!.split(':')[0]) {
           @case ('MSG') {
-            <req-field id="msg-req" [labelText]="'PLACEHOLDER_EVENT_REQ_LABEL' | translate"
+            <app-req-field id="msg-req" [labelText]="'PLACEHOLDER_EVENT_REQ_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MSG_PLACEHOLDER'" [required]="true"
                        [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''"
                        (inputChange)="this.numberInput($any($event), true);" [type]="this.type" />
           }
           @case ('VOICE') {
-            <req-field id="voice-req" [labelText]="'PLACEHOLDER_EVENT_REQ_VOICE_LABEL' | translate"
+            <app-req-field id="voice-req" [labelText]="'PLACEHOLDER_EVENT_REQ_VOICE_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
                        [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
                        (inputChange)="this.giveaway.gw_req = 'VOICE: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
@@ -86,7 +86,7 @@
           }
           @case ('OWN') {
             @if (this.dataService.has_vip) {
-              <req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
+              <app-req-field id="own-req" [labelText]="'PLACEHOLDER_EVENT_REQ_OWN_LABEL' | translate"
                          [placeholderKey]="'PLACEHOLDER_EVENT_REQ_OWN_PLACEHOLDER'" [required]="true"
                          [value]="this.type === 'EVENTS_EDIT' ?this.giveaway.gw_req : ''" [type]="this.type"
                          (inputChange)="this.giveaway.gw_req = 'OWN: ' + ($any($event.target).value).replace(':', '');
@@ -94,7 +94,7 @@
             }
           }
           @case ('SERVER') {
-            <req-field id="server-req" [labelText]="'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate"
+            <app-req-field id="server-req" [labelText]="'PLACEHOLDER_EVENT_REQ_SERVER_LABEL' | translate"
                        [placeholderKey]="'PLACEHOLDER_EVENT_REQ_SERVER_PLACEHOLDER'" [required]="true"
                        [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
                        (inputChange)="this.giveaway.gw_req = 'SERVER: ' + $any($event.target).value;
@@ -102,7 +102,7 @@
           }
           @case ('MITGLIED') {
             @if (this.dataService.has_vip) {
-              <req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
+              <app-req-field id="member-req" [labelText]="'PLACEHOLDER_EVENT_REQ_MEMBER_LABEL' | translate"
                          [placeholderKey]="'PLACEHOLDER_EVENT_REQ_MEMBER_PLACEHOLDER'" [required]="true"
                          [value]="this.type === 'EVENTS_EDIT' ? this.giveaway.gw_req : ''" [type]="this.type"
                          (inputChange)="this.giveaway.gw_req = 'MITGLIED: ' + this.convertTimePipe.convertToSeconds($any($event.target).value);
@@ -111,7 +111,7 @@
           }
           @case ('no_nitro') {
             @if (this.dataService.has_vip) {
-              <req-field id="no-nitro-req" [value]="'no_nitro'"
+              <app-req-field id="no-nitro-req" [value]="'no_nitro'"
                          (inputChange)="this.giveaway.gw_req = 'no_nitro'; this.dataService.getGWRequirementValue(this.giveaway.gw_req)" />
             }
           }
@@ -121,7 +121,7 @@
             </label>
 
             @if (!this.dataService.isFetching) {
-              <template-select [options]="this.dataService.guild_roles" [type]="this.type" class="w-full"
+              <app-template-select [options]="this.dataService.guild_roles" [type]="this.type" class="w-full"
                                [activeOption]="this.type === 'EVENTS_EDIT' ?
                                                this.giveaway.gw_req.split('ROLE_ID: ')[1].split(' - ')[0] : ''"
                                (selectionChange)="this.giveaway.gw_req = 'ROLE_ID: ' + $any($event).toString();
@@ -178,7 +178,7 @@
 
     <!-- Modal body -->
     <div class="p-4 md:p-5 max-h-[20vh] md:max-h-[60vh] lg:max-h-[unset] overflow-y-auto">
-      <template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0" />
+      <app-template-discord-markdown [type]="this.type" [giveaway]="this.giveaway" class="!mt-0" />
     </div>
 
   <!-- Modal footer -->

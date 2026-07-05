@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -7,8 +7,8 @@
                [shield_action]="$any(this.doAction.bind(this))" />
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_SECURITY_SHIELD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_SHIELD_TITLE' | translate"
-                [color]="'red-yellow'" [desc]="'PAGE_SECURITY_SHIELD_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_SECURITY_SHIELD_SUBTITLE' | translate" [title]="'PAGE_SECURITY_SHIELD_TITLE' | translate"
+                [color]="'red-yellow'" [desc]="'PAGE_SECURITY_SHIELD_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -159,4 +159,4 @@
     </div>
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

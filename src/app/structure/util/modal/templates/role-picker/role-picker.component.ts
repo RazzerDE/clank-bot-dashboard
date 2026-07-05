@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import { Component, Input, ViewChild, inject } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe} from "@ngx-translate/core";
 import {SelectComponent} from "../select/select.component";
@@ -9,7 +9,7 @@ import {Role} from "../../../../../services/types/discord/Guilds";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 
 @Component({
-  selector: 'template-role-picker',
+  selector: 'app-template-role-picker',
   imports: [
     FaIconComponent,
     TranslatePipe,
@@ -20,16 +20,16 @@ import {DataHolderService} from "../../../../../services/data/data-holder.servic
   styleUrl: './role-picker.component.scss'
 })
 export class RolePickerComponent {
-  @Input() type: string = '';
+  protected dataService = inject(DataHolderService);
+
+  @Input() type = '';
   @Input() discordRoles: Role[] = [];
   @Input() isDefaultMentioned: (role_id: string) => boolean = () => false;
-  @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => {};
+  @Input() action: (selectedRole: HTMLCollectionOf<HTMLOptionElement>, useDelete?: boolean) => void = (): void => { /* no-op default */ };
 
-  public activeTab: number = 0;
+  public activeTab = 0;
   protected readonly faTrashCan: IconDefinition = faTrashCan;
   @ViewChild(SelectComponent, { static: true }) selectComponent!: SelectComponent;
-
-  constructor(protected dataService: DataHolderService) {}
 
   /**
    * Executes the provided action with the selected role options and resets the active tab after 1 second.

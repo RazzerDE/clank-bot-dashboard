@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, inject } from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -45,12 +45,17 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
   styleUrl: './embed-design.component.scss'
 })
 export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private comService = inject(ComService);
+  private apiService = inject(ApiService);
+  private translate = inject(TranslateService);
+
   protected initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
     channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1, participants: 0, start_date: null };
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
-  protected disableSendBtn: boolean = false;
-  protected dataLoading: boolean = true;
+  protected disabledCacheBtn = false;
+  protected disableSendBtn = false;
+  protected dataLoading = true;
 
   protected readonly faPanorama: IconDefinition = faPanorama;
   protected readonly faCamera: IconDefinition = faCamera;
@@ -61,8 +66,7 @@ export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faXmark: IconDefinition = faXmark;
 
-  constructor(protected dataService: DataHolderService, private comService: ComService, private apiService: ApiService,
-              private translate: TranslateService) {
+  constructor() {
     document.title = 'Embed-Design ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.dataService.getEventConfig(this.apiService, this.comService); // first call to get the server data
@@ -159,13 +163,13 @@ export class EmbedDesignComponent implements OnDestroy, AfterViewChecked {
           this.dataService.error_color = 'red';
           saved_config.unsubscribe();
 
-          if (error.status == 404 || error.status == 400) {
+          if (error.status === 404 || error.status === 400) {
             this.dataService.showAlert(this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_TITLE'),
               this.translate.instant('ERROR_GIVEAWAY_EMBED_INVALID_EMOJI_DESC'));
           } else if (error.status === 402) {
             this.dataService.showAlert(this.translate.instant('ERROR_TITLE_402'),
               this.translate.instant('ERROR_GIVEAWAY_DESIGN_402_DESC'));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {

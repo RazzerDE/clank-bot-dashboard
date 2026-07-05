@@ -7,7 +7,7 @@
   }
 </label>
 <div class="relative">
-  <template-select [options]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned" [id]="'rolepicker'" />
+  <app-template-select [options]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned" [id]="'rolepicker'" />
 </div>
 
 <!-- Support-Level for TEAMLIST_ROLE_ADD -->
@@ -23,16 +23,16 @@
         <ul class="relative flex flex-wrap py-1.5 list-none">
           @for (_ of [].constructor(3); track $index) {
             <li class="z-30 flex-auto text-center border dark:bg-gray-600 border-gray-300 transition-colors duration-75
-                   dark:!border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600/30" (click)="activeTab = $index"
-                [id]="activeTab == $index ? 'level_active_' + activeTab : ''"
-                [class.!bg-blue-400]="activeTab == $index" id="role_add_{{$index}}"
-                [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1">
+                   dark:!border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600/30" (click)="activeTab = $index" (keyup.enter)="activeTab = $index"
+                [id]="activeTab === $index ? 'level_active_' + activeTab : ''"
+                [class.!bg-blue-400]="activeTab === $index" id="role_add_{{$index}}"
+                [class.rounded-l-lg]="$index < 1" [class.rounded-r-lg]="$index > 1" tabindex="0" role="button">
               <a class="z-30 decoration-transparent flex items-center justify-center w-full px-0 py-2 text-sm mb-0
                      transition-all ease-in-out rounded-md cursor-pointer bg-inherit
                      text-gray-900 dark:text-white duration-100"
-                 [ngClass]="activeTab == $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
-                 [innerText]="$index == 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
-                            $index == 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
+                 [ngClass]="activeTab === $index ? 'hover:!text-white' : 'hover:!text-blue-400'"
+                 [innerText]="$index === 0 ? ('PLACEHOLDER_ROLE_MODAL_FIRST' | translate) :
+                            $index === 1 ? ('PLACEHOLDER_ROLE_MODAL_SECOND' | translate) :
                                           ('PLACEHOLDER_ROLE_MODAL_THIRD' | translate)">
               </a>
             </li>

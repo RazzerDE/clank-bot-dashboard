@@ -139,7 +139,7 @@ describe('SupportThemesComponent', () => {
 
   it('should fetch from API if no cache or no_cache is true and update state', fakeAsync(() => {
     component.dataService.active_guild = { id: 'guild1' } as any;
-    let mockObject = {
+    const mockObject = {
       themes: [{name: 'Theme2', desc: '', roles: [], default_roles: []}],
       guild_roles: [{id: '2', name: 'Role2'}],
       has_vip: true,

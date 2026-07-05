@@ -346,7 +346,7 @@ describe('ActiveGiveawaysComponent', () => {
     const sortSpy = jest.spyOn(component as any, 'sortEvents').mockImplementation(e => e);
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal').mockImplementation(() => {});
     jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('Test');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, obj?) => key);
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key, _obj?) => key);
 
     (component as any).editGuildEvent(giveaway, 'END_');
     tick();
@@ -367,7 +367,7 @@ describe('ActiveGiveawaysComponent', () => {
     const sortSpy = jest.spyOn(component as any, 'sortEvents').mockImplementation(e => e);
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal').mockImplementation(() => {});
     jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('Test');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, obj?) => key);
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key, _obj?) => key);
 
     (component as any).editGuildEvent(giveaway, '');
     tick();
@@ -388,7 +388,7 @@ describe('ActiveGiveawaysComponent', () => {
     const sortSpy = jest.spyOn(component as any, 'sortEvents').mockImplementation(e => e);
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal').mockImplementation(() => {});
     jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('Test');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, obj?) => key);
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key, _obj?) => key);
 
     (component as any).editGuildEvent(giveaway, '');
     tick();
@@ -408,7 +408,7 @@ describe('ActiveGiveawaysComponent', () => {
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal').mockImplementation(() => {});
     jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('Test');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, obj?) => key);
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key, _obj?) => key);
 
     (component as any).editGuildEvent(giveaway, '');
     tick();
@@ -427,7 +427,7 @@ describe('ActiveGiveawaysComponent', () => {
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal').mockImplementation(() => {});
     jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('Test');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, obj?) => key);
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key, _obj?) => key);
 
     (component as any).editGuildEvent(giveaway, '');
     tick();
@@ -446,7 +446,7 @@ describe('ActiveGiveawaysComponent', () => {
     const showAlertSpy = jest.spyOn(component['dataService'], 'showAlert').mockImplementation(() => {});
     const hideModalSpy = jest.spyOn(component['modal'], 'hideModal').mockImplementation(() => {});
     jest.spyOn(component['markdownPipe'], 'transform').mockReturnValue('Test');
-    jest.spyOn(component['translate'], 'instant').mockImplementation((key, obj?) => key);
+    jest.spyOn(component['translate'], 'instant').mockImplementation((key, _obj?) => key);
 
     (component as any).editGuildEvent(giveaway, '');
     tick();

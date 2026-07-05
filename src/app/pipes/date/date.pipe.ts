@@ -13,7 +13,7 @@ export class DatePipe implements PipeTransform {
    * @param format - Optional format type. If 'short', it returns a relative time format (e.g., "in 7 days").
    * @returns A formatted date string. Returns an empty string if the input value is invalid.
    */
-  transform(value: unknown, lang: string = 'de', format?: string): string {
+  transform(value: unknown, lang = 'de', format?: string): string {
     let date: Date;
 
     if (typeof value === 'string' || typeof value === 'number') {

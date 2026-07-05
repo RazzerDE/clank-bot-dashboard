@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <!-- Body -->
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
@@ -9,8 +9,8 @@
                [snippet_action]="addTextSnippet.bind(this)" [snippet_edit]="editTextSnippet.bind(this)"/>
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_SNIPPETS_SUBTITLE' | translate" [title]="'PAGE_SNIPPETS_TITLE' | translate"
-                [color]="'green'" [desc]="'PAGE_SNIPPETS_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_SNIPPETS_SUBTITLE' | translate" [title]="'PAGE_SNIPPETS_TITLE' | translate"
+                [color]="'green'" [desc]="'PAGE_SNIPPETS_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -51,9 +51,9 @@
                 <button type="button" class="flex items-center justify-center text-white focus:ring-4 font-medium
                                              rounded-lg text-sm px-4 py-2 focus:outline-none bg-gradient-to-r hover:bg-gradient-to-br"
                         [ngClass]="{
-                          'from-purple-700 via-purple-600 to-purple-500 focus:ring-purple-700': currentAnnouncement.level == null || currentAnnouncement.level == 1,
-                          'from-orange-700 via-orange-600 to-orange-500 focus:ring-orange-700': currentAnnouncement.level == 2,
-                          'from-red-700 via-red-600 to-red-500 focus:ring-red-700': currentAnnouncement.level == 3
+                          'from-purple-700 via-purple-600 to-purple-500 focus:ring-purple-700': currentAnnouncement.level == null || currentAnnouncement.level === 1,
+                          'from-orange-700 via-orange-600 to-orange-500 focus:ring-orange-700': currentAnnouncement.level === 2,
+                          'from-red-700 via-red-600 to-red-500 focus:ring-red-700': currentAnnouncement.level === 3
                         }" (click)="this.openModal(currentAnnouncement.level == null ? 'SUPPORT_TICKET_ANNOUNCEMENT_SET' : 'SUPPORT_TICKET_ANNOUNCEMENT_EDIT')">
                   <fa-icon [icon]="!currentAnnouncement || currentAnnouncement!.level == null ? faBullhorn : currentAnnouncement.level === 1 ? faInfoCircle :
                                    currentAnnouncement.level === 2 ? faExclamationCircle : faExclamationTriangle" class="me-2"></fa-icon>
@@ -78,7 +78,7 @@
             <div class="lg:w-1/3 bg-gradient-to-bl from-white via-slate-50 to-blue-50 dark:from-slate-800
               dark:via-slate-800 dark:to-slate-900 relative shadow-md dark:shadow-xl sm:rounded-lg
               transition-colors duration-300 !border-gray-300 dark:!border-gray-700 border-1 flex flex-col">
-              <data-table [tconfig]="tableConfig" class="h-full" (rowClick)="this.dataService.selectedSnippet = $event" />
+              <app-data-table [tconfig]="tableConfig" class="h-full" (rowClick)="this.dataService.selectedSnippet = $any($event)" />
             </div>
 
             <!-- Right column (Snippet details) -->
@@ -112,7 +112,7 @@
                       </p>
                     </div>
 
-                    <template-discord-markdown [type]="'SUPPORT_SNIPPET_EDIT'" [content]="this.dataService.selectedSnippet.desc" class="!mt-0 mb-6 !ml-0"/>
+                    <app-template-discord-markdown [type]="'SUPPORT_SNIPPET_EDIT'" [content]="this.dataService.selectedSnippet.desc" class="!mt-0 mb-6 !ml-0"/>
                   </div>
                 </div>
               } @else {
@@ -129,4 +129,4 @@
       </div>
     </div>
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

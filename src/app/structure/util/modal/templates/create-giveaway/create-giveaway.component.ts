@@ -1,4 +1,4 @@
-import {AfterContentChecked, AfterViewChecked, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -16,7 +16,7 @@ import {ConvertTimePipe} from "../../../../../pipes/convert-time.pipe";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
-  selector: 'template-create-giveaway',
+  selector: 'app-template-create-giveaway',
   imports: [
     DiscordMarkdownComponent,
     FormsModule,
@@ -31,29 +31,31 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
   styleUrl: './create-giveaway.component.scss'
 })
 export class CreateGiveawayComponent implements AfterViewChecked, AfterContentChecked {
+  protected dataService = inject(DataHolderService);
+  private comService = inject(ComService);
+  protected translate = inject(TranslateService);
+
   private initGiveaway: Giveaway = { creator_id: '', creator_name: '', creator_avatar: '', gw_req: null, prize: '',
                                      channel_id: null, end_date: new Date(Date.now() + 10 * 60 * 6000), winner_count: 1,
                                      participants: 0, start_date: null };
   protected giveaway_reqs: SelectItems[] = this.getGiveawayReqs();
   protected readonly faTrophy: IconDefinition = faTrophy;
   protected readonly faUser: IconDefinition = faUser;
-  protected rolesLoading: boolean = false;
+  protected rolesLoading = false;
   protected readonly today: Date = new Date();
   protected readonly now: Date = new Date(Date.now());
   protected convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
 
   @Input() type: 'EVENTS_CREATE' | 'EVENTS_EDIT' | 'EVENTS_DESIGN' = 'EVENTS_CREATE';
-  @Input() showFirst: boolean = false;
+  @Input() showFirst = false;
   @Input() giveaway: Giveaway = this.initGiveaway;
   @Input() externalMarkdown: DiscordMarkdownComponent | undefined | null = undefined;
-  @Input() event_action: (giveaway: Giveaway) => void = (): void => {};
-  @Input() event_edit: (giveaway: Giveaway) => void = (): void => {};
+  @Input() event_action: (giveaway: Giveaway) => void = (): void => { /* no-op default */ };
+  @Input() event_edit: (giveaway: Giveaway) => void = (): void => { /* no-op default */ };
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   @ViewChild(RequirementFieldComponent) reqField!: RequirementFieldComponent;
   @ViewChild('roleVisible') roleVisible!: ElementRef<HTMLLabelElement>;
-
-  constructor(protected dataService: DataHolderService, private comService: ComService, protected translate: TranslateService) {}
 
   /**
    * Angular lifecycle hook that is called after every check of the component's content.
@@ -117,7 +119,7 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
    */
   protected checkWinnerInput(event: KeyboardEvent): void {
     if (!(event.target instanceof HTMLInputElement)) { return; }
-    let value: number = parseInt(event.target.value.replace(/[^0-9]/g, ''));
+    const value: number = parseInt(event.target.value.replace(/[^0-9]/g, ''));
 
     // only allow numbers between 1 and 99
     if (isNaN(value) || value < 1) {
@@ -140,7 +142,7 @@ export class CreateGiveawayComponent implements AfterViewChecked, AfterContentCh
   protected numberInput(event: InputEvent, gw_req?: boolean, sponsor?: boolean): void {
     if (!(event.target instanceof HTMLInputElement)) { return; }
     event.target.value = event.target.value.replace(/[^0-9]/g, '');
-    const inputValue: number = Number(event.target.value);
+    const inputValue = Number(event.target.value);
     if ((isNaN(inputValue) || inputValue < 1 || inputValue > 1000) && !sponsor) { event.target.value = '1' }
     else if (sponsor && (isNaN(inputValue) || inputValue < 1)) { event.target.value = ''; this.giveaway.sponsor_id = undefined; return; }
 

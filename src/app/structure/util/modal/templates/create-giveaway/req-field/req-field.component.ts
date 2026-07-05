@@ -1,25 +1,25 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {TranslateModule, TranslatePipe} from "@ngx-translate/core";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {DataHolderService} from "../../../../../../services/data/data-holder.service";
 
 @Component({
-  selector: 'req-field',
+  selector: 'app-req-field',
   standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule, TranslatePipe],
   templateUrl: './req-field.component.html'
 })
 export class RequirementFieldComponent {
+  protected dataService = inject(DataHolderService);
+
   @Input() id!: string;
   @Input() value!: string;
   @Input() labelText!: string;
   @Input() type!: string;
   @Input() placeholderKey!: string;
-  @Input() required: boolean = false;
+  @Input() required = false;
   @Output() inputChange: EventEmitter<Event> = new EventEmitter<Event>();
-
-  constructor(protected dataService: DataHolderService) {}
 
   /**
    * Emits the input event when the user types in the field.

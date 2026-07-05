@@ -1,20 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Inject,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID,
-  QueryList,
-  ViewChildren
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, PLATFORM_ID, QueryList, ViewChildren, inject } from '@angular/core';
 import {isPlatformBrowser, NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
 import {feature_items, FeatureItem, FeatureListItem} from '../../../../services/types/landing-page/feature-item';
 
 @Component({
-  selector: 'landing-section-features',
+  selector: 'app-landing-section-features',
   imports: [
     NgOptimizedImage,
     NgClass,
@@ -24,6 +14,8 @@ import {feature_items, FeatureItem, FeatureListItem} from '../../../../services/
   styleUrl: './features.component.scss'
 })
 export class LandingSectionFeaturesComponent implements OnInit, OnDestroy, AfterViewInit {
+  private platformId = inject(PLATFORM_ID);
+
   @ViewChildren('lazyVideo') private lazyVideos!: QueryList<ElementRef<HTMLVideoElement>>;
   private videoObserver: IntersectionObserver | null = null;
   private visibilityObserver: IntersectionObserver | null = null;
@@ -32,8 +24,6 @@ export class LandingSectionFeaturesComponent implements OnInit, OnDestroy, After
   private currentPlayingVideo: HTMLVideoElement | null = null;
 
   protected readonly feature_items: FeatureItem[] = feature_items;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   /**
    * Angular lifecycle hook that initializes the component.
@@ -152,7 +142,7 @@ export class LandingSectionFeaturesComponent implements OnInit, OnDestroy, After
 
     // Find video with highest visibility ratio
     let mostVisibleVideo: HTMLVideoElement | null = null;
-    let highestRatio: number = 0;
+    let highestRatio = 0;
 
     this.videoVisibilityMap.forEach((ratio, video): void => {
       if (ratio > highestRatio && video.src) { highestRatio = ratio; mostVisibleVideo = video; }
@@ -217,7 +207,7 @@ export class LandingSectionFeaturesComponent implements OnInit, OnDestroy, After
     // Prevent unnecessary reload if already at desired quality
     if (targetUrl !== "/assets/" + videoElement.src.split("/assets/")[1]) {
       const currentTime: number = videoElement.currentTime;
-      const wasPlaying: boolean = !videoElement.paused;
+      const wasPlaying = !videoElement.paused;
 
       if (toFullQuality) {
         videoElement.style.transform = 'translateZ(0)';

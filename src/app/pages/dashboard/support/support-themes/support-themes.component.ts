@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -40,19 +40,25 @@ import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
   styleUrl: './support-themes.component.scss'
 })
 export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
+  dataService = inject(DataHolderService);
+  private router = inject(Router);
+  private discordService = inject(ComService);
+  private translate = inject(TranslateService);
+  private apiService = inject(ApiService);
+
   protected filteredThemes: SupportTheme[] = this.dataService.support_themes;
   protected selectedOptions: string[] = [];
   protected modalExtra: Role[] = [];
   protected editTheme: SupportTheme = { ...this.dataService.initTheme };
   protected discordRoles: Role[] = [];
-  protected dataLoading: boolean = true;
-  protected disabledCacheBtn: boolean = false;
+  protected dataLoading = true;
+  protected disabledCacheBtn = false;
   private readonly subscription: Subscription | null = null;
-  private reloadEmojis: boolean = false;
-  protected isForumMissing: boolean = false;
+  private reloadEmojis = false;
+  protected isForumMissing = false;
 
-  private startLoading: boolean = false;
-  protected modalType: string = 'SUPPORT_THEME_ADD';
+  private startLoading = false;
+  protected modalType = 'SUPPORT_THEME_ADD';
   protected modalTheme: SupportTheme = {} as SupportTheme;
 
   @ViewChild(ModalComponent) protected modal!: ModalComponent;
@@ -63,8 +69,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
   protected readonly faPencil: IconDefinition = faPencil;
   protected readonly faBell: IconDefinition = faBell;
 
-  constructor(public dataService: DataHolderService, private router: Router, private discordService: ComService,
-              private translate: TranslateService, private apiService: ApiService) {
+  constructor() {
     document.title = 'Support-Themes ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
 
@@ -237,7 +242,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
     let del_theme: Subscription | null = null;
     del_theme = this.apiService.deleteSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_THEME_DELETION_TITLE'),
             this.translate.instant('SUCCESS_THEME_DELETION_DESC', { name: theme.name }));
@@ -257,7 +262,7 @@ export class SupportThemesComponent implements OnDestroy, AfterViewChecked {
           if (error.status === 409) { // already pending
             this.dataService.showAlert(this.translate.instant('ERROR_THEME_DELETION_CONFLICT'),
               this.translate.instant('ERROR_THEME_DELETION_CONFLICT_DESC', {name: theme.name}));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {

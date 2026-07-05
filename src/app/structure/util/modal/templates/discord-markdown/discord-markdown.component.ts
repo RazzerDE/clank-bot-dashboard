@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import {MarkdownPipe} from "../../../../../pipes/markdown/markdown.pipe";
 import {DatePipe, NgClass, NgOptimizedImage} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -11,7 +11,7 @@ import {DatePipe as own} from "../../../../../pipes/date/date.pipe";
 import {GlobalChatConfig} from "../../../../../services/types/Misc";
 
 @Component({
-  selector: 'template-discord-markdown',
+  selector: 'app-template-discord-markdown',
   imports: [
     MarkdownPipe,
     NgOptimizedImage,
@@ -24,11 +24,14 @@ import {GlobalChatConfig} from "../../../../../services/types/Misc";
   styleUrl: './discord-markdown.component.scss'
 })
 export class DiscordMarkdownComponent implements AfterViewChecked {
-  @Input() type: string = '';
-  @Input() content: string = '';
-  @Input() no_overlay: boolean = false;
+  protected dataService = inject(DataHolderService);
+  protected translate = inject(TranslateService);
+
+  @Input() type = '';
+  @Input() content = '';
+  @Input() no_overlay = false;
   @Input() giveaway: Giveaway | null = null;
-  @Input() invalidAvatar: boolean = false;
+  @Input() invalidAvatar = false;
   @Input() announce_level: number | null = null;
   @Input() obj: GlobalChatConfig = {} as GlobalChatConfig;
   protected org_giveaway: Giveaway | null = {...this.giveaway} as Giveaway;
@@ -44,11 +47,9 @@ export class DiscordMarkdownComponent implements AfterViewChecked {
   protected readonly now: Date = new Date();
   protected readonly faCheck: IconDefinition = faCheck;
   protected ownDatePipe: own = new own();
-  protected giveway_duration: string = '';
+  protected giveway_duration = '';
 
-  protected invalidServerImg: boolean = false;
-
-  constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
+  protected invalidServerImg = false;
 
   /**
    * Angular lifecycle hook that is called after the view has been checked.
@@ -56,7 +57,8 @@ export class DiscordMarkdownComponent implements AfterViewChecked {
    * If a change is detected, updates the giveaway duration accordingly.
    */
   ngAfterViewChecked(): void {
-    if (this.giveaway?.end_date != this.org_giveaway?.end_date) {
+    // end_date can be Date or string; compare the string form so mixed types still match
+    if (this.giveaway?.end_date?.toString() !== this.org_giveaway?.end_date?.toString()) {
       this.getGiveawayDuration();
     }
   }

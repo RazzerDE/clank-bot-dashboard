@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import {faChevronRight, faRefresh} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -82,19 +82,24 @@ import {NgbTooltip} from "@ng-bootstrap/ng-bootstrap";
     ]
 })
 export class SidebarComponent implements AfterViewInit, OnDestroy {
+  protected authService = inject(AuthService);
+  protected dataService = inject(DataHolderService);
+  private discordService = inject(ComService);
+  private router = inject(Router);
+  protected comService = inject(ComService);
+
   protected readonly localStorage: Storage = localStorage;
   protected navigation: NavigationItem[] = nav_items;
 
   @ViewChild('discordServerPicker') private server_picker!: ElementRef<HTMLDivElement>;
 
   protected readonly window: Window = window;
-  protected expandedGroups: { [key: string]: boolean } = {};
+  protected expandedGroups: Record<string, boolean> = {};
   protected readonly faRefresh: IconDefinition = faRefresh;
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   private subscription: Subscription | null = null;
 
-  constructor(protected authService: AuthService, protected dataService: DataHolderService,
-              private discordService: ComService, private router: Router, protected comService: ComService) {
+  constructor() {
     // initialize navigation pages to allow expanding/collapsing & automatically expand group if the third (or later) page is in that group
     this.navigation.forEach(group => {
       this.expandedGroups[group.category] = group.pages.slice(2).some(page =>

@@ -1,14 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Inject,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID,
-  ViewChild
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import {isPlatformBrowser, NgOptimizedImage} from "@angular/common";
 import {SliderItems} from "../../../../services/types/landing-page/SliderItems";
 import {TranslatePipe} from "@ngx-translate/core";
@@ -20,7 +10,7 @@ import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {AnimationService} from "../../../../services/animation/animation.service";
 
 @Component({
-    selector: 'landing-section-intro',
+    selector: 'app-landing-section-intro',
     imports: [
         NgOptimizedImage,
         TranslatePipe
@@ -29,21 +19,26 @@ import {AnimationService} from "../../../../services/animation/animation.service
     styleUrl: './intro.component.scss'
 })
 export class IntroComponent implements AfterViewInit, OnDestroy, OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private animationService = inject(AnimationService);
+  private apiService = inject(ApiService);
+  protected dataService = inject(DataHolderService);
+  private ngZone = inject(NgZone);
+
   @ViewChild('slider') protected slider!: ElementRef<HTMLDivElement>;
   protected readonly window?: Window;
   protected slider_items: SliderItems[] = [];
   protected duplicatedItems: SliderItems[] = [];  // show duplicated items in slider for infinite loop
 
-  protected currentTranslate: number = 0;
-  protected transitionSpeed: number = 30;  // in milliseconds
-  protected isResetting: boolean = false;  // to avoid visual jump when resetting the position
-  protected isPaused: boolean = false;
+  protected currentTranslate = 0;
+  protected transitionSpeed = 30;  // in milliseconds
+  protected isResetting = false;  // to avoid visual jump when resetting the position
+  protected isPaused = false;
 
-  private slidingInterval: any;  // datatype can't be imported
+  private slidingInterval: ReturnType<typeof setInterval> | undefined;
   private subscription: Subscription | undefined;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private animationService: AnimationService,
-              private apiService: ApiService, protected dataService: DataHolderService, private ngZone: NgZone) {
+  constructor() {
     if (isPlatformBrowser(this.platformId)) {
       this.window = window;
     }
@@ -193,7 +188,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy, OnInit {
 
     const sliderItems: NodeListOf<HTMLDivElement> = this.slider.nativeElement.querySelectorAll('.slider-item');
     sliderItems.forEach((item: Element): void => {
-      if (event.type == 'mouseenter') {
+      if (event.type === 'mouseenter') {
         (item as HTMLElement).style.filter = 'grayscale(100%)';
       } else {
         (item as HTMLElement).style.filter = 'none';
@@ -237,7 +232,7 @@ export class IntroComponent implements AfterViewInit, OnDestroy, OnInit {
     try {
       await this.checkBackgroundImageLoaded();
       this.dataService.isLoading = false;
-    } catch (error) {
+    } catch {
       setTimeout((): void => { this.dataService.isLoading = false; }, 2000);
     }
   }

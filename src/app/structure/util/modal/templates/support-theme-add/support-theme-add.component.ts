@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import { Component, Input, ViewChild, inject } from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
@@ -14,7 +14,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {EmojiPickerComponent} from "../emoji-picker/emoji-picker.component";
 
 @Component({
-  selector: 'template-support-theme-add',
+  selector: 'app-template-support-theme-add',
   imports: [
     FormsModule,
     DiscordMarkdownComponent,
@@ -28,8 +28,12 @@ import {EmojiPickerComponent} from "../emoji-picker/emoji-picker.component";
   styleUrl: './support-theme-add.component.scss'
 })
 export class SupportThemeAddComponent {
-  @Input() showFirst: boolean = false;
-  @Input() type: string = '';
+  private translate = inject(TranslateService);
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+
+  @Input() showFirst = false;
+  @Input() type = '';
   @Input() discordRoles: Role[] = [];
   @Input() activeOptions : Role[] | undefined;
   @Input() newTheme: SupportTheme = { ...this.dataService.initTheme };
@@ -37,9 +41,6 @@ export class SupportThemeAddComponent {
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdown!: DiscordMarkdownComponent;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
-
-  constructor(private translate: TranslateService, protected dataService: DataHolderService,
-              private apiService: ApiService) {}
 
   /**
    * Creates a new support theme by sending it to the API.
@@ -62,7 +63,7 @@ export class SupportThemeAddComponent {
     theme.has_perms = true;
     const sent_theme: Subscription = this.apiService.createSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_THEME_CREATION_TITLE'),
             this.translate.instant('SUCCESS_THEME_CREATION_DESC', { name: theme.name }));
@@ -126,7 +127,7 @@ export class SupportThemeAddComponent {
     theme.has_perms = true;
     const edit_theme: Subscription = this.apiService.editSupportTheme(theme, this.dataService.active_guild!.id)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_THEME_EDIT_TITLE'),
             this.translate.instant('SUCCESS_THEME_EDIT_DESC', { name: theme.name }));

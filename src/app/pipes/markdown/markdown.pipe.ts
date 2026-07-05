@@ -12,7 +12,7 @@ export class MarkdownPipe implements PipeTransform {
     if (value.length === 0 || value.length > 1000) { return ''; }
 
     // HTML-Escape: escape potential XSS attacks
-    let safeValue: string = this.escapeHtml(value);
+    const safeValue: string = this.escapeHtml(value);
 
     // apply discord markdown
     return safeValue

@@ -1,9 +1,9 @@
-import {Component} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {LanguageSwitcherService} from "../../../services/language/language-switcher.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 
 @Component({
-    selector: 'lang-switch-button',
+    selector: 'app-lang-switch-button',
     imports: [
         NgOptimizedImage,
         NgClass
@@ -12,9 +12,9 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
     styleUrl: './lang-switch-button.component.scss'
 })
 export class LangSwitchButtonComponent {
-  protected isLangSwitched: boolean = false;
+  protected translateService = inject(LanguageSwitcherService);
 
-  constructor(protected translateService: LanguageSwitcherService) {}
+  protected isLangSwitched = false;
 
   /**
    * Switches the language of the application.

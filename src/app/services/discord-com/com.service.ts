@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {Observable} from "rxjs";
 import {config} from "../../../environments/config";
 import { HttpClient } from "@angular/common/http";
-import {Channel, Guild, Role} from "../types/discord/Guilds";
+import {Channel, Emoji, Guild, Role, TeamList} from "../types/discord/Guilds";
 import {SupportThemeResponse} from "../types/Tickets";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComService {
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
 
   /**
    * Retrieves the list of guilds the user is a member of.
@@ -31,10 +31,10 @@ export class ComService {
    * It makes a GET request to the internal API to fetch the emojis for the specified guild.
    *
    * @param {string} guild_id - The ID of the guild to fetch emojis for.
-   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the list of emojis.
+   * @returns {Promise<Observable<Emoji[]>>} A promise that resolves to an observable of the list of emojis.
    */
-  async getGuildEmojis(guild_id: string): Promise<Observable<any>> {
-    return this.http.get<any>(`${config.api_url}/guilds/emojis?guild_id=${guild_id}`,
+  async getGuildEmojis(guild_id: string): Promise<Observable<Emoji[]>> {
+    return this.http.get<Emoji[]>(`${config.api_url}/guilds/emojis?guild_id=${guild_id}`,
       { withCredentials: true });
   }
 
@@ -87,10 +87,10 @@ export class ComService {
    * It makes a GET request to the internal API to fetch the team roles for the specified guild.
    *
    * @param {string} guild_id - The ID of the guild to fetch team roles for.
-   * @returns {Promise<Observable<Role[]>>} A promise that resolves to an observable of the list of team roles.
+   * @returns {Promise<Observable<TeamList>>} A promise that resolves to an observable of the team role list.
    */
-  async getTeamRoles(guild_id: string): Promise<Observable<any>> {
-    return this.http.get<Role[]>(`${config.api_url}/guilds/team?guild_id=${guild_id}`,
+  async getTeamRoles(guild_id: string): Promise<Observable<TeamList>> {
+    return this.http.get<TeamList>(`${config.api_url}/guilds/team?guild_id=${guild_id}`,
       { withCredentials: true });
   }
 
@@ -103,10 +103,10 @@ export class ComService {
    *
    * @param {string} guild_id - The ID of the guild to remove the team role from.
    * @param {string} role_id - The ID of the role to be removed.
-   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   * @returns {Promise<Observable<boolean>>} A promise that resolves to an observable of the result.
    */
-  async removeTeamRole(guild_id: string, role_id: string): Promise<Observable<any>> {
-    return this.http.delete(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`,
+  async removeTeamRole(guild_id: string, role_id: string): Promise<Observable<boolean>> {
+    return this.http.delete<boolean>(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}`,
       { withCredentials: true });
   }
 
@@ -120,10 +120,10 @@ export class ComService {
    * @param {string} guild_id - The ID of the guild to add the team role to.
    * @param {string} role_id - The ID of the role to be added.
    * @param {string} level - The support level of the role to be added.
-   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   * @returns {Promise<Observable<boolean>>} A promise that resolves to an observable of the result.
    */
-  async addTeamRole(guild_id: string, role_id: string, level: string): Promise<Observable<any>> {
-    return this.http.post(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`, {},
+  async addTeamRole(guild_id: string, role_id: string, level: string): Promise<Observable<boolean>> {
+    return this.http.post<boolean>(`${config.api_url}/guilds/team?guild_id=${guild_id}&role_id=${role_id}&level=${level}`, {},
       { withCredentials: true });
   }
 
@@ -136,10 +136,10 @@ export class ComService {
    *
    * @param {string} guild_id - The ID of the guild to update the default mention roles for.
    * @param {string[]} role_ids - An array of role IDs to set as the default mention roles.
-   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   * @returns {Promise<Observable<boolean>>} A promise that resolves to an observable of the result.
    */
-  async changeDefaultMention(guild_id: string, role_ids: string[]): Promise<Observable<any>> {
-    return this.http.post(`${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`, { role_ids },
+  async changeDefaultMention(guild_id: string, role_ids: string[]): Promise<Observable<boolean>> {
+    return this.http.post<boolean>(`${config.api_url}/guilds/support-themes/default-mention?guild_id=${guild_id}`, { role_ids },
       { withCredentials: true });
   }
 
@@ -152,10 +152,10 @@ export class ComService {
    *
    * @param {string} guild_id - The ID of the guild to set the support forum channel for.
    * @param {string} channel_id - The ID of the channel to be set as the support forum.
-   * @returns {Promise<Observable<any>>} A promise that resolves to an observable of the result.
+   * @returns {Promise<Observable<null>>} A promise that resolves to an observable of the result.
    */
-  async setSupportForum(guild_id: string, channel_id: string): Promise<Observable<any>> {
-    return this.http.post(`${config.api_url}/guilds/support-forum?guild_id=${guild_id}&channel_id=${channel_id}`, {},
+  async setSupportForum(guild_id: string, channel_id: string): Promise<Observable<null>> {
+    return this.http.post<null>(`${config.api_url}/guilds/support-forum?guild_id=${guild_id}&channel_id=${channel_id}`, {},
       { withCredentials: true });
   }
 }

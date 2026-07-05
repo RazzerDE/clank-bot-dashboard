@@ -301,7 +301,7 @@
     <div class="relative flex bg-[color-mix(in_oklab,rgb(57,58,65)_100%,rgb(0,0,0))] rounded p-2.5 max-w-full
                   text-gray-300 font-sans mt-2 transition-all duration-300"
          [class.opacity-50]="(!this.dataService.isFAQ || (!this.dataService.has_vip && this.dataService.isFAQ))
-                             && type != 'SUPPORT_THEME_FAQ' && !no_overlay">
+                             && type !== 'SUPPORT_THEME_FAQ' && !no_overlay">
       <div class="absolute top-0 left-0 w-1 h-full rounded-l" id="previewBorderColor"
            [ngClass]="type.startsWith('SUPPORT_TICKET_ANNOUNCEMENT')
                       ? (!this.announce_level || this.announce_level === 1) ? 'bg-[#2cbf68]'

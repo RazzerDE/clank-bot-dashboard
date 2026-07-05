@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
-  selector: 'template-blocked-user',
+  selector: 'app-template-blocked-user',
   imports: [
     DatePipe,
     ReactiveFormsModule,
@@ -19,8 +19,8 @@ import {TranslatePipe} from "@ngx-translate/core";
 export class BlockedUserComponent {
   @Input() type: 'BLOCKED_USER_ADD' | 'BLOCKED_USER_EDIT' = 'BLOCKED_USER_ADD'
   @Input() newBlockedUser: BlockedUser = {} as BlockedUser;
-  @Input() block_action: (blockedUser: BlockedUser) => void = (): void => {};
-  @Input() block_edit: (blockedUser: BlockedUser) => void = (): void => {};
+  @Input() block_action: (blockedUser: BlockedUser) => void = (): void => { /* no-op default */ };
+  @Input() block_edit: (blockedUser: BlockedUser) => void = (): void => { /* no-op default */ };
   protected readonly today: Date = new Date();
 
   /**

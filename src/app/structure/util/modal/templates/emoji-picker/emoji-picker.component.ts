@@ -1,10 +1,10 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
 import {NgClass, NgOptimizedImage} from "@angular/common";
 import {Emoji} from "../../../../../services/types/discord/Guilds";
 import {DataHolderService} from "../../../../../services/data/data-holder.service";
 
 @Component({
-  selector: 'template-emoji-picker',
+  selector: 'app-template-emoji-picker',
   imports: [
     NgOptimizedImage,
     NgClass
@@ -13,10 +13,10 @@ import {DataHolderService} from "../../../../../services/data/data-holder.servic
   styleUrl: './emoji-picker.component.scss'
 })
 export class EmojiPickerComponent {
-  @Input() type: string = 'SUPPORT_THEMES';
-  @Output() selected_emoji: EventEmitter<Emoji | string> = new EventEmitter<Emoji | string>();
+  protected dataService = inject(DataHolderService);
 
-  constructor(protected dataService: DataHolderService) {}
+  @Input() type = 'SUPPORT_THEMES';
+  @Output() selected_emoji: EventEmitter<Emoji | string> = new EventEmitter<Emoji | string>();
 
   /**
    * Type guard to determine if an object is of type Emoji rather than string.

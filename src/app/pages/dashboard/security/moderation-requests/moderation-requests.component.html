@@ -1,10 +1,10 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-tl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_SECURITY_REQUESTS_SUBTITLE' | translate" [title]="'PAGE_SECURITY_REQUESTS_TITLE' | translate"
-                [color]="'orange'" [desc]="'PAGE_SECURITY_REQUESTS_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_SECURITY_REQUESTS_SUBTITLE' | translate" [title]="'PAGE_SECURITY_REQUESTS_TITLE' | translate"
+                [color]="'orange'" [desc]="'PAGE_SECURITY_REQUESTS_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -48,7 +48,7 @@
             </div>
 
             <!-- Table -->
-            <data-table [tconfig]="tableConfig" />
+            <app-data-table [tconfig]="tableConfig" />
           </div>
 
         </div>
@@ -56,4 +56,4 @@
     </div>
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

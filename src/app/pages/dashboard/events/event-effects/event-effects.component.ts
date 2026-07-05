@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnDestroy} from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, inject } from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
@@ -56,6 +56,10 @@ import {faVolumeHigh} from "@fortawesome/free-solid-svg-icons";
   ]
 })
 export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
+  private apiService = inject(ApiService);
+  protected dataService = inject(DataHolderService);
+  private translate = inject(TranslateService);
+
   protected readonly faVolumeHigh: IconDefinition = faVolumeHigh;
   protected readonly faHashtag: IconDefinition = faHashtag;
   protected readonly faRefresh: IconDefinition = faRefresh;
@@ -66,11 +70,11 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
   protected event_cards: EventCard[] = event_cards;
   private org_event_cards: EventCard[] = [...event_cards]; // Store original event cards for change detection
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
-  protected disableSendBtn: boolean = false;
-  protected dataLoading: boolean = true;
+  protected disabledCacheBtn = false;
+  protected disableSendBtn = false;
+  protected dataLoading = true;
 
-  constructor(private apiService: ApiService, protected dataService: DataHolderService, private translate: TranslateService) {
+  constructor() {
     document.title = 'Event-Effects ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getEventEffects(); // first call to get the server data
@@ -192,7 +196,7 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
     this.disableSendBtn = true;
     const saved_effects: Subscription = this.apiService.saveEventEffects(effects, this.dataService.active_guild.id)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_EFFECTS_SAVED_TITLE'),
             this.translate.instant('SUCCESS_EFFECTS_SAVED_DESC'));
@@ -206,7 +210,7 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
           this.dataService.error_color = 'red';
           saved_effects.unsubscribe();
 
-          if (error.status == 429) {
+          if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {
@@ -241,7 +245,7 @@ export class EventEffectsComponent implements OnDestroy, AfterViewChecked {
           });
         });
       } else {
-        const categoryMap: {[key: number]: 0 | 6} = { 6: 0, 7: 6 }; // Blacklisted (6) -> 0, Invite log (7) -> 6
+        const categoryMap: Record<number, 0 | 6> = { 6: 0, 7: 6 }; // Blacklisted (6) -> 0, Invite log (7) -> 6
         (card.obj_list as Channel[]).forEach(channel => {
           effects.channel_effects.push({
             guild_id: this.dataService.active_guild!.id,

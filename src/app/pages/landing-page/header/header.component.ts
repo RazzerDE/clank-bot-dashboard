@@ -1,4 +1,4 @@
-import {Component, HostListener, Renderer2} from '@angular/core';
+import { Component, HostListener, Renderer2, inject } from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {IconDefinition} from "@fortawesome/free-regular-svg-icons";
@@ -10,7 +10,7 @@ import {LNavigationItem, nav_items} from '../../../services/types/landing-page/L
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
-    selector: 'landing-header',
+    selector: 'app-landing-header',
   imports: [
     NgOptimizedImage,
     RouterLink,
@@ -22,14 +22,14 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  protected mobileMenuExpanded: boolean = false;
+  private renderer = inject(Renderer2);
+
+  protected mobileMenuExpanded = false;
 
   protected readonly faCode: IconDefinition = faCode;
   protected faDiscord: IconDefinition = faDiscord;
   protected readonly faXmark: IconDefinition = faXmark;
   protected readonly nav_items: LNavigationItem[] = nav_items;
-
-  constructor(private renderer: Renderer2) {}
 
   /**
    * Toggles the mobile menu's expanded state.

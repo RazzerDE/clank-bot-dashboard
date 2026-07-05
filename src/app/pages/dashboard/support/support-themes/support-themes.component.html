@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
 
   <!-- Body -->
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
@@ -9,8 +9,8 @@
                [active_themeroles]="editTheme.roles" [action]="changeDefaultMention.bind(this)" [extra]="modalExtra" />
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"
-                [color]="'blue'" [desc]="'PAGE_THEMES_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_THEMES_SUBTITLE' | translate" [title]="'PAGE_THEMES_TITLE' | translate"
+                [color]="'blue'" [desc]="'PAGE_THEMES_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -86,7 +86,7 @@
                 </div>
               </div>
             } @else {
-              <data-table [tconfig]="tableConfig" />
+              <app-data-table [tconfig]="tableConfig" />
             }
 
           </div>
@@ -97,4 +97,4 @@
 
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

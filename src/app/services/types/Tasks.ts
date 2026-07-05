@@ -17,9 +17,7 @@ export interface TasksCompletion {
   subtasks: SubTasksCompletion[];
 }
 
-export interface TasksCompletionList {
-  [key: string]: TasksCompletion;
-}
+export type TasksCompletionList = Record<string, TasksCompletion>;
 
 export interface Tasks {
   id: number;

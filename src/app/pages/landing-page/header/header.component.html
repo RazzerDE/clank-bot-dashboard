@@ -44,8 +44,8 @@
             <!-- Lang Switch -->
             <li class="mx-3 lang-switch-btn animate__animated animate__infinite" #langSwitcher
                 (mouseover)="langSwitcher.classList.add('animate__pulse')"
-                (mouseleave)="langSwitcher.classList.remove('animate__pulse')">
-              <lang-switch-button></lang-switch-button>
+                (mouseleave)="langSwitcher.classList.remove('animate__pulse')" (focus)="langSwitcher.classList.add('animate__pulse')" (blur)="langSwitcher.classList.remove('animate__pulse')">
+              <app-lang-switch-button></app-lang-switch-button>
             </li>
 
             <li class="hidden md:!inline-flex">
@@ -81,7 +81,7 @@
       <div class="relative py-8 px-6 text-left flex flex-row items-center justify-between mobile_header">
         <img ngSrc="assets/img/logo/clank-discord-bot-logo-50x50.avif" height="50" width="50"
              alt="Mobile Navbar Logo ~ Clank Discord-Bot" class="mobile_header">
-        <div (click)="toggleMobileMenu()">
+        <div (click)="toggleMobileMenu()" (keyup.enter)="toggleMobileMenu()" tabindex="0" role="button">
           <fa-icon [icon]="faXmark" size="xl" class="text-xl text-[#45f882]" />
         </div>
       </div>

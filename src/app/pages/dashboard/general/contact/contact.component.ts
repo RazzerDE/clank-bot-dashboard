@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import {NgClass} from "@angular/common";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -83,9 +83,13 @@ import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/d
     ]
 })
 export class ContactComponent implements AfterViewInit, OnDestroy {
+  protected dataService = inject(DataHolderService);
+  protected translate = inject(TranslateService);
+  private apiService = inject(ApiService);
+
   protected current_steps: CurrentStep = { bug_report: 2, idea_suggestion: 1 };
-  protected bugReportSent: boolean = false;
-  protected ideaSuggestionSent: boolean = false;
+  protected bugReportSent = false;
+  protected ideaSuggestionSent = false;
 
   protected wizard_bug_steps: WizardStep[] = [
     { title: 'WIZARD_STEP_FIRST', isEmpty: () => this.formGroupBug.get('bugName')?.value === '' },
@@ -112,14 +116,13 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
   @ViewChild('formBugReport') private formBugReport!: ElementRef<HTMLDivElement>;
   @ViewChild('bugReportInfo') protected bugReportInfo!: ElementRef<HTMLParagraphElement>;
   @ViewChild('ideaSuggestionInfo') protected ideaSuggestionInfo!: ElementRef<HTMLParagraphElement>;
-  protected formContainerHeight: string = 'auto';
+  protected formContainerHeight = 'auto';
   protected readonly window = window;
 
   protected readonly faChevronRight: IconDefinition = faChevronRight;
   protected readonly faDiscord: IconDefinition = faDiscord;
 
-  constructor(protected dataService: DataHolderService, protected translate: TranslateService,
-              private apiService: ApiService) {
+  constructor() {
     this.dataService.hideGuildSidebar = true;
   }
 
@@ -163,7 +166,7 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
 
         const form_data = { ...this.formGroupBug.value, profile: this.dataService.profile };
         const bug_report: Subscription = this.apiService.sendBugReport(form_data).subscribe({
-          next: (_data: any): void => { bug_report.unsubscribe(); },
+          next: (_data: unknown): void => { bug_report.unsubscribe(); },
           error: (_error: HttpErrorResponse): void => {
             this.bugReportInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.bugReportInfo.nativeElement.classList.add('!text-red-600');
@@ -181,7 +184,7 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
 
         const form_data = { ...this.formGroupIdea.value, profile: this.dataService.profile };
         const idea_suggest: Subscription = this.apiService.sendIdeaSuggestion(form_data).subscribe({
-          next: (_data: any): void => { idea_suggest.unsubscribe(); },
+          next: (_data: unknown): void => { idea_suggest.unsubscribe(); },
           error: (_error: HttpErrorResponse): void => {
             this.ideaSuggestionInfo.nativeElement.innerText = this.translate.instant('PLACEHOLDER_CONTACT_ERROR');
             this.ideaSuggestionInfo.nativeElement.classList.add('!text-red-600');

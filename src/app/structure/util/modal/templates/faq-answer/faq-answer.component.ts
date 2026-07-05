@@ -3,7 +3,7 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.component";
 
 @Component({
-  selector: 'template-faq-answer',
+  selector: 'app-template-faq-answer',
   imports: [
     TranslatePipe,
     DiscordMarkdownComponent
@@ -12,9 +12,9 @@ import {DiscordMarkdownComponent} from "../discord-markdown/discord-markdown.com
   styleUrl: './faq-answer.component.scss'
 })
 export class FaqAnswerComponent {
-  @Input() faqChecked: boolean = false;
-  @Input() type: string = '';
-  @Input() content: string = '';
+  @Input() faqChecked = false;
+  @Input() type = '';
+  @Input() content = '';
 
   @ViewChild(DiscordMarkdownComponent) discordMarkdownComponent!: DiscordMarkdownComponent;
 

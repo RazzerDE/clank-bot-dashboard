@@ -1,10 +1,10 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_EVENTS_DESIGN_SUBTITLE' | translate" [title]="'PAGE_EVENTS_DESIGN_TITLE' | translate"
-                [color]="'rosa'" [desc]="'PAGE_EVENTS_DESIGN_DESC' | translate" [size]="'less'"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_EVENTS_DESIGN_SUBTITLE' | translate" [title]="'PAGE_EVENTS_DESIGN_TITLE' | translate"
+                [color]="'rosa'" [desc]="'PAGE_EVENTS_DESIGN_DESC' | translate" [size]="'less'"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -66,7 +66,7 @@
                        @if (this.dataService.embed_config.banner_url) {
                          <div class="absolute right-2 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
                                 justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
-                              (click)="this.dataService.embed_config.banner_url = null">
+                              (click)="this.dataService.embed_config.banner_url = null" (keyup.enter)="this.dataService.embed_config.banner_url = null" tabindex="0" role="button">
                            <fa-icon [icon]="faXmark" class="text-gray-400" />
                          </div>
                        }
@@ -97,7 +97,7 @@
                        @if (this.dataService.embed_config.thumbnail_url) {
                          <div class="absolute right-2 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
                                 justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
-                              (click)="this.dataService.embed_config.thumbnail_url = null">
+                              (click)="this.dataService.embed_config.thumbnail_url = null" (keyup.enter)="this.dataService.embed_config.thumbnail_url = null" tabindex="0" role="button">
                            <fa-icon [icon]="faXmark" class="text-gray-400" />
                          </div>
                        }
@@ -138,7 +138,7 @@
                          @if (this.dataService.embed_config.emoji_reaction) {
                            <div class="absolute right-10 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
                                 justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
-                                (click)="this.dataService.embed_config.emoji_reaction = null">
+                                (click)="this.dataService.embed_config.emoji_reaction = null" (keyup.enter)="this.dataService.embed_config.emoji_reaction = null" tabindex="0" role="button">
                              <fa-icon [icon]="faXmark" class="text-gray-400" />
                            </div>
                          }
@@ -146,13 +146,13 @@
                                 justify-center transition-colors duration-200 focus:bg-gray-700"
                               [ngClass]="{'bg-gray-200 dark:bg-gray-700': this.dataService.showEmojiPicker,
                                      'hover:bg-gray-200 dark:hover:bg-gray-700': !this.dataService.showEmojiPicker}"
-                              (click)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker">
+                              (click)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker" (keyup.enter)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker" tabindex="0" role="button">
                            <span class="text-white drop-shadow-xl text-xl">🌟</span>
                          </div>
 
                          <!-- Emoji Picker Modal -->
                          @if (this.dataService.showEmojiPicker) {
-                           <template-emoji-picker (selected_emoji)="verifyEmbedEmoji($event)" [type]="'EVENTS_DESIGN'" />
+                           <app-template-emoji-picker (selected_emoji)="verifyEmbedEmoji($event)" [type]="'EVENTS_DESIGN'" />
                          }
                        </div>
                        <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
@@ -184,7 +184,7 @@
                          @if (this.dataService.embed_config.color_code) {
                            <div class="absolute right-10 inset-y-2.5 w-6 h-6 border-0 p-2 cursor-pointer rounded-lg flex items-center
                                 justify-center transition-colors duration-200 focus:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
-                                (click)="this.dataService.embed_config.color_code = null">
+                                (click)="this.dataService.embed_config.color_code = null" (keyup.enter)="this.dataService.embed_config.color_code = null" tabindex="0" role="button">
                              <fa-icon [icon]="faXmark" class="text-gray-400" />
                            </div>
                          }
@@ -253,11 +253,11 @@
               <span class="data-loader"></span>
             </div>
           } @else {
-            <template-discord-markdown [type]="'EVENTS_DESIGN'" [giveaway]="this.initGiveaway" />
+            <app-template-discord-markdown [type]="'EVENTS_DESIGN'" [giveaway]="this.initGiveaway" />
           }
         </div>
       </div>
     </div>
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

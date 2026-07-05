@@ -23,8 +23,8 @@
 
     <tbody class="overflow-y-auto">
       <!-- Table is empty -->
-      @if ((tconfig.type != 'UNBAN_REQUESTS' && tconfig.rows.length == 0 && !tconfig.dataLoading) ||
-           (tconfig.type === 'UNBAN_REQUESTS' && (returnFilteredRequests().length == 0 && !hasPendingItemsWithNoPerms()) && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
+      @if ((tconfig.type !== 'UNBAN_REQUESTS' && tconfig.rows.length === 0 && !tconfig.dataLoading) ||
+           (tconfig.type === 'UNBAN_REQUESTS' && (returnFilteredRequests().length === 0 && !hasPendingItemsWithNoPerms()) && this.dataService.security_logs && this.dataService.security_logs.unban_thread_id)) {
         <tr class="border-b dark:border-gray-700 transition-colors duration-300" [@rowAnimation]>
           <td class="px-4 py-3 text-center" [attr.colspan]="tconfig.columns.length">{{ tconfig.list_empty | translate }}</td>
         </tr>
@@ -71,7 +71,7 @@
 
         <!-- Row Content -->
         @for (obj of tconfig.rows; track $index) {
-          @if (isUnbanRequestType(obj) && obj.status != 0) {} @else {
+          @if (isUnbanRequestType(obj) && obj.status !== 0) {} @else {
             <tr class="border-b dark:border-gray-700 transition-colors duration-100 hover:bg-gray-200
                    dark:hover:bg-slate-900/60 odd:bg-white even:bg-gray-50 dark:odd:bg-slate-800
                    dark:even:bg-slate-900/20" [@rowAnimation] (click)="onRowClick(obj)"
@@ -91,7 +91,7 @@
               <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white transition-colors
                          duration-300" #mainRow
                   [width]="tconfig.type === 'SUPPORT_THEMES' ? tconfig.columns[1].width + '%' : tconfig.columns[0].width + '%'"
-                  [class.!text-red-600]="isSupportType(obj) && obj.pending && obj.action == 'DELETE'">
+                  [class.!text-red-600]="isSupportType(obj) && obj.pending && obj.action === 'DELETE'">
                 <div class="flex items-center">
 
                   @if (isRoleType(obj)) {                                    <!-- Show Rolor-Color Dot for Role Types -->

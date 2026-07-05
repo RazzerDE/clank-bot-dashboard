@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgOptimizedImage, NgStyle} from "@angular/common";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -66,6 +66,10 @@ import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.
     ]
 })
 export class WishlistComponent implements AfterViewInit {
+  protected dataService = inject(DataHolderService);
+  private translate = inject(TranslateService);
+  private apiService = inject(ApiService);
+
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faLightbulb: IconDefinition = faLightbulb;
   protected readonly faHashtag: IconDefinition = faHashtag;
@@ -78,7 +82,7 @@ export class WishlistComponent implements AfterViewInit {
   protected tags: Tag[] = tags;
   protected allItemsDisabled: boolean = feature_list.every(f => !f.enabled);
 
-  constructor(protected dataService: DataHolderService, private translate: TranslateService, private apiService: ApiService) {
+  constructor() {
     document.title = "Wishlist ~ Clank Discord-Bot";
 
     this.dataService.hideGuildSidebar = false;
@@ -113,7 +117,7 @@ export class WishlistComponent implements AfterViewInit {
     const data: FeatureData = { feature_id: feature_id, user_id: this.dataService.profile!.id, vote: vote };
     let feature_vote: Subscription | null = null;
     feature_vote = this.apiService.sendFeatureVote(data).subscribe({
-      next: (_data: any): void => {
+      next: (_data: unknown): void => {
         this.getFeatureVotes();
         if (cooldownFeature) { cooldownFeature.isLoading = false; }
 
@@ -129,7 +133,7 @@ export class WishlistComponent implements AfterViewInit {
 
         if (error.status === 304) { // not modified
           this.dataService.showAlert(this.translate.instant('ERROR_VOTE_SAME_TITLE'), this.translate.instant('ERROR_VOTE_SAME_DESC'));
-        } else if (error.status == 429) {
+        } else if (error.status === 429) {
           this.dataService.redirectLoginError('REQUESTS');
           return;
         } else {
@@ -176,7 +180,7 @@ export class WishlistComponent implements AfterViewInit {
         this.dataService.error_color = 'red';
         if (get_votes) { get_votes.unsubscribe(); }
 
-        if (error.status == 429) {
+        if (error.status === 429) {
           this.dataService.redirectLoginError('REQUESTS');
         } else if (error.status === 401) {
           this.dataService.redirectLoginError('NO_CLANK');

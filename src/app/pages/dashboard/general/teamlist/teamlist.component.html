@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
 
     <!-- Body -->
     <section class="flex flex-auto flex-col bg-gradient-to-bl from-blue-50 via-gray-50 to-slate-100
@@ -8,8 +8,8 @@
       <app-modal type="TEAMLIST_ROLE_ADD" [discordRoles]="discordRoles" [action]="addRole.bind(this)" />
 
       <!-- Page Thumb -->
-      <page-thumb [subtitle]="'PAGE_TEAMLIST_SUBTITLE' | translate" [title]="'PAGE_TEAMLIST_TITLE' | translate"
-                  [color]="'red'" [desc]="'PAGE_TEAMLIST_DESC' | translate"></page-thumb>
+      <app-page-thumb [subtitle]="'PAGE_TEAMLIST_SUBTITLE' | translate" [title]="'PAGE_TEAMLIST_TITLE' | translate"
+                  [color]="'red'" [desc]="'PAGE_TEAMLIST_DESC' | translate"></app-page-thumb>
 
       <!-- Alert Box -->
       @if (this.dataService.showAlertBox) {
@@ -82,7 +82,7 @@
                                    focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700
                                    focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                               <label for="{{$index}}_level" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                                     [innerText]="$index == 0 ? '🚑 ~ First Level' : $index == 1 ? '🚔 ~ Second Level' : '🚨 ~ Third Level'">
+                                     [innerText]="$index === 0 ? '🚑 ~ First Level' : $index === 1 ? '🚔 ~ Second Level' : '🚨 ~ Third Level'">
                               </label>
                             </li>
                           }
@@ -93,7 +93,7 @@
                 </div>
 
                 <!-- Table -->
-                <data-table [tconfig]="tableConfig"/>
+                <app-data-table [tconfig]="tableConfig"/>
 
               </div>
             </div>
@@ -103,4 +103,4 @@
 
     </section>
 
-</dashboard-layout>
+</app-dashboard-layout>

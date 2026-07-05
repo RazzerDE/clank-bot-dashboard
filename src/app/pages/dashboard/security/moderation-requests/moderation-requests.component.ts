@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {AlertBoxComponent} from "../../../../structure/util/alert-box/alert-box.component";
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
@@ -32,14 +32,18 @@ import {MarkdownPipe} from "../../../../pipes/markdown/markdown.pipe";
   styleUrl: './moderation-requests.component.scss'
 })
 export class ModerationRequestsComponent implements OnDestroy {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private translate = inject(TranslateService);
+
   protected readonly faSearch: IconDefinition = faSearch;
   protected readonly faRefresh: IconDefinition = faRefresh;
 
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
+  protected disabledCacheBtn = false;
   private markdownPipe: MarkdownPipe = new MarkdownPipe();
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService, private translate: TranslateService) {
+  constructor() {
     document.title = 'Unban-Requests ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.dataService.getSecurityLogs(this.apiService, true); // first call to get the server data
@@ -75,7 +79,7 @@ export class ModerationRequestsComponent implements OnDestroy {
 
     const updated_request: Subscription = this.apiService.updateUnbanRequest(this.dataService.active_guild.id, request.user_id, status)
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           this.dataService.error_color = status === 1 ? 'green' : 'red';
           this.dataService.showAlert(this.translate.instant(`SUCCESS_SECURITY_UNBAN_${status === 1 ? 'APPROVE' : 'DENY'}_TITLE`),
             this.translate.instant(`SUCCESS_SECURITY_UNBAN_${status === 1 ? 'APPROVE' : 'DENY'}_DESC`,
@@ -95,10 +99,10 @@ export class ModerationRequestsComponent implements OnDestroy {
           this.dataService.error_color = 'red';
           updated_request.unsubscribe();
 
-          if (error.status == 404) {
+          if (error.status === 404) {
             this.dataService.showAlert(this.translate.instant('ERROR_SECURITY_UNBAN_NOT_FOUND_TITLE'),
               this.translate.instant('ERROR_SECURITY_UNBAN_NOT_FOUND_DESC'));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {

@@ -10,7 +10,7 @@ describe('LanguageSwitcherService', () => {
   let service: LanguageSwitcherService;
   let translateService: TranslateService;
   let loc: Location;
-  let platformId: string = 'browser'; // Simulating a browser platform for testing
+  const platformId = 'browser'; // Simulating a browser platform for testing
 
   beforeEach(() => {
     TestBed.configureTestingModule({

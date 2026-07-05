@@ -6,7 +6,7 @@ import {TutorialComponent} from "./sections/tutorial/tutorial.component";
 import {IntroComponent} from "./sections/intro/intro.component";
 
 @Component({
-    selector: 'landing-page',
+    selector: 'app-landing-page',
     imports: [
         HeaderComponent,
         FooterComponent,

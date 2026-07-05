@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-tr from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
@@ -73,7 +73,7 @@
             @for (step of wizard_idea_suggestion; track $index) {
               @if ($index === current_steps.idea_suggestion - 1 || window.innerWidth > 700) {
                 <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer
-                            transition-colors duration-500" (click)="toggleStep($index, 'IDEA')">
+                            transition-colors duration-500" (click)="toggleStep($index, 'IDEA')" (keyup.enter)="toggleStep($index, 'IDEA')" tabindex="0" role="button">
                   <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
                        [ngClass]="this.current_steps.idea_suggestion >= $index + 1 ? 'bg-blue-600 text-white' :
                                  'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
@@ -121,7 +121,7 @@
                                     class="w-full min-h-24 pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                                text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                                transition-colors duration-500 dark:!text-gray-300 max-h-32"
-                                    [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
+                                    [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value === ''
                                                                    && this.formGroupIdea.get(field.controlName)!.touched}">
                               </textarea>
                         } @else if (field.type === 'text') {
@@ -130,14 +130,14 @@
                                  class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                           text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                           transition-colors duration-500 dark:!text-gray-300"
-                                 [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value == ''
+                                 [ngClass]="{'!border-red-500': this.formGroupIdea.get(field.controlName)!.value === ''
                                                                    && this.formGroupIdea.get(field.controlName)!.touched}" />
                         } @else {
                           <select [id]="field.id" [formControlName]="field.controlName"
                                   class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-md focus:!border-blue-500
                                            text-gray-700 dark:bg-gray-700 dark:border-gray-600
                                            transition-colors duration-500 dark:text-gray-300"
-                                  [ngClass]="{'!text-gray-400': this.formGroupIdea.get(field.controlName)!.value == ''
+                                  [ngClass]="{'!text-gray-400': this.formGroupIdea.get(field.controlName)!.value === ''
                                                                    && this.formGroupIdea.get(field.controlName)!.touched}">
                             <option selected disabled value="">{{ 'FORM_IDEA_SUGGESTION_3_FIELD_1_PLACEHOLDER' | translate }}</option>
                             <!-- Discord-Server -->
@@ -194,7 +194,7 @@
             @for (step of wizard_bug_steps; track $index) {
               @if ($index === current_steps.bug_report - 1 || window.innerWidth > 700) {
                 <div class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer
-                            transition-colors duration-500" (click)="toggleStep($index, 'BUG')">
+                            transition-colors duration-500" (click)="toggleStep($index, 'BUG')" (keyup.enter)="toggleStep($index, 'BUG')" tabindex="0" role="button">
                   <div class="flex items-center justify-center w-6 h-6 rounded-full text-sm transition-colors duration-500"
                        [ngClass]="this.current_steps.bug_report >= $index + 1 ? 'bg-blue-600 text-white' :
                                   'bg-gray-200 dark:!bg-gray-500 text-gray-600 dark:!text-white'">
@@ -243,7 +243,7 @@
                                                text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                                transition-colors duration-500 dark:!text-gray-300 max-h-32 "
                                     [attr.aria-label]="field.controlName"
-                                    [ngClass]="{'!border-red-500': (this.formGroupBug.get(field.controlName)!.value == ''
+                                    [ngClass]="{'!border-red-500': (this.formGroupBug.get(field.controlName)!.value === ''
                                                                       && this.formGroupBug.get(field.controlName)!.touched)}">
                               </textarea>
                         } @else {
@@ -253,7 +253,7 @@
                                           text-gray-700 placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600
                                           transition-colors duration-500 dark:!text-gray-300"
                                  [attr.aria-label]="field.controlName"
-                                 [ngClass]="{'!border-red-500': this.formGroupBug.get(field.controlName)!.value == ''
+                                 [ngClass]="{'!border-red-500': this.formGroupBug.get(field.controlName)!.value === ''
                                                                    && this.formGroupBug.get(field.controlName)!.touched}" />
                         }
                       </div>
@@ -290,4 +290,4 @@
     </div>
   </section>
 
-</dashboard-layout>
+</app-dashboard-layout>

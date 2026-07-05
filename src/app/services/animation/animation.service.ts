@@ -1,4 +1,4 @@
-import {HostListener, Inject, Injectable, NgZone, OnDestroy, PLATFORM_ID} from '@angular/core';
+import { HostListener, Injectable, NgZone, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import {CanvasAnimation} from "../types/animation/CanvasAnimation";
 import {Firefly} from "../types/animation/FireFly";
 import {Star} from "../types/animation/Star";
@@ -8,10 +8,13 @@ import {isPlatformBrowser} from "@angular/common";
   providedIn: 'root'
 })
 export class AnimationService implements OnDestroy {
-  private canvases: { [id: string]: CanvasAnimation } = {};
+  private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
+
+  private canvases: Record<string, CanvasAnimation> = {};
   private fpsInterval: number = 1000 / 60; // 60 FPS
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private ngZone: NgZone) {
+  constructor() {
     // load animations like fadeInUp, fadeInDown, etc.
     if (isPlatformBrowser(this.platformId)) {
       document.addEventListener('DOMContentLoaded', (): void => {
@@ -105,7 +108,7 @@ export class AnimationService implements OnDestroy {
     canvas.lastTime = currentTime;
 
     if (canvas.elements.length < 100) {
-      for (let j: number = 0; j < 10; j++) {
+      for (let j = 0; j < 10; j++) {
         if (canvas.animationType === 'firefly') {
           canvas.elements.push(new Firefly(canvas.width, canvas.height, canvas.context));
         } else if (canvas.animationType === 'star') {

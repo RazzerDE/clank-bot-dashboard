@@ -6,10 +6,12 @@
     </label>
     <div class="flex items-center gap-2">
       <div (click)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker; $event.stopPropagation();"
+           (keyup.enter)="this.dataService.showEmojiPicker = !this.dataService.showEmojiPicker"
+           tabindex="0" role="button"
            class="relative w-12 h-[42px] flex items-center justify-center bg-gray-50 border border-gray-300 rounded-lg
                 cursor-pointer dark:bg-gray-600 dark:!border-gray-500">
         @if (newTheme.icon.includes('https') || newTheme.icon.startsWith('<:') || newTheme.icon.startsWith('<a:')) {
-          @if (newTheme.guild_id == this.dataService.active_guild!.id) {
+          @if (newTheme.guild_id === this.dataService.active_guild!.id) {
             <img ngSrc="{{ dataService.getEmojibyId(newTheme.icon) + '?size=24' }}" alt="Emoji ~ Clank Discord-Bot" width="24" height="24" />
           } @else { <!-- dont show emoji from another guild -->
             <span class="text-gray-900 dark:text-white select-none">📚</span>
@@ -20,7 +22,7 @@
 
         <!-- Modal for Emoji Picker -->
         @if (this.dataService.showEmojiPicker) {
-          <template-emoji-picker (selected_emoji)="updateThemeIcon($event)" />
+          <app-template-emoji-picker (selected_emoji)="updateThemeIcon($event)" />
         }
 
       </div>
@@ -44,7 +46,7 @@
                                    duration-300" [class.opacity-50]="this.dataService.isFAQ">
       {{ 'PLACEHOLDER_THEME_MODAL_ROLES' | translate }}
     </label>
-    <template-select [options]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
+    <app-template-select [options]="discordRoles" [type]="type" [isDefaultMentioned]="isDefaultMentioned"
                      [activeOptions]="activeOptions" [id]="'themeroles'"
                      (selectionChange)="newTheme.roles = $any($event); this.updateThemeMentions();" />
     <button [ngClass]="{'bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700': !isThemeInvalid() && type === 'SUPPORT_THEME_ADD',
@@ -109,7 +111,7 @@
           {{ 'PLACEHOLDER_THEME_MODAL2_PREVIEW' | translate }}
         </p>
 
-        <template-discord-markdown [type]="this.type" [content]="this.dataService.faq_answer" class="!mt-0"/>
+        <app-template-discord-markdown [type]="this.type" [content]="this.dataService.faq_answer" class="!mt-0"/>
       </div>
     </div>
   </div>

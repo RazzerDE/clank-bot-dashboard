@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
 
   <!-- Body -->
   <section class="flex flex-auto flex-col bg-gradient-to-tr from-blue-50 via-gray-50 to-slate-100
@@ -13,8 +13,8 @@
     <div class="m-4 flex items-center p-6 mb-4 text-sm border-2 rounded-lg bg-gradient-to-l from-slate-50
               via-gray-50 to-blue-50 dark:from-slate-800 dark:via-gray-800 dark:to-slate-900 justify-center
                 flex-col transition-colors duration-500" [class.!py-4]="moduleStatus === 1 || !this.supportForum.has_perms && this.supportForum.pending"
-      [ngClass]="moduleStatus == 2 && !this.supportForum.pending ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
-                 moduleStatus == 0 || (this.supportForum.pending && !this.supportForum.has_perms) ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
+      [ngClass]="moduleStatus === 2 && !this.supportForum.pending ? '!text-green-800 bg-green-50 !border-green-300 dark:!text-green-400 dark:!border-green-800' :
+                 moduleStatus === 0 || (this.supportForum.pending && !this.supportForum.has_perms) ? 'text-red-800 bg-red-50 dark:text-red-400 border-red-300 dark:border-red-800' :
                  'text-yellow-800 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-800'">
       @if (this.dataLoading.statusBox) {
         <div class="h-28 flex items-center">
@@ -22,12 +22,12 @@
         </div>
       } @else {
         <img class="shrink-0 inline" alt="Modul Status Icon ~ Clank Discord Bot" height="64" width="64"
-             [ngSrc]="moduleStatus == 2 && (this.supportForum.has_perms && !this.supportForum.pending) ? '/assets/img/icons/check2.png' :
-                      moduleStatus == 1 || (this.supportForum.has_perms && this.supportForum.pending) ? '/assets/img/icons/warning.png' : '/assets/img/icons/error.png'"
-             [ngClass]="moduleStatus == 1 || (this.supportForum.has_perms && this.supportForum.pending) ? 'w-14 h-14 mb-2' : 'w-10 h-10 mb-3'"/>
+             [ngSrc]="moduleStatus === 2 && (this.supportForum.has_perms && !this.supportForum.pending) ? '/assets/img/icons/check2.png' :
+                      moduleStatus === 1 || (this.supportForum.has_perms && this.supportForum.pending) ? '/assets/img/icons/warning.png' : '/assets/img/icons/error.png'"
+             [ngClass]="moduleStatus === 1 || (this.supportForum.has_perms && this.supportForum.pending) ? 'w-14 h-14 mb-2' : 'w-10 h-10 mb-3'"/>
         <h4 class="font-medium mb-2 !text-green-800 dark:!text-green-400"
-            [ngClass]="moduleStatus == 2 && (this.supportForum.has_perms && !this.supportForum.pending) ? '!text-green-800 dark:!text-green-400' :
-                       moduleStatus == 0 || (!this.supportForum.has_perms) ? '!text-red-800 dark:!text-red-400' :
+            [ngClass]="moduleStatus === 2 && (this.supportForum.has_perms && !this.supportForum.pending) ? '!text-green-800 dark:!text-green-400' :
+                       moduleStatus === 0 || (!this.supportForum.has_perms) ? '!text-red-800 dark:!text-red-400' :
                                                                              '!text-yellow-800 dark:!text-yellow-300'">
           @if (this.supportForum.pending) {
             @if (!this.supportForum.has_perms) {
@@ -59,7 +59,7 @@
            [class.!justify-center]="this.dataLoading.statusBox">
         @if (this.dataLoading.statusBox) {
           <span class="data-loader"></span>
-        } @else if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length == 3) {
+        } @else if (this.moduleStatusObj && this.moduleStatusObj.subtasks.length === 3) {
           @for (_ of [].constructor(3); track $index) {
             <div class="flex items-center w-full md:w-auto">
               <a class="flex p-2 rounded-lg hover:bg-gray-200 dark:hover:!bg-gray-700 cursor-pointer transition-colors duration-500 w-full justify-center"
@@ -73,8 +73,8 @@
                 <span class="ml-2 transition-colors duration-500" [ngClass]="{'text-blue-600 font-medium': currentStep === $index + 1,
                 'text-green-600 dark:!text-green-800 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index].finished,
                 'text-red-600 dark:!text-red-400 opacity-75': currentStep < $index + 1 && this.moduleStatusObj!.subtasks[$index] && !this.moduleStatusObj.subtasks[$index].finished}">
-            {{ $index == 0 ? ('PLACEHOLDER_TAB_FORUM' | translate) :
-                  $index == 1 ? ('PLACEHOLDER_TAB_THEMES' | translate) : ('PLACEHOLDER_TAB_TEAM' | translate) }}
+            {{ $index === 0 ? ('PLACEHOLDER_TAB_FORUM' | translate) :
+                  $index === 1 ? ('PLACEHOLDER_TAB_THEMES' | translate) : ('PLACEHOLDER_TAB_TEAM' | translate) }}
           </span>
               </a>
             </div>
@@ -115,7 +115,7 @@
                     <div class="flex flex-col lg:flex-row items-center justify-between p-2 rounded hover:bg-gray-300
                               dark:hover:bg-gray-600 cursor-pointer transition-colors duration-500"
                          [ngClass]="{'bg-blue-200 dark:bg-blue-900': selectedChannel != null && selectedChannel.id === item.id}"
-                         (click)="selectChannel(item)">
+                         (click)="selectChannel(item)" (keyup.enter)="selectChannel(item)" tabindex="0" role="button">
                       <div class="flex items-center">
                         <img ngSrc="assets/img/icons/utility/discord-forum.svg" class="mt-1 h-5 w-5" height="20" width="20"
                              alt="Discord Forum Icon ~ Clank Discord-Bot"/>
@@ -201,4 +201,4 @@
 
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

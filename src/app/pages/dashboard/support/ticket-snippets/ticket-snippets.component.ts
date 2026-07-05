@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild} from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import {DashboardLayoutComponent} from "../../../../structure/dashboard-layout/dashboard-layout.component";
 import {DataHolderService} from "../../../../services/data/data-holder.service";
 import {PageThumbComponent} from "../../../../structure/util/page-thumb/page-thumb.component";
@@ -46,11 +46,16 @@ import {
   styleUrl: './ticket-snippets.component.scss'
 })
 export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
+  protected dataService = inject(DataHolderService);
+  private apiService = inject(ApiService);
+  private translate = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
+
   private readonly subscription: Subscription | null = null;
-  protected disabledCacheBtn: boolean = false;
+  protected disabledCacheBtn = false;
   protected dataLoading: { snippets: boolean, announcement: boolean } = { snippets: true, announcement: true };
-  private startLoading: boolean = false;
-  protected modalType: string = 'SUPPORT_SNIPPET_ADD';
+  private startLoading = false;
+  protected modalType = 'SUPPORT_SNIPPET_ADD';
 
   protected newSnippet: TicketSnippet = { name: '', desc: '' };
   protected snippets: TicketSnippet[] = [];
@@ -69,8 +74,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
   protected readonly faExclamationCircle: IconDefinition = faExclamationCircle;
   protected readonly faExclamationTriangle: IconDefinition = faExclamationTriangle;
 
-  constructor(protected dataService: DataHolderService, private apiService: ApiService,
-              private translate: TranslateService, private cdr: ChangeDetectorRef) {
+  constructor() {
     document.title = 'Ticket Snippets ~ Clank Discord-Bot';
     this.dataService.isLoading = true;
     this.getSnippetDetails(); // first call to get the server data
@@ -245,7 +249,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     let sent_snippet: Subscription | null = null;
     sent_snippet = this.apiService.createSnippet(snippet)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_SNIPPET_CREATION_TITLE'),
             this.translate.instant('SUCCESS_SNIPPET_CREATION_DESC', { name: snippet.name }));
@@ -268,7 +272,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
           if (error.status === 409) { // already exist
             this.dataService.showAlert(this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT'),
               this.translate.instant('ERROR_SNIPPET_CREATION_CONFLICT_DESC', {name: snippet.name}));
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {
@@ -299,7 +303,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     let sent_snippet: Subscription | null = null;
     sent_snippet = this.apiService.editSnippet(snippet)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_SNIPPET_EDIT_TITLE'),
             this.translate.instant('SUCCESS_SNIPPET_EDIT_DESC', { name: snippet.name }));
@@ -333,7 +337,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
             if (index !== -1) {
               this.snippets.splice(index, 1);
             }
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
             return;
           } else {
@@ -363,7 +367,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
     let delete_snippet: Subscription | null = null;
     delete_snippet = this.apiService.deleteSnippet(snippet)
       .subscribe({
-        next: (_data: any): void => {
+        next: (_data: unknown): void => {
           this.dataService.error_color = 'green';
           this.dataService.showAlert(this.translate.instant('SUCCESS_SNIPPET_DELETE_TITLE'),
             this.translate.instant('SUCCESS_SNIPPET_DELETE_DESC', { name: snippet.name }));
@@ -399,7 +403,7 @@ export class TicketSnippetsComponent implements OnDestroy, AfterViewChecked {
               this.snippets.splice(index, 1);
               this.filteredSnippets = [...this.snippets];
             }
-          } else if (error.status == 429) {
+          } else if (error.status === 429) {
             this.dataService.redirectLoginError('REQUESTS');
           } else {
             this.dataService.showAlert(this.translate.instant('ERROR_UNKNOWN_TITLE'), this.translate.instant('ERROR_UNKNOWN_DESC'));

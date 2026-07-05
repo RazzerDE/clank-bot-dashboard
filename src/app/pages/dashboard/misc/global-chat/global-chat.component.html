@@ -1,10 +1,10 @@
-<dashboard-layout>
+<app-dashboard-layout>
   <section class="flex flex-auto flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_MISC_GLOBALCHAT_SUBTITLE' | translate" [title]="'PAGE_MISC_GLOBALCHAT_TITLE' | translate"
-                [color]="'green-yellow'" [desc]="'PAGE_MISC_GLOBALCHAT_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_MISC_GLOBALCHAT_SUBTITLE' | translate" [title]="'PAGE_MISC_GLOBALCHAT_TITLE' | translate"
+                [color]="'green-yellow'" [desc]="'PAGE_MISC_GLOBALCHAT_DESC' | translate"></app-page-thumb>
 
     <!-- Alert Box -->
     @if (this.dataService.showAlertBox) {
@@ -36,7 +36,7 @@
         <!-- Content -->
         <div class="flex flex-col p-3 h-full w-full">
           <div class="flex flex-col 2xl:flex-row items-center gap-3 mb-4 w-full">
-            <template-select [options]="this.dataService.guild_channels" [type]="'MISC_GLOBALCHAT'" class="w-full"
+            <app-template-select [options]="this.dataService.guild_channels" [type]="'MISC_GLOBALCHAT'" class="w-full"
                              [id]="'channelpicker'" [activeOption]="this.global_chat.global_config?.channel_id"
                              (selectionChange)="saveGlobalChat($event[0])" [disabled]="global_chat.global_chat_pending_id" />
 
@@ -217,7 +217,7 @@
 
               <!-- Right Side - Discord Preview -->
               <div class="flex-1 flex items-center justify-center h-full">
-                <template-discord-markdown [type]="'MISC_GLOBALCHAT'" [obj]="this.global_chat" class="w-full" />
+                <app-template-discord-markdown [type]="'MISC_GLOBALCHAT'" [obj]="this.global_chat" class="w-full" />
               </div>
             </div>
           </div>
@@ -277,4 +277,4 @@
     </div>
 
   </section>
-</dashboard-layout>
+</app-dashboard-layout>

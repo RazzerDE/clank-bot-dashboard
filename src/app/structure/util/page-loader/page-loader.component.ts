@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../../services/data/data-holder.service";
 
@@ -10,8 +10,7 @@ import {DataHolderService} from "../../../services/data/data-holder.service";
     templateUrl: './page-loader.component.html',
     styleUrl: './page-loader.component.scss'
 })
-export class PageLoaderComponent {
+export class PageLoaderComponent {  protected dataService = inject(DataHolderService);
 
-  constructor(protected dataService: DataHolderService) { }
 
 }

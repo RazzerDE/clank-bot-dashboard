@@ -39,6 +39,7 @@ module.exports = tseslint.config(
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
         },
       ],
       "@typescript-eslint/explicit-member-accessibility": [
@@ -55,6 +56,14 @@ module.exports = tseslint.config(
     files: ["**/*.spec.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "no-console": "off",
+    },
+  },
+  {
+    // Node server entry point — console logging is expected here
+    files: ["src/server.ts"],
+    rules: {
       "no-console": "off",
     },
   },
@@ -64,6 +73,11 @@ module.exports = tseslint.config(
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
     ],
-    rules: {},
+    rules: {
+      "@angular-eslint/template/eqeqeq": [
+        "error",
+        { allowNullOrUndefined: true },
+      ],
+    },
   }
 );

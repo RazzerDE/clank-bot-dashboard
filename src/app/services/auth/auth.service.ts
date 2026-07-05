@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {config} from "../../../environments/config";
@@ -10,11 +10,14 @@ import {ComService} from "../discord-com/com.service";
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private dataService = inject(DataHolderService);
+  private comService = inject(ComService);
 
-  private authUrl: string = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router,
-              private dataService: DataHolderService, private comService: ComService) {}
+  private authUrl = `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(config.client_id)}&response_type=code&redirect_uri=${encodeURIComponent(config.redirect_url)}&scope=identify+guilds+guilds.members.read`
 
   /**
    * Authenticates the user with the provided Discord authorization code and state.
@@ -42,9 +45,9 @@ export class AuthService {
       return;
     }
 
-    this.http.post<any>(`${config.api_url}/auth/discord`, { code: code, state: state }, { withCredentials: true })
+    this.http.post<object>(`${config.api_url}/auth/discord`, { code: code, state: state }, { withCredentials: true })
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           localStorage.removeItem('state');  // clean up stored state
           localStorage.removeItem('state_expiry');
 
@@ -89,7 +92,7 @@ export class AuthService {
 
         if (error.status === 401) {
           this.dataService.redirectLoginError('EXPIRED');
-        } else if (error.status == 429) {
+        } else if (error.status === 429) {
           this.dataService.redirectLoginError('REQUESTS');
         } else {
           this.dataService.redirectLoginError('UNKNOWN');
@@ -165,9 +168,9 @@ export class AuthService {
    * and navigating to the home page.
    */
   logout(): void {
-    this.http.post<any>(`${config.api_url}/auth/logout`, {}, { withCredentials: true })
+    this.http.post<object>(`${config.api_url}/auth/logout`, {}, { withCredentials: true })
       .subscribe({
-        next: (_: Object): void => {
+        next: (_: object): void => {
           // remove query parameters from URL
           localStorage.clear();  // clear all local storage
           this.router.navigateByUrl('/').then();

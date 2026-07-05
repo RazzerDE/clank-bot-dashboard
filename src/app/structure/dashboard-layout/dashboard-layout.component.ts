@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {HeaderComponent} from "../header/header.component";
 import {SidebarComponent} from "../sidebar/sidebar.component";
 import {NgClass} from "@angular/common";
 import {DataHolderService} from "../../services/data/data-holder.service";
 
 @Component({
-  selector: 'dashboard-layout',
+  selector: 'app-dashboard-layout',
   imports: [
     HeaderComponent,
     SidebarComponent,
@@ -14,8 +14,7 @@ import {DataHolderService} from "../../services/data/data-holder.service";
   templateUrl: './dashboard-layout.component.html',
   styleUrl: './dashboard-layout.component.scss'
 })
-export class DashboardLayoutComponent {
+export class DashboardLayoutComponent {  protected dataService = inject(DataHolderService);
 
-  constructor(protected dataService: DataHolderService) {}
 
 }

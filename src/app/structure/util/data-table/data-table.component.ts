@@ -1,12 +1,4 @@
-import {
-  AfterViewChecked,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {ButtonConfig, TableConfig} from "../../../services/types/Config";
@@ -27,7 +19,7 @@ import {ConvertTimePipe} from "../../../pipes/convert-time.pipe";
 import {UnbanRequest} from "../../../services/types/Security";
 
 @Component({
-  selector: 'data-table',
+  selector: 'app-data-table',
   imports: [
     FaIconComponent,
     TranslatePipe,
@@ -53,23 +45,24 @@ import {UnbanRequest} from "../../../services/types/Security";
   ]
 })
 export class DataTableComponent implements AfterViewChecked {
+    protected dataService = inject(DataHolderService);
+    protected translate = inject(TranslateService);
+
     @Input() tconfig: TableConfig = {} as TableConfig;
-    @Output() rowClick = new EventEmitter<any>();
+    @Output() rowClick = new EventEmitter<SupportTheme | Role | TicketSnippet | BlockedUser | Giveaway | UnbanRequest>();
     @ViewChild('mainRow') protected mainRow!: ElementRef<HTMLTableCellElement>;
     protected markdownPipe: MarkdownPipe = new MarkdownPipe();
     private convertTimePipe: ConvertTimePipe = new ConvertTimePipe();
     protected readonly faExclamationTriangle: IconDefinition = faExclamationTriangle;
 
     protected now: Date = new Date();
-    protected rowHeight: number = 0;
+    protected rowHeight = 0;
     protected readonly faClock: IconDefinition = faClock;
     protected readonly faRobot: IconDefinition = faRobot;
     protected readonly faChartSimple: IconDefinition = faChartSimple;
     protected readonly faHourglassEnd: IconDefinition = faHourglassEnd;
-    private heightSet: boolean = false;
-    protected dataTableBtnPressed: boolean = false;
-
-    constructor(protected dataService: DataHolderService, protected translate: TranslateService) {}
+    private heightSet = false;
+    protected dataTableBtnPressed = false;
 
     /**
      * Lifecycle hook that is called after the component's view has been fully initialized.
@@ -204,7 +197,7 @@ export class DataTableComponent implements AfterViewChecked {
      * @param role - The Discord role object containing a color property
      * @returns An object with CSS style properties as key-value pairs
      */
-    protected getRoleStyles(role: Role): { [key: string]: string } {
+    protected getRoleStyles(role: Role): Record<string, string> {
       if (!role.color) {
         return { // default color
           'background-color': 'rgba(115, 115, 115, 0.1)',
@@ -230,7 +223,7 @@ export class DataTableComponent implements AfterViewChecked {
      * A mapping of giveaway requirement prefixes to their corresponding transformation functions.
      * Each function takes the requirement string as input and returns a formatted string.
      */
-    private giveawayMappings: { [key: string]: (value: string, index: number) => string } = {
+    private giveawayMappings: Record<string, (value: string, index: number) => string> = {
       'OWN: ': (value) => this.markdownPipe.transform(value.replace('OWN: ', '💡 ~ ')),
       'MSG: ': (value) => {
         const msg_count = parseInt(value.replace('MSG: ', ''));

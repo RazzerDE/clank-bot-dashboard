@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ViewChild, ElementRef, HostListener, PLATFORM_ID, Inject} from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, HostListener, PLATFORM_ID, inject } from '@angular/core';
 import { faChevronUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import {isPlatformBrowser, NgOptimizedImage} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -8,7 +8,7 @@ import {LNavigationItem, nav_items} from '../../../services/types/landing-page/L
 import {AnimationService} from "../../../services/animation/animation.service";
 
 @Component({
-    selector: 'landing-footer',
+    selector: 'app-landing-footer',
     imports: [
         NgOptimizedImage,
         FaIconComponent,
@@ -19,12 +19,13 @@ import {AnimationService} from "../../../services/animation/animation.service";
     styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements AfterViewInit {
+  private platformId = inject(PLATFORM_ID);
+  private animationService = inject(AnimationService);
+
   @ViewChild('invite_btn')
   protected invite_btn!: ElementRef<HTMLAnchorElement>;
   protected faChevronUp: IconDefinition = faChevronUp;
   protected readonly nav_items: LNavigationItem[] = nav_items;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private animationService: AnimationService) {}
 
   /**
    * Lifecycle hook that is called after Angular has fully initialized a component's view.

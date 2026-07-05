@@ -1,4 +1,4 @@
-import {Component, DOCUMENT, inject, Inject, PLATFORM_ID} from '@angular/core';
+import { Component, DOCUMENT, inject, PLATFORM_ID } from '@angular/core';
 import {RouterOutlet} from "@angular/router";
 import {PageLoaderComponent} from "./structure/util/page-loader/page-loader.component";
 import {LanguageSwitcherService} from "./services/language/language-switcher.service";
@@ -13,11 +13,16 @@ import {Meta, Title} from "@angular/platform-browser";
     styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  private langService = inject(LanguageSwitcherService);
+  private dataService = inject(DataHolderService);
+  private platformId = inject(PLATFORM_ID);
+  private title = inject(Title);
+  private meta = inject(Meta);
+  private document = inject<Document>(DOCUMENT);
+
   // start builded project with "node dist/clank-dashboard/server/server.mjs" and visit http://localhost:4000
 
-  constructor(private langService: LanguageSwitcherService, private dataService: DataHolderService,
-              @Inject(PLATFORM_ID) private platformId: Object, private title: Title, private meta: Meta,
-              @Inject(DOCUMENT) private document: Document) {
+  constructor() {
     this.langService.setLanguage();
 
     if (isPlatformBrowser(this.platformId)) { // only run in browser
@@ -34,7 +39,7 @@ export class AppComponent {
    *
    * Sets the title, description, Open Graph, and Twitter meta tags to improve search engine visibility and social sharing.
    */
-  private updateSEO(isGerman: boolean = false): void {
+  private updateSEO(isGerman = false): void {
     const link: HTMLLinkElement = this.document.querySelector("link[rel='canonical']") as HTMLLinkElement;
     if (!isGerman) {
       const desc: string = "Clank is the heart of your Discord server: In addition to its ease of use and beautiful " +

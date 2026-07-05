@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import {Observable, of} from "rxjs";
 import {GeneralStats} from "../types/Statistics";
@@ -27,10 +27,10 @@ import {GlobalChatConfig, GlobalChatCustomizing, GlobalChatObject} from "../type
   providedIn: 'root'
 })
 export class ApiService {
+  private http = inject(HttpClient);
+
 
   private readonly API_URL: string = config.api_url;
-
-  constructor(private http: HttpClient) { }
 
   /**
    * Fetches general statistics about the clank bot (guild count, user count & module related statistics).
@@ -118,7 +118,7 @@ export class ApiService {
    * @param user_id - The ID of the user to be removed from the blocked list.
    * @returns An Observable emitting the server's response.
    */
-  deleteBlockedUser(guild_id: string, user_id: string): Observable<Object> {
+  deleteBlockedUser(guild_id: string, user_id: string): Observable<object> {
     return this.http.delete(`${this.API_URL}/guilds/blocked-users?guild_id=${guild_id}&user_id=${user_id}`,
       { withCredentials: true });
   }
@@ -163,8 +163,8 @@ export class ApiService {
    * @param user_id - The ID of the user whose unban request is being updated.
    * @param status - The new status of the unban request (e.g., 0 for pending, 1 for approved, 2 for denied).
    */
-  updateUnbanRequest(guild_id: string, user_id: string, status: 1 | 2): Observable<Object> {
-    return this.http.put<Object>(`${this.API_URL}/guilds/security/requests?guild_id=${guild_id}&user_id=${user_id}&status=${status}`, {},
+  updateUnbanRequest(guild_id: string, user_id: string, status: 1 | 2): Observable<object> {
+    return this.http.put<object>(`${this.API_URL}/guilds/security/requests?guild_id=${guild_id}&user_id=${user_id}&status=${status}`, {},
       { withCredentials: true });
   }
 
@@ -197,8 +197,8 @@ export class ApiService {
    * @param customize - The GlobalChatCustomizing object containing the customizing settings.
    * @returns An Observable emitting the server's response.
    */
-  saveGlobalChatCustomizing(guild_id: string, customize: GlobalChatCustomizing): Observable<Object> {
-    return this.http.post<Object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, customize,
+  saveGlobalChatCustomizing(guild_id: string, customize: GlobalChatCustomizing): Observable<object> {
+    return this.http.post<object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, customize,
       { withCredentials: true });
   }
 
@@ -209,8 +209,8 @@ export class ApiService {
    * @param updated - The updated GlobalChatObject containing the new configuration.
    * @returns An Observable emitting the server's response.
    */
-  updateGlobalChat(guild_id: string, updated: GlobalChatObject): Observable<Object> {
-    return this.http.put<Object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, updated,
+  updateGlobalChat(guild_id: string, updated: GlobalChatObject): Observable<object> {
+    return this.http.put<object>(`${this.API_URL}/guilds/misc/global-chat?guild_id=${guild_id}`, updated,
       { withCredentials: true });
   }
 
@@ -244,8 +244,8 @@ export class ApiService {
    * @param delete_action - Optional boolean indicating whether to delete the log forum (default: false).
    * @return An Observable that emits the server's response.
    */
-  updateLogForum(guild_id: string, channel_id: string, delete_action?: boolean): Observable<Object> {
-    return this.http.put<Object>(`${this.API_URL}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}` + (delete_action ? '&delete=true' : ''),
+  updateLogForum(guild_id: string, channel_id: string, delete_action?: boolean): Observable<object> {
+    return this.http.put<object>(`${this.API_URL}/guilds/security/logs/forum?guild_id=${guild_id}&channel_id=${channel_id}` + (delete_action ? '&delete=true' : ''),
       {}, { withCredentials: true });
   }
 
@@ -302,8 +302,8 @@ export class ApiService {
    * @param action - The action to be performed (0 for disable, 1 for enable).
    * @return An Observable that emits the server's response.
    */
-  doUnbanAction(guild_id: string, method: UnbanMethod, action: 0 | 1): Observable<Object> {
-    return this.http.post<Object>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}&type=${action}`,
+  doUnbanAction(guild_id: string, method: UnbanMethod, action: 0 | 1): Observable<object> {
+    return this.http.post<object>(`${this.API_URL}/guilds/security/unban-method?guild_id=${guild_id}&type=${action}`,
       method, { withCredentials: true });
   }
 
@@ -324,8 +324,8 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which to save the security shields configuration.
    * @param shields - An Observable that emits an array of SecurityFeature objects representing the security shields to be saved.
    */
-  saveSecurityShields(guild_id: string, shields: SecurityFeature[]): Observable<Object> {
-    return this.http.post<Object>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`, shields,
+  saveSecurityShields(guild_id: string, shields: SecurityFeature[]): Observable<object> {
+    return this.http.post<object>(`${this.API_URL}/guilds/security/shields?guild_id=${guild_id}`, shields,
       { withCredentials: true });
   }
 
@@ -347,8 +347,8 @@ export class ApiService {
    * @param action - The action to be performed (0 = Panic Mode, 1 = Backup Restore, 2 = AutoMod Setup).
    * @return An Observable that emits the server's response.
    */
-  insertBotAction(guild_id: string, action: 0 | 1 | 2): Observable<Object> {
-    return this.http.put<Object>(`${this.API_URL}/guilds/security/actions?guild_id=${guild_id}&action=${action}`,
+  insertBotAction(guild_id: string, action: 0 | 1 | 2): Observable<object> {
+    return this.http.put<object>(`${this.API_URL}/guilds/security/actions?guild_id=${guild_id}&action=${action}`,
       {}, { withCredentials: true });
   }
 
@@ -358,8 +358,8 @@ export class ApiService {
    * @param effects - An array of EventEffects objects containing the effects to be saved.
    * @param guild_id - The ID of the guild for which to save the event effects.
    */
-  saveEventEffects(effects: EventEffects, guild_id: string): Observable<Object> {
-    return this.http.post<Object>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`, effects,
+  saveEventEffects(effects: EventEffects, guild_id: string): Observable<object> {
+    return this.http.post<object>(`${this.API_URL}/guilds/events/effects?guild_id=${guild_id}`, effects,
       { withCredentials: true });
   }
 
@@ -391,7 +391,7 @@ export class ApiService {
    * @param giveaway - The giveaway object to be deleted.
    * @returns An Observable emitting the server's response.
    */
-  deleteGuildEvent(giveaway: Giveaway): Observable<Object> {
+  deleteGuildEvent(giveaway: Giveaway): Observable<object> {
     return this.http.delete(`${this.API_URL}/guilds/events?guild_id=${giveaway.guild_id}&event_id=${giveaway.event_id}`,
       { withCredentials: true });
   }
@@ -424,7 +424,7 @@ export class ApiService {
    * @param snippet - The ticket snippet object to be created.
    * @returns An Observable emitting the server's response.
    */
-  createSnippet(snippet: TicketSnippet): Observable<Object> {
+  createSnippet(snippet: TicketSnippet): Observable<object> {
     return this.http.post(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
       { withCredentials: true });
   }
@@ -436,7 +436,7 @@ export class ApiService {
    *                  and the `old_name` of the existing snippet.
    * @returns An Observable emitting the server's response.
    */
-  editSnippet(snippet: TicketSnippet): Observable<Object> {
+  editSnippet(snippet: TicketSnippet): Observable<object> {
     return this.http.put(`${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}`, snippet,
       { withCredentials: true });
   }
@@ -447,7 +447,7 @@ export class ApiService {
    * @param snippet - The ticket snippet object to be removed. It must include the `guild_id` of the guild.
    * @returns An Observable emitting the server's response.
    */
-  deleteSnippet(snippet: TicketSnippet): Observable<Object> {
+  deleteSnippet(snippet: TicketSnippet): Observable<object> {
     return this.http.delete(
       `${this.API_URL}/guilds/support-snippets?guild_id=${snippet.guild_id}&name=${encodeURIComponent(snippet.name)}`,
       { withCredentials: true });
@@ -471,7 +471,7 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which the announcement is being set.
    * @returns An Observable emitting the server's response.
    */
-  setAnnouncement(announcement: TicketAnnouncement, guild_id: string): Observable<Object> {
+  setAnnouncement(announcement: TicketAnnouncement, guild_id: string): Observable<object> {
     return this.http.post(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`, announcement,
       { withCredentials: true });
   }
@@ -482,7 +482,7 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which the ticket announcement is to be deleted.
    * @returns An Observable emitting the server's response.
    */
-  deleteAnnouncement(guild_id: string): Observable<Object> {
+  deleteAnnouncement(guild_id: string): Observable<object> {
     return this.http.delete(`${this.API_URL}/guilds/support-announcement?guild_id=${guild_id}`,
       { withCredentials: true });
   }
@@ -494,7 +494,7 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which the support theme is created.
    * @returns An Observable emitting the server's response.
    */
-  createSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
+  createSupportTheme(theme: SupportTheme, guild_id: string): Observable<object> {
     return this.http.post(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}`, theme,
       { withCredentials: true });
   }
@@ -506,7 +506,7 @@ export class ApiService {
    * @param guild_id - The ID of the guild for which the support theme is being updated.
    * @returns An Observable emitting the server's response.
    */
-  editSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
+  editSupportTheme(theme: SupportTheme, guild_id: string): Observable<object> {
     return this.http.put(`${this.API_URL}/guilds/support-themes?guild_id=${guild_id}`, theme,
       { withCredentials: true });
   }
@@ -518,7 +518,7 @@ export class ApiService {
    * @param guild_id - The ID of the guild from which the support theme is deleted.
    * @returns An Observable emitting the server's response.
    */
-  deleteSupportTheme(theme: SupportTheme, guild_id: string): Observable<Object> {
+  deleteSupportTheme(theme: SupportTheme, guild_id: string): Observable<object> {
     const themeName: string = theme.old_name && theme.old_name !== theme.name ? theme.old_name : theme.name;
     return this.http.delete(
       `${this.API_URL}/guilds/support-themes?guild_id=${guild_id}&theme_name=${encodeURIComponent(themeName)}`,
@@ -532,7 +532,7 @@ export class ApiService {
    * @param data - The feature vote details to be sent.
    * @returns An Observable that emits the server's response.
    */
-  sendFeatureVote(data: FeatureData): Observable<Object> {
+  sendFeatureVote(data: FeatureData): Observable<object> {
     return this.http.post(`${this.API_URL}/progress/features`, data, { withCredentials: true });
   }
 
@@ -542,7 +542,7 @@ export class ApiService {
    * @param data - The data of the bug report to be sent.
    * @returns An Observable that emits the server's response.
    */
-  sendBugReport(data: formGroupBug): Observable<Object> {
+  sendBugReport(data: formGroupBug): Observable<object> {
     return this.http.post(`${this.API_URL}/contact/bug`, data, { withCredentials: true });
   }
 
@@ -552,7 +552,7 @@ export class ApiService {
    * @param data - The data of the idea suggestion to be sent.
    * @returns An Observable that emits the server's response.
    */
-  sendIdeaSuggestion(data: formGroupIdea): Observable<Object> {
+  sendIdeaSuggestion(data: formGroupIdea): Observable<object> {
     return this.http.post(`${this.API_URL}/contact/idea`, data, { withCredentials: true });
   }
 }

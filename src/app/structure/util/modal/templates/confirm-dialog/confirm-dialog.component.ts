@@ -4,7 +4,7 @@ import {SecurityModal} from "../../../../../services/types/Security";
 import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
-  selector: 'template-confirm-dialog',
+  selector: 'app-template-confirm-dialog',
   imports: [
     NgOptimizedImage,
     TranslatePipe
@@ -13,8 +13,8 @@ import {TranslatePipe} from "@ngx-translate/core";
   styleUrl: './confirm-dialog.component.scss'
 })
 export class ConfirmDialogComponent {
-  @Input() type: string = '';
+  @Input() type = '';
   @Input() obj: SecurityModal = {} as SecurityModal;
-  @Input() shield_action: (action: 0 | 1 | 2, element: HTMLButtonElement) => void = (): void => {};
+  @Input() shield_action: (action: 0 | 1 | 2, element: HTMLButtonElement) => void = (): void => { /* no-op default */ };
 
 }

@@ -1,4 +1,4 @@
-<dashboard-layout>
+<app-dashboard-layout>
 
   <section class="flex flex-auto flex-col bg-gradient-to-tl from-blue-50 via-gray-50 to-slate-100
                 dark:from-slate-900 dark:via-gray-900 dark:to-slate-800 transition-colors duration-500">
@@ -9,8 +9,8 @@
     }
 
     <!-- Page Thumb -->
-    <page-thumb [subtitle]="'PAGE_WISHLIST_SUBTITLE' | translate" [color]="'yellow'"
-                [title]="'PAGE_WISHLIST_TITLE' | translate" [desc]="'PAGE_WISHLIST_DESC' | translate"></page-thumb>
+    <app-page-thumb [subtitle]="'PAGE_WISHLIST_SUBTITLE' | translate" [color]="'yellow'"
+                [title]="'PAGE_WISHLIST_TITLE' | translate" [desc]="'PAGE_WISHLIST_DESC' | translate"></app-page-thumb>
 
     <!-- Content -->
     <div class="flex flex-col lg:flex-row p-6 sm:p-10 gap-6 overflow-hidden !pl-2 !pb-4 h-full">
@@ -19,8 +19,8 @@
         <h2 class="text-lg font-medium mb-4 pt-2 text-gray-800 dark:text-gray-200 px-4">TAGS</h2>
         <div class="space-y-2">
           @for (tag of tags; track $index) {
-            <div class="flex px-4 py-2 rounded-full cursor-pointer transition-colors duration-300" (click)="filterFeatures(tag.id)"
-                 [ngClass]="tag.isActive ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-300 dark:hover:bg-gray-800'">
+            <div class="flex px-4 py-2 rounded-full cursor-pointer transition-colors duration-300" (click)="filterFeatures(tag.id)" (keyup.enter)="filterFeatures(tag.id)"
+                 [ngClass]="tag.isActive ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-300 dark:hover:bg-gray-800'" tabindex="0" role="button">
               <fa-icon [icon]="$index === 0 ? faInbox : faHashtag"
                        [ngClass]="tag.isActive ? (tag.color ? '' : 'text-orange-500 dark:text-orange-400') : 'text-gray-400 dark:text-gray-500'"
                        [ngStyle]="tag.isActive && tag.color ? {'color': tag.color} : {}"
@@ -179,4 +179,4 @@
     </div>
   </section>
 
-</dashboard-layout>
+</app-dashboard-layout>
